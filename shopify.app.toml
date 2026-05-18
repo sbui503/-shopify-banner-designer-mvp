@@ -1,0 +1,22 @@
+name = "Team Sport Banners"
+client_id = "YOUR_CLIENT_ID"
+application_url = "https://your-app.com"
+embedded = true
+
+[auth]
+redirect_urls = [ "https://your-app.com/auth/callback" ]
+
+[webhooks]
+api_version = "2024-10"
+
+[app_proxy]
+url = "https://your-app.com/apps/banner"
+subpath = "banner"
+prefix = "apps"
+
+[[extensions]]
+type = "theme_app_extension"
+handle = "banner-designer"
+
+[access_scopes]
+scopes = "write_products,write_orders,read_themes,write_files"
