@@ -1,0 +1,5 @@
+<div id="tsb-banner-app" data-product-id="{{ product.selected_or_first_available_variant.id }}" data-shop="{{ shop.permanent_domain }}"></div>
+<script>window.TSB_CONFIG = { productId: {{ product.selected_or_first_available_variant.id }}, price: {{ product.price | money_without_currency }}, shop: "{{ shop.permanent_domain }}", appUrl: "/apps/banner" };</script>
+<script src="{{ 'designer.js' | asset_url }}" defer></script>
+<link rel="stylesheet" href="{{ 'designer.css' | asset_url }}">
+{% schema %}{"name":"Banner Designer","target":"section","settings":[{"type":"product","id":"product","label":"Banner Product"}]}{% endschema %}
