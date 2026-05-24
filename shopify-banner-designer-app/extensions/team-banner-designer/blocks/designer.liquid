@@ -1,0 +1,677 @@
+{% liquid
+  assign tbd_product = product
+  if tbd_product == blank
+    assign tbd_product = block.settings.product
+  endif
+
+  assign tbd_product_tags = ''
+  assign tbd_product_collections = ''
+  if tbd_product != blank
+    assign tbd_product_tags = tbd_product.tags | join: ','
+    assign tbd_product_collections = tbd_product.collections | map: 'handle' | join: ','
+  endif
+
+  assign tbd_shape = ''
+  assign tbd_shape_context = tbd_product_tags | append: ',' | append: tbd_product_collections | append: ',' | append: tbd_product.type | append: ',' | append: tbd_product.title | downcase
+  if tbd_shape_context contains 'pole-pocket' or tbd_shape_context contains 'polepocket' or tbd_shape_context contains 'pole pocket'
+    assign tbd_shape = 'polepocket'
+  elsif tbd_shape_context contains 'home-plate-pennant' or tbd_shape_context contains 'homeplatepennant' or tbd_shape_context contains 'plate-pennant'
+    assign tbd_shape = 'homeplatepennant'
+  elsif tbd_shape_context contains 'home-plate' or tbd_shape_context contains 'homeplate'
+    assign tbd_shape = 'homeplate'
+  elsif tbd_shape_context contains 'triangle' or tbd_shape_context contains 'pennant'
+    assign tbd_shape = 'triangle'
+  endif
+%}
+{{ 'team-banner-designer.css' | asset_url | stylesheet_tag }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js" defer></script>
+<script src="{{ 'team-banner-designer.js' | asset_url }}" defer></script>
+
+<div
+  class="tbd"
+  data-team-banner-designer
+  data-product-id="{{ tbd_product.selected_or_first_available_variant.id }}"
+  data-cart-variant-id="{{ tbd_product.selected_or_first_available_variant.id }}"
+  data-product-title="{{ tbd_product.title | escape }}"
+  data-product-handle="{{ tbd_product.handle | escape }}"
+  data-product-headline="{{ block.settings.product_headline | escape }}"
+  data-product-image="{% if tbd_product.featured_image %}{{ tbd_product.featured_image | image_url: width: 1600 }}{% endif %}"
+  data-product-tags="{{ tbd_product_tags | escape }}"
+  data-product-collections="{{ tbd_product_collections | escape }}"
+  data-product-shape="{{ tbd_shape | escape }}"
+  data-size-label="{{ block.settings.size_label | escape }}"
+  data-price="{% if block.settings.display_price != blank %}{{ block.settings.display_price | escape }}{% elsif tbd_product != blank %}{{ tbd_product.price | money_without_currency }}{% endif %}"
+  data-auto-layer="blank"
+  data-save-url="{{ block.settings.save_endpoint | default: 'https://files-mentioned-by-the-user-shopify.vercel.app/api/designs' | escape }}"
+  data-assets-url="{{ block.settings.assets_manifest_url | default: 'https://files-mentioned-by-the-user-shopify.vercel.app/team-banner-assets.shopify.json' | escape }}"
+  data-products-url="{{ block.settings.products_manifest_url | default: 'https://files-mentioned-by-the-user-shopify.vercel.app/team-banner-products.json' | escape }}"
+  data-svg-templates-url="https://files-mentioned-by-the-user-shopify.vercel.app/svg-layer-templates.json"
+  data-image-proxy-url="https://files-mentioned-by-the-user-shopify.vercel.app/api/image-proxy"
+  data-proof-email-url="https://files-mentioned-by-the-user-shopify.vercel.app/api/send-proof-email"
+  data-proof-email-to="info@tsbanners.com"
+  data-custom-checkout-variant-id="43534427029710"
+  data-custom-checkout-url="https://teamsportbanners.com/cart/43534427029710:1?return_to=/checkouts/cn/43534427029710"
+  {{ block.shopify_attributes }}
+>
+      <svg class="tbd__icon-sprite" aria-hidden="true" focusable="false">
+        <symbol id="tbd-i-new" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M12 12v6"/><path d="M9 15h6"/></symbol>
+        <symbol id="tbd-i-folder" viewBox="0 0 24 24"><path d="M3 7h7l2 2h9v10H3z"/><path d="M3 7v12"/></symbol>
+        <symbol id="tbd-i-save" viewBox="0 0 24 24"><path d="M5 3h13l1 1v17H5z"/><path d="M8 3v7h8V3"/><path d="M8 21v-7h8v7"/></symbol>
+        <symbol id="tbd-i-undo" viewBox="0 0 24 24"><path d="M8 7 3 12l5 5"/><path d="M4 12h10a6 6 0 0 1 0 12"/></symbol>
+        <symbol id="tbd-i-redo" viewBox="0 0 24 24"><path d="m16 7 5 5-5 5"/><path d="M20 12H10a6 6 0 0 0 0 12"/></symbol>
+        <symbol id="tbd-i-rotate-left" viewBox="0 0 24 24"><path d="M8 7 4 11l4 4"/><path d="M5 11h8a5 5 0 1 1-3.6 8.5"/></symbol>
+        <symbol id="tbd-i-rotate-right" viewBox="0 0 24 24"><path d="m16 7 4 4-4 4"/><path d="M19 11h-8a5 5 0 1 0 3.6 8.5"/></symbol>
+        <symbol id="tbd-i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11"/><rect x="4" y="4" width="11" height="11"/></symbol>
+        <symbol id="tbd-i-back" viewBox="0 0 24 24"><rect x="4" y="4" width="9" height="9"/><rect x="11" y="11" width="9" height="9"/></symbol>
+        <symbol id="tbd-i-backward" viewBox="0 0 24 24"><rect x="5" y="5" width="8" height="8"/><rect x="11" y="11" width="8" height="8"/><path d="M7 18h5"/></symbol>
+        <symbol id="tbd-i-forward" viewBox="0 0 24 24"><rect x="11" y="5" width="8" height="8"/><rect x="5" y="11" width="8" height="8"/><path d="M12 6h5"/></symbol>
+        <symbol id="tbd-i-front" viewBox="0 0 24 24"><rect x="11" y="4" width="9" height="9"/><rect x="4" y="11" width="9" height="9"/></symbol>
+        <symbol id="tbd-i-trash" viewBox="0 0 24 24"><path d="M5 7h14"/><path d="M9 7V4h6v3"/><path d="M7 7l1 14h8l1-14"/><path d="M10 11v6"/><path d="M14 11v6"/></symbol>
+        <symbol id="tbd-i-layers" viewBox="0 0 24 24"><path d="m12 3 8 4-8 4-8-4z"/><path d="m4 12 8 4 8-4"/><path d="m4 17 8 4 8-4"/></symbol>
+        <symbol id="tbd-i-props" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14"/><path d="M8 9h8"/><path d="M8 13h8"/><path d="M8 17h5"/></symbol>
+        <symbol id="tbd-i-upload" viewBox="0 0 24 24"><path d="M7 18H6a4 4 0 0 1 0-8 6 6 0 0 1 11.4-2A4.5 4.5 0 0 1 18 18h-1"/><path d="M12 18V9"/><path d="m8 13 4-4 4 4"/></symbol>
+        <symbol id="tbd-i-cart" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.8"/><circle cx="18" cy="20" r="1.8"/><path d="M3 4h3l2 12h10l2-8H7"/></symbol>
+        <symbol id="tbd-i-template" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8"/><path d="M8 13h5"/><path d="M15.5 14.5 18 17"/></symbol>
+        <symbol id="tbd-i-select" viewBox="0 0 24 24"><path d="M5 3v16l4-4 3 6 3-2-3-6h6z"/></symbol>
+        <symbol id="tbd-i-hand" viewBox="0 0 24 24"><path d="M8 12V6a1.5 1.5 0 0 1 3 0v5"/><path d="M11 11V4.5a1.5 1.5 0 0 1 3 0V11"/><path d="M14 11V6a1.5 1.5 0 0 1 3 0v7"/><path d="M17 13v-1a1.5 1.5 0 0 1 3 0v3c0 4-3 7-7 7h-1c-3 0-5-2-7-5l-1-2a1.5 1.5 0 0 1 2.4-1.8L9 16"/></symbol>
+        <symbol id="tbd-i-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></symbol>
+        <symbol id="tbd-i-rect" viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="10"/></symbol>
+        <symbol id="tbd-i-pen" viewBox="0 0 24 24"><path d="m4 20 5-1 10-10-4-4L5 15z"/><path d="m13 7 4 4"/></symbol>
+      </svg>
+      <div class="tbd__toolbar" aria-label="Design controls">
+        <a class="tbd__brand" href="{{ shop.url }}" aria-label="Team Sport Banners">
+          <img src="{{ 'team-sport-banners-logo.jpg' | asset_url }}" alt="Team Sport Banners">
+        </a>
+        <div class="tbd__tool-group">
+          <button class="tbd__icon-button" data-tbd-clear type="button" aria-label="New design" data-tooltip="New design"><svg class="tbd__icon"><use href="#tbd-i-new"></use></svg></button>
+          <button class="tbd__icon-button" data-tbd-project-upload-trigger type="button" aria-label="Open editable design" data-tooltip="Open editable design"><svg class="tbd__icon"><use href="#tbd-i-folder"></use></svg></button>
+          <button class="tbd__icon-button" data-tbd-download type="button" aria-label="Save editable design" data-tooltip="Save editable design"><svg class="tbd__icon"><use href="#tbd-i-save"></use></svg></button>
+          <button class="tbd__icon-button" data-tbd-undo type="button" aria-label="Undo" data-tooltip="Undo"><svg class="tbd__icon"><use href="#tbd-i-undo"></use></svg></button>
+          <button class="tbd__icon-button" data-tbd-redo type="button" aria-label="Redo" data-tooltip="Redo"><svg class="tbd__icon"><use href="#tbd-i-redo"></use></svg></button>
+          <button class="tbd__icon-button" data-tbd-rotate="-15" type="button" aria-label="Rotate left" data-tooltip="Rotate left"><svg class="tbd__icon"><use href="#tbd-i-rotate-left"></use></svg></button>
+          <button class="tbd__icon-button" data-tbd-rotate="15" type="button" aria-label="Rotate right" data-tooltip="Rotate right"><svg class="tbd__icon"><use href="#tbd-i-rotate-right"></use></svg></button>
+        </div>
+
+        <div class="tbd__tool-group">
+          <button class="tbd__icon-button" data-tbd-duplicate type="button" aria-label="Duplicate selected" data-tooltip="Duplicate selected"><svg class="tbd__icon"><use href="#tbd-i-copy"></use></svg></button>
+          <button class="tbd__icon-button" data-tbd-back type="button" aria-label="Send to back" data-tooltip="Send to back"><svg class="tbd__icon"><use href="#tbd-i-back"></use></svg></button>
+          <button class="tbd__icon-button" data-tbd-backward type="button" aria-label="Move down" data-tooltip="Move down"><svg class="tbd__icon"><use href="#tbd-i-backward"></use></svg></button>
+          <button class="tbd__icon-button" data-tbd-forward type="button" aria-label="Move up" data-tooltip="Move up"><svg class="tbd__icon"><use href="#tbd-i-forward"></use></svg></button>
+          <button class="tbd__icon-button" data-tbd-front type="button" aria-label="Bring to front" data-tooltip="Bring to front"><svg class="tbd__icon"><use href="#tbd-i-front"></use></svg></button>
+          <button class="tbd__icon-button" data-tbd-delete type="button" aria-label="Delete selected" data-tooltip="Delete selected"><svg class="tbd__icon"><use href="#tbd-i-trash"></use></svg></button>
+        </div>
+
+        <div class="tbd__tool-group tbd__align-group">
+          <span>Align to artboard</span>
+          <input type="checkbox" aria-label="Align to artboard">
+        </div>
+
+        <div class="tbd__tool-group tbd__tool-group--panel">
+          <button class="tbd__icon-button tbd__icon-button--yellow tbd__icon-button--text" data-tbd-panel-toggle="text" type="button" aria-label="Text panel" data-tooltip="Text panel">T</button>
+          <button class="tbd__icon-button tbd__icon-button--yellow" data-tbd-panel-toggle="layers" type="button" aria-label="Soccer ball layers" data-tooltip="Soccer ball layers"><svg class="tbd__icon"><use href="#tbd-i-layers"></use></svg></button>
+          <button class="tbd__icon-button tbd__icon-button--yellow" data-tbd-panel-toggle="properties" type="button" aria-label="Properties panel" data-tooltip="Properties panel"><svg class="tbd__icon"><use href="#tbd-i-props"></use></svg></button>
+        </div>
+
+        <label class="tbd__banner-type-wrap tbd__banner-type-wrap--toolbar" data-tooltip="Banner type">
+          <span>Banner type</span>
+          <select class="tbd__banner-type" data-tbd-banner-type aria-label="Banner type">
+            <option value="rectangle">Hem &amp; Grommets</option>
+            <option value="polepocket">Pole Pocket</option>
+            <option value="triangle">Triangle</option>
+            <option value="homeplatepennant">Home Plate</option>
+          </select>
+        </label>
+
+        <div class="tbd__toolbar-spacer"></div>
+
+        <button class="tbd__toolbar-upload" data-tbd-upload-trigger type="button" aria-label="Upload" data-tooltip="Upload"><svg class="tbd__icon"><use href="#tbd-i-upload"></use></svg><span>Upload</span></button>
+        <button class="tbd__toolbar-template" data-tbd-panel-toggle="templates" type="button" aria-label="Templates" data-tooltip="Templates"><svg class="tbd__icon"><use href="#tbd-i-template"></use></svg><span>Template</span></button>
+        <button class="tbd__toolbar-assets" data-tbd-panel-toggle="assets" type="button" aria-label="Assets, Art, TeamName" data-tooltip="Assets, Art TeamName">Assets, Art<br>TeamName</button>
+        <button class="tbd__toolbar-cart" data-tbd-add-cart type="button" aria-label="Add to cart" data-tooltip="Add to cart">+ Add<br>To Cart</button>
+        <button class="tbd__toolbar-basket" data-tbd-panel-toggle="inspector" type="button" aria-label="Open cart tools" data-tooltip="Open cart tools"><svg class="tbd__icon"><use href="#tbd-i-cart"></use></svg></button>
+      </div>
+
+      <div class="tbd__mobile-editbar" aria-label="Mobile edit controls">
+        <button class="tbd__mobile-icon" data-tbd-clear type="button" aria-label="New design" data-tooltip="New design"><svg class="tbd__icon"><use href="#tbd-i-new"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-project-upload-trigger type="button" aria-label="Open editable design" data-tooltip="Open editable design"><svg class="tbd__icon"><use href="#tbd-i-folder"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-download type="button" aria-label="Save editable design" data-tooltip="Save editable design"><svg class="tbd__icon"><use href="#tbd-i-save"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-undo type="button" aria-label="Undo" data-tooltip="Undo"><svg class="tbd__icon"><use href="#tbd-i-undo"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-redo type="button" aria-label="Redo" data-tooltip="Redo"><svg class="tbd__icon"><use href="#tbd-i-redo"></use></svg></button>
+        <button class="tbd__mobile-icon tbd__mobile-icon--text" data-tbd-panel-toggle="text" type="button" aria-label="Text panel" data-tooltip="Text panel">T</button>
+        <button class="tbd__mobile-icon" data-tbd-panel-toggle="layers" type="button" aria-label="Layers" data-tooltip="Layers"><svg class="tbd__icon"><use href="#tbd-i-layers"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-panel-toggle="properties" type="button" aria-label="Properties" data-tooltip="Properties"><svg class="tbd__icon"><use href="#tbd-i-props"></use></svg></button>
+      </div>
+
+      <div class="tbd__tool-row" aria-label="Drawing tools">
+        <button class="tbd__shape-button is-active" data-tbd-tool="select" type="button" aria-label="Select" data-tooltip="Select"><svg class="tbd__icon"><use href="#tbd-i-select"></use></svg></button>
+        <button class="tbd__shape-button" data-tbd-tool="move" type="button" aria-label="Move" data-tooltip="Move"><svg class="tbd__icon"><use href="#tbd-i-hand"></use></svg></button>
+        <button class="tbd__shape-button" data-tbd-panel-toggle="text" type="button" aria-label="Add text" data-tooltip="Add text"><svg class="tbd__icon"><use href="#tbd-i-pen"></use></svg></button>
+        <button class="tbd__shape-button" data-tbd-circle type="button" aria-label="Add circle" data-tooltip="Add circle"><svg class="tbd__icon"><use href="#tbd-i-circle"></use></svg></button>
+        <button class="tbd__shape-button" data-tbd-rect type="button" aria-label="Add rectangle" data-tooltip="Add rectangle"><svg class="tbd__icon"><use href="#tbd-i-rect"></use></svg></button>
+        <button class="tbd__shape-button" data-tbd-panel-toggle="layers" type="button" aria-label="Layer controls" data-tooltip="Layer controls"><svg class="tbd__icon"><use href="#tbd-i-layers"></use></svg></button>
+        <button class="tbd__swatch tbd__swatch--fill" data-tbd-panel-toggle="properties" type="button" aria-label="Fill color" data-tooltip="Fill color"></button>
+        <button class="tbd__swatch tbd__swatch--stroke" data-tbd-panel-toggle="properties" type="button" aria-label="Stroke color" data-tooltip="Stroke color"></button>
+      </div>
+
+      <div class="tbd__product-strip">
+        <strong data-tbd-product-headline>HEM &amp; GROMMETS</strong>
+        <span data-tbd-product-meta>(Size 5'x3') -</span>
+        <strong class="tbd__price" data-tbd-product-price>$69.99</strong>
+      </div>
+
+      <div class="tbd__mobile-text-edit" data-tbd-mobile-text-edit hidden>
+        <input class="tbd__mobile-text-input" data-tbd-mobile-text-input type="text" aria-label="Edit selected text" autocomplete="off">
+        <button class="tbd__mobile-text-panel" data-tbd-panel-toggle="text" type="button" aria-label="Open text panel" data-tooltip="Open text panel">
+          <svg class="tbd__icon"><use href="#tbd-i-pen"></use></svg>
+        </button>
+      </div>
+
+      <div class="tbd__shell">
+        <aside class="tbd__panel tbd__panel--templates" data-tbd-panel="templates" hidden>
+          <div class="tbd__panel-head">
+            <div>
+              <div class="tbd__panel-title">Templates</div>
+              <div class="tbd__panel-subtitle">Preview a banner, then start editing it.</div>
+            </div>
+            <button class="tbd__close" data-tbd-panel-toggle="templates" type="button">Close</button>
+          </div>
+
+          <div class="tbd__template-controls">
+            <input class="tbd__search tbd__template-search" data-tbd-template-search type="search" placeholder="search templates" aria-label="Search templates">
+            <select class="tbd__template-select" data-tbd-template-sport aria-label="Template sport">
+              <option value="all">All sports</option>
+              <option value="baseball">Baseball</option>
+              <option value="softball">Softball</option>
+              <option value="soccer">Soccer</option>
+            </select>
+            <select class="tbd__template-select" data-tbd-template-type aria-label="Template banner type">
+              <option value="all">All banner types</option>
+              <option value="rectangle">Hem Banner</option>
+              <option value="polepocket">Pole Pocket</option>
+              <option value="triangle">Triangle</option>
+              <option value="homeplatepennant">Home Plate</option>
+            </select>
+          </div>
+
+          <label class="tbd__template-auto">
+            <input data-tbd-template-auto type="checkbox">
+            <span>Auto scroll previews</span>
+          </label>
+
+          <section class="tbd__template-generator" data-tbd-template-generator>
+            <button class="tbd__template-generator-head" data-tbd-template-generator-toggle type="button" aria-expanded="true">
+              <span>Template Generator</span>
+              <strong>Create editable player layouts</strong>
+            </button>
+
+            <div class="tbd__template-generator-body" data-tbd-template-generator-body>
+              <label class="tbd__template-field tbd__template-field--wide">
+                <span>Team / logo name</span>
+                <input data-tbd-generator-team type="text" placeholder="BULLDOGS" value="BULLDOGS" autocomplete="off">
+              </label>
+
+              <div class="tbd__template-generator-grid">
+                <label class="tbd__template-field">
+                  <span>Team Manager(s)</span>
+                  <input data-tbd-generator-manager type="text" autocomplete="off">
+                </label>
+                <label class="tbd__template-field">
+                  <span>Asst.Manager(s)</span>
+                  <input data-tbd-generator-assistant-manager type="text" autocomplete="off">
+                </label>
+                <label class="tbd__template-field">
+                  <span>Coach</span>
+                  <input data-tbd-generator-coach type="text" autocomplete="off">
+                </label>
+                <label class="tbd__template-field">
+                  <span>Asst.Coach</span>
+                  <input data-tbd-generator-assistant-coach type="text" autocomplete="off">
+                </label>
+                <label class="tbd__template-field">
+                  <span>Team Mom/Dad</span>
+                  <input data-tbd-generator-team-mom type="text" autocomplete="off">
+                </label>
+                <label class="tbd__template-field">
+                  <span>Team Sponsor(s)</span>
+                  <input data-tbd-generator-sponsor type="text" autocomplete="off">
+                </label>
+              </div>
+
+              <div class="tbd__template-generator-grid tbd__template-generator-grid--compact">
+                <label class="tbd__template-field">
+                  <span>Number of players *</span>
+                  <select data-tbd-generator-player-count>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12" selected>12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                  </select>
+                </label>
+                <label class="tbd__template-field">
+                  <span>Sport</span>
+                  <select data-tbd-generator-sport>
+                    <option value="baseball">Baseball</option>
+                    <option value="softball">Softball</option>
+                    <option value="soccer">Soccer</option>
+                  </select>
+                </label>
+                <label class="tbd__template-field">
+                  <span>Banner type</span>
+                  <select data-tbd-generator-type>
+                    <option value="rectangle">Hem &amp; Grommets</option>
+                    <option value="polepocket">Pole Pocket</option>
+                    <option value="triangle">Triangle</option>
+                    <option value="homeplatepennant">Home Plate</option>
+                  </select>
+                </label>
+                <label class="tbd__template-field">
+                  <span>SVG layout</span>
+                  <select data-tbd-generator-svg>
+                    <option value="">Auto SVG layout</option>
+                  </select>
+                </label>
+              </div>
+
+              <label class="tbd__template-field tbd__template-field--wide">
+                <span>Search assets</span>
+                <input data-tbd-generator-asset-search type="search" placeholder="Search layout, background, logo, clip art" autocomplete="off">
+              </label>
+
+              <section class="tbd__generator-option-set">
+                <div class="tbd__generator-option-title">
+                  <strong>Layout options</strong>
+                  <span>SVG layouts matched to player count</span>
+                </div>
+                <div class="tbd__generator-options tbd__generator-options--layout" data-tbd-generator-layout-options></div>
+              </section>
+
+              <section class="tbd__generator-option-set">
+                <div class="tbd__generator-option-title">
+                  <strong>Background</strong>
+                  <span>Filtered by banner type and sport</span>
+                </div>
+                <div class="tbd__generator-options" data-tbd-generator-background-options></div>
+              </section>
+
+              <section class="tbd__generator-option-set">
+                <div class="tbd__generator-option-title">
+                  <strong>Team logo</strong>
+                  <span>Suggested from sport/team assets</span>
+                </div>
+                <div class="tbd__generator-options" data-tbd-generator-logo-options></div>
+              </section>
+
+              <section class="tbd__generator-option-set">
+                <div class="tbd__generator-option-title">
+                  <strong>Clip art</strong>
+                  <span>Suggested from sport type</span>
+                </div>
+                <div class="tbd__generator-options" data-tbd-generator-clipart-options></div>
+              </section>
+
+              <section class="tbd__generator-option-set">
+                <div class="tbd__generator-option-title">
+                  <strong>Player icon</strong>
+                  <span>Used for each player layer</span>
+                </div>
+                <div class="tbd__generator-options" data-tbd-generator-accessory-options></div>
+              </section>
+
+              <div class="tbd__template-generator-actions">
+                <button class="tbd__button" data-tbd-generator-preview type="button">Generate Preview</button>
+                <button class="tbd__button" data-tbd-generator-preview-all type="button">Preview All Layouts</button>
+                <button class="tbd__button tbd__button--primary" data-tbd-generator-design type="button">Use This Design</button>
+                <button class="tbd__button tbd__button--danger" data-tbd-generator-clear type="button">Clear Design</button>
+              </div>
+
+              <div class="tbd__template-generator-preview" data-tbd-generator-preview-box hidden>
+                <img data-tbd-generator-preview-image alt="Generated template preview">
+                <span data-tbd-generator-preview-meta></span>
+              </div>
+
+              <div class="tbd__template-generator-all" data-tbd-generator-all-previews hidden></div>
+            </div>
+          </section>
+
+          <div class="tbd__template-preview" data-tbd-template-preview>
+            <img data-tbd-template-preview-image alt="Selected banner template preview">
+            <div class="tbd__template-preview-body">
+              <strong data-tbd-template-preview-title>Choose a template</strong>
+              <span data-tbd-template-preview-meta>Scroll manually or turn on auto scroll.</span>
+              <button class="tbd__button tbd__button--primary" data-tbd-template-design type="button" disabled>Design this</button>
+            </div>
+          </div>
+
+          <div class="tbd__template-count" data-tbd-template-count></div>
+          <div class="tbd__template-track" data-tbd-template-track></div>
+        </aside>
+
+        <aside class="tbd__panel tbd__panel--assets" data-tbd-panel="assets" hidden>
+          <div class="tbd__panel-head">
+            <input class="tbd__search tbd__asset-search" data-tbd-search type="search" placeholder="search">
+            <select class="tbd__asset-category" data-tbd-category-select aria-label="Asset category"></select>
+            <button class="tbd__find" data-tbd-find type="button">Find</button>
+            <button class="tbd__close" data-tbd-panel-toggle="assets" type="button">Close</button>
+          </div>
+
+          <div class="tbd__banner-type-row">
+            <label class="tbd__banner-type-wrap tbd__banner-type-wrap--panel">
+              <span>Banner type</span>
+              <select class="tbd__banner-type" data-tbd-banner-type aria-label="Banner type">
+                <option value="rectangle">Hem &amp; Grommets</option>
+                <option value="polepocket">Pole Pocket</option>
+                <option value="triangle">Triangle</option>
+                <option value="homeplatepennant">Home Plate</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="tbd__group">
+            <label class="tbd__label" for="tbd-team-{{ block.id }}">Team name</label>
+            <input id="tbd-team-{{ block.id }}" class="tbd__input" data-tbd-team value="{{ block.settings.default_team_name | escape }}">
+          </div>
+
+          <div class="tbd__group tbd__row">
+            <div>
+              <label class="tbd__label" for="tbd-bg-color-{{ block.id }}">Banner color</label>
+              <div class="tbd__color-wrap">
+                <input id="tbd-bg-color-{{ block.id }}" class="tbd__color" data-tbd-bg-color type="color" value="#ffffff">
+              </div>
+            </div>
+            <div>
+              <label class="tbd__label" for="tbd-fill-{{ block.id }}">Text/fill</label>
+              <div class="tbd__color-wrap">
+                <input id="tbd-fill-{{ block.id }}" class="tbd__color" data-tbd-fill type="color" value="{{ block.settings.default_color }}">
+              </div>
+            </div>
+          </div>
+
+          <div class="tbd__group">
+            <div class="tbd__label">Assets</div>
+            <div class="tbd__tabs" data-tbd-categories></div>
+            <div class="tbd__count" data-tbd-asset-count></div>
+            <div class="tbd__assets" data-tbd-assets></div>
+            <div class="tbd__pager" data-tbd-asset-pager aria-label="Asset pages"></div>
+          </div>
+        </aside>
+
+        <div class="tbd__workspace">
+          <div class="tbd__stage">
+            <canvas data-tbd-canvas width="900" height="780"></canvas>
+          </div>
+          <p class="tbd__status" data-tbd-status aria-live="polite"></p>
+        </div>
+
+        <aside class="tbd__layer-panel" aria-label="Layer list">
+          <div class="tbd__layer-head">
+            <strong>Layer</strong>
+            <button class="tbd__layer-close" type="button" aria-label="Collapse layer panel" data-tooltip="Collapse layer panel">x</button>
+          </div>
+          <div class="tbd__layer-list" data-tbd-layer-list></div>
+        </aside>
+
+        <aside class="tbd__panel tbd__panel--right tbd__panel--layers" data-tbd-panel="layers" hidden>
+          <div class="tbd__panel-head">
+            <div class="tbd__panel-title">Layer</div>
+            <button class="tbd__close" data-tbd-panel-toggle="layers" type="button">Close</button>
+          </div>
+          <div class="tbd__layer-list tbd__layer-list--drawer" data-tbd-layer-list></div>
+        </aside>
+
+        <aside class="tbd__panel tbd__panel--right tbd__panel--properties" data-tbd-panel="properties" hidden>
+          <div class="tbd__panel-head">
+            <div class="tbd__panel-title">Properties</div>
+            <button class="tbd__close" data-tbd-panel-toggle="properties" type="button">Close</button>
+          </div>
+
+          <div class="tbd__prop-line">
+            <input id="tbd-prop-fill" class="tbd__color tbd__prop-swatch" data-tbd-fill type="color" value="#ffffff">
+            <label for="tbd-prop-fill">Fill</label>
+          </div>
+          <div class="tbd__prop-line">
+            <input id="tbd-prop-stroke" class="tbd__color tbd__prop-swatch tbd__prop-swatch--stroke" data-tbd-stroke type="color" value="#000000">
+            <label for="tbd-prop-stroke">Stroke color</label>
+          </div>
+          <div class="tbd__prop-line">
+            <input id="tbd-prop-stroke-width" class="tbd__number tbd__number--compact" data-tbd-stroke-width type="number" min="0" max="40" step="0.5" value="0.5">
+            <label for="tbd-prop-stroke-width">Stroke width</label>
+          </div>
+          <div class="tbd__prop-line">
+            <input id="tbd-prop-opacity" class="tbd__number tbd__number--compact" data-tbd-opacity-value type="number" min="0" max="1" step="0.05" value="1">
+            <label for="tbd-prop-opacity">Opacity</label>
+          </div>
+
+          <div class="tbd__rotate-panel">
+            <div class="tbd__rotate-head">
+              <span>Rotate</span>
+              <button class="tbd__icon-button" data-tbd-rotate="-15" type="button" aria-label="Rotate left" data-tooltip="Rotate left"><svg class="tbd__icon"><use href="#tbd-i-rotate-left"></use></svg></button>
+              <button class="tbd__icon-button" data-tbd-rotate="15" type="button" aria-label="Rotate right" data-tooltip="Rotate right"><svg class="tbd__icon"><use href="#tbd-i-rotate-right"></use></svg></button>
+            </div>
+            <div class="tbd__rotate-controls">
+              <input class="tbd__range" data-tbd-angle type="range" min="-180" max="180" step="1" value="0" aria-label="Rotation angle">
+              <input class="tbd__number tbd__number--compact" data-tbd-angle-value type="number" min="-180" max="180" step="1" value="0" aria-label="Rotation angle value">
+            </div>
+          </div>
+
+          <div class="tbd__gradient">
+            <div class="tbd__prop-label">Gradient</div>
+            <div class="tbd__gradient-bar" data-tbd-gradient-bar role="slider" aria-label="Gradient stop position" tabindex="0">
+              <button class="tbd__gradient-stop" data-tbd-gradient-stop="start" type="button" aria-label="Gradient start stop"></button>
+              <button class="tbd__gradient-stop" data-tbd-gradient-stop="end" type="button" aria-label="Gradient end stop"></button>
+            </div>
+          </div>
+
+          <div class="tbd__prop-grid tbd__prop-grid--gradient">
+            <label class="tbd__prop-gradient-color">Color <input class="tbd__color tbd__prop-swatch" data-tbd-gradient-start type="color" value="#ff1010"></label>
+            <label class="tbd__prop-gradient-end-color">End color <input class="tbd__color tbd__prop-swatch" data-tbd-gradient-end type="color" value="#ffff00"></label>
+            <label class="tbd__prop-gradient-type">Type <select class="tbd__select" data-tbd-gradient-type><option value="linear">linear</option><option value="radial">radial</option></select></label>
+            <label class="tbd__axis-field tbd__axis-field--from"><span>From</span><input class="tbd__number tbd__number--tiny" data-tbd-gradient-x1 type="number" min="0" max="1" step="0.05" value="0"><small>x</small></label>
+            <label class="tbd__axis-field"><input class="tbd__number tbd__number--tiny" data-tbd-gradient-y1 type="number" min="0" max="1" step="0.05" value="0"><small>y</small></label>
+            <label class="tbd__axis-field tbd__axis-field--to"><span>To</span><input class="tbd__number tbd__number--tiny" data-tbd-gradient-x2 type="number" min="0" max="1" step="0.05" value="1"><small>x</small></label>
+            <label class="tbd__axis-field"><input class="tbd__number tbd__number--tiny" data-tbd-gradient-y2 type="number" min="0" max="1" step="0.05" value="0"><small>y</small></label>
+          </div>
+          <button class="tbd__button tbd__button--set" data-tbd-gradient-set type="button">Set</button>
+
+          <div class="tbd__background-tools">
+            <div class="tbd__prop-label">Background</div>
+            <div class="tbd__button-row">
+              <button class="tbd__button" data-tbd-bg-fit type="button">Fit</button>
+              <button class="tbd__button" data-tbd-bg-fill type="button">Fill</button>
+              <button class="tbd__button" data-tbd-bg-center type="button">Center</button>
+            </div>
+          </div>
+        </aside>
+
+        <aside class="tbd__panel tbd__panel--right tbd__panel--text" data-tbd-panel="text" hidden>
+          <div class="tbd__panel-head">
+            <div class="tbd__panel-title">Text</div>
+            <button class="tbd__close" data-tbd-panel-toggle="text" type="button">Close</button>
+          </div>
+
+          <textarea class="tbd__textarea" data-tbd-text-content></textarea>
+          <label class="tbd__field-label" for="tbd-font">Fonts</label>
+          <select id="tbd-font" class="tbd__select tbd__select--font" data-tbd-font-family>
+            <option value="Impact, Arial Black, Arial, sans-serif">AMERICAN CAPTAIN</option>
+            <option value="Arial Black, Arial, sans-serif">Arial Black</option>
+            <option value="Georgia, serif">Georgia</option>
+            <option value="Arial, sans-serif">Arial</option>
+          </select>
+
+          <div class="tbd__text-toolbar" aria-label="Text style">
+            <button class="tbd__text-option" data-tbd-text-align="left" type="button">Left</button>
+            <button class="tbd__text-option is-active" data-tbd-text-align="center" type="button">Center</button>
+            <button class="tbd__text-option" data-tbd-text-align="right" type="button">Right</button>
+            <button class="tbd__text-option" data-tbd-text-style="bold" type="button">B</button>
+            <button class="tbd__text-option" data-tbd-text-style="italic" type="button">I</button>
+            <button class="tbd__text-option" data-tbd-text-style="underline" type="button">U</button>
+          </div>
+
+          <div class="tbd__text-props">
+            <label>Color <input class="tbd__color tbd__prop-swatch" data-tbd-fill type="color" value="#ffffff"></label>
+            <label>Stroke color <input class="tbd__color tbd__prop-swatch tbd__prop-swatch--stroke" data-tbd-stroke type="color" value="#000000"></label>
+            <label>Size <input class="tbd__number tbd__number--compact" data-tbd-size type="number" min="8" max="220" value="18"></label>
+            <label>Stroke width <input class="tbd__number tbd__number--compact" data-tbd-stroke-width type="number" min="0" max="40" step="0.5" value="0.5"></label>
+            <label>Stroke opacity <input class="tbd__number tbd__number--compact" data-tbd-stroke-opacity type="number" min="0" max="1" step="0.05" value="1"></label>
+            <label>Letter space <input class="tbd__number tbd__number--compact" data-tbd-char-spacing type="number" min="-100" max="900" step="25" value="0"></label>
+            <label>Line height <input class="tbd__number tbd__number--compact" data-tbd-line-height type="number" min="0.6" max="3" step="0.05" value="1"></label>
+          </div>
+          <div class="tbd__rotate-panel">
+            <div class="tbd__rotate-head">
+              <span>Rotate</span>
+              <button class="tbd__icon-button" data-tbd-rotate="-15" type="button" aria-label="Rotate left" data-tooltip="Rotate left"><svg class="tbd__icon"><use href="#tbd-i-rotate-left"></use></svg></button>
+              <button class="tbd__icon-button" data-tbd-rotate="15" type="button" aria-label="Rotate right" data-tooltip="Rotate right"><svg class="tbd__icon"><use href="#tbd-i-rotate-right"></use></svg></button>
+            </div>
+            <div class="tbd__rotate-controls">
+              <input class="tbd__range" data-tbd-angle type="range" min="-180" max="180" step="1" value="0" aria-label="Rotation angle">
+              <input class="tbd__number tbd__number--compact" data-tbd-angle-value type="number" min="-180" max="180" step="1" value="0" aria-label="Rotation angle value">
+            </div>
+          </div>
+          <button class="tbd__button tbd__button--primary tbd__button--wide" data-tbd-add-text type="button">Add Text</button>
+        </aside>
+
+        <aside class="tbd__panel tbd__panel--right tbd__panel--inspector" data-tbd-panel="inspector" hidden>
+          <div class="tbd__panel-head">
+            <div class="tbd__panel-title">MVP Tools</div>
+            <button class="tbd__close" data-tbd-panel-toggle="inspector" type="button">Close</button>
+          </div>
+          <div class="tbd__group">
+            <label class="tbd__field-label tbd__field-label--compact" for="tbd-shape-select-{{ block.id }}">Banner shape</label>
+            <select id="tbd-shape-select-{{ block.id }}" class="tbd__select" data-tbd-shape-select>
+              <option value="rectangle">Hem &amp; Grommets</option>
+              <option value="polepocket">Pole Pocket</option>
+              <option value="triangle">Triangle Pennant</option>
+              <option value="homeplatepennant">Home Plate Pennant</option>
+            </select>
+            <input class="tbd__file" data-tbd-upload type="file" accept="image/*,.tsbd,.json,application/json" multiple>
+            <input class="tbd__file" data-tbd-project-upload type="file" accept=".tsbd,.json,application/json">
+            <input class="tbd__file" data-tbd-png-layer-upload type="file" accept="image/png,image/jpeg,image/webp">
+            <input class="tbd__file" data-tbd-svg-layer-upload type="file" accept=".svg,image/svg+xml">
+            <input id="tbd-layer-count" class="tbd__number" data-tbd-layer-count type="number" min="2" max="16" value="5">
+            <button class="tbd__button" data-tbd-png-layer-trigger type="button">PNG to layers</button>
+            <button class="tbd__button" data-tbd-project-upload-trigger type="button">Open editable file</button>
+            <button class="tbd__button" data-tbd-svg-layer-trigger type="button">Import SVG</button>
+            <button class="tbd__button" data-tbd-selected-to-layers type="button">Selected PNG</button>
+            <button class="tbd__button" data-tbd-duplicate type="button">Duplicate selected</button>
+            <button class="tbd__button tbd__button--danger" data-tbd-delete type="button">Delete selected</button>
+            <button class="tbd__button tbd__button--primary" data-tbd-download type="button">Save editable file</button>
+            <button class="tbd__button" data-tbd-download-proof type="button">Download proof PNG</button>
+            <button class="tbd__button tbd__button--primary" data-tbd-add-cart type="button">Save test design</button>
+            <div class="tbd__preview">
+              <div class="tbd__label">Last saved proof</div>
+              <img data-tbd-preview alt="Saved banner proof preview">
+              <p class="tbd__saved-meta" data-tbd-saved-meta>No saved design yet.</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="tbd__mobile-bottombar" aria-label="Mobile arrange controls">
+        <button class="tbd__mobile-icon" data-tbd-duplicate type="button" aria-label="Duplicate selected" data-tooltip="Duplicate selected"><svg class="tbd__icon"><use href="#tbd-i-copy"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-rotate="-15" type="button" aria-label="Rotate left" data-tooltip="Rotate left"><svg class="tbd__icon"><use href="#tbd-i-rotate-left"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-rotate="15" type="button" aria-label="Rotate right" data-tooltip="Rotate right"><svg class="tbd__icon"><use href="#tbd-i-rotate-right"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-back type="button" aria-label="Send to back" data-tooltip="Send to back"><svg class="tbd__icon"><use href="#tbd-i-back"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-backward type="button" aria-label="Move down" data-tooltip="Move down"><svg class="tbd__icon"><use href="#tbd-i-backward"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-forward type="button" aria-label="Move up" data-tooltip="Move up"><svg class="tbd__icon"><use href="#tbd-i-forward"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-front type="button" aria-label="Bring to front" data-tooltip="Bring to front"><svg class="tbd__icon"><use href="#tbd-i-front"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-align="left" type="button" aria-label="Align left" data-tooltip="Align left"><svg class="tbd__icon"><use href="#tbd-i-align-left"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-align="center-x" type="button" aria-label="Align horizontal center" data-tooltip="Align horizontal center"><svg class="tbd__icon"><use href="#tbd-i-align-center-x"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-align="right" type="button" aria-label="Align right" data-tooltip="Align right"><svg class="tbd__icon"><use href="#tbd-i-align-right"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-align="top" type="button" aria-label="Align top" data-tooltip="Align top"><svg class="tbd__icon"><use href="#tbd-i-align-top"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-align="center-y" type="button" aria-label="Align vertical center" data-tooltip="Align vertical center"><svg class="tbd__icon"><use href="#tbd-i-align-center-y"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-align="bottom" type="button" aria-label="Align bottom" data-tooltip="Align bottom"><svg class="tbd__icon"><use href="#tbd-i-align-bottom"></use></svg></button>
+        <label class="tbd__mobile-artboard">
+          <span>Align to artboard</span>
+          <input data-tbd-align-artboard type="checkbox" aria-label="Align to artboard" checked>
+        </label>
+        <button class="tbd__mobile-icon" data-tbd-panel-toggle="properties" type="button" aria-label="Properties" data-tooltip="Properties"><svg class="tbd__icon"><use href="#tbd-i-props"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-delete type="button" aria-label="Delete selected" data-tooltip="Delete selected"><svg class="tbd__icon"><use href="#tbd-i-trash"></use></svg></button>
+      </div>
+</div>
+
+{% schema %}
+{
+  "name": "Team banner designer",
+  "target": "section",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Banner product",
+      "info": "Optional. If this block is on a product page, the current product is used when this is blank."
+    },
+    {
+      "type": "text",
+      "id": "default_team_name",
+      "label": "Default team name",
+      "default": "TEAM NAME"
+    },
+    {
+      "type": "color",
+      "id": "default_color",
+      "label": "Default primary color",
+      "default": "#d71920"
+    },
+    {
+      "type": "select",
+      "id": "product_shape",
+      "label": "Banner shape",
+      "default": "banner",
+      "options": [
+        {
+          "value": "banner",
+          "label": "5x3 Banner"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "product_headline",
+      "label": "Editor product headline override",
+      "default": ""
+    },
+    {
+      "type": "text",
+      "id": "size_label",
+      "label": "Editor size label override",
+      "default": ""
+    },
+    {
+      "type": "text",
+      "id": "display_price",
+      "label": "Editor display price override",
+      "default": ""
+    },
+    {
+      "type": "url",
+      "id": "assets_manifest_url",
+      "label": "Hosted assets manifest URL"
+    },
+    {
+      "type": "url",
+      "id": "products_manifest_url",
+      "label": "Hosted products manifest URL"
+    },
+    {
+      "type": "url",
+      "id": "save_endpoint",
+      "label": "Design save endpoint"
+    }
+  ]
+}
+{% endschema %}

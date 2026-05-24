@@ -1,0 +1,527 @@
+{
+  "generatedAt": "2026-05-21T00:00:00.000Z",
+  "version": 1,
+  "description": "Product-specific editable layer maps keyed by Shopify product handle. These maps override generic crop detection when a product needs exact layer placement.",
+  "maps": {
+    "assault-2-triangle-softball-pennant": {
+      "mode": "exact-overlay",
+      "shape": "triangle",
+      "layerConfig": {
+        "layerCount": 6,
+        "backgroundCount": 1,
+        "teamLogoCount": 1,
+        "clipartCount": 1,
+        "playerCount": 1,
+        "playerIconCount": 1,
+        "playerTextCount": 1,
+        "textLayerCount": 2,
+        "headerTextCount": 0,
+        "yearTextCount": 1,
+        "assetMatchStatus": "partial",
+        "layoutSource": "json-layer-map"
+      },
+      "teamName": {
+        "x": 0.5,
+        "y": 0.53,
+        "width": 0.36,
+        "height": 0.16,
+        "opacity": 0.01
+      },
+      "clipart": {
+        "x": 0.5,
+        "y": 0.43,
+        "width": 0.34,
+        "height": 0.28,
+        "opacity": 0.01
+      },
+      "players": [
+        {
+          "x": 0.5,
+          "y": 0.43,
+          "width": 0.34,
+          "height": 0.28,
+          "opacity": 0.01,
+          "textX": 0.5,
+          "textY": 0.17,
+          "textSize": 0.09,
+          "textFill": "#000000",
+          "textStroke": "#000000",
+          "textStrokeWidth": 0,
+          "textShadow": "none",
+          "textOpacity": 0.01
+        }
+      ],
+      "texts": [
+        {
+          "text": "Year",
+          "name": "Year text",
+          "role": "template-year-text",
+          "x": 0.5,
+          "y": 0.72,
+          "size": 0.07,
+          "fill": "#000000",
+          "stroke": "#000000",
+          "strokeWidth": 0,
+          "shadow": "none",
+          "opacity": 0.01
+        }
+      ]
+    },
+    "alien-beings-softball-banner": {
+      "mode": "exact-overlay",
+      "shape": "banner",
+      "layerConfig": {
+        "layerCount": 32,
+        "backgroundCount": 1,
+        "teamLogoCount": 1,
+        "clipartCount": 2,
+        "playerCount": 13,
+        "playerIconCount": 13,
+        "playerTextCount": 13,
+        "textLayerCount": 15,
+        "headerTextCount": 2,
+        "yearTextCount": 0,
+        "coachNameCount": 1,
+        "teamMomNameCount": 1,
+        "playerLabel": "Player",
+        "assetMatchStatus": "complete",
+        "layoutSource": "json-layer-map"
+      },
+      "topTexts": [
+        {
+          "text": "Coach: Coach's name",
+          "name": "Coach name",
+          "x": 0.14,
+          "y": 0.0742,
+          "size": 0.035,
+          "fill": "#ffffff",
+          "stroke": "#ffffff",
+          "strokeWidth": 0,
+          "shadow": "none"
+        },
+        {
+          "text": "Team mom: Team mom's name",
+          "name": "Team mom name",
+          "x": 0.82,
+          "y": 0.0679,
+          "size": 0.035,
+          "fill": "#ffffff",
+          "stroke": "#ffffff",
+          "strokeWidth": 0,
+          "shadow": "none"
+        }
+      ],
+      "teamName": {
+        "x": 0.5013,
+        "y": 0.2136,
+        "width": 0.6569,
+        "height": 0.2838
+      },
+      "cliparts": [
+        {
+          "name": "Clip art - ball trail",
+          "url": "https://lct-designs.s3.us-west-1.amazonaws.com/assets/libs/alien-beings-3-01-1706089110638.png",
+          "x": 0.3776,
+          "y": 0.5933,
+          "width": 0.2849,
+          "height": 0.3637,
+          "angle": -13.2
+        },
+        {
+          "name": "Clip art - batter",
+          "url": "https://lct-designs.s3.us-west-1.amazonaws.com/assets/libs/alien-beings-2-01-1706089110638.png",
+          "x": 0.1644,
+          "y": 0.6448,
+          "width": 0.2877,
+          "height": 0.6262
+        }
+      ],
+      "players": [
+        {
+          "x": 0.3349,
+          "y": 0.4252,
+          "width": 0.061,
+          "height": 0.1305,
+          "textX": 0.3577,
+          "textY": 0.5232,
+          "textSize": 0.05,
+          "textFill": "#ffffff",
+          "textStroke": "#006b1b",
+          "textStrokeWidth": 1,
+          "textShadow": "none"
+        },
+        {
+          "x": 0.4712,
+          "y": 0.4239,
+          "width": 0.061,
+          "height": 0.1305,
+          "textX": 0.494,
+          "textY": 0.5219,
+          "textSize": 0.05,
+          "textFill": "#ffffff",
+          "textStroke": "#006b1b",
+          "textStrokeWidth": 1,
+          "textShadow": "none"
+        },
+        {
+          "x": 0.615,
+          "y": 0.4226,
+          "width": 0.061,
+          "height": 0.1305,
+          "textX": 0.6378,
+          "textY": 0.5206,
+          "textSize": 0.05,
+          "textFill": "#ffffff",
+          "textStroke": "#006b1b",
+          "textStrokeWidth": 1,
+          "textShadow": "none"
+        },
+        {
+          "x": 0.7513,
+          "y": 0.4212,
+          "width": 0.061,
+          "height": 0.1305,
+          "textX": 0.7741,
+          "textY": 0.5192,
+          "textSize": 0.05,
+          "textFill": "#ffffff",
+          "textStroke": "#006b1b",
+          "textStrokeWidth": 1,
+          "textShadow": "none"
+        },
+        {
+          "x": 0.8844,
+          "y": 0.4212,
+          "width": 0.061,
+          "height": 0.1305,
+          "textX": 0.9072,
+          "textY": 0.5192,
+          "textSize": 0.05,
+          "textFill": "#ffffff",
+          "textStroke": "#006b1b",
+          "textStrokeWidth": 1,
+          "textShadow": "none"
+        },
+        {
+          "x": 0.4073,
+          "y": 0.625,
+          "width": 0.061,
+          "height": 0.1305,
+          "textX": 0.4302,
+          "textY": 0.7229,
+          "textSize": 0.05,
+          "textFill": "#ffffff",
+          "textStroke": "#006b1b",
+          "textStrokeWidth": 1,
+          "textShadow": "none"
+        },
+        {
+          "x": 0.5511,
+          "y": 0.6236,
+          "width": 0.061,
+          "height": 0.1305,
+          "textX": 0.574,
+          "textY": 0.7216,
+          "textSize": 0.05,
+          "textFill": "#ffffff",
+          "textStroke": "#006b1b",
+          "textStrokeWidth": 1,
+          "textShadow": "none"
+        },
+        {
+          "x": 0.6874,
+          "y": 0.6223,
+          "width": 0.061,
+          "height": 0.1305,
+          "textX": 0.7103,
+          "textY": 0.7203,
+          "textSize": 0.05,
+          "textFill": "#ffffff",
+          "textStroke": "#006b1b",
+          "textStrokeWidth": 1,
+          "textShadow": "none"
+        },
+        {
+          "x": 0.8205,
+          "y": 0.6223,
+          "width": 0.061,
+          "height": 0.1305,
+          "textX": 0.8434,
+          "textY": 0.7203,
+          "textSize": 0.05,
+          "textFill": "#ffffff",
+          "textStroke": "#006b1b",
+          "textStrokeWidth": 1,
+          "textShadow": "none"
+        },
+        {
+          "x": 0.4741,
+          "y": 0.8215,
+          "width": 0.061,
+          "height": 0.1305,
+          "textX": 0.4969,
+          "textY": 0.9194,
+          "textSize": 0.05,
+          "textFill": "#ffffff",
+          "textStroke": "#006b1b",
+          "textStrokeWidth": 1,
+          "textShadow": "none"
+        },
+        {
+          "x": 0.6179,
+          "y": 0.8201,
+          "width": 0.061,
+          "height": 0.1305,
+          "textX": 0.6408,
+          "textY": 0.9181,
+          "textSize": 0.05,
+          "textFill": "#ffffff",
+          "textStroke": "#006b1b",
+          "textStrokeWidth": 1,
+          "textShadow": "none"
+        },
+        {
+          "x": 0.7542,
+          "y": 0.8188,
+          "width": 0.061,
+          "height": 0.1305,
+          "textX": 0.7771,
+          "textY": 0.9168,
+          "textSize": 0.05,
+          "textFill": "#ffffff",
+          "textStroke": "#006b1b",
+          "textStrokeWidth": 1,
+          "textShadow": "none"
+        },
+        {
+          "x": 0.8873,
+          "y": 0.8188,
+          "width": 0.061,
+          "height": 0.1305,
+          "textX": 0.9102,
+          "textY": 0.9168,
+          "textSize": 0.05,
+          "textFill": "#ffffff",
+          "textStroke": "#006b1b",
+          "textStrokeWidth": 1,
+          "textShadow": "none"
+        }
+      ]
+    },
+    "all-star-baseball-banner": {
+      "mode": "exact-overlay",
+      "shape": "banner",
+      "layerConfig": {
+        "layerCount": 27,
+        "backgroundCount": 1,
+        "teamLogoCount": 1,
+        "clipartCount": 1,
+        "playerCount": 11,
+        "playerIconCount": 11,
+        "playerTextCount": 11,
+        "textLayerCount": 13,
+        "headerTextCount": 2,
+        "yearTextCount": 0,
+        "coachNameCount": 1,
+        "teamMomNameCount": 1,
+        "playerLabel": "Player",
+        "assetMatchStatus": "partial",
+        "layoutSource": "json-layer-map"
+      },
+      "topTexts": [
+        {
+          "text": "Coach: Coach's name",
+          "name": "Coach name",
+          "x": 0.16,
+          "y": 0.074,
+          "size": 0.035,
+          "fill": "#ffffff",
+          "stroke": "#d51420",
+          "strokeWidth": 1,
+          "shadow": "none",
+          "opacity": 0.01
+        },
+        {
+          "text": "Team mom: Team mom's name",
+          "name": "Team mom name",
+          "x": 0.745,
+          "y": 0.074,
+          "size": 0.035,
+          "fill": "#ffffff",
+          "stroke": "#d51420",
+          "strokeWidth": 1,
+          "shadow": "none",
+          "opacity": 0.01
+        }
+      ],
+      "teamName": {
+        "x": 0.205,
+        "y": 0.33,
+        "width": 0.39,
+        "height": 0.52
+      },
+      "clipart": {
+        "x": 0.775,
+        "y": 0.61,
+        "width": 0.39,
+        "height": 0.58
+      },
+      "players": [
+        {
+          "x": 0.562,
+          "y": 0.143,
+          "width": 0.1,
+          "height": 0.15,
+          "textX": 0.653,
+          "textY": 0.15,
+          "textSize": 0.045,
+          "textFill": "#ffffff",
+          "textStroke": "#d51420",
+          "textStrokeWidth": 1,
+          "textShadow": "none",
+          "textOpacity": 0.01
+        },
+        {
+          "x": 0.803,
+          "y": 0.145,
+          "width": 0.1,
+          "height": 0.15,
+          "textX": 0.865,
+          "textY": 0.15,
+          "textSize": 0.045,
+          "textFill": "#ffffff",
+          "textStroke": "#d51420",
+          "textStrokeWidth": 1,
+          "textShadow": "none",
+          "textOpacity": 0.01
+        },
+        {
+          "x": 0.514,
+          "y": 0.289,
+          "width": 0.1,
+          "height": 0.15,
+          "textX": 0.606,
+          "textY": 0.292,
+          "textSize": 0.045,
+          "textFill": "#ffffff",
+          "textStroke": "#d51420",
+          "textStrokeWidth": 1,
+          "textShadow": "none",
+          "textOpacity": 0.01
+        },
+        {
+          "x": 0.767,
+          "y": 0.306,
+          "width": 0.1,
+          "height": 0.15,
+          "textX": 0.862,
+          "textY": 0.316,
+          "textSize": 0.045,
+          "textFill": "#ffffff",
+          "textStroke": "#d51420",
+          "textStrokeWidth": 1,
+          "textShadow": "none",
+          "textOpacity": 0.01
+        },
+        {
+          "x": 0.475,
+          "y": 0.447,
+          "width": 0.1,
+          "height": 0.15,
+          "textX": 0.56,
+          "textY": 0.455,
+          "textSize": 0.045,
+          "textFill": "#ffffff",
+          "textStroke": "#d51420",
+          "textStrokeWidth": 1,
+          "textShadow": "none",
+          "textOpacity": 0.01
+        },
+        {
+          "x": 0.072,
+          "y": 0.681,
+          "width": 0.1,
+          "height": 0.15,
+          "textX": 0.164,
+          "textY": 0.686,
+          "textSize": 0.045,
+          "textFill": "#ffffff",
+          "textStroke": "#d51420",
+          "textStrokeWidth": 1,
+          "textShadow": "none",
+          "textOpacity": 0.01
+        },
+        {
+          "x": 0.28,
+          "y": 0.683,
+          "width": 0.1,
+          "height": 0.15,
+          "textX": 0.374,
+          "textY": 0.687,
+          "textSize": 0.045,
+          "textFill": "#ffffff",
+          "textStroke": "#d51420",
+          "textStrokeWidth": 1,
+          "textShadow": "none",
+          "textOpacity": 0.01
+        },
+        {
+          "x": 0.48,
+          "y": 0.683,
+          "width": 0.1,
+          "height": 0.15,
+          "textX": 0.578,
+          "textY": 0.687,
+          "textSize": 0.045,
+          "textFill": "#ffffff",
+          "textStroke": "#d51420",
+          "textStrokeWidth": 1,
+          "textShadow": "none",
+          "textOpacity": 0.01
+        },
+        {
+          "x": 0.067,
+          "y": 0.874,
+          "width": 0.1,
+          "height": 0.15,
+          "textX": 0.159,
+          "textY": 0.885,
+          "textSize": 0.045,
+          "textFill": "#ffffff",
+          "textStroke": "#d51420",
+          "textStrokeWidth": 1,
+          "textShadow": "none",
+          "textOpacity": 0.01
+        },
+        {
+          "x": 0.283,
+          "y": 0.868,
+          "width": 0.1,
+          "height": 0.15,
+          "textX": 0.375,
+          "textY": 0.879,
+          "textSize": 0.045,
+          "textFill": "#ffffff",
+          "textStroke": "#d51420",
+          "textStrokeWidth": 1,
+          "textShadow": "none",
+          "textOpacity": 0.01
+        },
+        {
+          "x": 0.513,
+          "y": 0.868,
+          "width": 0.1,
+          "height": 0.15,
+          "textX": 0.602,
+          "textY": 0.879,
+          "textSize": 0.045,
+          "textFill": "#ffffff",
+          "textStroke": "#d51420",
+          "textStrokeWidth": 1,
+          "textShadow": "none",
+          "textOpacity": 0.01
+        }
+      ]
+    }
+  }
+}

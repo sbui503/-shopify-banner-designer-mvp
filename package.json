@@ -1,16 +1,35 @@
 {
-  "name": "team-sport-banners",
-  "version": "1.0.0",
+  "name": "team-banner-designer-vercel",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
-    "dev": "shopify app dev",
-    "build": "shopify app build",
-    "deploy": "shopify app deploy"
+    "dev": "vercel dev",
+    "start": "node --version",
+    "qa:graphic": "node scripts/qa-product-graphic-accuracy.mjs",
+    "qa:graphic:strict": "node scripts/qa-product-graphic-accuracy.mjs --strict",
+    "svg:visual-match": "python3 scripts/promote-visual-exact-svg-matches.py --apply",
+    "svg:object-fallbacks": "node scripts/mark-product-image-object-fallbacks.mjs",
+    "svg:real-sources": "node scripts/resolve-real-svg-sources.mjs --apply --download-all",
+    "svg:design-db-sources": "node scripts/sync-teambannersports-design-db-svgs.mjs --apply",
+    "svg:scrape-collections": "node scripts/scrape-teambannersports-collections.mjs --apply --download",
+    "svg:repair-homeplate": "node scripts/repair-homeplate-shape-cache.mjs",
+    "svg:normalize-layers": "node scripts/normalize-source-svg-layer-configs.mjs",
+    "qa:cart-source": "node scripts/qa-cart-source-regression.mjs",
+    "assets:sync-design-tool": "node scripts/sync-design-tool-assets.mjs"
   },
   "dependencies": {
-    "@shopify/shopify-app-express": "^4.0.0",
-    "@shopify/shopify-app-session-storage-sqlite": "^3.0.0",
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1"
-  }
+    "@vercel/blob": "^0.27.3"
+  },
+  "devDependencies": {
+    "vercel": "^54.4.1"
+  },
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }

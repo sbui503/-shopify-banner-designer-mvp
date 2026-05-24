@@ -1,0 +1,14 @@
+{
+  "assets": [
+    {
+      "name": "Red triangle background",
+      "category": "BG Triangle",
+      "url": "https://cdn.shopify.com/s/files/STORE/files/red-triangle-background.png"
+    },
+    {
+      "name": "Sample team name",
+      "category": "Team name",
+      "url": "https://cdn.shopify.com/s/files/STORE/files/sample-team-name.png"
+    }
+  ]
+}

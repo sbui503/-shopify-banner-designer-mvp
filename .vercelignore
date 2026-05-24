@@ -1,0 +1,13 @@
+shopify-banner-designer/
+shopify-banner-designer-app/.shopify/
+shopify-banner-designer-app/docs/
+shopify-banner-designer-app/extensions/team-banner-designer/assets/team-banner-assets.shopify.json
+shopify-banner-designer-app/extensions/team-banner-designer/assets/team-banner-designer.css
+shopify-banner-designer-app/extensions/team-banner-designer/assets/team-banner-designer.js
+shopify-banner-designer-app/extensions/team-banner-designer/blocks/
+shopify-banner-designer-app/extensions/team-banner-designer/shopify.extension.toml
+shopify-banner-designer-app/shopify.app.toml
+theme_work/
+outputs/
+*.zip
+**/.DS_Store
