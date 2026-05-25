@@ -191,6 +191,14 @@
           </div>
 
           <div class="tbd__template-controls">
+            <label class="tbd__template-mode">
+              <span>Workflow</span>
+              <select class="tbd__template-select" data-tbd-template-mobile-mode aria-label="Template workflow">
+                <option value="generator">Template generator</option>
+                <option value="preview">Selected preview</option>
+                <option value="library">Template library</option>
+              </select>
+            </label>
             <input class="tbd__search tbd__template-search" data-tbd-template-search type="search" placeholder="search templates" aria-label="Search templates">
             <select class="tbd__template-select" data-tbd-template-sport aria-label="Template sport">
               <option value="all">All sports</option>
@@ -302,6 +310,20 @@
                 </label>
               </div>
 
+              <section class="tbd__template-player-editor" data-tbd-generator-player-editor>
+                <div class="tbd__template-player-head">
+                  <strong>Player names</strong>
+                  <span data-tbd-generator-player-summary>12 players</span>
+                </div>
+                <div class="tbd__template-player-grid" data-tbd-generator-player-names></div>
+              </section>
+
+              <div class="tbd__template-generator-save">
+                <button class="tbd__button" data-tbd-generator-save-setup type="button">Save setup</button>
+                <button class="tbd__button" data-tbd-generator-load-setup type="button">Reuse saved</button>
+                <span data-tbd-generator-saved-meta></span>
+              </div>
+
               <label class="tbd__template-field tbd__template-field--wide">
                 <span>Search assets</span>
                 <input data-tbd-generator-asset-search type="search" placeholder="Search layout, background, logo, clip art" autocomplete="off">
@@ -373,6 +395,7 @@
           </div>
 
           <div class="tbd__template-count" data-tbd-template-count></div>
+          <div class="tbd__template-pager" data-tbd-template-pager aria-label="Template pages"></div>
           <div class="tbd__template-track" data-tbd-template-track></div>
         </aside>
 

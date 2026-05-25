@@ -10,6 +10,8 @@
   const MVP_5X3_ONLY = false;
   const ASSETS_PER_PAGE = 48;
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
+  const TEMPLATE_PAGE_SIZE = 24;
+  const GENERATOR_SETUP_STORAGE_KEY = "team-banner-template-generator:v1";
   const DEFAULT_IMAGE_PROXY_URL = "https://files-mentioned-by-the-user-shopify.vercel.app/api/image-proxy";
   const SHOPIFY_STORE_ORIGIN = "https://teamsportbanners.com";
   const DEFAULT_CUSTOM_DESIGN_VARIANT_ID = "43534427029710";
@@ -1071,8 +1073,10 @@
       templateSport: root.querySelector("[data-tbd-template-sport]"),
       templateType: root.querySelector("[data-tbd-template-type]"),
       templateAuto: root.querySelector("[data-tbd-template-auto]"),
+      templateMobileMode: root.querySelector("[data-tbd-template-mobile-mode]"),
       templateTrack: root.querySelector("[data-tbd-template-track]"),
       templateCount: root.querySelector("[data-tbd-template-count]"),
+      templatePager: root.querySelector("[data-tbd-template-pager]"),
       templatePreview: root.querySelector("[data-tbd-template-preview]"),
       templatePreviewImage: root.querySelector("[data-tbd-template-preview-image]"),
       templatePreviewTitle: root.querySelector("[data-tbd-template-preview-title]"),
@@ -1089,6 +1093,9 @@
       generatorTeamMom: root.querySelector("[data-tbd-generator-team-mom]"),
       generatorSponsor: root.querySelector("[data-tbd-generator-sponsor]"),
       generatorPlayerCount: root.querySelector("[data-tbd-generator-player-count]"),
+      generatorPlayerEditor: root.querySelector("[data-tbd-generator-player-editor]"),
+      generatorPlayerNames: root.querySelector("[data-tbd-generator-player-names]"),
+      generatorPlayerSummary: root.querySelector("[data-tbd-generator-player-summary]"),
       generatorSport: root.querySelector("[data-tbd-generator-sport]"),
       generatorType: root.querySelector("[data-tbd-generator-type]"),
       generatorSvg: root.querySelector("[data-tbd-generator-svg]"),
@@ -1102,6 +1109,9 @@
       generatorPreviewAll: root.querySelector("[data-tbd-generator-preview-all]"),
       generatorDesign: root.querySelector("[data-tbd-generator-design]"),
       generatorClear: root.querySelector("[data-tbd-generator-clear]"),
+      generatorSaveSetup: root.querySelector("[data-tbd-generator-save-setup]"),
+      generatorLoadSetup: root.querySelector("[data-tbd-generator-load-setup]"),
+      generatorSavedMeta: root.querySelector("[data-tbd-generator-saved-meta]"),
       generatorPreviewBox: root.querySelector("[data-tbd-generator-preview-box]"),
       generatorPreviewImage: root.querySelector("[data-tbd-generator-preview-image]"),
       generatorPreviewMeta: root.querySelector("[data-tbd-generator-preview-meta]"),
@@ -1219,6 +1229,7 @@
     let templateProducts = [];
     let visibleTemplates = [];
     let selectedTemplate = null;
+    let templatePage = 1;
     let templateAutoTimer = 0;
     let templateSearchTerm = "";
     let templateSportFilter = "all";
@@ -1227,6 +1238,7 @@
     let generatorAssetSearchTerm = "";
     let generatorAllPreviewItems = [];
     let generatorPreviewBusy = false;
+    let generatorPlayerNamesCache = [];
     const selectedGeneratorAssets = {
       background: "",
       teamName: "",
@@ -2809,12 +2821,57 @@
         .includes(templateSearchTerm);
     }
 
-    function filteredTemplateProducts() {
+    function matchingTemplateProducts() {
       return templateProducts
         .filter((template) => templateSportFilter === "all" || template.sport === templateSportFilter)
         .filter((template) => templateTypeFilter === "all" || template.type === templateTypeFilter)
         .filter(templateMatchesSearch)
         .slice(0, 160);
+    }
+
+    function filteredTemplateProducts() {
+      const matches = matchingTemplateProducts();
+      const pageCount = Math.max(1, Math.ceil(matches.length / TEMPLATE_PAGE_SIZE));
+      templatePage = Math.max(1, Math.min(templatePage, pageCount));
+      const start = (templatePage - 1) * TEMPLATE_PAGE_SIZE;
+      return matches.slice(start, start + TEMPLATE_PAGE_SIZE);
+    }
+
+    function renderTemplatePager(total) {
+      if (!els.templatePager) return;
+      const pageCount = Math.max(1, Math.ceil(total / TEMPLATE_PAGE_SIZE));
+      els.templatePager.innerHTML = "";
+      if (pageCount <= 1) return;
+      const makeButton = (label, page, disabled = false) => {
+        const button = document.createElement("button");
+        button.className = "tbd__template-page-button";
+        button.type = "button";
+        button.textContent = label;
+        button.disabled = disabled;
+        button.addEventListener("click", () => {
+          templatePage = Math.max(1, Math.min(page, pageCount));
+          renderTemplates();
+          els.templateTrack?.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+        });
+        return button;
+      };
+      els.templatePager.append(
+        makeButton("Prev", templatePage - 1, templatePage <= 1),
+        Object.assign(document.createElement("span"), {
+          className: "tbd__template-page-status",
+          textContent: `${templatePage} / ${pageCount}`
+        }),
+        makeButton("Next", templatePage + 1, templatePage >= pageCount)
+      );
+    }
+
+    function scrollTemplateWorkflow(value) {
+      const target = value === "preview"
+        ? els.templatePreview
+        : value === "library"
+          ? els.templateTrack
+          : els.templateGenerator;
+      target?.scrollIntoView({ block: "start", behavior: "smooth" });
     }
 
     function selectTemplate(template, options = {}) {
@@ -2841,17 +2898,17 @@
 
     function renderTemplates() {
       if (!els.templateTrack) return;
+      const totalMatches = matchingTemplateProducts().length;
       visibleTemplates = filteredTemplateProducts();
       els.templateTrack.innerHTML = "";
       if (els.templateCount) {
-        const total = templateProducts
-          .filter((template) => templateSportFilter === "all" || template.sport === templateSportFilter)
-          .filter((template) => templateTypeFilter === "all" || template.type === templateTypeFilter)
-          .filter(templateMatchesSearch).length;
+        const shownStart = visibleTemplates.length ? ((templatePage - 1) * TEMPLATE_PAGE_SIZE) + 1 : 0;
+        const shownEnd = Math.min(templatePage * TEMPLATE_PAGE_SIZE, totalMatches);
         els.templateCount.textContent = visibleTemplates.length
-          ? `Showing ${visibleTemplates.length}${visibleTemplates.length < total ? ` of ${total}` : ""} templates`
+          ? `Showing ${shownStart}-${shownEnd} of ${totalMatches} templates`
           : "No templates found.";
       }
+      renderTemplatePager(totalMatches);
       const typeOrder = ["rectangle", "polepocket", "triangle", "homeplatepennant"];
       typeOrder
         .filter((type) => templateTypeFilter === "all" || type === templateTypeFilter)
@@ -3019,9 +3076,127 @@
       return compactWhitespace(element && element.value ? element.value : fallback);
     }
 
+    function generatorPlayerCountValue() {
+      return Math.max(1, Math.min(20, Number(els.generatorPlayerCount && els.generatorPlayerCount.value) || 12));
+    }
+
+    function syncGeneratorPlayerNameCache() {
+      if (!els.generatorPlayerNames) return;
+      els.generatorPlayerNames.querySelectorAll("[data-tbd-generator-player-name]").forEach((input) => {
+        const index = Number(input.dataset.tbdGeneratorPlayerName || 0) - 1;
+        if (index >= 0) generatorPlayerNamesCache[index] = input.value;
+      });
+    }
+
+    function generatorPlayerNames(count = generatorPlayerCountValue()) {
+      syncGeneratorPlayerNameCache();
+      return Array.from({ length: count }, (_, index) => compactWhitespace(generatorPlayerNamesCache[index] || ""));
+    }
+
+    function playerNameForNumber(options, number) {
+      const name = options && Array.isArray(options.playerNames) ? options.playerNames[number - 1] : "";
+      return compactWhitespace(name) || "Player";
+    }
+
+    function renderGeneratorPlayerNameInputs() {
+      if (!els.generatorPlayerNames) return;
+      syncGeneratorPlayerNameCache();
+      const count = generatorPlayerCountValue();
+      for (let index = 0; index < count; index += 1) {
+        if (generatorPlayerNamesCache[index] === undefined) generatorPlayerNamesCache[index] = "";
+      }
+      if (els.generatorPlayerSummary) {
+        els.generatorPlayerSummary.textContent = count === 1 ? "1 player" : `${count} players`;
+      }
+      els.generatorPlayerNames.innerHTML = "";
+      Array.from({ length: count }, (_, index) => generatorPlayerNamesCache[index] || "").forEach((value, index) => {
+        const number = index + 1;
+        const label = document.createElement("label");
+        label.className = "tbd__template-player-field";
+        label.innerHTML = `
+          <span>${number}</span>
+          <input data-tbd-generator-player-name="${number}" type="text" value="${escapeHtml(value)}" placeholder="Player" autocomplete="off" aria-label="Player ${number} name">
+        `;
+        label.querySelector("input")?.addEventListener("input", (event) => {
+          generatorPlayerNamesCache[index] = event.target.value;
+          clearGeneratorPreviewState();
+        });
+        els.generatorPlayerNames.appendChild(label);
+      });
+    }
+
+    function captureGeneratorSetup() {
+      return {
+        team: els.generatorTeam ? els.generatorTeam.value : "",
+        manager: els.generatorManager ? els.generatorManager.value : "",
+        assistantManager: els.generatorAssistantManager ? els.generatorAssistantManager.value : "",
+        coach: els.generatorCoach ? els.generatorCoach.value : "",
+        assistantCoach: els.generatorAssistantCoach ? els.generatorAssistantCoach.value : "",
+        teamMom: els.generatorTeamMom ? els.generatorTeamMom.value : "",
+        sponsor: els.generatorSponsor ? els.generatorSponsor.value : "",
+        playerCount: generatorPlayerCountValue(),
+        playerNames: generatorPlayerNames(),
+        sport: els.generatorSport ? els.generatorSport.value : "baseball",
+        shape: els.generatorType ? els.generatorType.value : ARTBOARD_SHAPE,
+        svg: els.generatorSvg ? els.generatorSvg.value : "",
+        assetSearch: els.generatorAssetSearch ? els.generatorAssetSearch.value : "",
+        selectedAssets: { ...selectedGeneratorAssets }
+      };
+    }
+
+    function applyGeneratorSetup(setup) {
+      if (!setup || typeof setup !== "object") return;
+      const setValue = (element, value) => {
+        if (element && value !== undefined && value !== null) element.value = value;
+      };
+      setValue(els.generatorTeam, setup.team);
+      setValue(els.generatorManager, setup.manager);
+      setValue(els.generatorAssistantManager, setup.assistantManager);
+      setValue(els.generatorCoach, setup.coach);
+      setValue(els.generatorAssistantCoach, setup.assistantCoach);
+      setValue(els.generatorTeamMom, setup.teamMom);
+      setValue(els.generatorSponsor, setup.sponsor);
+      setValue(els.generatorPlayerCount, setup.playerCount);
+      setValue(els.generatorSport, setup.sport);
+      setValue(els.generatorType, setup.shape);
+      setValue(els.generatorSvg, setup.svg);
+      setValue(els.generatorAssetSearch, setup.assetSearch);
+      Object.assign(selectedGeneratorAssets, setup.selectedAssets || {});
+      generatorAssetSearchTerm = layerMatchText(setup.assetSearch || "");
+      generatorPlayerNamesCache = Array.isArray(setup.playerNames) ? setup.playerNames.slice(0, 20) : [];
+      renderGeneratorPlayerNameInputs();
+      clearGeneratorPreviewState();
+      renderGeneratorOptionPanels();
+    }
+
+    function saveGeneratorSetup() {
+      try {
+        window.localStorage.setItem(GENERATOR_SETUP_STORAGE_KEY, JSON.stringify(captureGeneratorSetup()));
+        if (els.generatorSavedMeta) els.generatorSavedMeta.textContent = "Saved";
+        setStatus("Template generator setup saved for reuse.");
+      } catch (error) {
+        setStatus("Template setup could not be saved in this browser.");
+      }
+    }
+
+    function loadGeneratorSetup() {
+      try {
+        const raw = window.localStorage.getItem(GENERATOR_SETUP_STORAGE_KEY);
+        if (!raw) {
+          setStatus("No saved template generator setup found.");
+          return;
+        }
+        applyGeneratorSetup(JSON.parse(raw));
+        if (els.generatorSavedMeta) els.generatorSavedMeta.textContent = "Loaded";
+        setStatus("Saved template generator setup loaded.");
+      } catch (error) {
+        setStatus("Saved template setup could not be loaded.");
+      }
+    }
+
     function generatorOptions() {
       const shape = normalizeShape((els.generatorType && els.generatorType.value) || ARTBOARD_SHAPE, false);
-      const playerCount = Math.max(1, Math.min(20, Number(els.generatorPlayerCount && els.generatorPlayerCount.value) || 12));
+      const playerCount = generatorPlayerCountValue();
       return {
         team: generatorValue(els.generatorTeam, "TEAM NAME"),
         manager: generatorValue(els.generatorManager),
@@ -3031,6 +3206,7 @@
         teamMom: generatorValue(els.generatorTeamMom),
         sponsor: generatorValue(els.generatorSponsor),
         playerCount,
+        playerNames: generatorPlayerNames(playerCount),
         sport: (els.generatorSport && els.generatorSport.value) || "baseball",
         shape
       };
@@ -3977,7 +4153,9 @@
 
     function addSvgTemplateTextLayer(entry, box, options, viewBox, placement) {
       if (entry.role === "template-player-text" && entry.playerNumber > options.playerCount) return null;
-      const text = svgReplacementText(entry.text, options);
+      const text = entry.role === "template-player-text"
+        ? playerNameForNumber(options, entry.playerNumber || 1)
+        : svgReplacementText(entry.text, options);
       const anchor = entry.anchorPoint && viewBox && placement
         ? svgPointToCanvas(entry.anchorPoint, viewBox, placement)
         : null;
@@ -4226,7 +4404,7 @@
 
         const textPoint = recipePoint(slot.x, Math.min(0.9, slot.y + slot.textOffset));
         addTemplateText({
-          text: "Player",
+          text: playerNameForNumber(options, number),
           name: `Player text ${number}`,
           role: "template-player-text",
           left: textPoint.left,
@@ -7378,18 +7556,22 @@
       });
       els.templateSearch?.addEventListener("input", (event) => {
         templateSearchTerm = event.target.value.trim().toLowerCase();
+        templatePage = 1;
         renderTemplates();
       });
       els.templateSport?.addEventListener("change", (event) => {
         templateSportFilter = event.target.value || "all";
+        templatePage = 1;
         syncGeneratorSelectsFromTemplate();
         renderTemplates();
       });
       els.templateType?.addEventListener("change", (event) => {
         templateTypeFilter = event.target.value || "all";
+        templatePage = 1;
         syncGeneratorSelectsFromTemplate();
         renderTemplates();
       });
+      els.templateMobileMode?.addEventListener("change", (event) => scrollTemplateWorkflow(event.target.value));
       els.templateAuto?.addEventListener("change", syncTemplateAutoScroll);
       els.templateDesign?.addEventListener("click", designSelectedTemplate);
       els.templateGeneratorToggle?.addEventListener("click", toggleTemplateGenerator);
@@ -7397,8 +7579,11 @@
       els.generatorPreviewAll?.addEventListener("click", previewAllGeneratedLayouts);
       els.generatorDesign?.addEventListener("click", () => applyGeneratedTemplate(generatorOptions(), { closePanel: true }));
       els.generatorClear?.addEventListener("click", () => clearDesign({ skipConfirm: true }));
+      els.generatorSaveSetup?.addEventListener("click", saveGeneratorSetup);
+      els.generatorLoadSetup?.addEventListener("click", loadGeneratorSetup);
       [els.generatorSport, els.generatorType, els.generatorPlayerCount, els.generatorSvg].forEach((control) => {
         control?.addEventListener("change", () => {
+          if (control === els.generatorPlayerCount) renderGeneratorPlayerNameInputs();
           clearGeneratorPreviewState(control !== els.generatorSvg);
           renderGeneratorOptionPanels();
         });
@@ -7411,6 +7596,9 @@
       els.generatorTeam?.addEventListener("input", () => {
         clearGeneratorPreviewState();
         renderGeneratorOptionPanels();
+      });
+      [els.generatorManager, els.generatorAssistantManager, els.generatorCoach, els.generatorAssistantCoach, els.generatorTeamMom, els.generatorSponsor].forEach((control) => {
+        control?.addEventListener("input", () => clearGeneratorPreviewState());
       });
       els.stage?.addEventListener("dragover", (event) => {
         if (!Array.from(event.dataTransfer.types || []).includes("application/x-team-banner-asset")) return;
@@ -7603,6 +7791,14 @@
 
     hydrateTooltips();
     bind();
+    renderGeneratorPlayerNameInputs();
+    try {
+      if (els.generatorSavedMeta && window.localStorage.getItem(GENERATOR_SETUP_STORAGE_KEY)) {
+        els.generatorSavedMeta.textContent = "Saved setup available";
+      }
+    } catch (error) {
+      // Private browsing may block localStorage; generator still works without saved setup.
+    }
     renderDesignCart();
     updateGradientBar();
     syncProductInfo();
