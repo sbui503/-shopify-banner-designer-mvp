@@ -10,7 +10,9 @@
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
   const TEMPLATE_PAGE_SIZE = 24;
   const GENERATOR_SETUP_STORAGE_KEY = "team-banner-template-generator:v1";
-  const PUBLIC_ASSET_ORIGIN = "https://teamsportbanners.vercel.app";
+  const PUBLIC_ASSET_ORIGIN = ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname)
+    ? window.location.origin
+    : "https://teamsportbanners.vercel.app";
   const PHOTO_FRAME_CATEGORY = "Photo Frame";
   const DEFAULT_IMAGE_PROXY_URL = "https://files-mentioned-by-the-user-shopify.vercel.app/api/image-proxy";
   const SHOPIFY_STORE_ORIGIN = "https://teamsportbanners.com";
@@ -49,25 +51,25 @@
       name: "Circle gloss photo frame",
       category: PHOTO_FRAME_CATEGORY,
       sourceId: "photo-frame-circle-gloss",
-      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-circle-gloss.jpg`
+      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-circle-gloss.png`
     },
     {
       name: "Scallop photo frame",
       category: PHOTO_FRAME_CATEGORY,
       sourceId: "photo-frame-scallop",
-      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-scallop.jpg`
+      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-scallop.png`
     },
     {
       name: "Round name photo frame",
       category: PHOTO_FRAME_CATEGORY,
       sourceId: "photo-frame-round-name",
-      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-round-name.jpg`
+      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-round-name.png`
     },
     {
       name: "Ring swoosh photo frame",
       category: PHOTO_FRAME_CATEGORY,
       sourceId: "photo-frame-ring-swoosh",
-      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-ring-swoosh.jpg`
+      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-ring-swoosh.png`
     }
   ];
 
@@ -700,6 +702,10 @@
       upload: root.querySelector("[data-tbd-upload]"),
       projectUpload: root.querySelector("[data-tbd-project-upload]"),
       layerCount: root.querySelector("[data-tbd-layer-count]"),
+      photoFrameTools: root.querySelector("[data-tbd-photo-frame-tools]"),
+      photoFrameUpload: root.querySelector("[data-tbd-photo-frame-upload]"),
+      photoFrameUploadTrigger: root.querySelector("[data-tbd-photo-frame-upload-trigger]"),
+      photoFrameAdjustButtons: [...root.querySelectorAll("[data-tbd-photo-frame-adjust]")],
       pngLayerUpload: root.querySelector("[data-tbd-png-layer-upload]"),
       svgLayerUpload: root.querySelector("[data-tbd-svg-layer-upload]"),
       svgTemplates: root.querySelector("[data-tbd-svg-templates]"),
@@ -1511,6 +1517,7 @@
       }
       if (els.mobileTextEdit) els.mobileTextEdit.hidden = !isText;
       root.classList.toggle("tbd--mobile-text-active", Boolean(isText));
+      if (els.photoFrameTools) els.photoFrameTools.hidden = !activePhotoFrameLayer();
       if (els.fontFamily && isText) {
         const family = String(obj.fontFamily || "");
         els.fontFamily.value = family.includes("Impact")
@@ -3334,10 +3341,10 @@
       const size = Math.max(
         78,
         Math.min(
-          artboardBounds().width * (isRectangularShape(ARTBOARD_SHAPE) ? 0.13 : 0.17),
+          artboardBounds().width * (isRectangularShape(ARTBOARD_SHAPE) ? 0.095 : 0.13),
           Math.max(
-            artboardRatioWidth(slot.iconWidth) * 1.5,
-            artboardRatioHeight(slot.iconHeight + slot.textOffset) * 0.95
+            artboardRatioWidth(slot.iconWidth) * 1.12,
+            artboardRatioHeight(slot.iconHeight + slot.textOffset) * 0.76
           )
         )
       );
@@ -3372,7 +3379,7 @@
         sport: options.sport,
         terms: ["player", "photo", "frame", options.team]
       });
-      const frameLayer = frameAsset
+      let frameLayer = frameAsset
         ? await addAssetImageLayer(frameAsset, {
           name: `Photo frame ${playerNumber}`,
           role: "template-photo-frame",
@@ -3382,41 +3389,31 @@
           height: framePlacement.height
         })
         : null;
-      if (!frameLayer) addPhotoFramePlaceholderLayer(framePlacement, playerNumber);
-
-      const photoDiameter = Math.max(26, Math.min(framePlacement.width, framePlacement.height) * 0.48);
-      await addPlayerPhotoFrameLayer(options, playerNumber, {
-        left: framePlacement.left,
-        top: framePlacement.top - framePlacement.height * 0.18,
-        diameter: photoDiameter
-      });
+      if (!frameLayer) frameLayer = addPhotoFramePlaceholderLayer(framePlacement, playerNumber);
+      if (frameLayer) {
+        const photo = playerPhotoForNumber(options, playerNumber);
+        const frameData = {
+          ...(frameLayer.data || {}),
+          playerNumber
+        };
+        if (photo && photo.dataUrl) {
+          Object.assign(frameData, {
+            photoDataUrl: photo.dataUrl,
+            photoFileName: photo.name || "",
+            photoOffsetX: 0,
+            photoOffsetY: 0,
+            photoZoom: 1
+          });
+        }
+        frameLayer.set({ data: frameData });
+        if (photo && photo.dataUrl) await refreshPhotoFramePhoto(frameLayer, { skipHistory: true, quiet: true });
+      }
 
       addPlayerNumberTextLayer(options, playerNumber, {
         left: framePlacement.left + framePlacement.width * 0.23,
         top: framePlacement.top + framePlacement.height * 0.12,
         fontSize: Math.max(12, Math.min(30, framePlacement.height * 0.13))
       });
-
-      const nameMask = new fabric.Rect({
-        left: framePlacement.left,
-        top: framePlacement.top + framePlacement.height * 0.36,
-        originX: "center",
-        originY: "center",
-        width: framePlacement.width * 0.9,
-        height: framePlacement.height * 0.2,
-        fill: "#ffffff",
-        strokeWidth: 0,
-        selectable: false,
-        evented: false,
-        data: {
-          name: `Photo frame name backdrop ${playerNumber}`,
-          role: "template-photo-frame-name-mask",
-          excludeFromLayerList: true,
-          showInLayerList: false
-        }
-      });
-      ensureLayerId(nameMask);
-      canvas.add(nameMask);
 
       const textLayer = addTemplateText({
         text: playerNameForNumber(options, playerNumber),
@@ -4217,37 +4214,43 @@
 
     function circularPlayerPhotoCanvas(image, diameter, options = {}) {
       const size = Math.max(24, Math.round(diameter || 72));
-      const borderWidth = Math.max(2, Math.round(options.borderWidth || size * 0.055));
+      const borderWidth = options.borderWidth === 0
+        ? 0
+        : Math.max(2, Math.round(options.borderWidth || size * 0.055));
       const cropCanvas = document.createElement("canvas");
       cropCanvas.width = size;
       cropCanvas.height = size;
       const ctx = cropCanvas.getContext("2d");
       const naturalWidth = image.naturalWidth || image.width || 1;
       const naturalHeight = image.naturalHeight || image.height || 1;
-      const scale = Math.max(size / naturalWidth, size / naturalHeight);
+      const scale = Math.max(size / naturalWidth, size / naturalHeight) * Math.max(0.25, Number(options.zoom) || 1);
       const drawWidth = naturalWidth * scale;
       const drawHeight = naturalHeight * scale;
       const inset = borderWidth / 2;
+      const offsetX = (Number(options.offsetX) || 0) * size;
+      const offsetY = (Number(options.offsetY) || 0) * size;
 
       ctx.save();
       ctx.beginPath();
       ctx.arc(size / 2, size / 2, Math.max(1, (size - borderWidth) / 2), 0, Math.PI * 2);
       ctx.clip();
-      ctx.drawImage(image, (size - drawWidth) / 2, (size - drawHeight) / 2, drawWidth, drawHeight);
+      ctx.drawImage(image, (size - drawWidth) / 2 + offsetX, (size - drawHeight) / 2 + offsetY, drawWidth, drawHeight);
       ctx.restore();
 
-      ctx.beginPath();
-      ctx.arc(size / 2, size / 2, Math.max(1, (size - borderWidth) / 2 - inset * 0.25), 0, Math.PI * 2);
-      ctx.lineWidth = borderWidth;
-      ctx.strokeStyle = options.borderColor || "#ffffff";
-      ctx.stroke();
-
-      if (options.accentColor) {
+      if (borderWidth > 0) {
         ctx.beginPath();
-        ctx.arc(size / 2, size / 2, Math.max(1, (size - borderWidth * 2.4) / 2), 0, Math.PI * 2);
-        ctx.lineWidth = Math.max(1, borderWidth * 0.42);
-        ctx.strokeStyle = options.accentColor;
+        ctx.arc(size / 2, size / 2, Math.max(1, (size - borderWidth) / 2 - inset * 0.25), 0, Math.PI * 2);
+        ctx.lineWidth = borderWidth;
+        ctx.strokeStyle = options.borderColor || "#ffffff";
         ctx.stroke();
+
+        if (options.accentColor) {
+          ctx.beginPath();
+          ctx.arc(size / 2, size / 2, Math.max(1, (size - borderWidth * 2.4) / 2), 0, Math.PI * 2);
+          ctx.lineWidth = Math.max(1, borderWidth * 0.42);
+          ctx.strokeStyle = options.accentColor;
+          ctx.stroke();
+        }
       }
       return cropCanvas;
     }
@@ -4280,6 +4283,133 @@
       } catch (error) {
         return null;
       }
+    }
+
+    function isPhotoFrameLayer(obj) {
+      return layerRole(obj) === "template-photo-frame";
+    }
+
+    function activePhotoFrameLayer() {
+      const obj = selectedObject();
+      if (isPhotoFrameLayer(obj)) return obj;
+      const frameLayerId = obj && obj.data && obj.data.frameLayerId;
+      if (!frameLayerId) return null;
+      return layerObjects().find((layer) => layer && layer.data && layer.data.layerId === frameLayerId) || null;
+    }
+
+    function photoFramePhotoLayer(frame) {
+      const photoLayerId = frame && frame.data && frame.data.framePhotoLayerId;
+      if (!photoLayerId) return null;
+      return layerObjects().find((layer) => layer && layer.data && layer.data.layerId === photoLayerId) || null;
+    }
+
+    function photoFramePhotoPlacement(frame) {
+      frame.setCoords();
+      const rect = frame.getBoundingRect(true, true);
+      const diameter = Math.max(24, Math.min(rect.width, rect.height) * 0.52);
+      return {
+        diameter,
+        left: rect.left + rect.width / 2,
+        top: rect.top + rect.height * 0.4
+      };
+    }
+
+    function positionPhotoFramePhotoLayer(frame) {
+      const photoLayer = photoFramePhotoLayer(frame);
+      if (!photoLayer) return;
+      const placement = photoFramePhotoPlacement(frame);
+      photoLayer.set({
+        left: placement.left,
+        top: placement.top,
+        angle: frame.angle || 0
+      });
+      photoLayer.scaleToWidth(placement.diameter);
+      photoLayer.setCoords();
+    }
+
+    async function refreshPhotoFramePhoto(frame, options = {}) {
+      if (!frame) return null;
+      const data = { ...(frame.data || {}) };
+      if (!data.photoDataUrl) return null;
+      const existing = photoFramePhotoLayer(frame);
+      if (existing) canvas.remove(existing);
+      const image = await loadImage(data.photoDataUrl);
+      const placement = photoFramePhotoPlacement(frame);
+      const photoCanvas = circularPlayerPhotoCanvas(image, placement.diameter, {
+        borderWidth: 0,
+        offsetX: data.photoOffsetX || 0,
+        offsetY: data.photoOffsetY || 0,
+        zoom: data.photoZoom || 1
+      });
+      const layer = new fabric.Image(photoCanvas, {
+        left: placement.left,
+        top: placement.top,
+        originX: "center",
+        originY: "center",
+        angle: frame.angle || 0,
+        data: {
+          name: data.playerNumber ? `Player photo ${data.playerNumber}` : "Photo frame photo",
+          role: "template-player-photo",
+          sourceFileName: data.photoFileName || "",
+          frameLayerId: ensureLayerId(frame),
+          showInLayerList: true
+        }
+      });
+      layer.scaleToWidth(placement.diameter);
+      ensureLayerId(layer);
+      frame.set({ data: { ...data, framePhotoLayerId: layer.data.layerId } });
+      canvas.add(layer);
+      layer.bringToFront();
+      canvas.setActiveObject(frame);
+      frame.setCoords();
+      canvas.renderAll();
+      if (!options.skipHistory) saveHistory();
+      if (!options.quiet) setStatus("Photo frame photo updated. Use the align buttons to position it.");
+      updateSelectionControls();
+      return layer;
+    }
+
+    async function uploadPhotoForSelectedFrame(event) {
+      const frame = activePhotoFrameLayer();
+      const file = event.target.files && event.target.files[0];
+      event.target.value = "";
+      if (!frame || !file || !file.type.startsWith("image/")) return;
+      const dataUrl = await readFileAsDataUrl(file);
+      frame.set({
+        data: {
+          ...(frame.data || {}),
+          photoDataUrl: dataUrl,
+          photoFileName: file.name || "",
+          photoOffsetX: 0,
+          photoOffsetY: 0,
+          photoZoom: 1
+        }
+      });
+      await refreshPhotoFramePhoto(frame);
+    }
+
+    function adjustSelectedPhotoFramePhoto(action) {
+      const frame = activePhotoFrameLayer();
+      if (!frame) return;
+      const data = { ...(frame.data || {}) };
+      if (!data.photoDataUrl) {
+        setStatus("Upload a photo for this frame first.");
+        return;
+      }
+      const step = 0.08;
+      if (action === "up") data.photoOffsetY = (Number(data.photoOffsetY) || 0) - step;
+      if (action === "down") data.photoOffsetY = (Number(data.photoOffsetY) || 0) + step;
+      if (action === "left") data.photoOffsetX = (Number(data.photoOffsetX) || 0) - step;
+      if (action === "right") data.photoOffsetX = (Number(data.photoOffsetX) || 0) + step;
+      if (action === "larger") data.photoZoom = Math.min(3, (Number(data.photoZoom) || 1) * 1.08);
+      if (action === "smaller") data.photoZoom = Math.max(0.45, (Number(data.photoZoom) || 1) / 1.08);
+      if (action === "center") {
+        data.photoOffsetX = 0;
+        data.photoOffsetY = 0;
+        data.photoZoom = 1;
+      }
+      frame.set({ data });
+      refreshPhotoFramePhoto(frame);
     }
 
     function addPlayerNumberTextLayer(options, playerNumber, placement = {}) {
@@ -6459,6 +6589,7 @@
       onAll("[data-tbd-project-upload-trigger]", () => els.projectUpload && els.projectUpload.click());
       onAll("[data-tbd-png-layer-trigger]", () => els.pngLayerUpload && els.pngLayerUpload.click());
       onAll("[data-tbd-svg-layer-trigger]", () => els.svgLayerUpload && els.svgLayerUpload.click());
+      onAll("[data-tbd-photo-frame-upload-trigger]", () => els.photoFrameUpload && els.photoFrameUpload.click());
       onAll("[data-tbd-selected-to-layers]", convertSelectedImageToLayers);
       onAll("[data-tbd-front]", () => layer("front"));
       onAll("[data-tbd-forward]", () => layer("forward"));
@@ -6654,6 +6785,10 @@
       els.projectUpload?.addEventListener("change", importProjectUpload);
       els.pngLayerUpload?.addEventListener("change", convertPngUpload);
       els.svgLayerUpload?.addEventListener("change", importSvgUpload);
+      els.photoFrameUpload?.addEventListener("change", uploadPhotoForSelectedFrame);
+      els.photoFrameAdjustButtons.forEach((button) => {
+        button.addEventListener("click", () => adjustSelectedPhotoFramePhoto(button.dataset.tbdPhotoFrameAdjust));
+      });
       els.bgColor?.addEventListener("input", (event) => {
         canvas.backgroundColor = canvasBackgroundColor(event.target.value);
         canvas.renderAll();
@@ -6727,8 +6862,10 @@
       canvas.on("object:moving", (event) => {
         const obj = event.target;
         if (obj && obj !== guide && !isLayerLocked(obj)) keepObjectInArtboard(obj, 6);
+        if (isPhotoFrameLayer(obj)) positionPhotoFramePhotoLayer(obj);
       });
-      canvas.on("object:modified", () => {
+      canvas.on("object:modified", (event) => {
+        if (isPhotoFrameLayer(event.target)) positionPhotoFramePhotoLayer(event.target);
         saveHistory();
         updateSelectionControls();
       });

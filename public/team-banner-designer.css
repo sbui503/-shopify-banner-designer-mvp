@@ -451,6 +451,29 @@ body {
   color: #fff;
 }
 
+.tbd__photo-frame-tools {
+  background: #f8fafc;
+  border: 1px solid #dbe5f0;
+  border-radius: 12px;
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+}
+
+.tbd__photo-frame-tools[hidden] {
+  display: none;
+}
+
+.tbd__photo-frame-align {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tbd__photo-frame-align .tbd__button {
+  min-height: 34px;
+}
+
 .tbd__shape-button.is-active:hover,
 .tbd__text-option.is-active:hover {
   background: var(--tbd-active-slate);
