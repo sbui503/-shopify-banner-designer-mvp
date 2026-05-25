@@ -12,6 +12,8 @@
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
   const TEMPLATE_PAGE_SIZE = 24;
   const GENERATOR_SETUP_STORAGE_KEY = "team-banner-template-generator:v1";
+  const PUBLIC_ASSET_ORIGIN = "https://teamsportbanners.vercel.app";
+  const PHOTO_FRAME_CATEGORY = "Photo Frame";
   const DEFAULT_IMAGE_PROXY_URL = "https://files-mentioned-by-the-user-shopify.vercel.app/api/image-proxy";
   const SHOPIFY_STORE_ORIGIN = "https://teamsportbanners.com";
   const DEFAULT_CUSTOM_DESIGN_VARIANT_ID = "43534427029710";
@@ -32,7 +34,8 @@
     "BG Home Plate",
     "Clip art",
     "Team name",
-    "Accessory"
+    "Accessory",
+    PHOTO_FRAME_CATEGORY
   ];
   const BANNER_TYPE_VALUES = ["rectangle", "polepocket", "triangle", "homeplatepennant"];
   const FALLBACK_ASSETS = [
@@ -45,6 +48,32 @@
       name: "Red home plate background",
       category: "BG Home Plate",
       url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900' viewBox='0 0 900 900'%3E%3Cpolygon points='24,24 876,24 876,504 450,876 24,504' fill='%23d71920'/%3E%3Cpolygon points='78,70 822,70 822,468 450,810 78,468' fill='%23ffffff' fill-opacity='.16'/%3E%3C/svg%3E"
+    }
+  ];
+  const PHOTO_FRAME_ASSETS = [
+    {
+      name: "Circle gloss photo frame",
+      category: PHOTO_FRAME_CATEGORY,
+      sourceId: "photo-frame-circle-gloss",
+      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-circle-gloss.jpg`
+    },
+    {
+      name: "Scallop photo frame",
+      category: PHOTO_FRAME_CATEGORY,
+      sourceId: "photo-frame-scallop",
+      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-scallop.jpg`
+    },
+    {
+      name: "Round name photo frame",
+      category: PHOTO_FRAME_CATEGORY,
+      sourceId: "photo-frame-round-name",
+      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-round-name.jpg`
+    },
+    {
+      name: "Ring swoosh photo frame",
+      category: PHOTO_FRAME_CATEGORY,
+      sourceId: "photo-frame-ring-swoosh",
+      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-ring-swoosh.jpg`
     }
   ];
 
@@ -1105,6 +1134,8 @@
       generatorLogoOptions: root.querySelector("[data-tbd-generator-logo-options]"),
       generatorClipartOptions: root.querySelector("[data-tbd-generator-clipart-options]"),
       generatorAccessoryOptions: root.querySelector("[data-tbd-generator-accessory-options]"),
+      generatorUsePhotoFrame: root.querySelector("[data-tbd-generator-use-photo-frame]"),
+      generatorPhotoFrameOptions: root.querySelector("[data-tbd-generator-photo-frame-options]"),
       generatorPreview: root.querySelector("[data-tbd-generator-preview]"),
       generatorPreviewAll: root.querySelector("[data-tbd-generator-preview-all]"),
       generatorDesign: root.querySelector("[data-tbd-generator-design]"),
@@ -1225,7 +1256,7 @@
     const proofEmailEndpoint = resolveSourceUrl(launch.proofEmailUrl || root.dataset.proofEmailUrl || root.dataset.emailProofUrl || "/api/send-proof-email");
     const proofEmailTo = launch.proofEmailTo || root.dataset.proofEmailTo || root.dataset.emailProofTo || "info@tsbanners.com";
     const imageProxyEndpoint = launch.imageProxyUrl || root.dataset.imageProxyUrl || defaultImageProxyEndpoint();
-    let assets = FALLBACK_ASSETS;
+    let assets = withPreloadedPhotoFrameAssets(FALLBACK_ASSETS);
     let activeCategory = defaultCategoryForShape(ARTBOARD_SHAPE);
     let assetPage = 1;
     let searchTerm = "";
@@ -1248,7 +1279,8 @@
       background: "",
       teamName: "",
       clipart: "",
-      accessory: ""
+      accessory: "",
+      photoFrame: ""
     };
     let guide = null;
     let teamText = null;
@@ -1473,6 +1505,17 @@
         category: normalizeAssetCategory(asset),
         url: asset.url
       };
+    }
+
+    function withPreloadedPhotoFrameAssets(list) {
+      const normalized = (Array.isArray(list) ? list : []).map(normalizeAsset);
+      const seen = new Set(normalized.map((asset) => String(asset.url || "")));
+      PHOTO_FRAME_ASSETS.map(normalizeAsset).forEach((asset) => {
+        if (seen.has(asset.url)) return;
+        normalized.push(asset);
+        seen.add(asset.url);
+      });
+      return normalized;
     }
 
     function ensureLayerId(obj) {
@@ -2051,6 +2094,7 @@
       if (normalized === "team name") return "template-team-name";
       if (normalized === "clip art") return "template-clipart";
       if (normalized === "accessory") return "template-player-icon";
+      if (normalized === "photo frame") return "template-photo-frame";
       if (normalized.startsWith("bg ")) return "template-background";
       return "";
     }
@@ -2062,6 +2106,7 @@
       if (role === "template-team-name" || role === "team-text") return "Team name / logo";
       if (role === "template-clipart" || role === "template-mascot") return "Clip art";
       if (role === "template-player-icon") return `Accessory / Player icon${layerNumberSuffix(obj)}`;
+      if (role === "template-photo-frame") return `Photo frame${layerNumberSuffix(obj)}`;
       if (role === "template-player-photo") return `Player photo${layerNumberSuffix(obj)}`;
       if (role === "template-player-number-text") return `Player number${layerNumberSuffix(obj)}`;
       if (role === "template-player-text") return `Player text${layerNumberSuffix(obj)}`;
@@ -3246,6 +3291,7 @@
         sport: els.generatorSport ? els.generatorSport.value : "baseball",
         shape: els.generatorType ? els.generatorType.value : ARTBOARD_SHAPE,
         svg: els.generatorSvg ? els.generatorSvg.value : "",
+        usePhotoFrame: Boolean(els.generatorUsePhotoFrame && els.generatorUsePhotoFrame.checked),
         assetSearch: els.generatorAssetSearch ? els.generatorAssetSearch.value : "",
         selectedAssets: { ...selectedGeneratorAssets }
       };
@@ -3268,6 +3314,7 @@
       setValue(els.generatorType, setup.shape);
       setValue(els.generatorSvg, setup.svg);
       setValue(els.generatorAssetSearch, setup.assetSearch);
+      if (els.generatorUsePhotoFrame) els.generatorUsePhotoFrame.checked = Boolean(setup.usePhotoFrame);
       Object.assign(selectedGeneratorAssets, setup.selectedAssets || {});
       generatorAssetSearchTerm = layerMatchText(setup.assetSearch || "");
       generatorPlayerNamesCache = Array.isArray(setup.playerNames) ? setup.playerNames.slice(0, 20) : [];
@@ -3332,7 +3379,8 @@
         playerPhotos: players.map((player) => player.photo),
         players,
         sport: (els.generatorSport && els.generatorSport.value) || "baseball",
-        shape
+        shape,
+        usePhotoFrame: Boolean(els.generatorUsePhotoFrame && els.generatorUsePhotoFrame.checked)
       };
     }
 
@@ -3558,6 +3606,7 @@
       renderGeneratorAssetOptions(els.generatorLogoOptions, "teamName", "Team name", options);
       renderGeneratorAssetOptions(els.generatorClipartOptions, "clipart", "Clip art", options);
       renderGeneratorAssetOptions(els.generatorAccessoryOptions, "accessory", "Accessory", options);
+      renderGeneratorAssetOptions(els.generatorPhotoFrameOptions, "photoFrame", PHOTO_FRAME_CATEGORY, options);
     }
 
     function generatedLayerConfig(options, svgTemplate) {
@@ -4331,7 +4380,7 @@
           try {
             const box = svgBoxToCanvas(entry.box, parsed.viewBox, placement);
             await addSvgTemplateImageLayer(entry, box, effectiveOptions, parsed.viewBox, placement);
-            if (playerIconNumber) {
+            if (playerIconNumber && !effectiveOptions.usePhotoFrame) {
               const diameter = Math.max(24, Math.min(box.width, box.height) * 0.72);
               await addPlayerPhotoFrameLayer(effectiveOptions, playerIconNumber, {
                 left: box.centerX,
@@ -4348,9 +4397,20 @@
             console.warn("Could not load source SVG image layer", entry.href, error);
           }
         }
-        parsed.textEntries.forEach((entry) => {
-          addSvgTemplateTextLayer(entry, svgBoxToCanvas(entry.box, parsed.viewBox, placement), effectiveOptions, parsed.viewBox, placement);
-        });
+        let photoFramePlayerTextIndex = 0;
+        for (const entry of parsed.textEntries) {
+          const box = svgBoxToCanvas(entry.box, parsed.viewBox, placement);
+          if (entry.role === "template-player-text") {
+            photoFramePlayerTextIndex += 1;
+            const playerNumber = entry.playerNumber || photoFramePlayerTextIndex;
+            if (playerNumber > effectiveOptions.playerCount) continue;
+            if (effectiveOptions.usePhotoFrame) {
+              await addGeneratedPhotoFrameSlot(effectiveOptions, playerNumber, photoFramePlacementFromTextBox(box));
+              continue;
+            }
+          }
+          addSvgTemplateTextLayer(entry, box, effectiveOptions, parsed.viewBox, placement);
+        }
         const background = canvas.getObjects().find((obj) => obj.data && obj.data.role === "template-background");
         if (background) background.sendToBack();
         return visibleLayerObjects().length > 0;
@@ -4522,6 +4582,132 @@
       return icon;
     }
 
+    function photoFramePlacementFromSlot(slot) {
+      const point = recipePoint(slot.x, Math.min(0.92, slot.y + slot.textOffset * 0.62));
+      const size = Math.max(
+        78,
+        Math.min(
+          artboardBounds().width * (isRectangularShape(ARTBOARD_SHAPE) ? 0.13 : 0.17),
+          Math.max(
+            artboardRatioWidth(slot.iconWidth) * 1.5,
+            artboardRatioHeight(slot.iconHeight + slot.textOffset) * 0.95
+          )
+        )
+      );
+      return { left: point.left, top: point.top, width: size, height: size };
+    }
+
+    function photoFramePlacementFromTextBox(box) {
+      const bounds = artboardBounds();
+      const size = Math.max(
+        76,
+        Math.min(
+          bounds.width * (isRectangularShape(ARTBOARD_SHAPE) ? 0.13 : 0.17),
+          Math.max(box.width * 1.25, box.height * 2.85)
+        )
+      );
+      return {
+        left: box.centerX,
+        top: box.centerY - size * 0.12,
+        width: size,
+        height: size
+      };
+    }
+
+    function addPhotoFramePlaceholderLayer(placement, playerNumber) {
+      const size = Math.max(24, Math.min(placement.width || 96, placement.height || 96));
+      const frame = new fabric.Circle({
+        left: placement.left,
+        top: placement.top - size * 0.14,
+        originX: "center",
+        originY: "center",
+        radius: size * 0.31,
+        fill: "#eef7fb",
+        stroke: "#ffffff",
+        strokeWidth: Math.max(4, size * 0.045),
+        data: {
+          name: `Photo frame ${playerNumber}`,
+          role: "template-photo-frame",
+          showInLayerList: true
+        }
+      });
+      ensureLayerId(frame);
+      canvas.add(frame);
+      return frame;
+    }
+
+    async function addGeneratedPhotoFrameSlot(options, playerNumber, placement) {
+      const framePlacement = placement || { left: WIDTH / 2, top: HEIGHT / 2, width: 110, height: 110 };
+      const frameAsset = selectedGeneratorAsset("photoFrame", PHOTO_FRAME_CATEGORY, {
+        sport: options.sport,
+        terms: ["player", "photo", "frame", options.team]
+      });
+      const frameLayer = frameAsset
+        ? await addAssetImageLayer(frameAsset, {
+          name: `Photo frame ${playerNumber}`,
+          role: "template-photo-frame",
+          left: framePlacement.left,
+          top: framePlacement.top,
+          width: framePlacement.width,
+          height: framePlacement.height
+        })
+        : null;
+      if (!frameLayer) addPhotoFramePlaceholderLayer(framePlacement, playerNumber);
+
+      const photoDiameter = Math.max(26, Math.min(framePlacement.width, framePlacement.height) * 0.48);
+      await addPlayerPhotoFrameLayer(options, playerNumber, {
+        left: framePlacement.left,
+        top: framePlacement.top - framePlacement.height * 0.18,
+        diameter: photoDiameter
+      });
+
+      addPlayerNumberTextLayer(options, playerNumber, {
+        left: framePlacement.left + framePlacement.width * 0.23,
+        top: framePlacement.top + framePlacement.height * 0.12,
+        fontSize: Math.max(12, Math.min(30, framePlacement.height * 0.13))
+      });
+
+      const nameMask = new fabric.Rect({
+        left: framePlacement.left,
+        top: framePlacement.top + framePlacement.height * 0.36,
+        originX: "center",
+        originY: "center",
+        width: framePlacement.width * 0.9,
+        height: framePlacement.height * 0.2,
+        fill: "#ffffff",
+        strokeWidth: 0,
+        selectable: false,
+        evented: false,
+        data: {
+          name: `Photo frame name backdrop ${playerNumber}`,
+          role: "template-photo-frame-name-mask",
+          excludeFromLayerList: true,
+          showInLayerList: false
+        }
+      });
+      ensureLayerId(nameMask);
+      canvas.add(nameMask);
+
+      const textLayer = addTemplateText({
+        text: playerNameForNumber(options, playerNumber),
+        name: `Player text ${playerNumber}`,
+        role: "template-player-text",
+        left: framePlacement.left,
+        top: framePlacement.top + framePlacement.height * 0.34,
+        fontSize: Math.max(14, Math.min(46, framePlacement.height * 0.18)),
+        fill: "#111827",
+        stroke: "#ffffff",
+        strokeWidth: Math.max(1, framePlacement.height * 0.012),
+        shadow: "none"
+      });
+      const maxTextWidth = Math.max(48, framePlacement.width * 0.86);
+      if (textLayer.getScaledWidth && textLayer.getScaledWidth() > maxTextWidth) {
+        textLayer.scaleToWidth(maxTextWidth);
+        textLayer.setCoords();
+      }
+      return textLayer;
+    }
+
     async function addGeneratedPlayerLayers(options) {
       const accessory = selectedGeneratorAsset("accessory", "Accessory", { sport: options.sport });
       const slots = generatorPlayerSlots(options.playerCount, ARTBOARD_SHAPE);
@@ -4542,13 +4728,17 @@
           addGeneratedPlaceholderIcon(slot, number);
         }
 
+        if (options.usePhotoFrame) {
+          await addGeneratedPhotoFrameSlot(options, number, photoFramePlacementFromSlot(slot));
+          continue;
+        }
+
         const photoDiameter = Math.max(24, Math.min(artboardRatioWidth(slot.iconWidth), artboardRatioHeight(slot.iconHeight)) * 0.78);
         await addPlayerPhotoFrameLayer(options, number, {
           left: point.left,
           top: point.top,
           diameter: photoDiameter
         });
-
         const numberPoint = recipePoint(slot.x, Math.min(0.9, slot.y + slot.textOffset * 0.55));
         addPlayerNumberTextLayer(options, number, {
           left: numberPoint.left,
@@ -4798,18 +4988,18 @@
     async function loadAssetManifest() {
       const url = launch.assetManifestUrl || root.dataset.assetsUrl;
       if (!url) {
-        assets = FALLBACK_ASSETS;
+        assets = withPreloadedPhotoFrameAssets(FALLBACK_ASSETS);
         return;
       }
       try {
         const response = await fetch(url, { credentials: "omit" });
         if (!response.ok) throw new Error("Asset manifest request failed");
         const data = await response.json();
-        assets = (Array.isArray(data.assets) ? data.assets : data).map(normalizeAsset);
+        assets = withPreloadedPhotoFrameAssets(Array.isArray(data.assets) ? data.assets : data);
         renderGeneratorOptionPanels();
         setStatus(`${assets.length} assets loaded.`);
       } catch (error) {
-        assets = FALLBACK_ASSETS;
+        assets = withPreloadedPhotoFrameAssets(FALLBACK_ASSETS);
         activeCategory = defaultCategoryForShape(ARTBOARD_SHAPE);
         assetPage = 1;
         renderGeneratorOptionPanels();
@@ -7844,6 +8034,10 @@
           renderGeneratorOptionPanels();
         });
       });
+      els.generatorUsePhotoFrame?.addEventListener("change", () => {
+        clearGeneratorPreviewState();
+        renderGeneratorOptionPanels();
+      });
       els.generatorAssetSearch?.addEventListener("input", (event) => {
         generatorAssetSearchTerm = layerMatchText(event.target.value || "");
         clearGeneratorPreviewState();
@@ -8072,6 +8266,7 @@
       }
       renderCategories();
       renderAssets();
+      renderGeneratorOptionPanels();
       if (launch.initialPanel) togglePanel(launch.initialPanel);
       if (launch.hasDesign) {
         if (!projectWasOpened) loadProductDesign().then(updateSelectionControls);

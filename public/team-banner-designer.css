@@ -1655,6 +1655,28 @@ body {
   width: 18px;
 }
 
+.tbd__template-photo-frame-toggle {
+  align-items: center;
+  background: #fff;
+  border: 1px solid #dbe5f0;
+  border-radius: 14px;
+  color: #0f172a;
+  cursor: pointer;
+  display: flex;
+  font-size: 13px;
+  font-weight: 1000;
+  gap: 9px;
+  min-height: 42px;
+  padding: 9px 11px;
+}
+
+.tbd__template-photo-frame-toggle input {
+  accent-color: var(--tbd-button-navy);
+  height: 18px;
+  margin: 0;
+  width: 18px;
+}
+
 .tbd__template-generator {
   background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   border-radius: 18px;
