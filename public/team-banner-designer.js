@@ -1157,6 +1157,9 @@
       cartItems: root.querySelector("[data-tbd-cart-items]"),
       cartEmpty: root.querySelector("[data-tbd-cart-empty]"),
       cartSummary: root.querySelector("[data-tbd-cart-summary]"),
+      cartCurrentPreview: root.querySelector("[data-tbd-cart-current-preview]"),
+      cartCurrentImage: root.querySelector("[data-tbd-cart-current-image]"),
+      cartCurrentMeta: root.querySelector("[data-tbd-cart-current-meta]"),
       cartCheckout: root.querySelector("[data-tbd-cart-checkout]"),
       cartContinue: root.querySelector("[data-tbd-cart-continue]")
     };
@@ -1239,6 +1242,8 @@
     let generatorAllPreviewItems = [];
     let generatorPreviewBusy = false;
     let generatorPlayerNamesCache = [];
+    let generatorPlayerNumbersCache = [];
+    let generatorPlayerPhotosCache = [];
     const selectedGeneratorAssets = {
       background: "",
       teamName: "",
@@ -2057,6 +2062,8 @@
       if (role === "template-team-name" || role === "team-text") return "Team name / logo";
       if (role === "template-clipart" || role === "template-mascot") return "Clip art";
       if (role === "template-player-icon") return `Accessory / Player icon${layerNumberSuffix(obj)}`;
+      if (role === "template-player-photo") return `Player photo${layerNumberSuffix(obj)}`;
+      if (role === "template-player-number-text") return `Player number${layerNumberSuffix(obj)}`;
       if (role === "template-player-text") return `Player text${layerNumberSuffix(obj)}`;
       if (role === "template-year-text") return "Year text";
       if (role === "svg-layout-guide") return "SVG layout guide";
@@ -3086,6 +3093,10 @@
         const index = Number(input.dataset.tbdGeneratorPlayerName || 0) - 1;
         if (index >= 0) generatorPlayerNamesCache[index] = input.value;
       });
+      els.generatorPlayerNames.querySelectorAll("[data-tbd-generator-player-number]").forEach((input) => {
+        const index = Number(input.dataset.tbdGeneratorPlayerNumber || 0) - 1;
+        if (index >= 0) generatorPlayerNumbersCache[index] = input.value;
+      });
     }
 
     function generatorPlayerNames(count = generatorPlayerCountValue()) {
@@ -3093,9 +3104,73 @@
       return Array.from({ length: count }, (_, index) => compactWhitespace(generatorPlayerNamesCache[index] || ""));
     }
 
+    function generatorPlayerNumbers(count = generatorPlayerCountValue()) {
+      syncGeneratorPlayerNameCache();
+      return Array.from({ length: count }, (_, index) => compactWhitespace(generatorPlayerNumbersCache[index] || ""));
+    }
+
+    function generatorPlayerPhotos(count = generatorPlayerCountValue()) {
+      return Array.from({ length: count }, (_, index) => {
+        const photo = generatorPlayerPhotosCache[index];
+        return photo && photo.dataUrl ? { dataUrl: photo.dataUrl, name: photo.name || "" } : null;
+      });
+    }
+
+    function generatorPlayers(count = generatorPlayerCountValue()) {
+      const names = generatorPlayerNames(count);
+      const numbers = generatorPlayerNumbers(count);
+      const photos = generatorPlayerPhotos(count);
+      return Array.from({ length: count }, (_, index) => ({
+        name: names[index] || "",
+        number: numbers[index] || "",
+        photo: photos[index] || null
+      }));
+    }
+
     function playerNameForNumber(options, number) {
-      const name = options && Array.isArray(options.playerNames) ? options.playerNames[number - 1] : "";
+      const player = options && Array.isArray(options.players) ? options.players[number - 1] : null;
+      const name = player && player.name !== undefined
+        ? player.name
+        : options && Array.isArray(options.playerNames) ? options.playerNames[number - 1] : "";
       return compactWhitespace(name) || "Player";
+    }
+
+    function playerJerseyNumberForNumber(options, number) {
+      const player = options && Array.isArray(options.players) ? options.players[number - 1] : null;
+      const raw = player && player.number !== undefined
+        ? player.number
+        : options && Array.isArray(options.playerNumbers) ? options.playerNumbers[number - 1] : "";
+      const clean = compactWhitespace(raw).replace(/^#+\s*/, "");
+      return clean ? `#${clean}` : "";
+    }
+
+    function playerPhotoForNumber(options, number) {
+      const player = options && Array.isArray(options.players) ? options.players[number - 1] : null;
+      const photo = player && player.photo
+        ? player.photo
+        : options && Array.isArray(options.playerPhotos) ? options.playerPhotos[number - 1] : null;
+      return photo && photo.dataUrl ? photo : null;
+    }
+
+    async function handleGeneratorPlayerPhotoUpload(event, index) {
+      const file = event.target.files && event.target.files[0];
+      event.target.value = "";
+      if (!file) return;
+      if (!file.type || !file.type.startsWith("image/")) {
+        setStatus("Choose an image file for the player photo.");
+        return;
+      }
+      try {
+        generatorPlayerPhotosCache[index] = {
+          dataUrl: await readFileAsDataUrl(file),
+          name: file.name || `Player ${index + 1} photo`
+        };
+        renderGeneratorPlayerNameInputs();
+        clearGeneratorPreviewState();
+        setStatus(`Player ${index + 1} photo ready.`);
+      } catch (error) {
+        setStatus("Could not load that player photo.");
+      }
     }
 
     function renderGeneratorPlayerNameInputs() {
@@ -3104,6 +3179,7 @@
       const count = generatorPlayerCountValue();
       for (let index = 0; index < count; index += 1) {
         if (generatorPlayerNamesCache[index] === undefined) generatorPlayerNamesCache[index] = "";
+        if (generatorPlayerNumbersCache[index] === undefined) generatorPlayerNumbersCache[index] = "";
       }
       if (els.generatorPlayerSummary) {
         els.generatorPlayerSummary.textContent = count === 1 ? "1 player" : `${count} players`;
@@ -3111,17 +3187,46 @@
       els.generatorPlayerNames.innerHTML = "";
       Array.from({ length: count }, (_, index) => generatorPlayerNamesCache[index] || "").forEach((value, index) => {
         const number = index + 1;
-        const label = document.createElement("label");
-        label.className = "tbd__template-player-field";
-        label.innerHTML = `
-          <span>${number}</span>
-          <input data-tbd-generator-player-name="${number}" type="text" value="${escapeHtml(value)}" placeholder="Player" autocomplete="off" aria-label="Player ${number} name">
+        const jerseyNumber = generatorPlayerNumbersCache[index] || "";
+        const photo = generatorPlayerPhotosCache[index];
+        const row = document.createElement("article");
+        row.className = "tbd__template-player-field";
+        row.innerHTML = `
+          <span class="tbd__template-player-index">${number}</span>
+          <label class="tbd__template-player-name">
+            <span>Name</span>
+            <input data-tbd-generator-player-name="${number}" type="text" value="${escapeHtml(value)}" placeholder="Player" autocomplete="off" aria-label="Player ${number} name">
+          </label>
+          <label class="tbd__template-player-number">
+            <span>No.</span>
+            <input data-tbd-generator-player-number="${number}" type="text" inputmode="numeric" value="${escapeHtml(jerseyNumber)}" placeholder="#${number}" autocomplete="off" aria-label="Player ${number} number">
+          </label>
+          <div class="tbd__template-player-photo">
+            <span class="tbd__template-player-photo-preview">${photo && photo.dataUrl ? `<img src="${escapeHtml(photo.dataUrl)}" alt="">` : "Photo"}</span>
+            <label class="tbd__template-player-upload">
+              <input data-tbd-generator-player-photo="${number}" type="file" accept="image/*" aria-label="Upload player ${number} photo">
+              <span>${photo && photo.dataUrl ? "Change" : "Upload"}</span>
+            </label>
+            ${photo && photo.dataUrl ? `<button class="tbd__template-player-remove-photo" data-tbd-generator-player-remove-photo="${number}" type="button">Remove</button>` : ""}
+          </div>
         `;
-        label.querySelector("input")?.addEventListener("input", (event) => {
+        row.querySelector("[data-tbd-generator-player-name]")?.addEventListener("input", (event) => {
           generatorPlayerNamesCache[index] = event.target.value;
           clearGeneratorPreviewState();
         });
-        els.generatorPlayerNames.appendChild(label);
+        row.querySelector("[data-tbd-generator-player-number]")?.addEventListener("input", (event) => {
+          generatorPlayerNumbersCache[index] = event.target.value;
+          clearGeneratorPreviewState();
+        });
+        row.querySelector("[data-tbd-generator-player-photo]")?.addEventListener("change", (event) => {
+          handleGeneratorPlayerPhotoUpload(event, index);
+        });
+        row.querySelector("[data-tbd-generator-player-remove-photo]")?.addEventListener("click", () => {
+          generatorPlayerPhotosCache[index] = null;
+          renderGeneratorPlayerNameInputs();
+          clearGeneratorPreviewState();
+        });
+        els.generatorPlayerNames.appendChild(row);
       });
     }
 
@@ -3136,6 +3241,8 @@
         sponsor: els.generatorSponsor ? els.generatorSponsor.value : "",
         playerCount: generatorPlayerCountValue(),
         playerNames: generatorPlayerNames(),
+        playerNumbers: generatorPlayerNumbers(),
+        playerPhotos: generatorPlayerPhotos(),
         sport: els.generatorSport ? els.generatorSport.value : "baseball",
         shape: els.generatorType ? els.generatorType.value : ARTBOARD_SHAPE,
         svg: els.generatorSvg ? els.generatorSvg.value : "",
@@ -3164,18 +3271,31 @@
       Object.assign(selectedGeneratorAssets, setup.selectedAssets || {});
       generatorAssetSearchTerm = layerMatchText(setup.assetSearch || "");
       generatorPlayerNamesCache = Array.isArray(setup.playerNames) ? setup.playerNames.slice(0, 20) : [];
+      generatorPlayerNumbersCache = Array.isArray(setup.playerNumbers) ? setup.playerNumbers.slice(0, 20) : [];
+      generatorPlayerPhotosCache = Array.isArray(setup.playerPhotos) ? setup.playerPhotos.slice(0, 20) : [];
       renderGeneratorPlayerNameInputs();
       clearGeneratorPreviewState();
       renderGeneratorOptionPanels();
     }
 
     function saveGeneratorSetup() {
+      const setup = captureGeneratorSetup();
       try {
-        window.localStorage.setItem(GENERATOR_SETUP_STORAGE_KEY, JSON.stringify(captureGeneratorSetup()));
+        window.localStorage.setItem(GENERATOR_SETUP_STORAGE_KEY, JSON.stringify(setup));
         if (els.generatorSavedMeta) els.generatorSavedMeta.textContent = "Saved";
         setStatus("Template generator setup saved for reuse.");
       } catch (error) {
-        setStatus("Template setup could not be saved in this browser.");
+        try {
+          const lightSetup = {
+            ...setup,
+            playerPhotos: setup.playerPhotos.map((photo) => photo ? { name: photo.name || "" } : null)
+          };
+          window.localStorage.setItem(GENERATOR_SETUP_STORAGE_KEY, JSON.stringify(lightSetup));
+          if (els.generatorSavedMeta) els.generatorSavedMeta.textContent = "Saved without photos";
+          setStatus("Template setup saved. Player photos were too large to store in this browser.");
+        } catch (storageError) {
+          setStatus("Template setup could not be saved in this browser.");
+        }
       }
     }
 
@@ -3197,6 +3317,7 @@
     function generatorOptions() {
       const shape = normalizeShape((els.generatorType && els.generatorType.value) || ARTBOARD_SHAPE, false);
       const playerCount = generatorPlayerCountValue();
+      const players = generatorPlayers(playerCount);
       return {
         team: generatorValue(els.generatorTeam, "TEAM NAME"),
         manager: generatorValue(els.generatorManager),
@@ -3206,7 +3327,10 @@
         teamMom: generatorValue(els.generatorTeamMom),
         sponsor: generatorValue(els.generatorSponsor),
         playerCount,
-        playerNames: generatorPlayerNames(playerCount),
+        playerNames: players.map((player) => player.name),
+        playerNumbers: players.map((player) => player.number),
+        playerPhotos: players.map((player) => player.photo),
+        players,
         sport: (els.generatorSport && els.generatorSport.value) || "baseball",
         shape
       };
@@ -4198,12 +4322,28 @@
         const effectiveOptions = { ...options, playerCount };
         let addedPlayerIcons = 0;
         for (const entry of parsed.imageEntries) {
+          let playerIconNumber = 0;
           if (entry.role === "template-player-icon") {
             addedPlayerIcons += 1;
             if (addedPlayerIcons > playerCount) continue;
+            playerIconNumber = addedPlayerIcons;
           }
           try {
-            await addSvgTemplateImageLayer(entry, svgBoxToCanvas(entry.box, parsed.viewBox, placement), effectiveOptions, parsed.viewBox, placement);
+            const box = svgBoxToCanvas(entry.box, parsed.viewBox, placement);
+            await addSvgTemplateImageLayer(entry, box, effectiveOptions, parsed.viewBox, placement);
+            if (playerIconNumber) {
+              const diameter = Math.max(24, Math.min(box.width, box.height) * 0.72);
+              await addPlayerPhotoFrameLayer(effectiveOptions, playerIconNumber, {
+                left: box.centerX,
+                top: box.centerY,
+                diameter
+              });
+              addPlayerNumberTextLayer(effectiveOptions, playerIconNumber, {
+                left: box.centerX,
+                top: box.top + box.height * 0.78,
+                fontSize: Math.max(14, Math.min(32, box.height * 0.28))
+              });
+            }
           } catch (error) {
             console.warn("Could not load source SVG image layer", entry.href, error);
           }
@@ -4401,6 +4541,20 @@
         } else {
           addGeneratedPlaceholderIcon(slot, number);
         }
+
+        const photoDiameter = Math.max(24, Math.min(artboardRatioWidth(slot.iconWidth), artboardRatioHeight(slot.iconHeight)) * 0.78);
+        await addPlayerPhotoFrameLayer(options, number, {
+          left: point.left,
+          top: point.top,
+          diameter: photoDiameter
+        });
+
+        const numberPoint = recipePoint(slot.x, Math.min(0.9, slot.y + slot.textOffset * 0.55));
+        addPlayerNumberTextLayer(options, number, {
+          left: numberPoint.left,
+          top: numberPoint.top,
+          fontSize: artboardTextSize(isRectangularShape(ARTBOARD_SHAPE) ? 0.034 : 0.048, 18)
+        });
 
         const textPoint = recipePoint(slot.x, Math.min(0.9, slot.y + slot.textOffset));
         addTemplateText({
@@ -4873,11 +5027,29 @@
       } else if (root.dataset.activePanel === "cart") {
         togglePanel("cart");
       }
+      if (open) updateCartCurrentPreview();
       updateStageScale();
+    }
+
+    function updateCartCurrentPreview() {
+      if (!els.cartCurrentPreview || !els.cartCurrentImage) return;
+      try {
+        const preview = exportDesign(0.22).image;
+        els.cartCurrentImage.src = preview;
+        if (els.cartCurrentMeta) {
+          const shape = defaultHeadlineForShape(ARTBOARD_SHAPE);
+          const objects = visibleLayerObjects().filter((obj) => obj && obj.data && obj.data.role !== "svg-layout-guide").length;
+          els.cartCurrentMeta.textContent = `${shape} · ${objects} editable layer${objects === 1 ? "" : "s"}`;
+        }
+        els.cartCurrentPreview.hidden = false;
+      } catch (error) {
+        els.cartCurrentPreview.hidden = true;
+      }
     }
 
     function renderDesignCart() {
       const count = designCart.length;
+      updateCartCurrentPreview();
       if (els.cartCount) {
         els.cartCount.textContent = String(count);
         els.cartCount.hidden = count === 0;
@@ -5420,6 +5592,90 @@
       } catch (error) {
         return null;
       }
+    }
+
+    function circularPlayerPhotoCanvas(image, diameter, options = {}) {
+      const size = Math.max(24, Math.round(diameter || 72));
+      const borderWidth = Math.max(2, Math.round(options.borderWidth || size * 0.055));
+      const cropCanvas = document.createElement("canvas");
+      cropCanvas.width = size;
+      cropCanvas.height = size;
+      const ctx = cropCanvas.getContext("2d");
+      const naturalWidth = image.naturalWidth || image.width || 1;
+      const naturalHeight = image.naturalHeight || image.height || 1;
+      const scale = Math.max(size / naturalWidth, size / naturalHeight);
+      const drawWidth = naturalWidth * scale;
+      const drawHeight = naturalHeight * scale;
+      const inset = borderWidth / 2;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, Math.max(1, (size - borderWidth) / 2), 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(image, (size - drawWidth) / 2, (size - drawHeight) / 2, drawWidth, drawHeight);
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, Math.max(1, (size - borderWidth) / 2 - inset * 0.25), 0, Math.PI * 2);
+      ctx.lineWidth = borderWidth;
+      ctx.strokeStyle = options.borderColor || "#ffffff";
+      ctx.stroke();
+
+      if (options.accentColor) {
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, Math.max(1, (size - borderWidth * 2.4) / 2), 0, Math.PI * 2);
+        ctx.lineWidth = Math.max(1, borderWidth * 0.42);
+        ctx.strokeStyle = options.accentColor;
+        ctx.stroke();
+      }
+      return cropCanvas;
+    }
+
+    async function addPlayerPhotoFrameLayer(options, playerNumber, placement = {}) {
+      const photo = playerPhotoForNumber(options, playerNumber);
+      if (!photo || !photo.dataUrl) return null;
+      try {
+        const image = await loadImage(photo.dataUrl);
+        const diameter = Math.max(24, placement.diameter || artboardRatioWidth(0.07));
+        const photoCanvas = circularPlayerPhotoCanvas(image, diameter, {
+          borderColor: "#ffffff",
+          accentColor: "#d71920"
+        });
+        const layer = new fabric.Image(photoCanvas, {
+          left: placement.left ?? WIDTH / 2,
+          top: placement.top ?? HEIGHT / 2,
+          originX: "center",
+          originY: "center",
+          data: {
+            name: `Player photo ${playerNumber}`,
+            role: "template-player-photo",
+            sourceFileName: photo.name || "",
+            showInLayerList: true
+          }
+        });
+        ensureLayerId(layer);
+        canvas.add(layer);
+        return layer;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function addPlayerNumberTextLayer(options, playerNumber, placement = {}) {
+      const jerseyNumber = playerJerseyNumberForNumber(options, playerNumber);
+      if (!jerseyNumber) return null;
+      return addTemplateText({
+        text: jerseyNumber,
+        name: `Player number ${playerNumber}`,
+        role: "template-player-number-text",
+        left: placement.left ?? WIDTH / 2,
+        top: placement.top ?? HEIGHT / 2,
+        fontSize: placement.fontSize || artboardTextSize(isRectangularShape(ARTBOARD_SHAPE) ? 0.04 : 0.055, 20),
+        fill: "#d71920",
+        stroke: "#ffffff",
+        strokeWidth: 3,
+        shadow: "1px 1px 0 rgba(0,0,0,.35)"
+      });
     }
 
     async function addRecipeAsset(asset, placement, config = {}) {
