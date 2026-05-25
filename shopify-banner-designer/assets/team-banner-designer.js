@@ -4303,14 +4303,38 @@
       return layerObjects().find((layer) => layer && layer.data && layer.data.layerId === photoLayerId) || null;
     }
 
+    function photoFrameAssetKey(frame) {
+      const data = frame && frame.data ? frame.data : {};
+      const source = [
+        data.sourceAssetUrl,
+        data.sourceAssetName,
+        data.name
+      ].filter(Boolean).join(" ").toLowerCase();
+      if (source.includes("ring-swoosh")) return "ring-swoosh";
+      if (source.includes("scallop")) return "scallop";
+      if (source.includes("round-name")) return "round-name";
+      if (source.includes("circle-gloss")) return "circle-gloss";
+      return "";
+    }
+
+    function photoFramePhotoProfile(frame) {
+      const key = photoFrameAssetKey(frame);
+      if (key === "ring-swoosh") return { x: 0.5, y: 0.43, width: 0.54, height: 0.78 };
+      if (key === "scallop") return { x: 0.5, y: 0.38, width: 0.74, height: 0.78 };
+      if (key === "round-name") return { x: 0.5, y: 0.37, width: 0.68, height: 0.7 };
+      if (key === "circle-gloss") return { x: 0.5, y: 0.41, width: 0.76, height: 0.86 };
+      return { x: 0.5, y: 0.38, width: 0.78, height: 0.82 };
+    }
+
     function photoFramePhotoPlacement(frame) {
       frame.setCoords();
       const rect = frame.getBoundingRect(true, true);
-      const diameter = Math.max(24, Math.min(rect.width, rect.height) * 0.52);
+      const profile = photoFramePhotoProfile(frame);
+      const diameter = Math.max(24, Math.min(rect.width * profile.width, rect.height * profile.height));
       return {
         diameter,
-        left: rect.left + rect.width / 2,
-        top: rect.top + rect.height * 0.4
+        left: rect.left + rect.width * profile.x,
+        top: rect.top + rect.height * profile.y
       };
     }
 
@@ -4336,7 +4360,9 @@
       const image = await loadImage(data.photoDataUrl);
       const placement = photoFramePhotoPlacement(frame);
       const photoCanvas = circularPlayerPhotoCanvas(image, placement.diameter, {
-        borderWidth: 0,
+        borderWidth: Math.max(3, placement.diameter * 0.045),
+        borderColor: "#ffffff",
+        accentColor: "#d71920",
         offsetX: data.photoOffsetX || 0,
         offsetY: data.photoOffsetY || 0,
         zoom: data.photoZoom || 1
@@ -4358,13 +4384,14 @@
       layer.scaleToWidth(placement.diameter);
       ensureLayerId(layer);
       frame.set({ data: { ...data, framePhotoLayerId: layer.data.layerId } });
+      const frameIndex = canvas.getObjects().indexOf(frame);
       canvas.add(layer);
-      layer.bringToFront();
+      if (frameIndex >= 0) layer.moveTo(frameIndex + 1);
       canvas.setActiveObject(frame);
       frame.setCoords();
       canvas.renderAll();
       if (!options.skipHistory) saveHistory();
-      if (!options.quiet) setStatus("Photo frame photo updated. Use the align buttons to position it.");
+      if (!options.quiet) setStatus("Photo frame photo filled. Use the align buttons to fine tune it.");
       updateSelectionControls();
       return layer;
     }
