@@ -153,6 +153,60 @@ function isProductImageObjectFallback(sourceMap, config = {}) {
   return values.some((value) => value === "product-image-object-fallback");
 }
 
+function isGeneratedNativeObjectSource(sourceMap, config = {}) {
+  const values = [
+    sourceMap?.matchConfidence,
+    sourceMap?.sourceType,
+    sourceMap?.editableLayerMode,
+    sourceMap?.templateSvg,
+    sourceMap?.sourceTemplateSvg,
+    config.layoutSource,
+    config.layoutSvg,
+    config.layoutSvgUrl,
+    config.assetMatchStatus,
+    config.objectLayerMode
+  ].map((value) => String(value || "").toLowerCase());
+  return values.some((value) => value === "generated-native-object-svg" || value.includes("generated-native-"))
+    || (sourceMap?.matchReasons || []).some((reason) => /generated-native-object-svg|generated-from-product-layer-config/i.test(reason));
+}
+
+function isPlaceholderAssetUrl(value) {
+  const text = String(value || "").trim().toLowerCase();
+  return text.startsWith("data:image/svg+xml") || /generated-placeholder|placeholder-(team|art|player)/.test(text);
+}
+
+function configuredAssetUrls(config = {}) {
+  return [
+    config.backgroundUrl,
+    config.backgroundSvgUrl,
+    ...(Array.isArray(config.backgroundUrls) ? config.backgroundUrls : []),
+    config.logoUrl,
+    config.logoSvgUrl,
+    ...(Array.isArray(config.logoUrls) ? config.logoUrls : []),
+    config.clipartUrl,
+    config.clipartSvgUrl,
+    ...(Array.isArray(config.clipartUrls) ? config.clipartUrls : []),
+    config.accessoryUrl,
+    config.accessorySvgUrl,
+    ...(Array.isArray(config.accessoryUrls) ? config.accessoryUrls : [])
+  ].filter(Boolean);
+}
+
+function hasTrustedSourceReason(sourceMap = {}) {
+  return (sourceMap.matchReasons || []).some((reason) => (
+    /manual|product-image-id|slug-exact|title-exact|source-page-verified-match/i.test(reason)
+    || /real-source-svg-direct-product-image-id|visual-product-image=source-preview/i.test(reason)
+    || /import-exact-source|visual-exact/i.test(reason)
+  ));
+}
+
+function hasExactSourceReason(sourceMap = {}) {
+  return (sourceMap.matchReasons || []).some((reason) => (
+    /product-image-id=svg-id|real-source-svg-direct-product-image-id|visual-product-image=source-preview/i.test(reason)
+    || /import-exact-source|visual-exact/i.test(reason)
+  ));
+}
+
 function safeNumber(value, fallback = 0) {
   const next = Number.parseFloat(String(value ?? "").replace(/[^0-9.-]/g, ""));
   return Number.isFinite(next) ? next : fallback;
@@ -540,7 +594,7 @@ function summarizeProduct(product, sourceMap, templateMetaByName) {
     ...(sourceMap?.layerConfig || {})
   };
   const objectFallback = isProductImageObjectFallback(sourceMap, config);
-  const exactSourceReasons = (sourceMap?.matchReasons || []).some((reason) => /product-image-id=svg-id|real-source-svg-direct-product-image-id|visual-product-image=source-preview/.test(reason));
+  const exactSourceReasons = hasExactSourceReason(sourceMap);
   const productShape = (exactSourceReasons && normalizeShape(sourceMap?.shape || sourceMap?.productShape || ""))
     || normalizeShape([product.title, product.handle].join(" "))
     || normalizeShape(product.shape || "");
@@ -557,10 +611,16 @@ function summarizeProduct(product, sourceMap, templateMetaByName) {
     if (sourceMap.matchStatus !== "matched") {
       addIssue(issues, "source", "fail", `source-map-status-${sourceMap.matchStatus || "blank"}`, product);
     }
+    if (isGeneratedNativeObjectSource(sourceMap, config)) {
+      addIssue(issues, "source", "critical", "generated-native-svg-is-not-true-source-svg", product);
+    }
+    if (configuredAssetUrls(config).some(isPlaceholderAssetUrl)) {
+      addIssue(issues, "source", "critical", "source-layer-uses-placeholder-data-uri", product);
+    }
     if (Number(sourceMap.matchScore || 0) < 80) {
       addWarning(warnings, "source", `low-source-match-score:${sourceMap.matchScore || 0}`);
     }
-    if (Number(sourceMap.matchMargin || 0) < 15 && !(sourceMap.matchReasons || []).some((reason) => /manual|product-image-id=svg-id/.test(reason))) {
+    if (Number(sourceMap.matchMargin || 0) < 15 && !hasTrustedSourceReason(sourceMap)) {
       addWarning(warnings, "source", `low-source-match-margin:${sourceMap.matchMargin || 0}`);
     }
   }
@@ -580,7 +640,11 @@ function summarizeProduct(product, sourceMap, templateMetaByName) {
       addIssue(issues, "layout", "critical", `shape-mismatch:product-${productShape}-svg-${templateShape}`, product);
     }
     if (templateSport && productSport && templateSport !== productSport) {
-      if (exactSourceReasons) {
+      if (hasTrustedSourceReason(sourceMap)) {
+        // Verified visual/native matches can reuse a source family whose page
+        // label mentions another sport. Object counts and role checks below
+        // remain the authoritative safety gate.
+      } else if (exactSourceReasons) {
         addWarning(warnings, "source", `sport-mismatch-source-label:${productSport}-product-${templateSport}-source`);
       } else {
         addIssue(issues, "source", "fail", `sport-mismatch:product-${productSport}-svg-${templateSport}`, product);
@@ -623,10 +687,20 @@ function summarizeProduct(product, sourceMap, templateMetaByName) {
     if (playerIconHrefs.has(parsed.background?.href)) {
       addIssue(issues, "playerIcon", "critical", "player-icons-use-background-url-tile-risk", product);
     }
-    if (playerIconHrefs.size > 1) {
+    const indexedPlayerIconRoles = Array.isArray(config.sourceRoleSummary)
+      && config.sourceRoleSummary.filter((item) => item.role === "playerIcon").length === configNumber(config, "playerIconCount");
+    if (playerIconHrefs.size > 1 && !indexedPlayerIconRoles) {
       addWarning(warnings, "playerIcon", `multiple-player-icon-sources:${playerIconHrefs.size}`);
     }
-    if (parsed.counts.playerIcon && parsed.counts.playerText && parsed.counts.playerIcon !== parsed.counts.playerText) {
+    if (
+      parsed.counts.playerIcon
+      && parsed.counts.playerText
+      && parsed.counts.playerIcon !== parsed.counts.playerText
+      && (
+        parsed.counts.playerIcon !== configNumber(config, "playerIconCount")
+        || parsed.counts.playerText !== configNumber(config, "playerTextCount")
+      )
+    ) {
       addWarning(warnings, "playerIcon", `player-icon-text-count-differs:${parsed.counts.playerIcon}-icons-${parsed.counts.playerText}-texts`);
     }
 
@@ -672,7 +746,7 @@ function summarizeProduct(product, sourceMap, templateMetaByName) {
     product.handle
   ].join(" ");
   const productSourceOverlap = tokenOverlap(productContext, sourceContext);
-  const trustedReasons = (sourceMap?.matchReasons || []).some((reason) => /manual|product-image-id=svg-id|slug-exact|title-exact/i.test(reason));
+  const trustedReasons = hasTrustedSourceReason(sourceMap);
   if (sourceMap && !objectFallback && productSourceOverlap < 0.2 && !trustedReasons) {
     addWarning(warnings, "source", `low-product-to-svg-token-overlap:${productSourceOverlap.toFixed(2)}`);
   }

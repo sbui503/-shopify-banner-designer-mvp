@@ -51,13 +51,13 @@ def clean_text(value: Any) -> str:
 
 def normalize_shape(value: Any) -> str:
     text = clean_text(value)
-    if "pole" in text or "pocket" in text:
+    if re.search(r"\b(pole|pocket)\b", text):
         return "polepocket"
-    if "homeplate" in text or ("home" in text and "plate" in text):
+    if re.search(r"\bhomeplate\b|\bhome\s+plate\b", text):
         return "homeplatepennant"
-    if "triangle" in text or "pennant" in text:
+    if re.search(r"\b(triangle|pennant)\b", text):
         return "triangle"
-    if "banner" in text or "hem" in text or "grommet" in text or "rectangle" in text:
+    if re.search(r"\b(banner|hem|grommet|rectangle)\b", text):
         return "rectangle"
     return text
 
@@ -74,12 +74,20 @@ def shape_compatible(left: Any, right: Any) -> bool:
 
 def infer_sport(value: Any) -> str:
     text = clean_text(value)
-    if "baseball" in text:
-        return "baseball"
-    if "softball" in text:
+    if re.search(r"\bsoftball\b|\bsofball\b", text):
         return "softball"
-    if "soccer" in text:
+    if re.search(r"\bbaseball\b", text):
+        return "baseball"
+    if re.search(r"\bsoccer\b", text):
         return "soccer"
+    return ""
+
+
+def infer_product_sport(product: dict[str, Any]) -> str:
+    for key in ("title", "handle", "type", "tags"):
+        sport = infer_sport(product.get(key))
+        if sport:
+            return sport
     return ""
 
 
@@ -88,6 +96,10 @@ def filename_base(value: Any) -> str:
     base = raw.rsplit("/", 1)[-1]
     base = unquote(base)
     return re.sub(r"\.[a-z0-9]+$", "", base, flags=re.I)
+
+
+def is_generated_native_template(value: Any) -> bool:
+    return bool(re.match(r"^generated-native-", filename_base(value), flags=re.I))
 
 
 def design_id(value: Any) -> str:
@@ -425,7 +437,7 @@ def find_visual_match(
 
     product_id = design_id(product_image)
     product_shape = normalize_shape(product.get("shape") or product.get("title") or product.get("handle"))
-    product_sport = infer_sport(" ".join(str(product.get(key) or "") for key in ("title", "handle", "tags", "type")))
+    product_sport = infer_product_sport(product)
 
     scored = []
     for template in templates:
@@ -536,7 +548,11 @@ def main() -> int:
     products = products_json.get("products") or []
     product_by_handle = {product.get("handle"): product for product in products if product.get("handle")}
     templates_json = load_json(args.templates)
-    templates = [template for template in (templates_json.get("templates") or []) if template.get("name")]
+    templates = [
+        template
+        for template in (templates_json.get("templates") or [])
+        if template.get("name") and not is_generated_native_template(template.get("name") or template.get("url"))
+    ]
     source_map = load_json(args.source_map)
     source_rows = source_map.get("maps") or []
 

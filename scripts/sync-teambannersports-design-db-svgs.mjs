@@ -216,6 +216,10 @@ function localFileForDoc(doc) {
   return `legacy-${id}.svg`;
 }
 
+function isGeneratedNativeTemplateName(value) {
+  return /^generated-native-/i.test(String(value || "").replace(/\.svg$/i, ""));
+}
+
 function publicSvgUrl(file) {
   return `/svg-layer-templates/${encodeURIComponent(file)}`;
 }
@@ -349,6 +353,7 @@ async function main() {
 
   const localFiles = fs.readdirSync(SVG_DIR)
     .filter((file) => /\.svg$/i.test(file))
+    .filter((file) => !isGeneratedNativeTemplateName(file))
     .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   const nextTemplates = [];
   const manifestRows = [];

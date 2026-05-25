@@ -112,6 +112,10 @@ function filenameBase(value) {
   return raw.replace(/\.[a-z0-9]+$/i, "");
 }
 
+function isGeneratedNativeTemplateName(value) {
+  return /^generated-native-/i.test(filenameBase(value));
+}
+
 function numericDesignId(value) {
   const base = filenameBase(value);
   const match = base.match(/^([0-9]{10,})(?:$|[-_])/) || String(value || "").match(/admin-designs\/([0-9]+)\.(?:svg|png)/i);
@@ -795,6 +799,7 @@ async function main() {
 
     const templates = fs.readdirSync(SVG_DIR)
       .filter((file) => /\.svg$/i.test(file))
+      .filter((file) => !isGeneratedNativeTemplateName(file))
       .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
       .map((file) => readTemplateMeta(file, hintsByFile.get(file) || {}));
     fs.writeFileSync(SVG_MANIFEST, JSON.stringify({ templates }, null, 2) + "\n");
@@ -819,13 +824,16 @@ async function main() {
     }
     const templates = fs.readdirSync(SVG_DIR)
       .filter((file) => /\.svg$/i.test(file))
+      .filter((file) => !isGeneratedNativeTemplateName(file))
       .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
       .map((file) => readTemplateMeta(file, hintsByFile.get(file) || {}));
     fs.writeFileSync(SVG_MANIFEST, JSON.stringify({ templates }, null, 2) + "\n");
   }
 
   const svgManifest = JSON.parse(fs.readFileSync(SVG_MANIFEST, "utf8"));
-  const templates = (svgManifest.templates || []).filter((template) => template.url).map(prepareTemplate);
+  const templates = (svgManifest.templates || [])
+    .filter((template) => template.url && !isGeneratedNativeTemplateName(template.name || template.url))
+    .map(prepareTemplate);
   const byName = new Map(templates.map((template) => [template.name, template]));
   const bySourceSlug = templates.reduce((map, template) => {
     if (!template._sourceSlug) return map;

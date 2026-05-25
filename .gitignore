@@ -5,3 +5,5 @@ tmp/
 *.zip
 .DS_Store
 package-test.tmp
+.vercel
+public/svg-layer-templates/generated-native-*.svg
