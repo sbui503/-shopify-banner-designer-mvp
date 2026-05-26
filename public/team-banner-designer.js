@@ -2645,6 +2645,9 @@
             canvas.add(img);
             keepObjectInArtboard(img);
           }
+          if (isPhotoFrameLayer(img)) {
+            ensurePhotoFrameNameLayer(img, { text: (img.data && img.data.playerName) || "Player", skipHistory: true, quiet: true });
+          }
           canvas.setActiveObject(img);
           keepGuideOnTop();
           canvas.renderAll();
@@ -4664,7 +4667,8 @@
         const photo = playerPhotoForNumber(options, playerNumber);
         const frameData = {
           ...(frameLayer.data || {}),
-          playerNumber
+          playerNumber,
+          playerName: playerNameForNumber(options, playerNumber)
         };
         if (photo && photo.dataUrl) {
           Object.assign(frameData, {
@@ -4677,6 +4681,12 @@
         }
         frameLayer.set({ data: frameData });
         if (photo && photo.dataUrl) await refreshPhotoFramePhoto(frameLayer, { skipHistory: true, quiet: true });
+        ensurePhotoFrameNameLayer(frameLayer, {
+          text: frameData.playerName || "Player",
+          playerNumber,
+          skipHistory: true,
+          quiet: true
+        });
       }
 
       addPlayerNumberTextLayer(options, playerNumber, {
@@ -4685,24 +4695,7 @@
         fontSize: Math.max(12, Math.min(30, framePlacement.height * 0.13))
       });
 
-      const textLayer = addTemplateText({
-        text: playerNameForNumber(options, playerNumber),
-        name: `Player text ${playerNumber}`,
-        role: "template-player-text",
-        left: framePlacement.left,
-        top: framePlacement.top + framePlacement.height * 0.34,
-        fontSize: Math.max(14, Math.min(46, framePlacement.height * 0.18)),
-        fill: "#111827",
-        stroke: "#ffffff",
-        strokeWidth: Math.max(1, framePlacement.height * 0.012),
-        shadow: "none"
-      });
-      const maxTextWidth = Math.max(48, framePlacement.width * 0.86);
-      if (textLayer.getScaledWidth && textLayer.getScaledWidth() > maxTextWidth) {
-        textLayer.scaleToWidth(maxTextWidth);
-        textLayer.setCoords();
-      }
-      return textLayer;
+      return frameLayer ? photoFrameNameLayer(frameLayer) || frameLayer : null;
     }
 
     async function addGeneratedPlayerLayers(options) {
@@ -5378,9 +5371,22 @@
     function deleteSelected() {
       const selected = canvas.getActiveObjects().filter((obj) => obj !== guide && !isLayerLocked(obj));
       if (!selected.length) return setStatus("Select an item to delete.");
-      selected.forEach((obj) => canvas.remove(obj));
+      const expandedSelection = new Set(selected);
+      selected.forEach((obj) => {
+        if (isPhotoFrameLayer(obj)) {
+          [photoFramePhotoLayer(obj), photoFrameNameLayer(obj), photoFrameNamePatchLayer(obj)]
+            .filter(Boolean)
+            .forEach((layer) => expandedSelection.add(layer));
+        }
+        if (layerRole(obj) === "template-photo-frame-name") {
+          const frame = activePhotoFrameLayer();
+          const patch = frame ? photoFrameNamePatchLayer(frame) : null;
+          if (patch) expandedSelection.add(patch);
+        }
+      });
+      expandedSelection.forEach((obj) => canvas.remove(obj));
       canvas.discardActiveObject();
-      if (selected.includes(teamText)) teamText = null;
+      if ([...expandedSelection].includes(teamText)) teamText = null;
       canvas.renderAll();
       saveHistory();
       updateSelectionControls();
@@ -5872,6 +5878,18 @@
       return layerObjects().find((layer) => layer && layer.data && layer.data.layerId === photoLayerId) || null;
     }
 
+    function photoFrameNameLayer(frame) {
+      const nameLayerId = frame && frame.data && frame.data.frameNameLayerId;
+      if (!nameLayerId) return null;
+      return layerObjects().find((layer) => layer && layer.data && layer.data.layerId === nameLayerId) || null;
+    }
+
+    function photoFrameNamePatchLayer(frame) {
+      const patchLayerId = frame && frame.data && frame.data.frameNamePatchLayerId;
+      if (!patchLayerId) return null;
+      return layerObjects().find((layer) => layer && layer.data && layer.data.layerId === patchLayerId) || null;
+    }
+
     function photoFrameAssetKey(frame) {
       const data = frame && frame.data ? frame.data : {};
       const source = [
@@ -5903,6 +5921,15 @@
       return { x: 0.5, y: 0.39, width: 0.94, height: 1.04 };
     }
 
+    function photoFrameNameProfile(frame) {
+      const key = photoFrameAssetKey(frame);
+      if (key === "baseball-1") return { x: 0.5, y: 0.73, width: 0.55, height: 0.13, fontSize: 0.096 };
+      if (key === "baseball-2") return { x: 0.5, y: 0.67, width: 0.52, height: 0.13, fontSize: 0.088 };
+      if (key === "soccer-1") return { x: 0.5, y: 0.68, width: 0.52, height: 0.12, fontSize: 0.082 };
+      if (key === "soccer-2") return { x: 0.5, y: 0.69, width: 0.5, height: 0.12, fontSize: 0.086 };
+      return { x: 0.5, y: 0.75, width: 0.62, height: 0.14, fontSize: 0.1 };
+    }
+
     function photoFramePhotoPlacement(frame) {
       frame.setCoords();
       const rect = frame.getBoundingRect(true, true);
@@ -5926,6 +5953,146 @@
       });
       photoLayer.scaleToWidth(placement.diameter);
       photoLayer.setCoords();
+    }
+
+    function photoFrameNamePlacement(frame) {
+      frame.setCoords();
+      const rect = frame.getBoundingRect(true, true);
+      const profile = photoFrameNameProfile(frame);
+      const height = Math.max(16, rect.height * profile.height);
+      return {
+        left: rect.left + rect.width * profile.x,
+        top: rect.top + rect.height * profile.y,
+        width: Math.max(36, rect.width * profile.width),
+        height,
+        fontSize: Math.max(10, Math.min(48, rect.height * profile.fontSize))
+      };
+    }
+
+    function orderPhotoFrameNameLayers(frame) {
+      const frameIndex = canvas.getObjects().indexOf(frame);
+      if (frameIndex < 0) return;
+      const patchLayer = photoFrameNamePatchLayer(frame);
+      const textLayer = photoFrameNameLayer(frame);
+      if (patchLayer) patchLayer.moveTo(frameIndex + 1);
+      if (textLayer) textLayer.moveTo(frameIndex + 2);
+    }
+
+    function fitPhotoFrameNameTextLayer(textLayer, placement) {
+      textLayer.set({ scaleX: 1, scaleY: 1, fontSize: placement.fontSize });
+      if (textLayer.getScaledWidth && textLayer.getScaledWidth() > placement.width * 0.94) {
+        textLayer.scaleToWidth(placement.width * 0.94);
+      }
+    }
+
+    function positionPhotoFrameNameLayer(frame) {
+      const placement = photoFrameNamePlacement(frame);
+      const patchLayer = photoFrameNamePatchLayer(frame);
+      const textLayer = photoFrameNameLayer(frame);
+      if (patchLayer) {
+        patchLayer.set({
+          left: placement.left,
+          top: placement.top,
+          width: placement.width,
+          height: placement.height,
+          rx: placement.height * 0.36,
+          ry: placement.height * 0.36,
+          scaleX: 1,
+          scaleY: 1,
+          angle: frame.angle || 0
+        });
+        patchLayer.setCoords();
+      }
+      if (textLayer) {
+        textLayer.set({
+          left: placement.left,
+          top: placement.top,
+          angle: frame.angle || 0
+        });
+        fitPhotoFrameNameTextLayer(textLayer, placement);
+        textLayer.setCoords();
+      }
+      orderPhotoFrameNameLayers(frame);
+    }
+
+    function ensurePhotoFrameNameLayer(frame, options = {}) {
+      if (!frame) return null;
+      const frameLayerId = ensureLayerId(frame);
+      const data = { ...(frame.data || {}) };
+      const placement = photoFrameNamePlacement(frame);
+      let patchLayer = photoFrameNamePatchLayer(frame);
+      let textLayer = photoFrameNameLayer(frame);
+      const nameText = options.text || data.playerName || (textLayer && textLayer.text) || "Player";
+
+      if (!patchLayer) {
+        patchLayer = new fabric.Rect({
+          left: placement.left,
+          top: placement.top,
+          originX: "center",
+          originY: "center",
+          fill: "#ffffff",
+          stroke: "#ffffff",
+          strokeWidth: 0,
+          selectable: false,
+          evented: false,
+          data: {
+            name: "Photo frame name cover",
+            role: "template-photo-frame-name-patch",
+            frameLayerId,
+            excludeFromLayerList: true
+          }
+        });
+        canvas.add(patchLayer);
+        ensureLayerId(patchLayer);
+      }
+
+      if (!textLayer) {
+        textLayer = new fabric.IText(nameText, {
+          left: placement.left,
+          top: placement.top,
+          originX: "center",
+          originY: "center",
+          fill: "#07112f",
+          fontFamily: "Arial Black, Impact, Arial, sans-serif",
+          fontSize: placement.fontSize,
+          fontWeight: 900,
+          stroke: "#ffffff",
+          strokeWidth: 0,
+          paintFirst: "stroke",
+          shadow: "none",
+          textAlign: "center",
+          data: {
+            name: options.playerNumber ? `Player name ${options.playerNumber}` : "Photo frame name",
+            role: "template-photo-frame-name",
+            frameLayerId,
+            showInLayerList: true
+          }
+        });
+        canvas.add(textLayer);
+        ensureLayerId(textLayer);
+      } else if (options.text) {
+        textLayer.set({ text: options.text });
+      }
+
+      frame.set({
+        data: {
+          ...data,
+          playerName: nameText,
+          frameNameLayerId: textLayer.data.layerId,
+          frameNamePatchLayerId: patchLayer.data.layerId
+        }
+      });
+      positionPhotoFrameNameLayer(frame);
+      canvas.renderAll();
+      if (!options.skipHistory) saveHistory();
+      if (!options.quiet) setStatus("Photo frame name is editable. Select the name text to change it.");
+      updateSelectionControls();
+      return textLayer;
+    }
+
+    function positionPhotoFrameLinkedLayers(frame) {
+      positionPhotoFramePhotoLayer(frame);
+      positionPhotoFrameNameLayer(frame);
     }
 
     async function refreshPhotoFramePhoto(frame, options = {}) {
@@ -8351,10 +8518,10 @@
       canvas.on("object:moving", (event) => {
         const obj = event.target;
         if (obj && obj !== guide && !isLayerLocked(obj)) keepObjectInArtboard(obj, 6);
-        if (isPhotoFrameLayer(obj)) positionPhotoFramePhotoLayer(obj);
+        if (isPhotoFrameLayer(obj)) positionPhotoFrameLinkedLayers(obj);
       });
       canvas.on("object:modified", (event) => {
-        if (isPhotoFrameLayer(event.target)) positionPhotoFramePhotoLayer(event.target);
+        if (isPhotoFrameLayer(event.target)) positionPhotoFrameLinkedLayers(event.target);
         saveHistory();
         updateSelectionControls();
       });
