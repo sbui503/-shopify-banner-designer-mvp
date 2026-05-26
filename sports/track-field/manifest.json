@@ -1,0 +1,657 @@
+{
+  "sport": "Track & Field",
+  "sport_slug": "track-field",
+  "generatedAt": "2026-05-26T06:04:11.661Z",
+  "assetCount": 81,
+  "productCount": 108,
+  "products": [
+    {
+      "handle": "track-field-hem-grommet-1-player-arena-orange-2026",
+      "title": "Track & Field Hem & Grommet 1 Player Arena Orange 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-1-player-arena-orange-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-1-player-arena-orange-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-2-player-stadium-gold-2026",
+      "title": "Track & Field Hem & Grommet 2 Player Stadium Gold 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-2-player-stadium-gold-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-2-player-stadium-gold-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-3-player-midnight-blue-2026",
+      "title": "Track & Field Hem & Grommet 3 Player Midnight Blue 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-3-player-midnight-blue-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-3-player-midnight-blue-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-4-player-angel-pink-2026",
+      "title": "Track & Field Hem & Grommet 4 Player Angel Pink 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-4-player-angel-pink-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-4-player-angel-pink-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-6-player-varsity-red-2026",
+      "title": "Track & Field Hem & Grommet 6 Player Varsity Red 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-6-player-varsity-red-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-6-player-varsity-red-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-8-player-royal-green-2026",
+      "title": "Track & Field Hem & Grommet 8 Player Royal Green 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-8-player-royal-green-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-8-player-royal-green-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-10-player-silver-black-2026",
+      "title": "Track & Field Hem & Grommet 10 Player Silver Black 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-10-player-silver-black-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-10-player-silver-black-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-12-player-electric-purple-2026",
+      "title": "Track & Field Hem & Grommet 12 Player Electric Purple 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-12-player-electric-purple-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-12-player-electric-purple-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-15-player-sunset-maroon-2026",
+      "title": "Track & Field Hem & Grommet 15 Player Sunset Maroon 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-15-player-sunset-maroon-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-15-player-sunset-maroon-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-20-player-ice-white-2026",
+      "title": "Track & Field Hem & Grommet 20 Player Ice White 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-20-player-ice-white-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-20-player-ice-white-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-1-player-neon-lime-2026",
+      "title": "Track & Field Hem & Grommet 1 Player Neon Lime 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-1-player-neon-lime-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-1-player-neon-lime-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-2-player-sky-burst-2026",
+      "title": "Track & Field Hem & Grommet 2 Player Sky Burst 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-2-player-sky-burst-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-2-player-sky-burst-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-3-player-arena-orange-2026",
+      "title": "Track & Field Hem & Grommet 3 Player Arena Orange 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-3-player-arena-orange-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-3-player-arena-orange-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-4-player-stadium-gold-2026",
+      "title": "Track & Field Hem & Grommet 4 Player Stadium Gold 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-4-player-stadium-gold-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-4-player-stadium-gold-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-6-player-midnight-blue-2026",
+      "title": "Track & Field Hem & Grommet 6 Player Midnight Blue 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-6-player-midnight-blue-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-6-player-midnight-blue-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-8-player-angel-pink-2026",
+      "title": "Track & Field Hem & Grommet 8 Player Angel Pink 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-8-player-angel-pink-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-8-player-angel-pink-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-10-player-varsity-red-2026",
+      "title": "Track & Field Hem & Grommet 10 Player Varsity Red 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-10-player-varsity-red-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-10-player-varsity-red-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-12-player-royal-green-2026",
+      "title": "Track & Field Hem & Grommet 12 Player Royal Green 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-12-player-royal-green-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-12-player-royal-green-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-15-player-silver-black-2026",
+      "title": "Track & Field Hem & Grommet 15 Player Silver Black 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-15-player-silver-black-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-15-player-silver-black-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-20-player-electric-purple-2026",
+      "title": "Track & Field Hem & Grommet 20 Player Electric Purple 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-20-player-electric-purple-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-20-player-electric-purple-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-1-player-sunset-maroon-2026",
+      "title": "Track & Field Hem & Grommet 1 Player Sunset Maroon 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-1-player-sunset-maroon-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-1-player-sunset-maroon-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-2-player-ice-white-2026",
+      "title": "Track & Field Hem & Grommet 2 Player Ice White 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-2-player-ice-white-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-2-player-ice-white-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-3-player-neon-lime-2026",
+      "title": "Track & Field Hem & Grommet 3 Player Neon Lime 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-3-player-neon-lime-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-3-player-neon-lime-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-4-player-sky-burst-2026",
+      "title": "Track & Field Hem & Grommet 4 Player Sky Burst 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-4-player-sky-burst-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-4-player-sky-burst-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-6-player-arena-orange-2026",
+      "title": "Track & Field Hem & Grommet 6 Player Arena Orange 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-6-player-arena-orange-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-6-player-arena-orange-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-8-player-stadium-gold-2026",
+      "title": "Track & Field Hem & Grommet 8 Player Stadium Gold 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-8-player-stadium-gold-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-8-player-stadium-gold-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-10-player-midnight-blue-2026",
+      "title": "Track & Field Hem & Grommet 10 Player Midnight Blue 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-10-player-midnight-blue-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-10-player-midnight-blue-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-12-player-angel-pink-2026",
+      "title": "Track & Field Hem & Grommet 12 Player Angel Pink 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-12-player-angel-pink-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-12-player-angel-pink-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-15-player-varsity-red-2026",
+      "title": "Track & Field Hem & Grommet 15 Player Varsity Red 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-15-player-varsity-red-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-15-player-varsity-red-2026.svg"
+    },
+    {
+      "handle": "track-field-hem-grommet-20-player-royal-green-2026",
+      "title": "Track & Field Hem & Grommet 20 Player Royal Green 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-hem-grommet-20-player-royal-green-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-hem-grommet-20-player-royal-green-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-1-player-arena-orange-2026",
+      "title": "Track & Field Pole Pocket 1 Player Arena Orange 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-1-player-arena-orange-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-1-player-arena-orange-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-2-player-stadium-gold-2026",
+      "title": "Track & Field Pole Pocket 2 Player Stadium Gold 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-2-player-stadium-gold-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-2-player-stadium-gold-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-3-player-midnight-blue-2026",
+      "title": "Track & Field Pole Pocket 3 Player Midnight Blue 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-3-player-midnight-blue-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-3-player-midnight-blue-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-4-player-angel-pink-2026",
+      "title": "Track & Field Pole Pocket 4 Player Angel Pink 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-4-player-angel-pink-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-4-player-angel-pink-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-6-player-varsity-red-2026",
+      "title": "Track & Field Pole Pocket 6 Player Varsity Red 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-6-player-varsity-red-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-6-player-varsity-red-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-8-player-royal-green-2026",
+      "title": "Track & Field Pole Pocket 8 Player Royal Green 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-8-player-royal-green-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-8-player-royal-green-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-10-player-silver-black-2026",
+      "title": "Track & Field Pole Pocket 10 Player Silver Black 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-10-player-silver-black-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-10-player-silver-black-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-12-player-electric-purple-2026",
+      "title": "Track & Field Pole Pocket 12 Player Electric Purple 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-12-player-electric-purple-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-12-player-electric-purple-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-15-player-sunset-maroon-2026",
+      "title": "Track & Field Pole Pocket 15 Player Sunset Maroon 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-15-player-sunset-maroon-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-15-player-sunset-maroon-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-20-player-ice-white-2026",
+      "title": "Track & Field Pole Pocket 20 Player Ice White 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-20-player-ice-white-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-20-player-ice-white-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-1-player-neon-lime-2026",
+      "title": "Track & Field Pole Pocket 1 Player Neon Lime 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-1-player-neon-lime-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-1-player-neon-lime-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-2-player-sky-burst-2026",
+      "title": "Track & Field Pole Pocket 2 Player Sky Burst 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-2-player-sky-burst-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-2-player-sky-burst-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-3-player-arena-orange-2026",
+      "title": "Track & Field Pole Pocket 3 Player Arena Orange 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-3-player-arena-orange-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-3-player-arena-orange-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-4-player-stadium-gold-2026",
+      "title": "Track & Field Pole Pocket 4 Player Stadium Gold 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-4-player-stadium-gold-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-4-player-stadium-gold-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-6-player-midnight-blue-2026",
+      "title": "Track & Field Pole Pocket 6 Player Midnight Blue 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-6-player-midnight-blue-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-6-player-midnight-blue-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-8-player-angel-pink-2026",
+      "title": "Track & Field Pole Pocket 8 Player Angel Pink 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-8-player-angel-pink-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-8-player-angel-pink-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-10-player-varsity-red-2026",
+      "title": "Track & Field Pole Pocket 10 Player Varsity Red 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-10-player-varsity-red-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-10-player-varsity-red-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-12-player-royal-green-2026",
+      "title": "Track & Field Pole Pocket 12 Player Royal Green 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-12-player-royal-green-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-12-player-royal-green-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-15-player-silver-black-2026",
+      "title": "Track & Field Pole Pocket 15 Player Silver Black 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-15-player-silver-black-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-15-player-silver-black-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-20-player-electric-purple-2026",
+      "title": "Track & Field Pole Pocket 20 Player Electric Purple 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-20-player-electric-purple-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-20-player-electric-purple-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-1-player-sunset-maroon-2026",
+      "title": "Track & Field Pole Pocket 1 Player Sunset Maroon 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-1-player-sunset-maroon-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-1-player-sunset-maroon-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-2-player-ice-white-2026",
+      "title": "Track & Field Pole Pocket 2 Player Ice White 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-2-player-ice-white-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-2-player-ice-white-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-3-player-neon-lime-2026",
+      "title": "Track & Field Pole Pocket 3 Player Neon Lime 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-3-player-neon-lime-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-3-player-neon-lime-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-4-player-sky-burst-2026",
+      "title": "Track & Field Pole Pocket 4 Player Sky Burst 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-4-player-sky-burst-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-4-player-sky-burst-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-6-player-arena-orange-2026",
+      "title": "Track & Field Pole Pocket 6 Player Arena Orange 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-6-player-arena-orange-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-6-player-arena-orange-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-8-player-stadium-gold-2026",
+      "title": "Track & Field Pole Pocket 8 Player Stadium Gold 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-8-player-stadium-gold-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-8-player-stadium-gold-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-10-player-midnight-blue-2026",
+      "title": "Track & Field Pole Pocket 10 Player Midnight Blue 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-10-player-midnight-blue-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-10-player-midnight-blue-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-12-player-angel-pink-2026",
+      "title": "Track & Field Pole Pocket 12 Player Angel Pink 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-12-player-angel-pink-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-12-player-angel-pink-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-15-player-varsity-red-2026",
+      "title": "Track & Field Pole Pocket 15 Player Varsity Red 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-15-player-varsity-red-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-15-player-varsity-red-2026.svg"
+    },
+    {
+      "handle": "track-field-pole-pocket-20-player-royal-green-2026",
+      "title": "Track & Field Pole Pocket 20 Player Royal Green 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-pole-pocket-20-player-royal-green-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-pole-pocket-20-player-royal-green-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-1-player-arena-orange-2026",
+      "title": "Track & Field Triangle Banner 1 Player Arena Orange 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-1-player-arena-orange-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-1-player-arena-orange-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-2-player-stadium-gold-2026",
+      "title": "Track & Field Triangle Banner 2 Player Stadium Gold 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-2-player-stadium-gold-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-2-player-stadium-gold-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-3-player-midnight-blue-2026",
+      "title": "Track & Field Triangle Banner 3 Player Midnight Blue 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-3-player-midnight-blue-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-3-player-midnight-blue-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-4-player-angel-pink-2026",
+      "title": "Track & Field Triangle Banner 4 Player Angel Pink 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-4-player-angel-pink-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-4-player-angel-pink-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-6-player-varsity-red-2026",
+      "title": "Track & Field Triangle Banner 6 Player Varsity Red 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-6-player-varsity-red-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-6-player-varsity-red-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-8-player-royal-green-2026",
+      "title": "Track & Field Triangle Banner 8 Player Royal Green 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-8-player-royal-green-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-8-player-royal-green-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-10-player-silver-black-2026",
+      "title": "Track & Field Triangle Banner 10 Player Silver Black 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-10-player-silver-black-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-10-player-silver-black-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-12-player-electric-purple-2026",
+      "title": "Track & Field Triangle Banner 12 Player Electric Purple 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-12-player-electric-purple-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-12-player-electric-purple-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-15-player-sunset-maroon-2026",
+      "title": "Track & Field Triangle Banner 15 Player Sunset Maroon 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-15-player-sunset-maroon-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-15-player-sunset-maroon-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-20-player-ice-white-2026",
+      "title": "Track & Field Triangle Banner 20 Player Ice White 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-20-player-ice-white-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-20-player-ice-white-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-1-player-neon-lime-2026",
+      "title": "Track & Field Triangle Banner 1 Player Neon Lime 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-1-player-neon-lime-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-1-player-neon-lime-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-2-player-sky-burst-2026",
+      "title": "Track & Field Triangle Banner 2 Player Sky Burst 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-2-player-sky-burst-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-2-player-sky-burst-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-3-player-arena-orange-2026",
+      "title": "Track & Field Triangle Banner 3 Player Arena Orange 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-3-player-arena-orange-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-3-player-arena-orange-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-4-player-stadium-gold-2026",
+      "title": "Track & Field Triangle Banner 4 Player Stadium Gold 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-4-player-stadium-gold-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-4-player-stadium-gold-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-6-player-midnight-blue-2026",
+      "title": "Track & Field Triangle Banner 6 Player Midnight Blue 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-6-player-midnight-blue-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-6-player-midnight-blue-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-8-player-angel-pink-2026",
+      "title": "Track & Field Triangle Banner 8 Player Angel Pink 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-8-player-angel-pink-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-8-player-angel-pink-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-10-player-varsity-red-2026",
+      "title": "Track & Field Triangle Banner 10 Player Varsity Red 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-10-player-varsity-red-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-10-player-varsity-red-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-12-player-royal-green-2026",
+      "title": "Track & Field Triangle Banner 12 Player Royal Green 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-12-player-royal-green-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-12-player-royal-green-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-15-player-silver-black-2026",
+      "title": "Track & Field Triangle Banner 15 Player Silver Black 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-15-player-silver-black-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-15-player-silver-black-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-20-player-electric-purple-2026",
+      "title": "Track & Field Triangle Banner 20 Player Electric Purple 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-20-player-electric-purple-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-20-player-electric-purple-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-1-player-sunset-maroon-2026",
+      "title": "Track & Field Triangle Banner 1 Player Sunset Maroon 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-1-player-sunset-maroon-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-1-player-sunset-maroon-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-2-player-ice-white-2026",
+      "title": "Track & Field Triangle Banner 2 Player Ice White 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-2-player-ice-white-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-2-player-ice-white-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-3-player-neon-lime-2026",
+      "title": "Track & Field Triangle Banner 3 Player Neon Lime 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-3-player-neon-lime-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-3-player-neon-lime-2026.svg"
+    },
+    {
+      "handle": "track-field-triangle-4-player-sky-burst-2026",
+      "title": "Track & Field Triangle Banner 4 Player Sky Burst 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-triangle-4-player-sky-burst-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-triangle-4-player-sky-burst-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-1-player-arena-orange-2026",
+      "title": "Track & Field Home Plate Banner 1 Player Arena Orange 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-1-player-arena-orange-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-1-player-arena-orange-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-2-player-stadium-gold-2026",
+      "title": "Track & Field Home Plate Banner 2 Player Stadium Gold 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-2-player-stadium-gold-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-2-player-stadium-gold-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-3-player-midnight-blue-2026",
+      "title": "Track & Field Home Plate Banner 3 Player Midnight Blue 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-3-player-midnight-blue-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-3-player-midnight-blue-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-4-player-angel-pink-2026",
+      "title": "Track & Field Home Plate Banner 4 Player Angel Pink 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-4-player-angel-pink-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-4-player-angel-pink-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-6-player-varsity-red-2026",
+      "title": "Track & Field Home Plate Banner 6 Player Varsity Red 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-6-player-varsity-red-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-6-player-varsity-red-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-8-player-royal-green-2026",
+      "title": "Track & Field Home Plate Banner 8 Player Royal Green 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-8-player-royal-green-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-8-player-royal-green-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-10-player-silver-black-2026",
+      "title": "Track & Field Home Plate Banner 10 Player Silver Black 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-10-player-silver-black-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-10-player-silver-black-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-12-player-electric-purple-2026",
+      "title": "Track & Field Home Plate Banner 12 Player Electric Purple 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-12-player-electric-purple-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-12-player-electric-purple-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-15-player-sunset-maroon-2026",
+      "title": "Track & Field Home Plate Banner 15 Player Sunset Maroon 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-15-player-sunset-maroon-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-15-player-sunset-maroon-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-20-player-ice-white-2026",
+      "title": "Track & Field Home Plate Banner 20 Player Ice White 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-20-player-ice-white-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-20-player-ice-white-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-1-player-neon-lime-2026",
+      "title": "Track & Field Home Plate Banner 1 Player Neon Lime 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-1-player-neon-lime-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-1-player-neon-lime-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-2-player-sky-burst-2026",
+      "title": "Track & Field Home Plate Banner 2 Player Sky Burst 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-2-player-sky-burst-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-2-player-sky-burst-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-3-player-arena-orange-2026",
+      "title": "Track & Field Home Plate Banner 3 Player Arena Orange 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-3-player-arena-orange-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-3-player-arena-orange-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-4-player-stadium-gold-2026",
+      "title": "Track & Field Home Plate Banner 4 Player Stadium Gold 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-4-player-stadium-gold-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-4-player-stadium-gold-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-6-player-midnight-blue-2026",
+      "title": "Track & Field Home Plate Banner 6 Player Midnight Blue 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-6-player-midnight-blue-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-6-player-midnight-blue-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-8-player-angel-pink-2026",
+      "title": "Track & Field Home Plate Banner 8 Player Angel Pink 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-8-player-angel-pink-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-8-player-angel-pink-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-10-player-varsity-red-2026",
+      "title": "Track & Field Home Plate Banner 10 Player Varsity Red 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-10-player-varsity-red-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-10-player-varsity-red-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-12-player-royal-green-2026",
+      "title": "Track & Field Home Plate Banner 12 Player Royal Green 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-12-player-royal-green-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-12-player-royal-green-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-15-player-silver-black-2026",
+      "title": "Track & Field Home Plate Banner 15 Player Silver Black 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-15-player-silver-black-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-15-player-silver-black-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-20-player-electric-purple-2026",
+      "title": "Track & Field Home Plate Banner 20 Player Electric Purple 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-20-player-electric-purple-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-20-player-electric-purple-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-1-player-sunset-maroon-2026",
+      "title": "Track & Field Home Plate Banner 1 Player Sunset Maroon 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-1-player-sunset-maroon-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-1-player-sunset-maroon-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-2-player-ice-white-2026",
+      "title": "Track & Field Home Plate Banner 2 Player Ice White 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-2-player-ice-white-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-2-player-ice-white-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-3-player-neon-lime-2026",
+      "title": "Track & Field Home Plate Banner 3 Player Neon Lime 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-3-player-neon-lime-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-3-player-neon-lime-2026.svg"
+    },
+    {
+      "handle": "track-field-home-plate-4-player-sky-burst-2026",
+      "title": "Track & Field Home Plate Banner 4 Player Sky Burst 2026",
+      "template_svg_path": "/assets/sports/track-field/templates/track-field-home-plate-4-player-sky-burst-2026.svg",
+      "preview_image_path": "/assets/sports/track-field/templates/track-field-home-plate-4-player-sky-burst-2026.svg"
+    }
+  ]
+}

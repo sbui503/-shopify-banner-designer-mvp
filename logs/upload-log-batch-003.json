@@ -1,0 +1,1089 @@
+{
+  "batch": 3,
+  "batchSize": 180,
+  "itemCount": 180,
+  "status": "not-uploaded",
+  "blockedBy": "Production upload intentionally blocked until current Shopify theme/products/collections are backed up and legal/logo review is complete.",
+  "items": [
+    {
+      "id": "softball:sport_icon:crest-icon:softball-crest-icon",
+      "file_path": "public/assets/sports/softball/icons/softball-crest-icon.svg",
+      "url_path": "/assets/sports/softball/icons/softball-crest-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:sport_icon:star-icon:softball-star-icon",
+      "file_path": "public/assets/sports/softball/icons/softball-star-icon.svg",
+      "url_path": "/assets/sports/softball/icons/softball-star-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:sport_icon:wings-icon:softball-wings-icon",
+      "file_path": "public/assets/sports/softball/icons/softball-wings-icon.svg",
+      "url_path": "/assets/sports/softball/icons/softball-wings-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:sport_icon:flame-icon:softball-flame-icon",
+      "file_path": "public/assets/sports/softball/icons/softball-flame-icon.svg",
+      "url_path": "/assets/sports/softball/icons/softball-flame-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:ball:primary-ball:softball-primary-ball",
+      "file_path": "public/assets/sports/softball/balls/softball-primary-ball.svg",
+      "url_path": "/assets/sports/softball/balls/softball-primary-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:ball:outline-ball:softball-outline-ball",
+      "file_path": "public/assets/sports/softball/balls/softball-outline-ball.svg",
+      "url_path": "/assets/sports/softball/balls/softball-outline-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:ball:shadow-ball:softball-shadow-ball",
+      "file_path": "public/assets/sports/softball/balls/softball-shadow-ball.svg",
+      "url_path": "/assets/sports/softball/balls/softball-shadow-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:ball:badge-ball:softball-badge-ball",
+      "file_path": "public/assets/sports/softball/balls/softball-badge-ball.svg",
+      "url_path": "/assets/sports/softball/balls/softball-badge-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:field_court_overlay:standard-field-court-overlay:softball-standard-overlay",
+      "file_path": "public/assets/sports/softball/overlays/softball-standard-overlay.svg",
+      "url_path": "/assets/sports/softball/overlays/softball-standard-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:field_court_overlay:wide-field-court-overlay:softball-wide-overlay",
+      "file_path": "public/assets/sports/softball/overlays/softball-wide-overlay.svg",
+      "url_path": "/assets/sports/softball/overlays/softball-wide-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:field_court_overlay:center-field-court-overlay:softball-center-overlay",
+      "file_path": "public/assets/sports/softball/overlays/softball-center-overlay.svg",
+      "url_path": "/assets/sports/softball/overlays/softball-center-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:field_court_overlay:minimal-field-court-overlay:softball-minimal-overlay",
+      "file_path": "public/assets/sports/softball/overlays/softball-minimal-overlay.svg",
+      "url_path": "/assets/sports/softball/overlays/softball-minimal-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:light_effect:spotlight-light-effect:softball-spotlight-light-effect",
+      "file_path": "public/assets/sports/softball/light-effects/softball-spotlight-light-effect.svg",
+      "url_path": "/assets/sports/softball/light-effects/softball-spotlight-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:light_effect:halo-light-effect:softball-halo-light-effect",
+      "file_path": "public/assets/sports/softball/light-effects/softball-halo-light-effect.svg",
+      "url_path": "/assets/sports/softball/light-effects/softball-halo-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:light_effect:burst-light-effect:softball-burst-light-effect",
+      "file_path": "public/assets/sports/softball/light-effects/softball-burst-light-effect.svg",
+      "url_path": "/assets/sports/softball/light-effects/softball-burst-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:light_effect:stadium-light-effect:softball-stadium-light-effect",
+      "file_path": "public/assets/sports/softball/light-effects/softball-stadium-light-effect.svg",
+      "url_path": "/assets/sports/softball/light-effects/softball-stadium-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:team_logo_placeholder:badge-team-logo-placeholder:softball-badge-team-logo",
+      "file_path": "public/assets/sports/softball/team-logos/softball-badge-team-logo.svg",
+      "url_path": "/assets/sports/softball/team-logos/softball-badge-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:team_logo_placeholder:varsity-team-logo-placeholder:softball-varsity-team-logo",
+      "file_path": "public/assets/sports/softball/team-logos/softball-varsity-team-logo.svg",
+      "url_path": "/assets/sports/softball/team-logos/softball-varsity-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:team_logo_placeholder:shield-team-logo-placeholder:softball-shield-team-logo",
+      "file_path": "public/assets/sports/softball/team-logos/softball-shield-team-logo.svg",
+      "url_path": "/assets/sports/softball/team-logos/softball-shield-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:team_logo_placeholder:champion-team-logo-placeholder:softball-champion-team-logo",
+      "file_path": "public/assets/sports/softball/team-logos/softball-champion-team-logo.svg",
+      "url_path": "/assets/sports/softball/team-logos/softball-champion-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:team_logo_placeholder:circle-team-logo-placeholder:softball-circle-team-logo",
+      "file_path": "public/assets/sports/softball/team-logos/softball-circle-team-logo.svg",
+      "url_path": "/assets/sports/softball/team-logos/softball-circle-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:team_logo_placeholder:diamond-team-logo-placeholder:softball-diamond-team-logo",
+      "file_path": "public/assets/sports/softball/team-logos/softball-diamond-team-logo.svg",
+      "url_path": "/assets/sports/softball/team-logos/softball-diamond-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:team_logo_placeholder:script-team-logo-placeholder:softball-script-team-logo",
+      "file_path": "public/assets/sports/softball/team-logos/softball-script-team-logo.svg",
+      "url_path": "/assets/sports/softball/team-logos/softball-script-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:team_logo_placeholder:block-team-logo-placeholder:softball-block-team-logo",
+      "file_path": "public/assets/sports/softball/team-logos/softball-block-team-logo.svg",
+      "url_path": "/assets/sports/softball/team-logos/softball-block-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:irvine-high-school-vaqueros-placeholder-logo:irvine-high-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/irvine-high-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/irvine-high-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:woodbridge-high-school-warriors-placeholder-logo:woodbridge-high-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/woodbridge-high-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/woodbridge-high-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:university-high-school-trojans-placeholder-logo:university-high-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/university-high-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/university-high-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:northwood-high-school-timberwolves-placeholder-logo:northwood-high-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/northwood-high-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/northwood-high-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:portola-high-school-bulldogs-placeholder-logo:portola-high-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/portola-high-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/portola-high-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:beckman-high-school-patriots-placeholder-logo:beckman-high-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/beckman-high-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/beckman-high-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:tustin-high-school-tillers-placeholder-logo:tustin-high-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/tustin-high-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/tustin-high-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:foothill-high-school-knights-placeholder-logo:foothill-high-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/foothill-high-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/foothill-high-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:laguna-hills-high-school-hawks-placeholder-logo:laguna-hills-high-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/laguna-hills-high-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/laguna-hills-high-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:mission-viejo-high-school-diablos-placeholder-logo:mission-viejo-high-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/mission-viejo-high-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/mission-viejo-high-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:huntington-beach-high-school-oilers-placeholder-logo:huntington-beach-high-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/huntington-beach-high-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/huntington-beach-high-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:mater-dei-high-school-monarchs-placeholder-logo:mater-dei-high-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/mater-dei-high-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/mater-dei-high-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:sierra-vista-middle-school-chargers-placeholder-logo:sierra-vista-middle-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/sierra-vista-middle-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/sierra-vista-middle-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:venado-middle-school-vikings-placeholder-logo:venado-middle-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/venado-middle-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/venado-middle-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:rancho-san-joaquin-middle-school-roadrunners-placeholder-logo:rancho-san-joaquin-middle-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/rancho-san-joaquin-middle-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/rancho-san-joaquin-middle-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:lakeside-middle-school-panthers-placeholder-logo:lakeside-middle-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/lakeside-middle-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/lakeside-middle-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:south-lake-middle-school-sharks-placeholder-logo:south-lake-middle-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/south-lake-middle-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/south-lake-middle-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:jeffrey-trail-middle-school-jets-placeholder-logo:jeffrey-trail-middle-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/jeffrey-trail-middle-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/jeffrey-trail-middle-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:orchard-hills-school-hawks-placeholder-logo:orchard-hills-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/orchard-hills-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/orchard-hills-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:cadence-park-school-coyotes-placeholder-logo:cadence-park-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/cadence-park-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/cadence-park-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:school_team_logo:beacon-park-school-bobcats-placeholder-logo:beacon-park-school-softball-placeholder-logo",
+      "file_path": "public/assets/sports/softball/school-logos/beacon-park-school-softball-placeholder-logo.svg",
+      "url_path": "/assets/sports/softball/school-logos/beacon-park-school-softball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:arena-rectangle-background:soccer-rectangle-arena-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-rectangle-arena-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-rectangle-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:game-night-lights-rectangle-background:soccer-rectangle-lights-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-rectangle-lights-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-rectangle-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:speed-lines-rectangle-background:soccer-rectangle-speed-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-rectangle-speed-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-rectangle-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:championship-burst-rectangle-background:soccer-rectangle-championship-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-rectangle-championship-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-rectangle-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:arena-triangle-background:soccer-triangle-arena-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-triangle-arena-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-triangle-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:game-night-lights-triangle-background:soccer-triangle-lights-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-triangle-lights-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-triangle-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:speed-lines-triangle-background:soccer-triangle-speed-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-triangle-speed-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-triangle-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:championship-burst-triangle-background:soccer-triangle-championship-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-triangle-championship-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-triangle-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:arena-home-plate-background:soccer-home-plate-arena-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-home-plate-arena-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-home-plate-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:game-night-lights-home-plate-background:soccer-home-plate-lights-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-home-plate-lights-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-home-plate-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:speed-lines-home-plate-background:soccer-home-plate-speed-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-home-plate-speed-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-home-plate-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:championship-burst-home-plate-background:soccer-home-plate-championship-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-home-plate-championship-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-home-plate-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:arena-pole-pocket-background:soccer-pole-pocket-arena-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-pole-pocket-arena-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-pole-pocket-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:game-night-lights-pole-pocket-background:soccer-pole-pocket-lights-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-pole-pocket-lights-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-pole-pocket-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:speed-lines-pole-pocket-background:soccer-pole-pocket-speed-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-pole-pocket-speed-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-pole-pocket-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:background:championship-burst-pole-pocket-background:soccer-pole-pocket-championship-background",
+      "file_path": "public/assets/sports/soccer/backgrounds/soccer-pole-pocket-championship-background.svg",
+      "url_path": "/assets/sports/soccer/backgrounds/soccer-pole-pocket-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:player_photo_frame:classic-photo-frame:soccer-classic-photo-frame",
+      "file_path": "public/assets/sports/soccer/photo-frames/soccer-classic-photo-frame.svg",
+      "url_path": "/assets/sports/soccer/photo-frames/soccer-classic-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:player_photo_frame:ribbon-photo-frame:soccer-ribbon-photo-frame",
+      "file_path": "public/assets/sports/soccer/photo-frames/soccer-ribbon-photo-frame.svg",
+      "url_path": "/assets/sports/soccer/photo-frames/soccer-ribbon-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:player_photo_frame:star-photo-frame:soccer-star-photo-frame",
+      "file_path": "public/assets/sports/soccer/photo-frames/soccer-star-photo-frame.svg",
+      "url_path": "/assets/sports/soccer/photo-frames/soccer-star-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:player_photo_frame:shield-photo-frame:soccer-shield-photo-frame",
+      "file_path": "public/assets/sports/soccer/photo-frames/soccer-shield-photo-frame.svg",
+      "url_path": "/assets/sports/soccer/photo-frames/soccer-shield-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:player_photo_frame:varsity-photo-frame:soccer-varsity-photo-frame",
+      "file_path": "public/assets/sports/soccer/photo-frames/soccer-varsity-photo-frame.svg",
+      "url_path": "/assets/sports/soccer/photo-frames/soccer-varsity-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:player_photo_frame:champion-photo-frame:soccer-champion-photo-frame",
+      "file_path": "public/assets/sports/soccer/photo-frames/soccer-champion-photo-frame.svg",
+      "url_path": "/assets/sports/soccer/photo-frames/soccer-champion-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:player_photo_frame:wings-photo-frame:soccer-wings-photo-frame",
+      "file_path": "public/assets/sports/soccer/photo-frames/soccer-wings-photo-frame.svg",
+      "url_path": "/assets/sports/soccer/photo-frames/soccer-wings-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:player_photo_frame:halo-photo-frame:soccer-halo-photo-frame",
+      "file_path": "public/assets/sports/soccer/photo-frames/soccer-halo-photo-frame.svg",
+      "url_path": "/assets/sports/soccer/photo-frames/soccer-halo-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:player_photo_frame:stadium-photo-frame:soccer-stadium-photo-frame",
+      "file_path": "public/assets/sports/soccer/photo-frames/soccer-stadium-photo-frame.svg",
+      "url_path": "/assets/sports/soccer/photo-frames/soccer-stadium-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:player_photo_frame:pennant-photo-frame:soccer-pennant-photo-frame",
+      "file_path": "public/assets/sports/soccer/photo-frames/soccer-pennant-photo-frame.svg",
+      "url_path": "/assets/sports/soccer/photo-frames/soccer-pennant-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:nameplate:classic-nameplate:soccer-classic-nameplate",
+      "file_path": "public/assets/sports/soccer/nameplates/soccer-classic-nameplate.svg",
+      "url_path": "/assets/sports/soccer/nameplates/soccer-classic-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:nameplate:arched-nameplate:soccer-arched-nameplate",
+      "file_path": "public/assets/sports/soccer/nameplates/soccer-arched-nameplate.svg",
+      "url_path": "/assets/sports/soccer/nameplates/soccer-arched-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:nameplate:ribbon-nameplate:soccer-ribbon-nameplate",
+      "file_path": "public/assets/sports/soccer/nameplates/soccer-ribbon-nameplate.svg",
+      "url_path": "/assets/sports/soccer/nameplates/soccer-ribbon-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:nameplate:bold-nameplate:soccer-bold-nameplate",
+      "file_path": "public/assets/sports/soccer/nameplates/soccer-bold-nameplate.svg",
+      "url_path": "/assets/sports/soccer/nameplates/soccer-bold-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:nameplate:compact-nameplate:soccer-compact-nameplate",
+      "file_path": "public/assets/sports/soccer/nameplates/soccer-compact-nameplate.svg",
+      "url_path": "/assets/sports/soccer/nameplates/soccer-compact-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:nameplate:wide-nameplate:soccer-wide-nameplate",
+      "file_path": "public/assets/sports/soccer/nameplates/soccer-wide-nameplate.svg",
+      "url_path": "/assets/sports/soccer/nameplates/soccer-wide-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:sport_icon:ball-icon:soccer-ball-icon",
+      "file_path": "public/assets/sports/soccer/icons/soccer-ball-icon.svg",
+      "url_path": "/assets/sports/soccer/icons/soccer-ball-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:sport_icon:jersey-icon:soccer-jersey-icon",
+      "file_path": "public/assets/sports/soccer/icons/soccer-jersey-icon.svg",
+      "url_path": "/assets/sports/soccer/icons/soccer-jersey-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:sport_icon:medal-icon:soccer-medal-icon",
+      "file_path": "public/assets/sports/soccer/icons/soccer-medal-icon.svg",
+      "url_path": "/assets/sports/soccer/icons/soccer-medal-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:sport_icon:number-icon:soccer-number-icon",
+      "file_path": "public/assets/sports/soccer/icons/soccer-number-icon.svg",
+      "url_path": "/assets/sports/soccer/icons/soccer-number-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:sport_icon:crest-icon:soccer-crest-icon",
+      "file_path": "public/assets/sports/soccer/icons/soccer-crest-icon.svg",
+      "url_path": "/assets/sports/soccer/icons/soccer-crest-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:sport_icon:star-icon:soccer-star-icon",
+      "file_path": "public/assets/sports/soccer/icons/soccer-star-icon.svg",
+      "url_path": "/assets/sports/soccer/icons/soccer-star-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:sport_icon:wings-icon:soccer-wings-icon",
+      "file_path": "public/assets/sports/soccer/icons/soccer-wings-icon.svg",
+      "url_path": "/assets/sports/soccer/icons/soccer-wings-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:sport_icon:flame-icon:soccer-flame-icon",
+      "file_path": "public/assets/sports/soccer/icons/soccer-flame-icon.svg",
+      "url_path": "/assets/sports/soccer/icons/soccer-flame-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:ball:primary-ball:soccer-primary-ball",
+      "file_path": "public/assets/sports/soccer/balls/soccer-primary-ball.svg",
+      "url_path": "/assets/sports/soccer/balls/soccer-primary-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:ball:outline-ball:soccer-outline-ball",
+      "file_path": "public/assets/sports/soccer/balls/soccer-outline-ball.svg",
+      "url_path": "/assets/sports/soccer/balls/soccer-outline-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:ball:shadow-ball:soccer-shadow-ball",
+      "file_path": "public/assets/sports/soccer/balls/soccer-shadow-ball.svg",
+      "url_path": "/assets/sports/soccer/balls/soccer-shadow-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:ball:badge-ball:soccer-badge-ball",
+      "file_path": "public/assets/sports/soccer/balls/soccer-badge-ball.svg",
+      "url_path": "/assets/sports/soccer/balls/soccer-badge-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:field_court_overlay:standard-field-court-overlay:soccer-standard-overlay",
+      "file_path": "public/assets/sports/soccer/overlays/soccer-standard-overlay.svg",
+      "url_path": "/assets/sports/soccer/overlays/soccer-standard-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:field_court_overlay:wide-field-court-overlay:soccer-wide-overlay",
+      "file_path": "public/assets/sports/soccer/overlays/soccer-wide-overlay.svg",
+      "url_path": "/assets/sports/soccer/overlays/soccer-wide-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:field_court_overlay:center-field-court-overlay:soccer-center-overlay",
+      "file_path": "public/assets/sports/soccer/overlays/soccer-center-overlay.svg",
+      "url_path": "/assets/sports/soccer/overlays/soccer-center-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:field_court_overlay:minimal-field-court-overlay:soccer-minimal-overlay",
+      "file_path": "public/assets/sports/soccer/overlays/soccer-minimal-overlay.svg",
+      "url_path": "/assets/sports/soccer/overlays/soccer-minimal-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:light_effect:spotlight-light-effect:soccer-spotlight-light-effect",
+      "file_path": "public/assets/sports/soccer/light-effects/soccer-spotlight-light-effect.svg",
+      "url_path": "/assets/sports/soccer/light-effects/soccer-spotlight-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:light_effect:halo-light-effect:soccer-halo-light-effect",
+      "file_path": "public/assets/sports/soccer/light-effects/soccer-halo-light-effect.svg",
+      "url_path": "/assets/sports/soccer/light-effects/soccer-halo-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:light_effect:burst-light-effect:soccer-burst-light-effect",
+      "file_path": "public/assets/sports/soccer/light-effects/soccer-burst-light-effect.svg",
+      "url_path": "/assets/sports/soccer/light-effects/soccer-burst-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:light_effect:stadium-light-effect:soccer-stadium-light-effect",
+      "file_path": "public/assets/sports/soccer/light-effects/soccer-stadium-light-effect.svg",
+      "url_path": "/assets/sports/soccer/light-effects/soccer-stadium-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:team_logo_placeholder:badge-team-logo-placeholder:soccer-badge-team-logo",
+      "file_path": "public/assets/sports/soccer/team-logos/soccer-badge-team-logo.svg",
+      "url_path": "/assets/sports/soccer/team-logos/soccer-badge-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:team_logo_placeholder:varsity-team-logo-placeholder:soccer-varsity-team-logo",
+      "file_path": "public/assets/sports/soccer/team-logos/soccer-varsity-team-logo.svg",
+      "url_path": "/assets/sports/soccer/team-logos/soccer-varsity-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:team_logo_placeholder:shield-team-logo-placeholder:soccer-shield-team-logo",
+      "file_path": "public/assets/sports/soccer/team-logos/soccer-shield-team-logo.svg",
+      "url_path": "/assets/sports/soccer/team-logos/soccer-shield-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:team_logo_placeholder:champion-team-logo-placeholder:soccer-champion-team-logo",
+      "file_path": "public/assets/sports/soccer/team-logos/soccer-champion-team-logo.svg",
+      "url_path": "/assets/sports/soccer/team-logos/soccer-champion-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:team_logo_placeholder:circle-team-logo-placeholder:soccer-circle-team-logo",
+      "file_path": "public/assets/sports/soccer/team-logos/soccer-circle-team-logo.svg",
+      "url_path": "/assets/sports/soccer/team-logos/soccer-circle-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:team_logo_placeholder:diamond-team-logo-placeholder:soccer-diamond-team-logo",
+      "file_path": "public/assets/sports/soccer/team-logos/soccer-diamond-team-logo.svg",
+      "url_path": "/assets/sports/soccer/team-logos/soccer-diamond-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:team_logo_placeholder:script-team-logo-placeholder:soccer-script-team-logo",
+      "file_path": "public/assets/sports/soccer/team-logos/soccer-script-team-logo.svg",
+      "url_path": "/assets/sports/soccer/team-logos/soccer-script-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:team_logo_placeholder:block-team-logo-placeholder:soccer-block-team-logo",
+      "file_path": "public/assets/sports/soccer/team-logos/soccer-block-team-logo.svg",
+      "url_path": "/assets/sports/soccer/team-logos/soccer-block-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:irvine-high-school-vaqueros-placeholder-logo:irvine-high-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/irvine-high-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/irvine-high-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:woodbridge-high-school-warriors-placeholder-logo:woodbridge-high-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/woodbridge-high-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/woodbridge-high-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:university-high-school-trojans-placeholder-logo:university-high-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/university-high-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/university-high-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:northwood-high-school-timberwolves-placeholder-logo:northwood-high-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/northwood-high-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/northwood-high-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:portola-high-school-bulldogs-placeholder-logo:portola-high-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/portola-high-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/portola-high-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:beckman-high-school-patriots-placeholder-logo:beckman-high-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/beckman-high-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/beckman-high-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:tustin-high-school-tillers-placeholder-logo:tustin-high-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/tustin-high-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/tustin-high-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:foothill-high-school-knights-placeholder-logo:foothill-high-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/foothill-high-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/foothill-high-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:laguna-hills-high-school-hawks-placeholder-logo:laguna-hills-high-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/laguna-hills-high-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/laguna-hills-high-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:mission-viejo-high-school-diablos-placeholder-logo:mission-viejo-high-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/mission-viejo-high-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/mission-viejo-high-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:huntington-beach-high-school-oilers-placeholder-logo:huntington-beach-high-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/huntington-beach-high-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/huntington-beach-high-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:mater-dei-high-school-monarchs-placeholder-logo:mater-dei-high-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/mater-dei-high-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/mater-dei-high-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:sierra-vista-middle-school-chargers-placeholder-logo:sierra-vista-middle-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/sierra-vista-middle-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/sierra-vista-middle-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:venado-middle-school-vikings-placeholder-logo:venado-middle-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/venado-middle-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/venado-middle-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:rancho-san-joaquin-middle-school-roadrunners-placeholder-logo:rancho-san-joaquin-middle-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/rancho-san-joaquin-middle-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/rancho-san-joaquin-middle-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:lakeside-middle-school-panthers-placeholder-logo:lakeside-middle-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/lakeside-middle-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/lakeside-middle-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:south-lake-middle-school-sharks-placeholder-logo:south-lake-middle-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/south-lake-middle-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/south-lake-middle-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:jeffrey-trail-middle-school-jets-placeholder-logo:jeffrey-trail-middle-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/jeffrey-trail-middle-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/jeffrey-trail-middle-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:orchard-hills-school-hawks-placeholder-logo:orchard-hills-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/orchard-hills-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/orchard-hills-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:cadence-park-school-coyotes-placeholder-logo:cadence-park-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/cadence-park-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/cadence-park-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "soccer:school_team_logo:beacon-park-school-bobcats-placeholder-logo:beacon-park-school-soccer-placeholder-logo",
+      "file_path": "public/assets/sports/soccer/school-logos/beacon-park-school-soccer-placeholder-logo.svg",
+      "url_path": "/assets/sports/soccer/school-logos/beacon-park-school-soccer-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:arena-rectangle-background:track-field-rectangle-arena-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-rectangle-arena-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-rectangle-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:game-night-lights-rectangle-background:track-field-rectangle-lights-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-rectangle-lights-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-rectangle-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:speed-lines-rectangle-background:track-field-rectangle-speed-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-rectangle-speed-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-rectangle-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:championship-burst-rectangle-background:track-field-rectangle-championship-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-rectangle-championship-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-rectangle-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:arena-triangle-background:track-field-triangle-arena-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-triangle-arena-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-triangle-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:game-night-lights-triangle-background:track-field-triangle-lights-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-triangle-lights-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-triangle-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:speed-lines-triangle-background:track-field-triangle-speed-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-triangle-speed-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-triangle-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:championship-burst-triangle-background:track-field-triangle-championship-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-triangle-championship-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-triangle-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:arena-home-plate-background:track-field-home-plate-arena-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-home-plate-arena-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-home-plate-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:game-night-lights-home-plate-background:track-field-home-plate-lights-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-home-plate-lights-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-home-plate-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:speed-lines-home-plate-background:track-field-home-plate-speed-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-home-plate-speed-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-home-plate-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:championship-burst-home-plate-background:track-field-home-plate-championship-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-home-plate-championship-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-home-plate-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:arena-pole-pocket-background:track-field-pole-pocket-arena-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-pole-pocket-arena-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-pole-pocket-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:game-night-lights-pole-pocket-background:track-field-pole-pocket-lights-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-pole-pocket-lights-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-pole-pocket-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:speed-lines-pole-pocket-background:track-field-pole-pocket-speed-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-pole-pocket-speed-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-pole-pocket-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:background:championship-burst-pole-pocket-background:track-field-pole-pocket-championship-background",
+      "file_path": "public/assets/sports/track-field/backgrounds/track-field-pole-pocket-championship-background.svg",
+      "url_path": "/assets/sports/track-field/backgrounds/track-field-pole-pocket-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:player_photo_frame:classic-photo-frame:track-field-classic-photo-frame",
+      "file_path": "public/assets/sports/track-field/photo-frames/track-field-classic-photo-frame.svg",
+      "url_path": "/assets/sports/track-field/photo-frames/track-field-classic-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:player_photo_frame:ribbon-photo-frame:track-field-ribbon-photo-frame",
+      "file_path": "public/assets/sports/track-field/photo-frames/track-field-ribbon-photo-frame.svg",
+      "url_path": "/assets/sports/track-field/photo-frames/track-field-ribbon-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:player_photo_frame:star-photo-frame:track-field-star-photo-frame",
+      "file_path": "public/assets/sports/track-field/photo-frames/track-field-star-photo-frame.svg",
+      "url_path": "/assets/sports/track-field/photo-frames/track-field-star-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:player_photo_frame:shield-photo-frame:track-field-shield-photo-frame",
+      "file_path": "public/assets/sports/track-field/photo-frames/track-field-shield-photo-frame.svg",
+      "url_path": "/assets/sports/track-field/photo-frames/track-field-shield-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:player_photo_frame:varsity-photo-frame:track-field-varsity-photo-frame",
+      "file_path": "public/assets/sports/track-field/photo-frames/track-field-varsity-photo-frame.svg",
+      "url_path": "/assets/sports/track-field/photo-frames/track-field-varsity-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:player_photo_frame:champion-photo-frame:track-field-champion-photo-frame",
+      "file_path": "public/assets/sports/track-field/photo-frames/track-field-champion-photo-frame.svg",
+      "url_path": "/assets/sports/track-field/photo-frames/track-field-champion-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:player_photo_frame:wings-photo-frame:track-field-wings-photo-frame",
+      "file_path": "public/assets/sports/track-field/photo-frames/track-field-wings-photo-frame.svg",
+      "url_path": "/assets/sports/track-field/photo-frames/track-field-wings-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:player_photo_frame:halo-photo-frame:track-field-halo-photo-frame",
+      "file_path": "public/assets/sports/track-field/photo-frames/track-field-halo-photo-frame.svg",
+      "url_path": "/assets/sports/track-field/photo-frames/track-field-halo-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:player_photo_frame:stadium-photo-frame:track-field-stadium-photo-frame",
+      "file_path": "public/assets/sports/track-field/photo-frames/track-field-stadium-photo-frame.svg",
+      "url_path": "/assets/sports/track-field/photo-frames/track-field-stadium-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:player_photo_frame:pennant-photo-frame:track-field-pennant-photo-frame",
+      "file_path": "public/assets/sports/track-field/photo-frames/track-field-pennant-photo-frame.svg",
+      "url_path": "/assets/sports/track-field/photo-frames/track-field-pennant-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:nameplate:classic-nameplate:track-field-classic-nameplate",
+      "file_path": "public/assets/sports/track-field/nameplates/track-field-classic-nameplate.svg",
+      "url_path": "/assets/sports/track-field/nameplates/track-field-classic-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:nameplate:arched-nameplate:track-field-arched-nameplate",
+      "file_path": "public/assets/sports/track-field/nameplates/track-field-arched-nameplate.svg",
+      "url_path": "/assets/sports/track-field/nameplates/track-field-arched-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:nameplate:ribbon-nameplate:track-field-ribbon-nameplate",
+      "file_path": "public/assets/sports/track-field/nameplates/track-field-ribbon-nameplate.svg",
+      "url_path": "/assets/sports/track-field/nameplates/track-field-ribbon-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:nameplate:bold-nameplate:track-field-bold-nameplate",
+      "file_path": "public/assets/sports/track-field/nameplates/track-field-bold-nameplate.svg",
+      "url_path": "/assets/sports/track-field/nameplates/track-field-bold-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:nameplate:compact-nameplate:track-field-compact-nameplate",
+      "file_path": "public/assets/sports/track-field/nameplates/track-field-compact-nameplate.svg",
+      "url_path": "/assets/sports/track-field/nameplates/track-field-compact-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:nameplate:wide-nameplate:track-field-wide-nameplate",
+      "file_path": "public/assets/sports/track-field/nameplates/track-field-wide-nameplate.svg",
+      "url_path": "/assets/sports/track-field/nameplates/track-field-wide-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:sport_icon:ball-icon:track-field-ball-icon",
+      "file_path": "public/assets/sports/track-field/icons/track-field-ball-icon.svg",
+      "url_path": "/assets/sports/track-field/icons/track-field-ball-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:sport_icon:jersey-icon:track-field-jersey-icon",
+      "file_path": "public/assets/sports/track-field/icons/track-field-jersey-icon.svg",
+      "url_path": "/assets/sports/track-field/icons/track-field-jersey-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:sport_icon:medal-icon:track-field-medal-icon",
+      "file_path": "public/assets/sports/track-field/icons/track-field-medal-icon.svg",
+      "url_path": "/assets/sports/track-field/icons/track-field-medal-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:sport_icon:number-icon:track-field-number-icon",
+      "file_path": "public/assets/sports/track-field/icons/track-field-number-icon.svg",
+      "url_path": "/assets/sports/track-field/icons/track-field-number-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:sport_icon:crest-icon:track-field-crest-icon",
+      "file_path": "public/assets/sports/track-field/icons/track-field-crest-icon.svg",
+      "url_path": "/assets/sports/track-field/icons/track-field-crest-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:sport_icon:star-icon:track-field-star-icon",
+      "file_path": "public/assets/sports/track-field/icons/track-field-star-icon.svg",
+      "url_path": "/assets/sports/track-field/icons/track-field-star-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:sport_icon:wings-icon:track-field-wings-icon",
+      "file_path": "public/assets/sports/track-field/icons/track-field-wings-icon.svg",
+      "url_path": "/assets/sports/track-field/icons/track-field-wings-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:sport_icon:flame-icon:track-field-flame-icon",
+      "file_path": "public/assets/sports/track-field/icons/track-field-flame-icon.svg",
+      "url_path": "/assets/sports/track-field/icons/track-field-flame-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:ball:primary-ball:track-field-primary-ball",
+      "file_path": "public/assets/sports/track-field/balls/track-field-primary-ball.svg",
+      "url_path": "/assets/sports/track-field/balls/track-field-primary-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:ball:outline-ball:track-field-outline-ball",
+      "file_path": "public/assets/sports/track-field/balls/track-field-outline-ball.svg",
+      "url_path": "/assets/sports/track-field/balls/track-field-outline-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:ball:shadow-ball:track-field-shadow-ball",
+      "file_path": "public/assets/sports/track-field/balls/track-field-shadow-ball.svg",
+      "url_path": "/assets/sports/track-field/balls/track-field-shadow-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:ball:badge-ball:track-field-badge-ball",
+      "file_path": "public/assets/sports/track-field/balls/track-field-badge-ball.svg",
+      "url_path": "/assets/sports/track-field/balls/track-field-badge-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:field_court_overlay:standard-field-court-overlay:track-field-standard-overlay",
+      "file_path": "public/assets/sports/track-field/overlays/track-field-standard-overlay.svg",
+      "url_path": "/assets/sports/track-field/overlays/track-field-standard-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:field_court_overlay:wide-field-court-overlay:track-field-wide-overlay",
+      "file_path": "public/assets/sports/track-field/overlays/track-field-wide-overlay.svg",
+      "url_path": "/assets/sports/track-field/overlays/track-field-wide-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:field_court_overlay:center-field-court-overlay:track-field-center-overlay",
+      "file_path": "public/assets/sports/track-field/overlays/track-field-center-overlay.svg",
+      "url_path": "/assets/sports/track-field/overlays/track-field-center-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:field_court_overlay:minimal-field-court-overlay:track-field-minimal-overlay",
+      "file_path": "public/assets/sports/track-field/overlays/track-field-minimal-overlay.svg",
+      "url_path": "/assets/sports/track-field/overlays/track-field-minimal-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:light_effect:spotlight-light-effect:track-field-spotlight-light-effect",
+      "file_path": "public/assets/sports/track-field/light-effects/track-field-spotlight-light-effect.svg",
+      "url_path": "/assets/sports/track-field/light-effects/track-field-spotlight-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:light_effect:halo-light-effect:track-field-halo-light-effect",
+      "file_path": "public/assets/sports/track-field/light-effects/track-field-halo-light-effect.svg",
+      "url_path": "/assets/sports/track-field/light-effects/track-field-halo-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:light_effect:burst-light-effect:track-field-burst-light-effect",
+      "file_path": "public/assets/sports/track-field/light-effects/track-field-burst-light-effect.svg",
+      "url_path": "/assets/sports/track-field/light-effects/track-field-burst-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:light_effect:stadium-light-effect:track-field-stadium-light-effect",
+      "file_path": "public/assets/sports/track-field/light-effects/track-field-stadium-light-effect.svg",
+      "url_path": "/assets/sports/track-field/light-effects/track-field-stadium-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:team_logo_placeholder:badge-team-logo-placeholder:track-field-badge-team-logo",
+      "file_path": "public/assets/sports/track-field/team-logos/track-field-badge-team-logo.svg",
+      "url_path": "/assets/sports/track-field/team-logos/track-field-badge-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:team_logo_placeholder:varsity-team-logo-placeholder:track-field-varsity-team-logo",
+      "file_path": "public/assets/sports/track-field/team-logos/track-field-varsity-team-logo.svg",
+      "url_path": "/assets/sports/track-field/team-logos/track-field-varsity-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    }
+  ]
+}

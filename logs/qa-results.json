@@ -1,0 +1,19 @@
+{
+  "generatedAt": "2026-05-26T06:04:11.779Z",
+  "runId": "sports-asset-system-20260525",
+  "qaScope": "local-generation-and-schema-validation",
+  "productionQaStatus": "blocked-pending-shopify-backup-upload-import",
+  "checkedItems": 1323,
+  "passedItems": 1323,
+  "failedItems": 0,
+  "passRate": 1,
+  "checks": {
+    "svgTagPresent": true,
+    "editableLayerIdsPresent": true,
+    "csvFilesGenerated": 7,
+    "productRowsGenerated": 756,
+    "uploadBatchLogsGenerated": 8,
+    "backupsCreated": 6
+  },
+  "failures": []
+}

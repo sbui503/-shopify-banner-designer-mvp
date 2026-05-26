@@ -1,0 +1,1089 @@
+{
+  "batch": 2,
+  "batchSize": 180,
+  "itemCount": 180,
+  "status": "not-uploaded",
+  "blockedBy": "Production upload intentionally blocked until current Shopify theme/products/collections are backed up and legal/logo review is complete.",
+  "items": [
+    {
+      "id": "volleyball:player_photo_frame:star-photo-frame:volleyball-star-photo-frame",
+      "file_path": "public/assets/sports/volleyball/photo-frames/volleyball-star-photo-frame.svg",
+      "url_path": "/assets/sports/volleyball/photo-frames/volleyball-star-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:player_photo_frame:shield-photo-frame:volleyball-shield-photo-frame",
+      "file_path": "public/assets/sports/volleyball/photo-frames/volleyball-shield-photo-frame.svg",
+      "url_path": "/assets/sports/volleyball/photo-frames/volleyball-shield-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:player_photo_frame:varsity-photo-frame:volleyball-varsity-photo-frame",
+      "file_path": "public/assets/sports/volleyball/photo-frames/volleyball-varsity-photo-frame.svg",
+      "url_path": "/assets/sports/volleyball/photo-frames/volleyball-varsity-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:player_photo_frame:champion-photo-frame:volleyball-champion-photo-frame",
+      "file_path": "public/assets/sports/volleyball/photo-frames/volleyball-champion-photo-frame.svg",
+      "url_path": "/assets/sports/volleyball/photo-frames/volleyball-champion-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:player_photo_frame:wings-photo-frame:volleyball-wings-photo-frame",
+      "file_path": "public/assets/sports/volleyball/photo-frames/volleyball-wings-photo-frame.svg",
+      "url_path": "/assets/sports/volleyball/photo-frames/volleyball-wings-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:player_photo_frame:halo-photo-frame:volleyball-halo-photo-frame",
+      "file_path": "public/assets/sports/volleyball/photo-frames/volleyball-halo-photo-frame.svg",
+      "url_path": "/assets/sports/volleyball/photo-frames/volleyball-halo-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:player_photo_frame:stadium-photo-frame:volleyball-stadium-photo-frame",
+      "file_path": "public/assets/sports/volleyball/photo-frames/volleyball-stadium-photo-frame.svg",
+      "url_path": "/assets/sports/volleyball/photo-frames/volleyball-stadium-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:player_photo_frame:pennant-photo-frame:volleyball-pennant-photo-frame",
+      "file_path": "public/assets/sports/volleyball/photo-frames/volleyball-pennant-photo-frame.svg",
+      "url_path": "/assets/sports/volleyball/photo-frames/volleyball-pennant-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:nameplate:classic-nameplate:volleyball-classic-nameplate",
+      "file_path": "public/assets/sports/volleyball/nameplates/volleyball-classic-nameplate.svg",
+      "url_path": "/assets/sports/volleyball/nameplates/volleyball-classic-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:nameplate:arched-nameplate:volleyball-arched-nameplate",
+      "file_path": "public/assets/sports/volleyball/nameplates/volleyball-arched-nameplate.svg",
+      "url_path": "/assets/sports/volleyball/nameplates/volleyball-arched-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:nameplate:ribbon-nameplate:volleyball-ribbon-nameplate",
+      "file_path": "public/assets/sports/volleyball/nameplates/volleyball-ribbon-nameplate.svg",
+      "url_path": "/assets/sports/volleyball/nameplates/volleyball-ribbon-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:nameplate:bold-nameplate:volleyball-bold-nameplate",
+      "file_path": "public/assets/sports/volleyball/nameplates/volleyball-bold-nameplate.svg",
+      "url_path": "/assets/sports/volleyball/nameplates/volleyball-bold-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:nameplate:compact-nameplate:volleyball-compact-nameplate",
+      "file_path": "public/assets/sports/volleyball/nameplates/volleyball-compact-nameplate.svg",
+      "url_path": "/assets/sports/volleyball/nameplates/volleyball-compact-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:nameplate:wide-nameplate:volleyball-wide-nameplate",
+      "file_path": "public/assets/sports/volleyball/nameplates/volleyball-wide-nameplate.svg",
+      "url_path": "/assets/sports/volleyball/nameplates/volleyball-wide-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:sport_icon:ball-icon:volleyball-ball-icon",
+      "file_path": "public/assets/sports/volleyball/icons/volleyball-ball-icon.svg",
+      "url_path": "/assets/sports/volleyball/icons/volleyball-ball-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:sport_icon:jersey-icon:volleyball-jersey-icon",
+      "file_path": "public/assets/sports/volleyball/icons/volleyball-jersey-icon.svg",
+      "url_path": "/assets/sports/volleyball/icons/volleyball-jersey-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:sport_icon:medal-icon:volleyball-medal-icon",
+      "file_path": "public/assets/sports/volleyball/icons/volleyball-medal-icon.svg",
+      "url_path": "/assets/sports/volleyball/icons/volleyball-medal-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:sport_icon:number-icon:volleyball-number-icon",
+      "file_path": "public/assets/sports/volleyball/icons/volleyball-number-icon.svg",
+      "url_path": "/assets/sports/volleyball/icons/volleyball-number-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:sport_icon:crest-icon:volleyball-crest-icon",
+      "file_path": "public/assets/sports/volleyball/icons/volleyball-crest-icon.svg",
+      "url_path": "/assets/sports/volleyball/icons/volleyball-crest-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:sport_icon:star-icon:volleyball-star-icon",
+      "file_path": "public/assets/sports/volleyball/icons/volleyball-star-icon.svg",
+      "url_path": "/assets/sports/volleyball/icons/volleyball-star-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:sport_icon:wings-icon:volleyball-wings-icon",
+      "file_path": "public/assets/sports/volleyball/icons/volleyball-wings-icon.svg",
+      "url_path": "/assets/sports/volleyball/icons/volleyball-wings-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:sport_icon:flame-icon:volleyball-flame-icon",
+      "file_path": "public/assets/sports/volleyball/icons/volleyball-flame-icon.svg",
+      "url_path": "/assets/sports/volleyball/icons/volleyball-flame-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:ball:primary-ball:volleyball-primary-ball",
+      "file_path": "public/assets/sports/volleyball/balls/volleyball-primary-ball.svg",
+      "url_path": "/assets/sports/volleyball/balls/volleyball-primary-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:ball:outline-ball:volleyball-outline-ball",
+      "file_path": "public/assets/sports/volleyball/balls/volleyball-outline-ball.svg",
+      "url_path": "/assets/sports/volleyball/balls/volleyball-outline-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:ball:shadow-ball:volleyball-shadow-ball",
+      "file_path": "public/assets/sports/volleyball/balls/volleyball-shadow-ball.svg",
+      "url_path": "/assets/sports/volleyball/balls/volleyball-shadow-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:ball:badge-ball:volleyball-badge-ball",
+      "file_path": "public/assets/sports/volleyball/balls/volleyball-badge-ball.svg",
+      "url_path": "/assets/sports/volleyball/balls/volleyball-badge-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:field_court_overlay:standard-field-court-overlay:volleyball-standard-overlay",
+      "file_path": "public/assets/sports/volleyball/overlays/volleyball-standard-overlay.svg",
+      "url_path": "/assets/sports/volleyball/overlays/volleyball-standard-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:field_court_overlay:wide-field-court-overlay:volleyball-wide-overlay",
+      "file_path": "public/assets/sports/volleyball/overlays/volleyball-wide-overlay.svg",
+      "url_path": "/assets/sports/volleyball/overlays/volleyball-wide-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:field_court_overlay:center-field-court-overlay:volleyball-center-overlay",
+      "file_path": "public/assets/sports/volleyball/overlays/volleyball-center-overlay.svg",
+      "url_path": "/assets/sports/volleyball/overlays/volleyball-center-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:field_court_overlay:minimal-field-court-overlay:volleyball-minimal-overlay",
+      "file_path": "public/assets/sports/volleyball/overlays/volleyball-minimal-overlay.svg",
+      "url_path": "/assets/sports/volleyball/overlays/volleyball-minimal-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:light_effect:spotlight-light-effect:volleyball-spotlight-light-effect",
+      "file_path": "public/assets/sports/volleyball/light-effects/volleyball-spotlight-light-effect.svg",
+      "url_path": "/assets/sports/volleyball/light-effects/volleyball-spotlight-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:light_effect:halo-light-effect:volleyball-halo-light-effect",
+      "file_path": "public/assets/sports/volleyball/light-effects/volleyball-halo-light-effect.svg",
+      "url_path": "/assets/sports/volleyball/light-effects/volleyball-halo-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:light_effect:burst-light-effect:volleyball-burst-light-effect",
+      "file_path": "public/assets/sports/volleyball/light-effects/volleyball-burst-light-effect.svg",
+      "url_path": "/assets/sports/volleyball/light-effects/volleyball-burst-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:light_effect:stadium-light-effect:volleyball-stadium-light-effect",
+      "file_path": "public/assets/sports/volleyball/light-effects/volleyball-stadium-light-effect.svg",
+      "url_path": "/assets/sports/volleyball/light-effects/volleyball-stadium-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:team_logo_placeholder:badge-team-logo-placeholder:volleyball-badge-team-logo",
+      "file_path": "public/assets/sports/volleyball/team-logos/volleyball-badge-team-logo.svg",
+      "url_path": "/assets/sports/volleyball/team-logos/volleyball-badge-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:team_logo_placeholder:varsity-team-logo-placeholder:volleyball-varsity-team-logo",
+      "file_path": "public/assets/sports/volleyball/team-logos/volleyball-varsity-team-logo.svg",
+      "url_path": "/assets/sports/volleyball/team-logos/volleyball-varsity-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:team_logo_placeholder:shield-team-logo-placeholder:volleyball-shield-team-logo",
+      "file_path": "public/assets/sports/volleyball/team-logos/volleyball-shield-team-logo.svg",
+      "url_path": "/assets/sports/volleyball/team-logos/volleyball-shield-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:team_logo_placeholder:champion-team-logo-placeholder:volleyball-champion-team-logo",
+      "file_path": "public/assets/sports/volleyball/team-logos/volleyball-champion-team-logo.svg",
+      "url_path": "/assets/sports/volleyball/team-logos/volleyball-champion-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:team_logo_placeholder:circle-team-logo-placeholder:volleyball-circle-team-logo",
+      "file_path": "public/assets/sports/volleyball/team-logos/volleyball-circle-team-logo.svg",
+      "url_path": "/assets/sports/volleyball/team-logos/volleyball-circle-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:team_logo_placeholder:diamond-team-logo-placeholder:volleyball-diamond-team-logo",
+      "file_path": "public/assets/sports/volleyball/team-logos/volleyball-diamond-team-logo.svg",
+      "url_path": "/assets/sports/volleyball/team-logos/volleyball-diamond-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:team_logo_placeholder:script-team-logo-placeholder:volleyball-script-team-logo",
+      "file_path": "public/assets/sports/volleyball/team-logos/volleyball-script-team-logo.svg",
+      "url_path": "/assets/sports/volleyball/team-logos/volleyball-script-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:team_logo_placeholder:block-team-logo-placeholder:volleyball-block-team-logo",
+      "file_path": "public/assets/sports/volleyball/team-logos/volleyball-block-team-logo.svg",
+      "url_path": "/assets/sports/volleyball/team-logos/volleyball-block-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:irvine-high-school-vaqueros-placeholder-logo:irvine-high-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/irvine-high-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/irvine-high-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:woodbridge-high-school-warriors-placeholder-logo:woodbridge-high-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/woodbridge-high-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/woodbridge-high-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:university-high-school-trojans-placeholder-logo:university-high-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/university-high-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/university-high-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:northwood-high-school-timberwolves-placeholder-logo:northwood-high-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/northwood-high-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/northwood-high-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:portola-high-school-bulldogs-placeholder-logo:portola-high-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/portola-high-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/portola-high-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:beckman-high-school-patriots-placeholder-logo:beckman-high-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/beckman-high-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/beckman-high-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:tustin-high-school-tillers-placeholder-logo:tustin-high-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/tustin-high-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/tustin-high-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:foothill-high-school-knights-placeholder-logo:foothill-high-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/foothill-high-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/foothill-high-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:laguna-hills-high-school-hawks-placeholder-logo:laguna-hills-high-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/laguna-hills-high-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/laguna-hills-high-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:mission-viejo-high-school-diablos-placeholder-logo:mission-viejo-high-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/mission-viejo-high-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/mission-viejo-high-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:huntington-beach-high-school-oilers-placeholder-logo:huntington-beach-high-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/huntington-beach-high-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/huntington-beach-high-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:mater-dei-high-school-monarchs-placeholder-logo:mater-dei-high-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/mater-dei-high-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/mater-dei-high-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:sierra-vista-middle-school-chargers-placeholder-logo:sierra-vista-middle-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/sierra-vista-middle-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/sierra-vista-middle-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:venado-middle-school-vikings-placeholder-logo:venado-middle-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/venado-middle-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/venado-middle-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:rancho-san-joaquin-middle-school-roadrunners-placeholder-logo:rancho-san-joaquin-middle-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/rancho-san-joaquin-middle-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/rancho-san-joaquin-middle-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:lakeside-middle-school-panthers-placeholder-logo:lakeside-middle-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/lakeside-middle-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/lakeside-middle-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:south-lake-middle-school-sharks-placeholder-logo:south-lake-middle-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/south-lake-middle-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/south-lake-middle-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:jeffrey-trail-middle-school-jets-placeholder-logo:jeffrey-trail-middle-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/jeffrey-trail-middle-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/jeffrey-trail-middle-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:orchard-hills-school-hawks-placeholder-logo:orchard-hills-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/orchard-hills-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/orchard-hills-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:cadence-park-school-coyotes-placeholder-logo:cadence-park-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/cadence-park-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/cadence-park-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "volleyball:school_team_logo:beacon-park-school-bobcats-placeholder-logo:beacon-park-school-volleyball-placeholder-logo",
+      "file_path": "public/assets/sports/volleyball/school-logos/beacon-park-school-volleyball-placeholder-logo.svg",
+      "url_path": "/assets/sports/volleyball/school-logos/beacon-park-school-volleyball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:arena-rectangle-background:baseball-rectangle-arena-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-rectangle-arena-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-rectangle-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:game-night-lights-rectangle-background:baseball-rectangle-lights-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-rectangle-lights-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-rectangle-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:speed-lines-rectangle-background:baseball-rectangle-speed-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-rectangle-speed-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-rectangle-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:championship-burst-rectangle-background:baseball-rectangle-championship-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-rectangle-championship-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-rectangle-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:arena-triangle-background:baseball-triangle-arena-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-triangle-arena-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-triangle-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:game-night-lights-triangle-background:baseball-triangle-lights-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-triangle-lights-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-triangle-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:speed-lines-triangle-background:baseball-triangle-speed-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-triangle-speed-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-triangle-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:championship-burst-triangle-background:baseball-triangle-championship-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-triangle-championship-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-triangle-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:arena-home-plate-background:baseball-home-plate-arena-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-home-plate-arena-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-home-plate-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:game-night-lights-home-plate-background:baseball-home-plate-lights-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-home-plate-lights-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-home-plate-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:speed-lines-home-plate-background:baseball-home-plate-speed-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-home-plate-speed-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-home-plate-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:championship-burst-home-plate-background:baseball-home-plate-championship-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-home-plate-championship-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-home-plate-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:arena-pole-pocket-background:baseball-pole-pocket-arena-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-pole-pocket-arena-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-pole-pocket-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:game-night-lights-pole-pocket-background:baseball-pole-pocket-lights-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-pole-pocket-lights-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-pole-pocket-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:speed-lines-pole-pocket-background:baseball-pole-pocket-speed-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-pole-pocket-speed-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-pole-pocket-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:background:championship-burst-pole-pocket-background:baseball-pole-pocket-championship-background",
+      "file_path": "public/assets/sports/baseball/backgrounds/baseball-pole-pocket-championship-background.svg",
+      "url_path": "/assets/sports/baseball/backgrounds/baseball-pole-pocket-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:player_photo_frame:classic-photo-frame:baseball-classic-photo-frame",
+      "file_path": "public/assets/sports/baseball/photo-frames/baseball-classic-photo-frame.svg",
+      "url_path": "/assets/sports/baseball/photo-frames/baseball-classic-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:player_photo_frame:ribbon-photo-frame:baseball-ribbon-photo-frame",
+      "file_path": "public/assets/sports/baseball/photo-frames/baseball-ribbon-photo-frame.svg",
+      "url_path": "/assets/sports/baseball/photo-frames/baseball-ribbon-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:player_photo_frame:star-photo-frame:baseball-star-photo-frame",
+      "file_path": "public/assets/sports/baseball/photo-frames/baseball-star-photo-frame.svg",
+      "url_path": "/assets/sports/baseball/photo-frames/baseball-star-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:player_photo_frame:shield-photo-frame:baseball-shield-photo-frame",
+      "file_path": "public/assets/sports/baseball/photo-frames/baseball-shield-photo-frame.svg",
+      "url_path": "/assets/sports/baseball/photo-frames/baseball-shield-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:player_photo_frame:varsity-photo-frame:baseball-varsity-photo-frame",
+      "file_path": "public/assets/sports/baseball/photo-frames/baseball-varsity-photo-frame.svg",
+      "url_path": "/assets/sports/baseball/photo-frames/baseball-varsity-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:player_photo_frame:champion-photo-frame:baseball-champion-photo-frame",
+      "file_path": "public/assets/sports/baseball/photo-frames/baseball-champion-photo-frame.svg",
+      "url_path": "/assets/sports/baseball/photo-frames/baseball-champion-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:player_photo_frame:wings-photo-frame:baseball-wings-photo-frame",
+      "file_path": "public/assets/sports/baseball/photo-frames/baseball-wings-photo-frame.svg",
+      "url_path": "/assets/sports/baseball/photo-frames/baseball-wings-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:player_photo_frame:halo-photo-frame:baseball-halo-photo-frame",
+      "file_path": "public/assets/sports/baseball/photo-frames/baseball-halo-photo-frame.svg",
+      "url_path": "/assets/sports/baseball/photo-frames/baseball-halo-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:player_photo_frame:stadium-photo-frame:baseball-stadium-photo-frame",
+      "file_path": "public/assets/sports/baseball/photo-frames/baseball-stadium-photo-frame.svg",
+      "url_path": "/assets/sports/baseball/photo-frames/baseball-stadium-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:player_photo_frame:pennant-photo-frame:baseball-pennant-photo-frame",
+      "file_path": "public/assets/sports/baseball/photo-frames/baseball-pennant-photo-frame.svg",
+      "url_path": "/assets/sports/baseball/photo-frames/baseball-pennant-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:nameplate:classic-nameplate:baseball-classic-nameplate",
+      "file_path": "public/assets/sports/baseball/nameplates/baseball-classic-nameplate.svg",
+      "url_path": "/assets/sports/baseball/nameplates/baseball-classic-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:nameplate:arched-nameplate:baseball-arched-nameplate",
+      "file_path": "public/assets/sports/baseball/nameplates/baseball-arched-nameplate.svg",
+      "url_path": "/assets/sports/baseball/nameplates/baseball-arched-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:nameplate:ribbon-nameplate:baseball-ribbon-nameplate",
+      "file_path": "public/assets/sports/baseball/nameplates/baseball-ribbon-nameplate.svg",
+      "url_path": "/assets/sports/baseball/nameplates/baseball-ribbon-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:nameplate:bold-nameplate:baseball-bold-nameplate",
+      "file_path": "public/assets/sports/baseball/nameplates/baseball-bold-nameplate.svg",
+      "url_path": "/assets/sports/baseball/nameplates/baseball-bold-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:nameplate:compact-nameplate:baseball-compact-nameplate",
+      "file_path": "public/assets/sports/baseball/nameplates/baseball-compact-nameplate.svg",
+      "url_path": "/assets/sports/baseball/nameplates/baseball-compact-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:nameplate:wide-nameplate:baseball-wide-nameplate",
+      "file_path": "public/assets/sports/baseball/nameplates/baseball-wide-nameplate.svg",
+      "url_path": "/assets/sports/baseball/nameplates/baseball-wide-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:sport_icon:ball-icon:baseball-ball-icon",
+      "file_path": "public/assets/sports/baseball/icons/baseball-ball-icon.svg",
+      "url_path": "/assets/sports/baseball/icons/baseball-ball-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:sport_icon:jersey-icon:baseball-jersey-icon",
+      "file_path": "public/assets/sports/baseball/icons/baseball-jersey-icon.svg",
+      "url_path": "/assets/sports/baseball/icons/baseball-jersey-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:sport_icon:medal-icon:baseball-medal-icon",
+      "file_path": "public/assets/sports/baseball/icons/baseball-medal-icon.svg",
+      "url_path": "/assets/sports/baseball/icons/baseball-medal-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:sport_icon:number-icon:baseball-number-icon",
+      "file_path": "public/assets/sports/baseball/icons/baseball-number-icon.svg",
+      "url_path": "/assets/sports/baseball/icons/baseball-number-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:sport_icon:crest-icon:baseball-crest-icon",
+      "file_path": "public/assets/sports/baseball/icons/baseball-crest-icon.svg",
+      "url_path": "/assets/sports/baseball/icons/baseball-crest-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:sport_icon:star-icon:baseball-star-icon",
+      "file_path": "public/assets/sports/baseball/icons/baseball-star-icon.svg",
+      "url_path": "/assets/sports/baseball/icons/baseball-star-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:sport_icon:wings-icon:baseball-wings-icon",
+      "file_path": "public/assets/sports/baseball/icons/baseball-wings-icon.svg",
+      "url_path": "/assets/sports/baseball/icons/baseball-wings-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:sport_icon:flame-icon:baseball-flame-icon",
+      "file_path": "public/assets/sports/baseball/icons/baseball-flame-icon.svg",
+      "url_path": "/assets/sports/baseball/icons/baseball-flame-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:ball:primary-ball:baseball-primary-ball",
+      "file_path": "public/assets/sports/baseball/balls/baseball-primary-ball.svg",
+      "url_path": "/assets/sports/baseball/balls/baseball-primary-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:ball:outline-ball:baseball-outline-ball",
+      "file_path": "public/assets/sports/baseball/balls/baseball-outline-ball.svg",
+      "url_path": "/assets/sports/baseball/balls/baseball-outline-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:ball:shadow-ball:baseball-shadow-ball",
+      "file_path": "public/assets/sports/baseball/balls/baseball-shadow-ball.svg",
+      "url_path": "/assets/sports/baseball/balls/baseball-shadow-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:ball:badge-ball:baseball-badge-ball",
+      "file_path": "public/assets/sports/baseball/balls/baseball-badge-ball.svg",
+      "url_path": "/assets/sports/baseball/balls/baseball-badge-ball.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:field_court_overlay:standard-field-court-overlay:baseball-standard-overlay",
+      "file_path": "public/assets/sports/baseball/overlays/baseball-standard-overlay.svg",
+      "url_path": "/assets/sports/baseball/overlays/baseball-standard-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:field_court_overlay:wide-field-court-overlay:baseball-wide-overlay",
+      "file_path": "public/assets/sports/baseball/overlays/baseball-wide-overlay.svg",
+      "url_path": "/assets/sports/baseball/overlays/baseball-wide-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:field_court_overlay:center-field-court-overlay:baseball-center-overlay",
+      "file_path": "public/assets/sports/baseball/overlays/baseball-center-overlay.svg",
+      "url_path": "/assets/sports/baseball/overlays/baseball-center-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:field_court_overlay:minimal-field-court-overlay:baseball-minimal-overlay",
+      "file_path": "public/assets/sports/baseball/overlays/baseball-minimal-overlay.svg",
+      "url_path": "/assets/sports/baseball/overlays/baseball-minimal-overlay.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:light_effect:spotlight-light-effect:baseball-spotlight-light-effect",
+      "file_path": "public/assets/sports/baseball/light-effects/baseball-spotlight-light-effect.svg",
+      "url_path": "/assets/sports/baseball/light-effects/baseball-spotlight-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:light_effect:halo-light-effect:baseball-halo-light-effect",
+      "file_path": "public/assets/sports/baseball/light-effects/baseball-halo-light-effect.svg",
+      "url_path": "/assets/sports/baseball/light-effects/baseball-halo-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:light_effect:burst-light-effect:baseball-burst-light-effect",
+      "file_path": "public/assets/sports/baseball/light-effects/baseball-burst-light-effect.svg",
+      "url_path": "/assets/sports/baseball/light-effects/baseball-burst-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:light_effect:stadium-light-effect:baseball-stadium-light-effect",
+      "file_path": "public/assets/sports/baseball/light-effects/baseball-stadium-light-effect.svg",
+      "url_path": "/assets/sports/baseball/light-effects/baseball-stadium-light-effect.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:team_logo_placeholder:badge-team-logo-placeholder:baseball-badge-team-logo",
+      "file_path": "public/assets/sports/baseball/team-logos/baseball-badge-team-logo.svg",
+      "url_path": "/assets/sports/baseball/team-logos/baseball-badge-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:team_logo_placeholder:varsity-team-logo-placeholder:baseball-varsity-team-logo",
+      "file_path": "public/assets/sports/baseball/team-logos/baseball-varsity-team-logo.svg",
+      "url_path": "/assets/sports/baseball/team-logos/baseball-varsity-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:team_logo_placeholder:shield-team-logo-placeholder:baseball-shield-team-logo",
+      "file_path": "public/assets/sports/baseball/team-logos/baseball-shield-team-logo.svg",
+      "url_path": "/assets/sports/baseball/team-logos/baseball-shield-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:team_logo_placeholder:champion-team-logo-placeholder:baseball-champion-team-logo",
+      "file_path": "public/assets/sports/baseball/team-logos/baseball-champion-team-logo.svg",
+      "url_path": "/assets/sports/baseball/team-logos/baseball-champion-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:team_logo_placeholder:circle-team-logo-placeholder:baseball-circle-team-logo",
+      "file_path": "public/assets/sports/baseball/team-logos/baseball-circle-team-logo.svg",
+      "url_path": "/assets/sports/baseball/team-logos/baseball-circle-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:team_logo_placeholder:diamond-team-logo-placeholder:baseball-diamond-team-logo",
+      "file_path": "public/assets/sports/baseball/team-logos/baseball-diamond-team-logo.svg",
+      "url_path": "/assets/sports/baseball/team-logos/baseball-diamond-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:team_logo_placeholder:script-team-logo-placeholder:baseball-script-team-logo",
+      "file_path": "public/assets/sports/baseball/team-logos/baseball-script-team-logo.svg",
+      "url_path": "/assets/sports/baseball/team-logos/baseball-script-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:team_logo_placeholder:block-team-logo-placeholder:baseball-block-team-logo",
+      "file_path": "public/assets/sports/baseball/team-logos/baseball-block-team-logo.svg",
+      "url_path": "/assets/sports/baseball/team-logos/baseball-block-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:irvine-high-school-vaqueros-placeholder-logo:irvine-high-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/irvine-high-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/irvine-high-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:woodbridge-high-school-warriors-placeholder-logo:woodbridge-high-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/woodbridge-high-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/woodbridge-high-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:university-high-school-trojans-placeholder-logo:university-high-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/university-high-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/university-high-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:northwood-high-school-timberwolves-placeholder-logo:northwood-high-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/northwood-high-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/northwood-high-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:portola-high-school-bulldogs-placeholder-logo:portola-high-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/portola-high-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/portola-high-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:beckman-high-school-patriots-placeholder-logo:beckman-high-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/beckman-high-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/beckman-high-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:tustin-high-school-tillers-placeholder-logo:tustin-high-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/tustin-high-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/tustin-high-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:foothill-high-school-knights-placeholder-logo:foothill-high-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/foothill-high-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/foothill-high-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:laguna-hills-high-school-hawks-placeholder-logo:laguna-hills-high-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/laguna-hills-high-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/laguna-hills-high-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:mission-viejo-high-school-diablos-placeholder-logo:mission-viejo-high-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/mission-viejo-high-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/mission-viejo-high-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:huntington-beach-high-school-oilers-placeholder-logo:huntington-beach-high-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/huntington-beach-high-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/huntington-beach-high-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:mater-dei-high-school-monarchs-placeholder-logo:mater-dei-high-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/mater-dei-high-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/mater-dei-high-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:sierra-vista-middle-school-chargers-placeholder-logo:sierra-vista-middle-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/sierra-vista-middle-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/sierra-vista-middle-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:venado-middle-school-vikings-placeholder-logo:venado-middle-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/venado-middle-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/venado-middle-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:rancho-san-joaquin-middle-school-roadrunners-placeholder-logo:rancho-san-joaquin-middle-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/rancho-san-joaquin-middle-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/rancho-san-joaquin-middle-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:lakeside-middle-school-panthers-placeholder-logo:lakeside-middle-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/lakeside-middle-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/lakeside-middle-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:south-lake-middle-school-sharks-placeholder-logo:south-lake-middle-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/south-lake-middle-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/south-lake-middle-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:jeffrey-trail-middle-school-jets-placeholder-logo:jeffrey-trail-middle-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/jeffrey-trail-middle-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/jeffrey-trail-middle-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:orchard-hills-school-hawks-placeholder-logo:orchard-hills-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/orchard-hills-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/orchard-hills-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:cadence-park-school-coyotes-placeholder-logo:cadence-park-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/cadence-park-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/cadence-park-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "baseball:school_team_logo:beacon-park-school-bobcats-placeholder-logo:beacon-park-school-baseball-placeholder-logo",
+      "file_path": "public/assets/sports/baseball/school-logos/beacon-park-school-baseball-placeholder-logo.svg",
+      "url_path": "/assets/sports/baseball/school-logos/beacon-park-school-baseball-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:arena-rectangle-background:softball-rectangle-arena-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-rectangle-arena-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-rectangle-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:game-night-lights-rectangle-background:softball-rectangle-lights-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-rectangle-lights-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-rectangle-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:speed-lines-rectangle-background:softball-rectangle-speed-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-rectangle-speed-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-rectangle-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:championship-burst-rectangle-background:softball-rectangle-championship-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-rectangle-championship-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-rectangle-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:arena-triangle-background:softball-triangle-arena-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-triangle-arena-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-triangle-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:game-night-lights-triangle-background:softball-triangle-lights-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-triangle-lights-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-triangle-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:speed-lines-triangle-background:softball-triangle-speed-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-triangle-speed-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-triangle-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:championship-burst-triangle-background:softball-triangle-championship-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-triangle-championship-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-triangle-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:arena-home-plate-background:softball-home-plate-arena-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-home-plate-arena-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-home-plate-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:game-night-lights-home-plate-background:softball-home-plate-lights-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-home-plate-lights-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-home-plate-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:speed-lines-home-plate-background:softball-home-plate-speed-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-home-plate-speed-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-home-plate-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:championship-burst-home-plate-background:softball-home-plate-championship-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-home-plate-championship-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-home-plate-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:arena-pole-pocket-background:softball-pole-pocket-arena-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-pole-pocket-arena-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-pole-pocket-arena-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:game-night-lights-pole-pocket-background:softball-pole-pocket-lights-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-pole-pocket-lights-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-pole-pocket-lights-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:speed-lines-pole-pocket-background:softball-pole-pocket-speed-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-pole-pocket-speed-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-pole-pocket-speed-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:background:championship-burst-pole-pocket-background:softball-pole-pocket-championship-background",
+      "file_path": "public/assets/sports/softball/backgrounds/softball-pole-pocket-championship-background.svg",
+      "url_path": "/assets/sports/softball/backgrounds/softball-pole-pocket-championship-background.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:player_photo_frame:classic-photo-frame:softball-classic-photo-frame",
+      "file_path": "public/assets/sports/softball/photo-frames/softball-classic-photo-frame.svg",
+      "url_path": "/assets/sports/softball/photo-frames/softball-classic-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:player_photo_frame:ribbon-photo-frame:softball-ribbon-photo-frame",
+      "file_path": "public/assets/sports/softball/photo-frames/softball-ribbon-photo-frame.svg",
+      "url_path": "/assets/sports/softball/photo-frames/softball-ribbon-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:player_photo_frame:star-photo-frame:softball-star-photo-frame",
+      "file_path": "public/assets/sports/softball/photo-frames/softball-star-photo-frame.svg",
+      "url_path": "/assets/sports/softball/photo-frames/softball-star-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:player_photo_frame:shield-photo-frame:softball-shield-photo-frame",
+      "file_path": "public/assets/sports/softball/photo-frames/softball-shield-photo-frame.svg",
+      "url_path": "/assets/sports/softball/photo-frames/softball-shield-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:player_photo_frame:varsity-photo-frame:softball-varsity-photo-frame",
+      "file_path": "public/assets/sports/softball/photo-frames/softball-varsity-photo-frame.svg",
+      "url_path": "/assets/sports/softball/photo-frames/softball-varsity-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:player_photo_frame:champion-photo-frame:softball-champion-photo-frame",
+      "file_path": "public/assets/sports/softball/photo-frames/softball-champion-photo-frame.svg",
+      "url_path": "/assets/sports/softball/photo-frames/softball-champion-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:player_photo_frame:wings-photo-frame:softball-wings-photo-frame",
+      "file_path": "public/assets/sports/softball/photo-frames/softball-wings-photo-frame.svg",
+      "url_path": "/assets/sports/softball/photo-frames/softball-wings-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:player_photo_frame:halo-photo-frame:softball-halo-photo-frame",
+      "file_path": "public/assets/sports/softball/photo-frames/softball-halo-photo-frame.svg",
+      "url_path": "/assets/sports/softball/photo-frames/softball-halo-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:player_photo_frame:stadium-photo-frame:softball-stadium-photo-frame",
+      "file_path": "public/assets/sports/softball/photo-frames/softball-stadium-photo-frame.svg",
+      "url_path": "/assets/sports/softball/photo-frames/softball-stadium-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:player_photo_frame:pennant-photo-frame:softball-pennant-photo-frame",
+      "file_path": "public/assets/sports/softball/photo-frames/softball-pennant-photo-frame.svg",
+      "url_path": "/assets/sports/softball/photo-frames/softball-pennant-photo-frame.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:nameplate:classic-nameplate:softball-classic-nameplate",
+      "file_path": "public/assets/sports/softball/nameplates/softball-classic-nameplate.svg",
+      "url_path": "/assets/sports/softball/nameplates/softball-classic-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:nameplate:arched-nameplate:softball-arched-nameplate",
+      "file_path": "public/assets/sports/softball/nameplates/softball-arched-nameplate.svg",
+      "url_path": "/assets/sports/softball/nameplates/softball-arched-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:nameplate:ribbon-nameplate:softball-ribbon-nameplate",
+      "file_path": "public/assets/sports/softball/nameplates/softball-ribbon-nameplate.svg",
+      "url_path": "/assets/sports/softball/nameplates/softball-ribbon-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:nameplate:bold-nameplate:softball-bold-nameplate",
+      "file_path": "public/assets/sports/softball/nameplates/softball-bold-nameplate.svg",
+      "url_path": "/assets/sports/softball/nameplates/softball-bold-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:nameplate:compact-nameplate:softball-compact-nameplate",
+      "file_path": "public/assets/sports/softball/nameplates/softball-compact-nameplate.svg",
+      "url_path": "/assets/sports/softball/nameplates/softball-compact-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:nameplate:wide-nameplate:softball-wide-nameplate",
+      "file_path": "public/assets/sports/softball/nameplates/softball-wide-nameplate.svg",
+      "url_path": "/assets/sports/softball/nameplates/softball-wide-nameplate.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:sport_icon:ball-icon:softball-ball-icon",
+      "file_path": "public/assets/sports/softball/icons/softball-ball-icon.svg",
+      "url_path": "/assets/sports/softball/icons/softball-ball-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:sport_icon:jersey-icon:softball-jersey-icon",
+      "file_path": "public/assets/sports/softball/icons/softball-jersey-icon.svg",
+      "url_path": "/assets/sports/softball/icons/softball-jersey-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:sport_icon:medal-icon:softball-medal-icon",
+      "file_path": "public/assets/sports/softball/icons/softball-medal-icon.svg",
+      "url_path": "/assets/sports/softball/icons/softball-medal-icon.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "softball:sport_icon:number-icon:softball-number-icon",
+      "file_path": "public/assets/sports/softball/icons/softball-number-icon.svg",
+      "url_path": "/assets/sports/softball/icons/softball-number-icon.svg",
+      "usage_status": "generated-placeholder"
+    }
+  ]
+}

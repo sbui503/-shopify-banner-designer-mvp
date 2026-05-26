@@ -1,0 +1,36 @@
+{
+  "generatedAt": "2026-05-26T06:04:11.779Z",
+  "backupRoot": "backups/sports-asset-system-20260525",
+  "files": [
+    {
+      "path": "public/team-banner-assets.shopify.json",
+      "backup_path": "backups/sports-asset-system-20260525/public/team-banner-assets.shopify.json",
+      "sha256": "925b28d49200d8e5521cd7112ca387407ce1a47b94ea675cab440324e7accf6f"
+    },
+    {
+      "path": "public/team-banner-products.json",
+      "backup_path": "backups/sports-asset-system-20260525/public/team-banner-products.json",
+      "sha256": "a16c720a2edd2b4ca50cbca53a4a2ac608d206da0fee38c2ea4da9649fcd2bed"
+    },
+    {
+      "path": "public/svg-layer-templates.json",
+      "backup_path": "backups/sports-asset-system-20260525/public/svg-layer-templates.json",
+      "sha256": "3116d709c461a6f53e3dcf6d0d37ce56c1863caf2a596637310273c0dccd9efc"
+    },
+    {
+      "path": "public/team-banner-designer.js",
+      "backup_path": "backups/sports-asset-system-20260525/public/team-banner-designer.js",
+      "sha256": "c96b9844ccc059a14db1c6fd881f414db5ee71bcd64dc110aa04540f7865790b"
+    },
+    {
+      "path": "shopify-banner-designer/assets/team-banner-designer.js",
+      "backup_path": "backups/sports-asset-system-20260525/shopify-banner-designer/assets/team-banner-designer.js",
+      "sha256": "4cbe5e8bc0ff4a757e228afb5442fc813aacfd3de841aac2f611f8d2408f83fc"
+    },
+    {
+      "path": "shopify-banner-designer/sections/team-banner-designer.liquid",
+      "backup_path": "backups/sports-asset-system-20260525/shopify-banner-designer/sections/team-banner-designer.liquid",
+      "sha256": "4e0f525d03cf752b5bde0f3a2edae28b2a7934c3bed17016e562d242db4ec9b3"
+    }
+  ]
+}

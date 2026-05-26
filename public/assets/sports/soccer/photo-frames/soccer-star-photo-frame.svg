@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="760" viewBox="0 0 760 760" data-photo-frame-variant="star">
+  <title>Soccer Star Photo Frame</title>
+  <defs>
+    <clipPath id="player_photo_mask"><circle cx="380" cy="286" r="176"/></clipPath>
+    <mask id="photo_window_keepout" maskUnits="userSpaceOnUse"><rect width="760" height="760" fill="#fff"/><circle cx="380" cy="286" r="174" fill="#000"/></mask>
+    <linearGradient id="nameplate_gradient" x1="0" x2="1"><stop offset="0" stop-color="#052e16"/><stop offset=".52" stop-color="#16a34a"/><stop offset="1" stop-color="#052e16"/></linearGradient>
+    <filter id="frame_shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="7" flood-color="#000" flood-opacity=".38"/></filter>
+  </defs>
+  <g id="player_photo_frame" filter="url(#frame_shadow)">
+    <g id="frame_decor" mask="url(#photo_window_keepout)"><path id="frame_star_1" d="M380 30 l6 13 14 2 -10 9 3 14 -13 -7 -13 7 3 -14 -10 -9 14 -2z" fill="#bbf7d0" stroke="#052e16" stroke-width="4"/><path id="frame_star_2" d="M530.4730245868732 75.45395533876251 l6 13 14 2 -10 9 3 14 -13 -7 -13 7 3 -14 -10 -9 14 -2z" fill="#16a34a" stroke="#052e16" stroke-width="4"/><path id="frame_star_3" d="M623.4704681715593 194.4539553387625 l6 13 14 2 -10 9 3 14 -13 -7 -13 7 3 -14 -10 -9 14 -2z" fill="#bbf7d0" stroke="#052e16" stroke-width="4"/><path id="frame_star_4" d="M623.4704681715593 341.5460446612375 l6 13 14 2 -10 9 3 14 -13 -7 -13 7 3 -14 -10 -9 14 -2z" fill="#16a34a" stroke="#052e16" stroke-width="4"/><path id="frame_star_5" d="M530.4730245868732 460.5460446612375 l6 13 14 2 -10 9 3 14 -13 -7 -13 7 3 -14 -10 -9 14 -2z" fill="#bbf7d0" stroke="#052e16" stroke-width="4"/><path id="frame_star_6" d="M380 506 l6 13 14 2 -10 9 3 14 -13 -7 -13 7 3 -14 -10 -9 14 -2z" fill="#16a34a" stroke="#052e16" stroke-width="4"/><path id="frame_star_7" d="M229.5269754131269 460.5460446612375 l6 13 14 2 -10 9 3 14 -13 -7 -13 7 3 -14 -10 -9 14 -2z" fill="#bbf7d0" stroke="#052e16" stroke-width="4"/><path id="frame_star_8" d="M136.5295318284407 341.5460446612375 l6 13 14 2 -10 9 3 14 -13 -7 -13 7 3 -14 -10 -9 14 -2z" fill="#16a34a" stroke="#052e16" stroke-width="4"/><path id="frame_star_9" d="M136.52953182844067 194.45395533876254 l6 13 14 2 -10 9 3 14 -13 -7 -13 7 3 -14 -10 -9 14 -2z" fill="#bbf7d0" stroke="#052e16" stroke-width="4"/><path id="frame_star_10" d="M229.52697541312685 75.45395533876254 l6 13 14 2 -10 9 3 14 -13 -7 -13 7 3 -14 -10 -9 14 -2z" fill="#16a34a" stroke="#052e16" stroke-width="4"/></g>
+    <circle id="player_photo_window" cx="380" cy="286" r="176" fill="none" clip-path="url(#player_photo_mask)"/>
+    <circle id="player_frame_outer" cx="380" cy="286" r="220" fill="none" stroke="#fff" stroke-width="36"/>
+    <circle id="player_frame_color" cx="380" cy="286" r="198" fill="none" stroke="#16a34a" stroke-width="16"/>
+    <circle id="player_frame_inner" cx="380" cy="286" r="178" fill="none" stroke="#052e16" stroke-width="8"/>
+    <g id="sport_icon"><circle cx="380" cy="600" r="58" fill="#fff" stroke="#052e16" stroke-width="4.64"/><polygon points="380,575.64 402.04,591.88 393.92,618.56 366.08,618.56 357.96,591.88" fill="#052e16"/><path d="M380 575.64 L380 547.8 M402.04 591.88 L429.88 583.76 M393.92 618.56 L411.32 642.92 M366.08 618.56 L348.68 642.92 M357.96 591.88 L330.12 583.76" stroke="#052e16" stroke-width="4.0600000000000005"/></g>
+    <path id="player_nameplate" d="M146 442 C238 404 522 404 614 442 L642 588 C530 632 230 632 118 588 Z" fill="url(#nameplate_gradient)" stroke="#fff" stroke-width="14"/><path id="player_nameplate_accent" d="M178 480 C278 454 482 454 582 480" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
+  </g>
+</svg>

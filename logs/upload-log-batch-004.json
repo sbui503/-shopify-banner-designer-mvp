@@ -1,0 +1,1089 @@
+{
+  "batch": 4,
+  "batchSize": 180,
+  "itemCount": 180,
+  "status": "not-uploaded",
+  "blockedBy": "Production upload intentionally blocked until current Shopify theme/products/collections are backed up and legal/logo review is complete.",
+  "items": [
+    {
+      "id": "track-field:team_logo_placeholder:shield-team-logo-placeholder:track-field-shield-team-logo",
+      "file_path": "public/assets/sports/track-field/team-logos/track-field-shield-team-logo.svg",
+      "url_path": "/assets/sports/track-field/team-logos/track-field-shield-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:team_logo_placeholder:champion-team-logo-placeholder:track-field-champion-team-logo",
+      "file_path": "public/assets/sports/track-field/team-logos/track-field-champion-team-logo.svg",
+      "url_path": "/assets/sports/track-field/team-logos/track-field-champion-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:team_logo_placeholder:circle-team-logo-placeholder:track-field-circle-team-logo",
+      "file_path": "public/assets/sports/track-field/team-logos/track-field-circle-team-logo.svg",
+      "url_path": "/assets/sports/track-field/team-logos/track-field-circle-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:team_logo_placeholder:diamond-team-logo-placeholder:track-field-diamond-team-logo",
+      "file_path": "public/assets/sports/track-field/team-logos/track-field-diamond-team-logo.svg",
+      "url_path": "/assets/sports/track-field/team-logos/track-field-diamond-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:team_logo_placeholder:script-team-logo-placeholder:track-field-script-team-logo",
+      "file_path": "public/assets/sports/track-field/team-logos/track-field-script-team-logo.svg",
+      "url_path": "/assets/sports/track-field/team-logos/track-field-script-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:team_logo_placeholder:block-team-logo-placeholder:track-field-block-team-logo",
+      "file_path": "public/assets/sports/track-field/team-logos/track-field-block-team-logo.svg",
+      "url_path": "/assets/sports/track-field/team-logos/track-field-block-team-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:irvine-high-school-vaqueros-placeholder-logo:irvine-high-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/irvine-high-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/irvine-high-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:woodbridge-high-school-warriors-placeholder-logo:woodbridge-high-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/woodbridge-high-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/woodbridge-high-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:university-high-school-trojans-placeholder-logo:university-high-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/university-high-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/university-high-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:northwood-high-school-timberwolves-placeholder-logo:northwood-high-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/northwood-high-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/northwood-high-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:portola-high-school-bulldogs-placeholder-logo:portola-high-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/portola-high-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/portola-high-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:beckman-high-school-patriots-placeholder-logo:beckman-high-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/beckman-high-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/beckman-high-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:tustin-high-school-tillers-placeholder-logo:tustin-high-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/tustin-high-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/tustin-high-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:foothill-high-school-knights-placeholder-logo:foothill-high-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/foothill-high-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/foothill-high-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:laguna-hills-high-school-hawks-placeholder-logo:laguna-hills-high-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/laguna-hills-high-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/laguna-hills-high-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:mission-viejo-high-school-diablos-placeholder-logo:mission-viejo-high-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/mission-viejo-high-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/mission-viejo-high-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:huntington-beach-high-school-oilers-placeholder-logo:huntington-beach-high-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/huntington-beach-high-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/huntington-beach-high-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:mater-dei-high-school-monarchs-placeholder-logo:mater-dei-high-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/mater-dei-high-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/mater-dei-high-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:sierra-vista-middle-school-chargers-placeholder-logo:sierra-vista-middle-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/sierra-vista-middle-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/sierra-vista-middle-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:venado-middle-school-vikings-placeholder-logo:venado-middle-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/venado-middle-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/venado-middle-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:rancho-san-joaquin-middle-school-roadrunners-placeholder-logo:rancho-san-joaquin-middle-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/rancho-san-joaquin-middle-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/rancho-san-joaquin-middle-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:lakeside-middle-school-panthers-placeholder-logo:lakeside-middle-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/lakeside-middle-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/lakeside-middle-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:south-lake-middle-school-sharks-placeholder-logo:south-lake-middle-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/south-lake-middle-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/south-lake-middle-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:jeffrey-trail-middle-school-jets-placeholder-logo:jeffrey-trail-middle-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/jeffrey-trail-middle-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/jeffrey-trail-middle-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:orchard-hills-school-hawks-placeholder-logo:orchard-hills-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/orchard-hills-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/orchard-hills-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:cadence-park-school-coyotes-placeholder-logo:cadence-park-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/cadence-park-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/cadence-park-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "track-field:school_team_logo:beacon-park-school-bobcats-placeholder-logo:beacon-park-school-track-field-placeholder-logo",
+      "file_path": "public/assets/sports/track-field/school-logos/beacon-park-school-track-field-placeholder-logo.svg",
+      "url_path": "/assets/sports/track-field/school-logos/beacon-park-school-track-field-placeholder-logo.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-1-player-arena-orange-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-1-player-arena-orange-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-1-player-arena-orange-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-2-player-stadium-gold-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-2-player-stadium-gold-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-2-player-stadium-gold-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-3-player-midnight-blue-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-3-player-midnight-blue-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-3-player-midnight-blue-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-4-player-angel-pink-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-4-player-angel-pink-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-4-player-angel-pink-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-6-player-varsity-red-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-6-player-varsity-red-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-6-player-varsity-red-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-8-player-royal-green-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-8-player-royal-green-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-8-player-royal-green-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-10-player-silver-black-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-10-player-silver-black-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-10-player-silver-black-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-12-player-electric-purple-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-12-player-electric-purple-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-12-player-electric-purple-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-15-player-sunset-maroon-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-15-player-sunset-maroon-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-15-player-sunset-maroon-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-20-player-ice-white-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-20-player-ice-white-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-20-player-ice-white-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-1-player-neon-lime-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-1-player-neon-lime-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-1-player-neon-lime-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-2-player-sky-burst-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-2-player-sky-burst-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-2-player-sky-burst-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-3-player-arena-orange-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-3-player-arena-orange-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-3-player-arena-orange-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-4-player-stadium-gold-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-4-player-stadium-gold-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-4-player-stadium-gold-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-6-player-midnight-blue-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-6-player-midnight-blue-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-6-player-midnight-blue-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-8-player-angel-pink-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-8-player-angel-pink-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-8-player-angel-pink-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-10-player-varsity-red-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-10-player-varsity-red-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-10-player-varsity-red-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-12-player-royal-green-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-12-player-royal-green-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-12-player-royal-green-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-15-player-silver-black-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-15-player-silver-black-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-15-player-silver-black-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-20-player-electric-purple-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-20-player-electric-purple-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-20-player-electric-purple-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-1-player-sunset-maroon-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-1-player-sunset-maroon-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-1-player-sunset-maroon-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-2-player-ice-white-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-2-player-ice-white-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-2-player-ice-white-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-3-player-neon-lime-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-3-player-neon-lime-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-3-player-neon-lime-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-4-player-sky-burst-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-4-player-sky-burst-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-4-player-sky-burst-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-6-player-arena-orange-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-6-player-arena-orange-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-6-player-arena-orange-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-8-player-stadium-gold-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-8-player-stadium-gold-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-8-player-stadium-gold-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-10-player-midnight-blue-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-10-player-midnight-blue-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-10-player-midnight-blue-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-12-player-angel-pink-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-12-player-angel-pink-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-12-player-angel-pink-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-15-player-varsity-red-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-15-player-varsity-red-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-15-player-varsity-red-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-hem-grommet-20-player-royal-green-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-hem-grommet-20-player-royal-green-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-hem-grommet-20-player-royal-green-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-1-player-arena-orange-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-1-player-arena-orange-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-1-player-arena-orange-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-2-player-stadium-gold-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-2-player-stadium-gold-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-2-player-stadium-gold-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-3-player-midnight-blue-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-3-player-midnight-blue-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-3-player-midnight-blue-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-4-player-angel-pink-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-4-player-angel-pink-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-4-player-angel-pink-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-6-player-varsity-red-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-6-player-varsity-red-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-6-player-varsity-red-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-8-player-royal-green-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-8-player-royal-green-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-8-player-royal-green-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-10-player-silver-black-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-10-player-silver-black-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-10-player-silver-black-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-12-player-electric-purple-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-12-player-electric-purple-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-12-player-electric-purple-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-15-player-sunset-maroon-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-15-player-sunset-maroon-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-15-player-sunset-maroon-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-20-player-ice-white-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-20-player-ice-white-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-20-player-ice-white-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-1-player-neon-lime-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-1-player-neon-lime-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-1-player-neon-lime-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-2-player-sky-burst-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-2-player-sky-burst-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-2-player-sky-burst-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-3-player-arena-orange-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-3-player-arena-orange-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-3-player-arena-orange-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-4-player-stadium-gold-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-4-player-stadium-gold-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-4-player-stadium-gold-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-6-player-midnight-blue-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-6-player-midnight-blue-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-6-player-midnight-blue-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-8-player-angel-pink-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-8-player-angel-pink-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-8-player-angel-pink-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-10-player-varsity-red-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-10-player-varsity-red-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-10-player-varsity-red-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-12-player-royal-green-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-12-player-royal-green-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-12-player-royal-green-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-15-player-silver-black-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-15-player-silver-black-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-15-player-silver-black-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-20-player-electric-purple-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-20-player-electric-purple-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-20-player-electric-purple-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-1-player-sunset-maroon-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-1-player-sunset-maroon-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-1-player-sunset-maroon-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-2-player-ice-white-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-2-player-ice-white-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-2-player-ice-white-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-3-player-neon-lime-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-3-player-neon-lime-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-3-player-neon-lime-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-4-player-sky-burst-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-4-player-sky-burst-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-4-player-sky-burst-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-6-player-arena-orange-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-6-player-arena-orange-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-6-player-arena-orange-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-8-player-stadium-gold-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-8-player-stadium-gold-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-8-player-stadium-gold-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-10-player-midnight-blue-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-10-player-midnight-blue-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-10-player-midnight-blue-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-12-player-angel-pink-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-12-player-angel-pink-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-12-player-angel-pink-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-15-player-varsity-red-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-15-player-varsity-red-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-15-player-varsity-red-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-pole-pocket-20-player-royal-green-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-pole-pocket-20-player-royal-green-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-pole-pocket-20-player-royal-green-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-1-player-arena-orange-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-1-player-arena-orange-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-1-player-arena-orange-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-2-player-stadium-gold-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-2-player-stadium-gold-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-2-player-stadium-gold-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-3-player-midnight-blue-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-3-player-midnight-blue-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-3-player-midnight-blue-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-4-player-angel-pink-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-4-player-angel-pink-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-4-player-angel-pink-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-6-player-varsity-red-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-6-player-varsity-red-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-6-player-varsity-red-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-8-player-royal-green-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-8-player-royal-green-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-8-player-royal-green-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-10-player-silver-black-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-10-player-silver-black-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-10-player-silver-black-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-12-player-electric-purple-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-12-player-electric-purple-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-12-player-electric-purple-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-15-player-sunset-maroon-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-15-player-sunset-maroon-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-15-player-sunset-maroon-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-20-player-ice-white-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-20-player-ice-white-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-20-player-ice-white-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-1-player-neon-lime-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-1-player-neon-lime-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-1-player-neon-lime-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-2-player-sky-burst-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-2-player-sky-burst-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-2-player-sky-burst-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-3-player-arena-orange-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-3-player-arena-orange-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-3-player-arena-orange-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-4-player-stadium-gold-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-4-player-stadium-gold-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-4-player-stadium-gold-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-6-player-midnight-blue-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-6-player-midnight-blue-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-6-player-midnight-blue-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-8-player-angel-pink-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-8-player-angel-pink-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-8-player-angel-pink-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-10-player-varsity-red-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-10-player-varsity-red-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-10-player-varsity-red-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-12-player-royal-green-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-12-player-royal-green-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-12-player-royal-green-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-15-player-silver-black-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-15-player-silver-black-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-15-player-silver-black-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-20-player-electric-purple-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-20-player-electric-purple-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-20-player-electric-purple-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-1-player-sunset-maroon-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-1-player-sunset-maroon-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-1-player-sunset-maroon-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-2-player-ice-white-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-2-player-ice-white-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-2-player-ice-white-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-3-player-neon-lime-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-3-player-neon-lime-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-3-player-neon-lime-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-triangle-4-player-sky-burst-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-triangle-4-player-sky-burst-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-triangle-4-player-sky-burst-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-1-player-arena-orange-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-1-player-arena-orange-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-1-player-arena-orange-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-2-player-stadium-gold-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-2-player-stadium-gold-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-2-player-stadium-gold-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-3-player-midnight-blue-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-3-player-midnight-blue-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-3-player-midnight-blue-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-4-player-angel-pink-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-4-player-angel-pink-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-4-player-angel-pink-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-6-player-varsity-red-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-6-player-varsity-red-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-6-player-varsity-red-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-8-player-royal-green-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-8-player-royal-green-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-8-player-royal-green-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-10-player-silver-black-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-10-player-silver-black-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-10-player-silver-black-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-12-player-electric-purple-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-12-player-electric-purple-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-12-player-electric-purple-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-15-player-sunset-maroon-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-15-player-sunset-maroon-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-15-player-sunset-maroon-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-20-player-ice-white-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-20-player-ice-white-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-20-player-ice-white-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-1-player-neon-lime-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-1-player-neon-lime-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-1-player-neon-lime-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-2-player-sky-burst-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-2-player-sky-burst-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-2-player-sky-burst-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-3-player-arena-orange-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-3-player-arena-orange-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-3-player-arena-orange-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-4-player-stadium-gold-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-4-player-stadium-gold-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-4-player-stadium-gold-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-6-player-midnight-blue-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-6-player-midnight-blue-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-6-player-midnight-blue-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-8-player-angel-pink-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-8-player-angel-pink-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-8-player-angel-pink-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-10-player-varsity-red-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-10-player-varsity-red-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-10-player-varsity-red-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-12-player-royal-green-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-12-player-royal-green-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-12-player-royal-green-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-15-player-silver-black-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-15-player-silver-black-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-15-player-silver-black-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-20-player-electric-purple-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-20-player-electric-purple-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-20-player-electric-purple-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-1-player-sunset-maroon-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-1-player-sunset-maroon-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-1-player-sunset-maroon-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-2-player-ice-white-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-2-player-ice-white-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-2-player-ice-white-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-3-player-neon-lime-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-3-player-neon-lime-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-3-player-neon-lime-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:basketball-home-plate-4-player-sky-burst-2026",
+      "file_path": "public/assets/sports/basketball/templates/basketball-home-plate-4-player-sky-burst-2026.svg",
+      "url_path": "/assets/sports/basketball/templates/basketball-home-plate-4-player-sky-burst-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-1-player-arena-orange-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-1-player-arena-orange-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-1-player-arena-orange-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-2-player-stadium-gold-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-2-player-stadium-gold-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-2-player-stadium-gold-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-3-player-midnight-blue-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-3-player-midnight-blue-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-3-player-midnight-blue-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-4-player-angel-pink-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-4-player-angel-pink-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-4-player-angel-pink-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-6-player-varsity-red-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-6-player-varsity-red-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-6-player-varsity-red-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-8-player-royal-green-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-8-player-royal-green-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-8-player-royal-green-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-10-player-silver-black-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-10-player-silver-black-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-10-player-silver-black-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-12-player-electric-purple-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-12-player-electric-purple-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-12-player-electric-purple-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-15-player-sunset-maroon-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-15-player-sunset-maroon-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-15-player-sunset-maroon-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-20-player-ice-white-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-20-player-ice-white-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-20-player-ice-white-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-1-player-neon-lime-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-1-player-neon-lime-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-1-player-neon-lime-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-2-player-sky-burst-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-2-player-sky-burst-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-2-player-sky-burst-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-3-player-arena-orange-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-3-player-arena-orange-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-3-player-arena-orange-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-4-player-stadium-gold-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-4-player-stadium-gold-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-4-player-stadium-gold-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-6-player-midnight-blue-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-6-player-midnight-blue-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-6-player-midnight-blue-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-8-player-angel-pink-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-8-player-angel-pink-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-8-player-angel-pink-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-10-player-varsity-red-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-10-player-varsity-red-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-10-player-varsity-red-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-12-player-royal-green-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-12-player-royal-green-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-12-player-royal-green-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-15-player-silver-black-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-15-player-silver-black-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-15-player-silver-black-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-20-player-electric-purple-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-20-player-electric-purple-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-20-player-electric-purple-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-1-player-sunset-maroon-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-1-player-sunset-maroon-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-1-player-sunset-maroon-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-2-player-ice-white-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-2-player-ice-white-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-2-player-ice-white-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-3-player-neon-lime-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-3-player-neon-lime-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-3-player-neon-lime-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-4-player-sky-burst-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-4-player-sky-burst-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-4-player-sky-burst-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-6-player-arena-orange-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-6-player-arena-orange-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-6-player-arena-orange-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-8-player-stadium-gold-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-8-player-stadium-gold-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-8-player-stadium-gold-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-10-player-midnight-blue-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-10-player-midnight-blue-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-10-player-midnight-blue-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-12-player-angel-pink-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-12-player-angel-pink-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-12-player-angel-pink-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-15-player-varsity-red-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-15-player-varsity-red-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-15-player-varsity-red-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-hem-grommet-20-player-royal-green-2026",
+      "file_path": "public/assets/sports/football/templates/football-hem-grommet-20-player-royal-green-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-hem-grommet-20-player-royal-green-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-pole-pocket-1-player-arena-orange-2026",
+      "file_path": "public/assets/sports/football/templates/football-pole-pocket-1-player-arena-orange-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-pole-pocket-1-player-arena-orange-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-pole-pocket-2-player-stadium-gold-2026",
+      "file_path": "public/assets/sports/football/templates/football-pole-pocket-2-player-stadium-gold-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-pole-pocket-2-player-stadium-gold-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-pole-pocket-3-player-midnight-blue-2026",
+      "file_path": "public/assets/sports/football/templates/football-pole-pocket-3-player-midnight-blue-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-pole-pocket-3-player-midnight-blue-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-pole-pocket-4-player-angel-pink-2026",
+      "file_path": "public/assets/sports/football/templates/football-pole-pocket-4-player-angel-pink-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-pole-pocket-4-player-angel-pink-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-pole-pocket-6-player-varsity-red-2026",
+      "file_path": "public/assets/sports/football/templates/football-pole-pocket-6-player-varsity-red-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-pole-pocket-6-player-varsity-red-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-pole-pocket-8-player-royal-green-2026",
+      "file_path": "public/assets/sports/football/templates/football-pole-pocket-8-player-royal-green-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-pole-pocket-8-player-royal-green-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-pole-pocket-10-player-silver-black-2026",
+      "file_path": "public/assets/sports/football/templates/football-pole-pocket-10-player-silver-black-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-pole-pocket-10-player-silver-black-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-pole-pocket-12-player-electric-purple-2026",
+      "file_path": "public/assets/sports/football/templates/football-pole-pocket-12-player-electric-purple-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-pole-pocket-12-player-electric-purple-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-pole-pocket-15-player-sunset-maroon-2026",
+      "file_path": "public/assets/sports/football/templates/football-pole-pocket-15-player-sunset-maroon-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-pole-pocket-15-player-sunset-maroon-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-pole-pocket-20-player-ice-white-2026",
+      "file_path": "public/assets/sports/football/templates/football-pole-pocket-20-player-ice-white-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-pole-pocket-20-player-ice-white-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-pole-pocket-1-player-neon-lime-2026",
+      "file_path": "public/assets/sports/football/templates/football-pole-pocket-1-player-neon-lime-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-pole-pocket-1-player-neon-lime-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-pole-pocket-2-player-sky-burst-2026",
+      "file_path": "public/assets/sports/football/templates/football-pole-pocket-2-player-sky-burst-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-pole-pocket-2-player-sky-burst-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-pole-pocket-3-player-arena-orange-2026",
+      "file_path": "public/assets/sports/football/templates/football-pole-pocket-3-player-arena-orange-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-pole-pocket-3-player-arena-orange-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-pole-pocket-4-player-stadium-gold-2026",
+      "file_path": "public/assets/sports/football/templates/football-pole-pocket-4-player-stadium-gold-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-pole-pocket-4-player-stadium-gold-2026.svg",
+      "usage_status": "generated-placeholder"
+    },
+    {
+      "id": "template:football-pole-pocket-6-player-midnight-blue-2026",
+      "file_path": "public/assets/sports/football/templates/football-pole-pocket-6-player-midnight-blue-2026.svg",
+      "url_path": "/assets/sports/football/templates/football-pole-pocket-6-player-midnight-blue-2026.svg",
+      "usage_status": "generated-placeholder"
+    }
+  ]
+}

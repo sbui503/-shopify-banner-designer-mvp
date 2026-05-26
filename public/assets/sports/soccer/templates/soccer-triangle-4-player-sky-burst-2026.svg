@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="900" viewBox="0 0 900 900" data-template-id="soccer-triangle-4-player-sky-burst-2026" data-sport="soccer" data-shape="triangle" data-player-count="4">
+  <title>Soccer Triangle Banner 4 Player Sky Burst 2026</title>
+  <defs><clipPath id="banner_shape"><polygon points="36,70 864,70 450,850"/></clipPath><radialGradient id="bg_gradient" cx="50%" cy="38%" r="76%"><stop offset="0" stop-color="#bbf7d0"/><stop offset=".38" stop-color="#0ea5e9"/><stop offset="1" stop-color="#082f49"/></radialGradient></defs>
+  <g id="template_root" clip-path="url(#banner_shape)">
+    <rect id="bg_stadium" width="900" height="900" fill="url(#bg_gradient)"/>
+    <g id="bg_lighting"><path d="M0 0 L288 630 L0 900 Z" fill="#fff" opacity=".12"/><path d="M900 0 L612 630 L900 900 Z" fill="#fff" opacity=".12"/></g>
+    <g id="field_court_overlay" opacity=".58"><path d="M126.00000000000001 648 C270 432 630 432 774 648" fill="none" stroke="#fff" stroke-width="5"/><path d="M450 306 V738" stroke="#fff" stroke-width="4"/></g>
+    <g id="sport_icon" opacity=".92"><circle cx="450" cy="252.00000000000003" r="99" fill="#fff" stroke="#052e16" stroke-width="7.92"/><polygon points="450,210.42000000000002 487.62,238.14000000000001 473.76,283.68 426.24,283.68 412.38,238.14000000000001" fill="#052e16"/><path d="M450 210.42000000000002 L450 162.90000000000003 M487.62 238.14000000000001 L535.14 224.28000000000003 M473.76 283.68 L503.46 325.26000000000005 M426.24 283.68 L396.54 325.26000000000005 M412.38 238.14000000000001 L364.86 224.28000000000003" stroke="#052e16" stroke-width="6.930000000000001"/></g>
+    <g id="logo_team">
+  <title>BULLDOGS Soccer Logo Placeholder</title>
+  <defs><filter id="logo_shadow"><feDropShadow dx="0" dy="14" stdDeviation="8" flood-color="#000" flood-opacity=".45"/></filter></defs>
+  <g id="logo_team" filter="url(#logo_shadow)"><path id="logo_shield" d="M450 34 L738 138 L690 392 L450 486 L210 392 L162 138 Z" fill="#082f49" stroke="#fff" stroke-width="18"/><path id="logo_inner" d="M450 74 L694 160 L654 362 L450 442 L246 362 L206 160 Z" fill="#0ea5e9" stroke="#bbf7d0" stroke-width="10"/><circle cx="450" cy="190" r="74" fill="#fff" stroke="#052e16" stroke-width="5.92"/><polygon points="450,158.92000000000002 478.12,179.64 467.76,213.68 432.24,213.68 421.88,179.64" fill="#052e16"/><path d="M450 158.92000000000002 L450 123.39999999999999 M478.12 179.64 L513.64 169.28 M467.76 213.68 L489.96 244.76 M432.24 213.68 L410.04 244.76 M421.88 179.64 L386.36 169.28" stroke="#052e16" stroke-width="5.180000000000001"/><text id="title_team_name" x="450" y="344" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="82" fill="#fff" stroke="#082f49" stroke-width="8" paint-order="stroke">BULLDOGS</text><text id="title_mascot" x="450" y="405" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="42" fill="#bbf7d0">CLUB</text></g>
+</g>
+    <text id="title_team_name" x="450" y="468" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="82" fill="#fff" stroke="#082f49" stroke-width="10" paint-order="stroke">BULLDOGS</text>
+    <text id="subtitle_sport_year" x="450" y="549" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="38" fill="#bbf7d0">SOCCER 2026</text>
+    <g id="player_01" data-layer-role="player" data-player-index="1">
+      <clipPath id="player_01_photo_mask"><circle cx="144" cy="162" r="57.275999999999996"/></clipPath>
+      <rect id="player_01_photo_placeholder" x="86.724" y="104.724" width="114.55199999999999" height="114.55199999999999" rx="57.275999999999996" fill="#d1d5db" clip-path="url(#player_01_photo_mask)"/>
+      <circle id="player_01_frame" cx="144" cy="162" r="66.6" fill="none" stroke="#fff" stroke-width="9.989999999999998"/>
+      <circle id="player_01_frame_color" cx="144" cy="162" r="61.272" fill="none" stroke="#0ea5e9" stroke-width="5.327999999999999"/>
+      <path id="player_01_nameplate" d="M69.408 238.60000000000002 H218.59199999999998 L203.94 296.6 H84.06 Z" fill="#082f49" stroke="#fff" stroke-width="5"/>
+      <text id="player_01_name" x="144" y="279.6" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="25.308" fill="#fff">PLAYER</text>
+      <text id="player_01_number" x="195.948" y="223.272" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="22.644" fill="#0ea5e9" stroke="#fff" stroke-width="3">#1</text>
+    </g>
+<g id="player_02" data-layer-role="player" data-player-index="2">
+      <clipPath id="player_02_photo_mask"><circle cx="144" cy="612" r="57.275999999999996"/></clipPath>
+      <rect id="player_02_photo_placeholder" x="86.724" y="554.724" width="114.55199999999999" height="114.55199999999999" rx="57.275999999999996" fill="#d1d5db" clip-path="url(#player_02_photo_mask)"/>
+      <circle id="player_02_frame" cx="144" cy="612" r="66.6" fill="none" stroke="#fff" stroke-width="9.989999999999998"/>
+      <circle id="player_02_frame_color" cx="144" cy="612" r="61.272" fill="none" stroke="#0ea5e9" stroke-width="5.327999999999999"/>
+      <path id="player_02_nameplate" d="M69.408 688.6 H218.59199999999998 L203.94 746.6 H84.06 Z" fill="#082f49" stroke="#fff" stroke-width="5"/>
+      <text id="player_02_name" x="144" y="729.6" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="25.308" fill="#fff">PLAYER</text>
+      <text id="player_02_number" x="195.948" y="673.272" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="22.644" fill="#0ea5e9" stroke="#fff" stroke-width="3">#2</text>
+    </g>
+<g id="player_03" data-layer-role="player" data-player-index="3">
+      <clipPath id="player_03_photo_mask"><circle cx="756" cy="162" r="57.275999999999996"/></clipPath>
+      <rect id="player_03_photo_placeholder" x="698.724" y="104.724" width="114.55199999999999" height="114.55199999999999" rx="57.275999999999996" fill="#d1d5db" clip-path="url(#player_03_photo_mask)"/>
+      <circle id="player_03_frame" cx="756" cy="162" r="66.6" fill="none" stroke="#fff" stroke-width="9.989999999999998"/>
+      <circle id="player_03_frame_color" cx="756" cy="162" r="61.272" fill="none" stroke="#0ea5e9" stroke-width="5.327999999999999"/>
+      <path id="player_03_nameplate" d="M681.408 238.60000000000002 H830.592 L815.94 296.6 H696.06 Z" fill="#082f49" stroke="#fff" stroke-width="5"/>
+      <text id="player_03_name" x="756" y="279.6" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="25.308" fill="#fff">PLAYER</text>
+      <text id="player_03_number" x="807.948" y="223.272" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="22.644" fill="#0ea5e9" stroke="#fff" stroke-width="3">#3</text>
+    </g>
+<g id="player_04" data-layer-role="player" data-player-index="4">
+      <clipPath id="player_04_photo_mask"><circle cx="756" cy="612" r="57.275999999999996"/></clipPath>
+      <rect id="player_04_photo_placeholder" x="698.724" y="554.724" width="114.55199999999999" height="114.55199999999999" rx="57.275999999999996" fill="#d1d5db" clip-path="url(#player_04_photo_mask)"/>
+      <circle id="player_04_frame" cx="756" cy="612" r="66.6" fill="none" stroke="#fff" stroke-width="9.989999999999998"/>
+      <circle id="player_04_frame_color" cx="756" cy="612" r="61.272" fill="none" stroke="#0ea5e9" stroke-width="5.327999999999999"/>
+      <path id="player_04_nameplate" d="M681.408 688.6 H830.592 L815.94 746.6 H696.06 Z" fill="#082f49" stroke="#fff" stroke-width="5"/>
+      <text id="player_04_name" x="756" y="729.6" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="25.308" fill="#fff">PLAYER</text>
+      <text id="player_04_number" x="807.948" y="673.272" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="22.644" fill="#0ea5e9" stroke="#fff" stroke-width="3">#4</text>
+    </g>
+    <text id="footer_text" x="450" y="846" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="28" fill="#fff">ONE SCHOOL. ONE TEAM.</text>
+  </g>
+</svg>

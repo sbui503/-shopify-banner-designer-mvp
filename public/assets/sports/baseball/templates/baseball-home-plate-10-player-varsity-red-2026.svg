@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="900" viewBox="0 0 900 900" data-template-id="baseball-home-plate-10-player-varsity-red-2026" data-sport="baseball" data-shape="home-plate" data-player-count="10">
+  <title>Baseball Home Plate Banner 10 Player Varsity Red 2026</title>
+  <defs><clipPath id="banner_shape"><polygon points="32,32 868,32 868,500 450,868 32,500"/></clipPath><radialGradient id="bg_gradient" cx="50%" cy="38%" r="76%"><stop offset="0" stop-color="#f8fafc"/><stop offset=".38" stop-color="#dc2626"/><stop offset="1" stop-color="#111827"/></radialGradient></defs>
+  <g id="template_root" clip-path="url(#banner_shape)">
+    <rect id="bg_stadium" width="900" height="900" fill="url(#bg_gradient)"/>
+    <g id="bg_lighting"><path d="M0 0 L288 630 L0 900 Z" fill="#fff" opacity=".12"/><path d="M900 0 L612 630 L900 900 Z" fill="#fff" opacity=".12"/></g>
+    <g id="field_court_overlay" opacity=".58"><path d="M126.00000000000001 648 C270 432 630 432 774 648" fill="none" stroke="#fff" stroke-width="5"/><path d="M450 306 V738" stroke="#fff" stroke-width="4"/></g>
+    <g id="sport_icon" opacity=".92"><circle cx="450" cy="252.00000000000003" r="99" fill="#fff" stroke="#0b2f63" stroke-width="5.9399999999999995"/><path d="M398.52 170.82000000000005 C434.16 224.28000000000003 434.16 279.72 398.52 333.18" fill="none" stroke="#d71920" stroke-width="6.930000000000001"/><path d="M501.48 170.82000000000005 C465.84 224.28000000000003 465.84 279.72 501.48 333.18" fill="none" stroke="#d71920" stroke-width="6.930000000000001"/></g>
+    <g id="logo_team">
+  <title>BULLDOGS Baseball Logo Placeholder</title>
+  <defs><filter id="logo_shadow"><feDropShadow dx="0" dy="14" stdDeviation="8" flood-color="#000" flood-opacity=".45"/></filter></defs>
+  <g id="logo_team" filter="url(#logo_shadow)"><path id="logo_shield" d="M450 34 L738 138 L690 392 L450 486 L210 392 L162 138 Z" fill="#111827" stroke="#fff" stroke-width="18"/><path id="logo_inner" d="M450 74 L694 160 L654 362 L450 442 L246 362 L206 160 Z" fill="#dc2626" stroke="#f8fafc" stroke-width="10"/><circle cx="450" cy="190" r="74" fill="#fff" stroke="#0b2f63" stroke-width="4.4399999999999995"/><path d="M411.52 129.32 C438.16 169.28 438.16 210.72 411.52 250.68" fill="none" stroke="#d71920" stroke-width="5.180000000000001"/><path d="M488.48 129.32 C461.84 169.28 461.84 210.72 488.48 250.68" fill="none" stroke="#d71920" stroke-width="5.180000000000001"/><text id="title_team_name" x="450" y="344" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="82" fill="#fff" stroke="#111827" stroke-width="8" paint-order="stroke">BULLDOGS</text><text id="title_mascot" x="450" y="405" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="42" fill="#f8fafc">CLUB</text></g>
+</g>
+    <text id="title_team_name" x="450" y="468" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="82" fill="#fff" stroke="#111827" stroke-width="10" paint-order="stroke">BULLDOGS</text>
+    <text id="subtitle_sport_year" x="450" y="549" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="38" fill="#f8fafc">BASEBALL 2026</text>
+    <g id="player_01" data-layer-role="player" data-player-index="1">
+      <clipPath id="player_01_photo_mask"><circle cx="144" cy="162" r="47.988"/></clipPath>
+      <rect id="player_01_photo_placeholder" x="96.012" y="114.012" width="95.976" height="95.976" rx="47.988" fill="#d1d5db" clip-path="url(#player_01_photo_mask)"/>
+      <circle id="player_01_frame" cx="144" cy="162" r="55.8" fill="none" stroke="#fff" stroke-width="8.37"/>
+      <circle id="player_01_frame_color" cx="144" cy="162" r="51.336" fill="none" stroke="#dc2626" stroke-width="5"/>
+      <path id="player_01_nameplate" d="M81.50399999999999 227.8 H206.496 L194.22 285.8 H93.78 Z" fill="#111827" stroke="#fff" stroke-width="5"/>
+      <text id="player_01_name" x="144" y="268.8" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="21.204" fill="#fff">PLAYER</text>
+      <text id="player_01_number" x="187.524" y="213.336" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="18.972" fill="#dc2626" stroke="#fff" stroke-width="3">#1</text>
+    </g>
+<g id="player_02" data-layer-role="player" data-player-index="2">
+      <clipPath id="player_02_photo_mask"><circle cx="144" cy="274.5" r="47.988"/></clipPath>
+      <rect id="player_02_photo_placeholder" x="96.012" y="226.512" width="95.976" height="95.976" rx="47.988" fill="#d1d5db" clip-path="url(#player_02_photo_mask)"/>
+      <circle id="player_02_frame" cx="144" cy="274.5" r="55.8" fill="none" stroke="#fff" stroke-width="8.37"/>
+      <circle id="player_02_frame_color" cx="144" cy="274.5" r="51.336" fill="none" stroke="#dc2626" stroke-width="5"/>
+      <path id="player_02_nameplate" d="M81.50399999999999 340.3 H206.496 L194.22 398.3 H93.78 Z" fill="#111827" stroke="#fff" stroke-width="5"/>
+      <text id="player_02_name" x="144" y="381.3" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="21.204" fill="#fff">PLAYER</text>
+      <text id="player_02_number" x="187.524" y="325.836" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="18.972" fill="#dc2626" stroke="#fff" stroke-width="3">#2</text>
+    </g>
+<g id="player_03" data-layer-role="player" data-player-index="3">
+      <clipPath id="player_03_photo_mask"><circle cx="144" cy="387" r="47.988"/></clipPath>
+      <rect id="player_03_photo_placeholder" x="96.012" y="339.012" width="95.976" height="95.976" rx="47.988" fill="#d1d5db" clip-path="url(#player_03_photo_mask)"/>
+      <circle id="player_03_frame" cx="144" cy="387" r="55.8" fill="none" stroke="#fff" stroke-width="8.37"/>
+      <circle id="player_03_frame_color" cx="144" cy="387" r="51.336" fill="none" stroke="#dc2626" stroke-width="5"/>
+      <path id="player_03_nameplate" d="M81.50399999999999 452.8 H206.496 L194.22 510.8 H93.78 Z" fill="#111827" stroke="#fff" stroke-width="5"/>
+      <text id="player_03_name" x="144" y="493.8" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="21.204" fill="#fff">PLAYER</text>
+      <text id="player_03_number" x="187.524" y="438.336" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="18.972" fill="#dc2626" stroke="#fff" stroke-width="3">#3</text>
+    </g>
+<g id="player_04" data-layer-role="player" data-player-index="4">
+      <clipPath id="player_04_photo_mask"><circle cx="144" cy="499.5" r="47.988"/></clipPath>
+      <rect id="player_04_photo_placeholder" x="96.012" y="451.512" width="95.976" height="95.976" rx="47.988" fill="#d1d5db" clip-path="url(#player_04_photo_mask)"/>
+      <circle id="player_04_frame" cx="144" cy="499.5" r="55.8" fill="none" stroke="#fff" stroke-width="8.37"/>
+      <circle id="player_04_frame_color" cx="144" cy="499.5" r="51.336" fill="none" stroke="#dc2626" stroke-width="5"/>
+      <path id="player_04_nameplate" d="M81.50399999999999 565.3 H206.496 L194.22 623.3 H93.78 Z" fill="#111827" stroke="#fff" stroke-width="5"/>
+      <text id="player_04_name" x="144" y="606.3" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="21.204" fill="#fff">PLAYER</text>
+      <text id="player_04_number" x="187.524" y="550.836" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="18.972" fill="#dc2626" stroke="#fff" stroke-width="3">#4</text>
+    </g>
+<g id="player_05" data-layer-role="player" data-player-index="5">
+      <clipPath id="player_05_photo_mask"><circle cx="144" cy="612" r="47.988"/></clipPath>
+      <rect id="player_05_photo_placeholder" x="96.012" y="564.012" width="95.976" height="95.976" rx="47.988" fill="#d1d5db" clip-path="url(#player_05_photo_mask)"/>
+      <circle id="player_05_frame" cx="144" cy="612" r="55.8" fill="none" stroke="#fff" stroke-width="8.37"/>
+      <circle id="player_05_frame_color" cx="144" cy="612" r="51.336" fill="none" stroke="#dc2626" stroke-width="5"/>
+      <path id="player_05_nameplate" d="M81.50399999999999 677.8 H206.496 L194.22 735.8 H93.78 Z" fill="#111827" stroke="#fff" stroke-width="5"/>
+      <text id="player_05_name" x="144" y="718.8" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="21.204" fill="#fff">PLAYER</text>
+      <text id="player_05_number" x="187.524" y="663.336" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="18.972" fill="#dc2626" stroke="#fff" stroke-width="3">#5</text>
+    </g>
+<g id="player_06" data-layer-role="player" data-player-index="6">
+      <clipPath id="player_06_photo_mask"><circle cx="756" cy="162" r="47.988"/></clipPath>
+      <rect id="player_06_photo_placeholder" x="708.012" y="114.012" width="95.976" height="95.976" rx="47.988" fill="#d1d5db" clip-path="url(#player_06_photo_mask)"/>
+      <circle id="player_06_frame" cx="756" cy="162" r="55.8" fill="none" stroke="#fff" stroke-width="8.37"/>
+      <circle id="player_06_frame_color" cx="756" cy="162" r="51.336" fill="none" stroke="#dc2626" stroke-width="5"/>
+      <path id="player_06_nameplate" d="M693.504 227.8 H818.496 L806.22 285.8 H705.78 Z" fill="#111827" stroke="#fff" stroke-width="5"/>
+      <text id="player_06_name" x="756" y="268.8" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="21.204" fill="#fff">PLAYER</text>
+      <text id="player_06_number" x="799.524" y="213.336" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="18.972" fill="#dc2626" stroke="#fff" stroke-width="3">#6</text>
+    </g>
+<g id="player_07" data-layer-role="player" data-player-index="7">
+      <clipPath id="player_07_photo_mask"><circle cx="603" cy="702" r="47.988"/></clipPath>
+      <rect id="player_07_photo_placeholder" x="555.012" y="654.012" width="95.976" height="95.976" rx="47.988" fill="#d1d5db" clip-path="url(#player_07_photo_mask)"/>
+      <circle id="player_07_frame" cx="603" cy="702" r="55.8" fill="none" stroke="#fff" stroke-width="8.37"/>
+      <circle id="player_07_frame_color" cx="603" cy="702" r="51.336" fill="none" stroke="#dc2626" stroke-width="5"/>
+      <path id="player_07_nameplate" d="M540.504 767.8 H665.496 L653.22 825.8 H552.78 Z" fill="#111827" stroke="#fff" stroke-width="5"/>
+      <text id="player_07_name" x="603" y="808.8" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="21.204" fill="#fff">PLAYER</text>
+      <text id="player_07_number" x="646.524" y="753.336" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="18.972" fill="#dc2626" stroke="#fff" stroke-width="3">#7</text>
+    </g>
+<g id="player_08" data-layer-role="player" data-player-index="8">
+      <clipPath id="player_08_photo_mask"><circle cx="504.00000000000006" cy="702" r="47.988"/></clipPath>
+      <rect id="player_08_photo_placeholder" x="456.01200000000006" y="654.012" width="95.976" height="95.976" rx="47.988" fill="#d1d5db" clip-path="url(#player_08_photo_mask)"/>
+      <circle id="player_08_frame" cx="504.00000000000006" cy="702" r="55.8" fill="none" stroke="#fff" stroke-width="8.37"/>
+      <circle id="player_08_frame_color" cx="504.00000000000006" cy="702" r="51.336" fill="none" stroke="#dc2626" stroke-width="5"/>
+      <path id="player_08_nameplate" d="M441.5040000000001 767.8 H566.4960000000001 L554.22 825.8 H453.7800000000001 Z" fill="#111827" stroke="#fff" stroke-width="5"/>
+      <text id="player_08_name" x="504.00000000000006" y="808.8" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="21.204" fill="#fff">PLAYER</text>
+      <text id="player_08_number" x="547.5240000000001" y="753.336" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="18.972" fill="#dc2626" stroke="#fff" stroke-width="3">#8</text>
+    </g>
+<g id="player_09" data-layer-role="player" data-player-index="9">
+      <clipPath id="player_09_photo_mask"><circle cx="405" cy="702" r="47.988"/></clipPath>
+      <rect id="player_09_photo_placeholder" x="357.012" y="654.012" width="95.976" height="95.976" rx="47.988" fill="#d1d5db" clip-path="url(#player_09_photo_mask)"/>
+      <circle id="player_09_frame" cx="405" cy="702" r="55.8" fill="none" stroke="#fff" stroke-width="8.37"/>
+      <circle id="player_09_frame_color" cx="405" cy="702" r="51.336" fill="none" stroke="#dc2626" stroke-width="5"/>
+      <path id="player_09_nameplate" d="M342.504 767.8 H467.496 L455.22 825.8 H354.78 Z" fill="#111827" stroke="#fff" stroke-width="5"/>
+      <text id="player_09_name" x="405" y="808.8" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="21.204" fill="#fff">PLAYER</text>
+      <text id="player_09_number" x="448.524" y="753.336" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="18.972" fill="#dc2626" stroke="#fff" stroke-width="3">#9</text>
+    </g>
+<g id="player_10" data-layer-role="player" data-player-index="10">
+      <clipPath id="player_10_photo_mask"><circle cx="306" cy="702" r="47.988"/></clipPath>
+      <rect id="player_10_photo_placeholder" x="258.012" y="654.012" width="95.976" height="95.976" rx="47.988" fill="#d1d5db" clip-path="url(#player_10_photo_mask)"/>
+      <circle id="player_10_frame" cx="306" cy="702" r="55.8" fill="none" stroke="#fff" stroke-width="8.37"/>
+      <circle id="player_10_frame_color" cx="306" cy="702" r="51.336" fill="none" stroke="#dc2626" stroke-width="5"/>
+      <path id="player_10_nameplate" d="M243.504 767.8 H368.496 L356.22 825.8 H255.78 Z" fill="#111827" stroke="#fff" stroke-width="5"/>
+      <text id="player_10_name" x="306" y="808.8" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="21.204" fill="#fff">PLAYER</text>
+      <text id="player_10_number" x="349.524" y="753.336" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="18.972" fill="#dc2626" stroke="#fff" stroke-width="3">#10</text>
+    </g>
+    <text id="footer_text" x="450" y="846" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="28" fill="#fff">ONE SCHOOL. ONE TEAM.</text>
+  </g>
+</svg>

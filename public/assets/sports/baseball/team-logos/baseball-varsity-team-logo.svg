@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+  <title>TEAM Baseball Logo Placeholder</title>
+  <defs><filter id="logo_shadow"><feDropShadow dx="0" dy="14" stdDeviation="8" flood-color="#000" flood-opacity=".45"/></filter></defs>
+  <g id="logo_team" filter="url(#logo_shadow)"><text id="logo_letter" x="450" y="350" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="300" fill="#d71920" stroke="#fff" stroke-width="28" paint-order="stroke">T</text><text id="title_team_name" x="450" y="344" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="82" fill="#fff" stroke="#0b2f63" stroke-width="8" paint-order="stroke">TEAM</text><text id="title_mascot" x="450" y="405" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="42" fill="#f8fafc">BASEBALL</text></g>
+</svg>
