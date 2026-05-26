@@ -89,6 +89,37 @@
     { value: "track", label: "Track & Field", short: "TF", primary: "#f59e0b", accent: "#0f172a", glow: "#fde68a", venue: "track" }
   ];
   const SCHOOL_SPORT_VALUES = SCHOOL_SPORTS.map((sport) => sport.value);
+  const SCHOOL_SPORT_GENERATED_VALUES = ["basketball", "football", "volleyball", "track"];
+  const SCHOOL_SPORT_BACKGROUND_VARIANTS = [
+    { key: "arena", name: "Arena Background" },
+    { key: "lights", name: "Game Night Lights Background" },
+    { key: "speed", name: "Speed Lines Background" },
+    { key: "championship", name: "Championship Burst Background" }
+  ];
+  const SCHOOL_SPORT_CLIPART_VARIANTS = [
+    { key: "motion", name: "Motion Clip Art" },
+    { key: "crest", name: "Crest Clip Art" },
+    { key: "starburst", name: "Starburst Clip Art" },
+    { key: "equipment", name: "Equipment Clip Art" }
+  ];
+  const SCHOOL_SPORT_PLAYER_ICON_VARIANTS = [
+    { key: "ball", name: "Ball Player Icon", trackName: "Event Player Icon" },
+    { key: "jersey", name: "Jersey Player Icon", trackName: "Runner Bib Icon" },
+    { key: "number", name: "Number Badge Player Icon", trackName: "Lane Number Icon" },
+    { key: "medal", name: "Medal Player Icon", trackName: "Medal Player Icon" }
+  ];
+  const SCHOOL_SPORT_TEAM_LOGO_VARIANTS = [
+    { key: "badge", name: "Team Logo Badge" },
+    { key: "varsity", name: "Varsity Letter Logo" },
+    { key: "shield", name: "Shield Team Logo" },
+    { key: "champion", name: "Champion Crest Logo" }
+  ];
+  const SCHOOL_SPORT_PHOTO_FRAME_VARIANTS = [
+    { key: "classic", name: "Classic Photo Frame" },
+    { key: "ribbon", name: "Ribbon Photo Frame" },
+    { key: "star", name: "Star Photo Frame" },
+    { key: "shield", name: "Shield Photo Frame" }
+  ];
   const SCHOOL_SPORT_ASSETS = makeSchoolSportAssets();
 
   function normalizeShape(shape, hasDesign) {
@@ -155,6 +186,10 @@
       ],
       matchKey: `${sport.label} ${sport.value} ${category} ${name} middle school high school team`.toLowerCase()
     };
+  }
+
+  function schoolSportVariant(variants, key) {
+    return variants.find((variant) => variant.key === key) || variants[0];
   }
 
   function sportBallSvg(sport, cx = 0, cy = 0, r = 80) {
@@ -228,7 +263,8 @@
     `;
   }
 
-  function sportBackgroundSvg(sport, type = "rectangle") {
+  function sportBackgroundSvg(sport, type = "rectangle", variantKey = "arena") {
+    const variant = schoolSportVariant(SCHOOL_SPORT_BACKGROUND_VARIANTS, variantKey);
     const width = type === "rectangle" || type === "polepocket" ? 1500 : 900;
     const height = 900;
     const maskShape = type === "triangle"
@@ -236,6 +272,22 @@
       : type === "homeplatepennant"
         ? `<polygon points="32,32 868,32 868,500 450,868 32,500" fill="url(#bg)"/>`
         : `<rect width="${width}" height="${height}" fill="url(#bg)"/>`;
+    const diagonal = Array.from({ length: 10 }, (_, index) => {
+      const x = width * (index / 9);
+      return `<path d="M${x - width * 0.18} ${height} L${x + width * 0.16} 0" stroke="#fff" stroke-opacity=".12" stroke-width="${width * 0.012}"/>`;
+    }).join("");
+    const stars = Array.from({ length: 9 }, (_, index) => {
+      const x = width * (0.1 + index * 0.1);
+      const y = index % 2 ? height * 0.15 : height * 0.24;
+      return `<path d="M${x} ${y - 18} l5 12 13 1 -10 8 3 13 -11 -7 -11 7 3 -13 -10 -8 13 -1z" fill="#fff" fill-opacity=".36"/>`;
+    }).join("");
+    const variantArt = variant.key === "lights"
+      ? `<path d="M0 0 L${width * 0.32} ${height * 0.7} L0 ${height}" fill="#fff" fill-opacity=".12"/><path d="M${width} 0 L${width * 0.68} ${height * 0.7} L${width} ${height}" fill="#fff" fill-opacity=".12"/><g opacity=".72">${Array.from({ length: 13 }, (_, index) => `<circle cx="${width * (index / 12)}" cy="${height * 0.1}" r="${width * 0.014}" fill="#fff"/>`).join("")}</g>`
+      : variant.key === "speed"
+        ? `<g opacity=".8">${diagonal}</g><path d="M${width * 0.06} ${height * 0.2} H${width * 0.94}" stroke="${sport.glow}" stroke-opacity=".48" stroke-width="${height * 0.018}"/><path d="M${width * 0.12} ${height * 0.3} H${width * 0.88}" stroke="#fff" stroke-opacity=".28" stroke-width="${height * 0.01}"/>`
+        : variant.key === "championship"
+          ? `<g>${stars}</g><circle cx="${width / 2}" cy="${height * 0.34}" r="${height * 0.26}" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="${height * 0.024}"/><circle cx="${width / 2}" cy="${height * 0.34}" r="${height * 0.18}" fill="none" stroke="${sport.glow}" stroke-opacity=".34" stroke-width="${height * 0.012}"/>`
+          : `<path d="M0 ${height * 0.72} C${width * 0.28} ${height * 0.54} ${width * 0.72} ${height * 0.9} ${width} ${height * 0.68}" fill="#fff" fill-opacity=".08"/><path d="M0 ${height * 0.2} C${width * 0.22} ${height * 0.08} ${width * 0.68} ${height * 0.32} ${width} ${height * 0.18}" fill="#fff" fill-opacity=".07"/>`;
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
       <defs>
         <radialGradient id="bg" cx="50%" cy="38%" r="76%"><stop offset="0" stop-color="${sport.glow}"/><stop offset=".34" stop-color="${sport.primary}"/><stop offset="1" stop-color="${sport.accent}"/></radialGradient>
@@ -243,38 +295,95 @@
       </defs>
       ${maskShape}
       <rect width="${width}" height="${height}" fill="url(#shade)"/>
-      ${Array.from({ length: 11 }, (_, index) => `<circle cx="${width * (index / 10)}" cy="${height * 0.18}" r="${width * 0.018}" fill="#fff" fill-opacity=".55"/>`).join("")}
+      ${variantArt}
+      ${variant.key === "arena" ? Array.from({ length: 11 }, (_, index) => `<circle cx="${width * (index / 10)}" cy="${height * 0.18}" r="${width * 0.018}" fill="#fff" fill-opacity=".55"/>`).join("") : ""}
       ${venueLinesSvg(sport, width, height)}
       <g opacity=".3">${sportBallSvg(sport, width * 0.16, height * 0.25, Math.min(width, height) * 0.11)}</g>
       <g opacity=".22">${sportBallSvg(sport, width * 0.84, height * 0.28, Math.min(width, height) * 0.1)}</g>
     </svg>`;
   }
 
-  function sportClipArtSvg(sport) {
+  function sportClipArtSvg(sport, variantKey = "motion") {
+    const variant = schoolSportVariant(SCHOOL_SPORT_CLIPART_VARIANTS, variantKey);
+    const centerArt = variant.key === "equipment"
+      ? `<g transform="translate(380 238)">${sportBallSvg(sport, 0, 0, 108)}<path d="M-170 112 H170" stroke="${sport.primary}" stroke-width="24" stroke-linecap="round"/><path d="M-148 138 H148" stroke="#fff" stroke-width="12" stroke-linecap="round"/></g>`
+      : variant.key === "crest"
+        ? `<path d="M380 92 L560 168 L528 356 L380 430 L232 356 L200 168 Z" fill="${sport.accent}" stroke="#fff" stroke-width="16"/><path d="M380 132 L514 188 L490 324 L380 382 L270 324 L246 188 Z" fill="${sport.primary}" stroke="${sport.glow}" stroke-width="8"/>${sportBallSvg(sport, 380, 220, 82)}`
+        : variant.key === "starburst"
+          ? `<g opacity=".88">${Array.from({ length: 16 }, (_, index) => {
+              const a = (Math.PI * 2 * index) / 16;
+              const x = 380 + Math.cos(a) * 210;
+              const y = 238 + Math.sin(a) * 140;
+              return `<path d="M380 238 L${x} ${y}" stroke="${index % 2 ? sport.primary : "#fff"}" stroke-opacity=".42" stroke-width="18" stroke-linecap="round"/>`;
+            }).join("")}</g>${sportBallSvg(sport, 380, 238, 112)}`
+          : `${sportBallSvg(sport, 380, 236, 118)}`;
     return `<svg xmlns="http://www.w3.org/2000/svg" width="760" height="520" viewBox="0 0 760 520">
       <defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000" flood-opacity=".35"/></filter></defs>
       <g filter="url(#shadow)">
         <path d="M92 330 C184 216 290 162 380 168 C470 162 576 216 668 330" fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round"/>
         <path d="M92 330 C184 216 290 162 380 168 C470 162 576 216 668 330" fill="none" stroke="${sport.primary}" stroke-width="18" stroke-linecap="round"/>
-        ${sportBallSvg(sport, 380, 236, 118)}
+        ${centerArt}
         <path d="M218 414 H542 L592 468 H168 Z" fill="${sport.accent}" stroke="#fff" stroke-width="14"/>
         <text x="380" y="454" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="58" fill="#fff">${sport.short}</text>
       </g>
     </svg>`;
   }
 
-  function sportPlayerIconSvg(sport) {
+  function sportPlayerIconSvg(sport, variantKey = "ball") {
+    const variant = schoolSportVariant(SCHOOL_SPORT_PLAYER_ICON_VARIANTS, variantKey);
+    const iconArt = variant.key === "jersey"
+      ? `<path d="M144 122 L188 86 H232 L276 122 L326 174 L284 214 V326 H136 V214 L94 174 Z" fill="${sport.primary}" stroke="#fff" stroke-width="14"/><path d="M188 86 C198 112 222 112 232 86" fill="none" stroke="${sport.glow}" stroke-width="10"/><text x="210" y="250" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="76" fill="#fff">${sport.short}</text>`
+      : variant.key === "number"
+        ? `<rect x="88" y="108" width="244" height="190" rx="32" fill="#fff" stroke="${sport.primary}" stroke-width="18"/><text x="210" y="238" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="118" fill="${sport.accent}">#1</text>`
+        : variant.key === "medal"
+          ? `<path d="M150 74 L204 172 M270 74 L216 172" stroke="${sport.primary}" stroke-width="28"/><circle cx="210" cy="226" r="104" fill="${sport.glow}" stroke="#fff" stroke-width="16"/><circle cx="210" cy="226" r="76" fill="${sport.primary}" stroke="${sport.accent}" stroke-width="10"/><text x="210" y="250" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="58" fill="#fff">${sport.short}</text>`
+          : `${sportBallSvg(sport, 210, 188, 106)}`;
     return `<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 420 420">
       <defs><radialGradient id="g" cx="50%" cy="38%" r="65%"><stop offset="0" stop-color="${sport.glow}"/><stop offset=".7" stop-color="${sport.primary}"/><stop offset="1" stop-color="${sport.accent}"/></radialGradient></defs>
       <circle cx="210" cy="210" r="188" fill="url(#g)" stroke="#fff" stroke-width="18"/>
       <circle cx="210" cy="210" r="162" fill="none" stroke="${sport.accent}" stroke-opacity=".5" stroke-width="10"/>
-      ${sportBallSvg(sport, 210, 188, 106)}
+      ${iconArt}
       <path d="M104 306 H316 L342 354 H78 Z" fill="${sport.accent}" stroke="#fff" stroke-width="10"/>
       <text x="210" y="342" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="44" fill="#fff">${sport.short}</text>
     </svg>`;
   }
 
-  function sportTeamLogoSvg(sport) {
+  function sportTeamLogoSvg(sport, variantKey = "badge") {
+    const variant = schoolSportVariant(SCHOOL_SPORT_TEAM_LOGO_VARIANTS, variantKey);
+    if (variant.key === "varsity") {
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+        <defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="8" flood-color="#000" flood-opacity=".42"/></filter></defs>
+        <g filter="url(#shadow)">
+          <text x="450" y="352" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="310" fill="${sport.primary}" stroke="#fff" stroke-width="28" paint-order="stroke">${sport.short[0]}</text>
+          <text x="450" y="430" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="54" fill="${sport.accent}" stroke="#fff" stroke-width="8" paint-order="stroke">${sport.label.toUpperCase()}</text>
+          <g transform="translate(450 116)">${sportBallSvg(sport, 0, 0, 64)}</g>
+        </g>
+      </svg>`;
+    }
+    if (variant.key === "shield") {
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+        <defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="8" flood-color="#000" flood-opacity=".45"/></filter></defs>
+        <g filter="url(#shadow)">
+          <path d="M450 40 L720 124 L662 362 L450 488 L238 362 L180 124 Z" fill="#fff"/>
+          <path d="M450 78 L676 150 L628 338 L450 442 L272 338 L224 150 Z" fill="${sport.accent}" stroke="${sport.primary}" stroke-width="18"/>
+          ${sportBallSvg(sport, 450, 196, 76)}
+          <text x="450" y="342" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="82" fill="#fff">${sport.short}</text>
+          <text x="450" y="398" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="38" fill="${sport.glow}">VARSITY</text>
+        </g>
+      </svg>`;
+    }
+    if (variant.key === "champion") {
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+        <defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="8" flood-color="#000" flood-opacity=".45"/></filter></defs>
+        <g filter="url(#shadow)">
+          ${Array.from({ length: 7 }, (_, index) => `<path d="M${288 + index * 54} 58 l12 26 29 3 -22 19 6 28 -25 -14 -25 14 6 -28 -22 -19 29 -3z" fill="${sport.glow}" stroke="${sport.accent}" stroke-width="4"/>`).join("")}
+          <ellipse cx="450" cy="266" rx="286" ry="160" fill="${sport.accent}" stroke="#fff" stroke-width="18"/>
+          <ellipse cx="450" cy="266" rx="244" ry="126" fill="${sport.primary}" stroke="${sport.glow}" stroke-width="10"/>
+          ${sportBallSvg(sport, 450, 205, 62)}
+          <text x="450" y="326" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="86" fill="#fff" stroke="${sport.accent}" stroke-width="8" paint-order="stroke">TEAM</text>
+        </g>
+      </svg>`;
+    }
     return `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
       <defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="8" flood-color="#000" flood-opacity=".45"/></filter></defs>
       <g filter="url(#shadow)">
@@ -287,10 +396,24 @@
     </svg>`;
   }
 
-  function sportPhotoFrameSvg(sport) {
+  function sportPhotoFrameSvg(sport, variantKey = "classic") {
+    const variant = schoolSportVariant(SCHOOL_SPORT_PHOTO_FRAME_VARIANTS, variantKey);
+    const accentArt = variant.key === "ribbon"
+      ? `<path d="M114 448 L244 410 L244 606 L114 646 L150 548 Z" fill="${sport.accent}" stroke="#fff" stroke-width="10"/><path d="M646 448 L516 410 L516 606 L646 646 L610 548 Z" fill="${sport.accent}" stroke="#fff" stroke-width="10"/>`
+      : variant.key === "star"
+        ? `${Array.from({ length: 10 }, (_, index) => {
+            const a = (Math.PI * 2 * index) / 10 - Math.PI / 2;
+            const x = 380 + Math.cos(a) * 256;
+            const y = 292 + Math.sin(a) * 238;
+            return `<path d="M${x} ${y - 18} l6 13 14 2 -10 9 3 14 -13 -7 -13 7 3 -14 -10 -9 14 -2z" fill="${index % 2 ? sport.primary : sport.glow}" stroke="${sport.accent}" stroke-width="4"/>`;
+          }).join("")}`
+        : variant.key === "shield"
+          ? `<path d="M380 410 L594 476 L548 654 L380 730 L212 654 L166 476 Z" fill="${sport.accent}" stroke="#fff" stroke-width="14"/><path d="M260 514 H500" stroke="${sport.primary}" stroke-width="18" stroke-linecap="round"/>`
+          : "";
     return `<svg xmlns="http://www.w3.org/2000/svg" width="760" height="760" viewBox="0 0 760 760">
       <defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="7" flood-color="#000" flood-opacity=".38"/></filter></defs>
       <g filter="url(#shadow)">
+        ${accentArt}
         <circle cx="380" cy="292" r="220" fill="transparent" stroke="#fff" stroke-width="36"/>
         <circle cx="380" cy="292" r="198" fill="transparent" stroke="${sport.primary}" stroke-width="16"/>
         <circle cx="380" cy="292" r="178" fill="transparent" stroke="${sport.accent}" stroke-width="8"/>
@@ -303,19 +426,39 @@
 
   function makeSchoolSportAssets() {
     return SCHOOL_SPORTS
-      .filter((sport) => ["basketball", "football", "volleyball", "track"].includes(sport.value))
+      .filter((sport) => SCHOOL_SPORT_GENERATED_VALUES.includes(sport.value))
       .flatMap((sport) => {
-        const playerIconName = sport.value === "track" ? "Event Player Icon" : "Ball Player Icon";
-        return [
-        schoolSportAsset(sport, "BG Hem & Grommets", "hem-background", "Arena Background", sportBackgroundSvg(sport, "rectangle")),
-        schoolSportAsset(sport, "BG Pole Pocket", "pole-background", "Pole Pocket Stadium Background", sportBackgroundSvg(sport, "polepocket")),
-        schoolSportAsset(sport, "BG Triangle", "triangle-background", "Triangle Pennant Background", sportBackgroundSvg(sport, "triangle")),
-        schoolSportAsset(sport, "BG Home Plate", "homeplate-background", "Home Plate Shield Background", sportBackgroundSvg(sport, "homeplatepennant")),
-        schoolSportAsset(sport, "Clip art", "motion-clipart", "Motion Clip Art", sportClipArtSvg(sport)),
-        schoolSportAsset(sport, "Accessory", "player-icon", playerIconName, sportPlayerIconSvg(sport)),
-        schoolSportAsset(sport, "Team name", "team-logo", "Team Logo Badge", sportTeamLogoSvg(sport)),
-        schoolSportAsset(sport, PHOTO_FRAME_CATEGORY, "photo-frame", "Photo Frame", sportPhotoFrameSvg(sport))
+        const assets = [];
+        const backgroundShapes = [
+          { category: "BG Hem & Grommets", key: "hem", type: "rectangle" },
+          { category: "BG Pole Pocket", key: "pole", type: "polepocket" },
+          { category: "BG Triangle", key: "triangle", type: "triangle" },
+          { category: "BG Home Plate", key: "homeplate", type: "homeplatepennant" }
         ];
+        backgroundShapes.forEach((shape) => {
+          SCHOOL_SPORT_BACKGROUND_VARIANTS.forEach((variant) => {
+            assets.push(schoolSportAsset(
+              sport,
+              shape.category,
+              `${shape.key}-${variant.key}-background`,
+              variant.name,
+              sportBackgroundSvg(sport, shape.type, variant.key)
+            ));
+          });
+        });
+        SCHOOL_SPORT_CLIPART_VARIANTS.forEach((variant) => {
+          assets.push(schoolSportAsset(sport, "Clip art", `${variant.key}-clipart`, variant.name, sportClipArtSvg(sport, variant.key)));
+        });
+        SCHOOL_SPORT_PLAYER_ICON_VARIANTS.forEach((variant) => {
+          assets.push(schoolSportAsset(sport, "Accessory", `${variant.key}-player-icon`, sport.value === "track" ? variant.trackName : variant.name, sportPlayerIconSvg(sport, variant.key)));
+        });
+        SCHOOL_SPORT_TEAM_LOGO_VARIANTS.forEach((variant) => {
+          assets.push(schoolSportAsset(sport, "Team name", `${variant.key}-team-logo`, variant.name, sportTeamLogoSvg(sport, variant.key)));
+        });
+        SCHOOL_SPORT_PHOTO_FRAME_VARIANTS.forEach((variant) => {
+          assets.push(schoolSportAsset(sport, PHOTO_FRAME_CATEGORY, `${variant.key}-photo-frame`, variant.name, sportPhotoFrameSvg(sport, variant.key)));
+        });
+        return assets;
       });
   }
 
