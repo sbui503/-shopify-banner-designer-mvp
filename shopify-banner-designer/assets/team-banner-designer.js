@@ -4319,11 +4319,11 @@
 
     function photoFramePhotoProfile(frame) {
       const key = photoFrameAssetKey(frame);
-      if (key === "ring-swoosh") return { x: 0.5, y: 0.43, width: 0.54, height: 0.78 };
-      if (key === "scallop") return { x: 0.5, y: 0.38, width: 0.74, height: 0.78 };
-      if (key === "round-name") return { x: 0.5, y: 0.37, width: 0.68, height: 0.7 };
-      if (key === "circle-gloss") return { x: 0.5, y: 0.41, width: 0.76, height: 0.86 };
-      return { x: 0.5, y: 0.38, width: 0.78, height: 0.82 };
+      if (key === "ring-swoosh") return { x: 0.5, y: 0.43, width: 0.72, height: 1.02 };
+      if (key === "scallop") return { x: 0.5, y: 0.38, width: 0.9, height: 0.98 };
+      if (key === "round-name") return { x: 0.5, y: 0.37, width: 0.88, height: 0.95 };
+      if (key === "circle-gloss") return { x: 0.5, y: 0.41, width: 0.92, height: 1.08 };
+      return { x: 0.5, y: 0.39, width: 0.94, height: 1.04 };
     }
 
     function photoFramePhotoPlacement(frame) {
