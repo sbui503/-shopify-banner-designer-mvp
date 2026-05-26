@@ -3539,6 +3539,31 @@
         : `<span class="tbd__generator-option-empty">No preview</span>`;
     }
 
+    function generatorPreviewItemForValue(value) {
+      return generatorAllPreviewItems.find((preview) => preview.value === value) || null;
+    }
+
+    function selectGeneratorLayoutValue(value, behavior = {}) {
+      if (els.generatorSvg) els.generatorSvg.value = value || "";
+      const item = generatorPreviewItemForValue(value || "");
+      if (item) {
+        if (els.generatorPreviewImage) els.generatorPreviewImage.src = item.image;
+        if (els.generatorPreviewMeta) els.generatorPreviewMeta.textContent = item.meta;
+        if (els.generatorPreviewBox) els.generatorPreviewBox.hidden = false;
+        generatedTemplateMeta = item.meta;
+      } else {
+        clearGeneratorPreviewState(false);
+      }
+      renderGeneratorLayoutOptions(generatorOptions());
+      renderGeneratorAllPreviews();
+      if (!behavior.quiet) {
+        const template = selectedGeneratorSvgTemplate(generatorOptions());
+        setStatus(item
+          ? `${item.title} preview selected. Tap Use This Design to place it on the canvas.`
+          : `${svgTemplateDisplayName(template)} selected. Tap Generate Preview or Use This Design.`);
+      }
+    }
+
     function renderGeneratorLayoutOptions(options = generatorOptions()) {
       if (!els.generatorLayoutOptions) return;
       const selectedTemplate = selectedGeneratorSvgTemplate(options);
@@ -3564,9 +3589,7 @@
           <span>${template.playerCount || options.playerCount} players · ${templateTypeLabel(template.type || options.shape)}</span>
         `;
         button.addEventListener("click", () => {
-          if (els.generatorSvg) els.generatorSvg.value = template.url || template.name || "";
-          clearGeneratorPreviewState();
-          renderGeneratorLayoutOptions(generatorOptions());
+          selectGeneratorLayoutValue(template.url || template.name || "");
         });
         els.generatorLayoutOptions.appendChild(button);
       });
@@ -4848,17 +4871,7 @@
       els.generatorAllPreviews.hidden = false;
       els.generatorAllPreviews.querySelectorAll("[data-tbd-generator-preview-layout]").forEach((button) => {
         button.addEventListener("click", () => {
-          const value = button.dataset.tbdGeneratorPreviewLayout || "";
-          const item = generatorAllPreviewItems.find((preview) => preview.value === value);
-          if (!item) return;
-          if (els.generatorSvg) els.generatorSvg.value = value;
-          if (els.generatorPreviewImage) els.generatorPreviewImage.src = item.image;
-          if (els.generatorPreviewMeta) els.generatorPreviewMeta.textContent = item.meta;
-          if (els.generatorPreviewBox) els.generatorPreviewBox.hidden = false;
-          generatedTemplateMeta = item.meta;
-          renderGeneratorLayoutOptions(generatorOptions());
-          renderGeneratorAllPreviews();
-          setStatus(`${item.title} preview selected. Tap Use This Design to place it on the canvas.`);
+          selectGeneratorLayoutValue(button.dataset.tbdGeneratorPreviewLayout || "");
         });
       });
     }
