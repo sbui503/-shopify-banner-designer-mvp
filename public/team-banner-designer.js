@@ -54,28 +54,28 @@
   ];
   const PHOTO_FRAME_ASSETS = [
     {
-      name: "Circle gloss photo frame",
+      name: "Baseball Photo Frame 1",
       category: PHOTO_FRAME_CATEGORY,
-      sourceId: "photo-frame-circle-gloss",
-      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-circle-gloss.png`
+      sourceId: "photo-frame-baseball-1",
+      url: "https://cdn.shopify.com/s/files/1/0649/3844/2958/files/Baseball_Photo_Frame_1.png?v=1779765297"
     },
     {
-      name: "Scallop photo frame",
+      name: "Soccer Photo Frame 1",
       category: PHOTO_FRAME_CATEGORY,
-      sourceId: "photo-frame-scallop",
-      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-scallop.png`
+      sourceId: "photo-frame-soccer-1",
+      url: "https://cdn.shopify.com/s/files/1/0649/3844/2958/files/Soccer_Photo_Frame_1.png?v=1779765261"
     },
     {
-      name: "Round name photo frame",
+      name: "Soccer Photo Frame 2",
       category: PHOTO_FRAME_CATEGORY,
-      sourceId: "photo-frame-round-name",
-      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-round-name.png`
+      sourceId: "photo-frame-soccer-2",
+      url: "https://cdn.shopify.com/s/files/1/0649/3844/2958/files/Soccer_Photo_Frame_2.png?v=1779765277"
     },
     {
-      name: "Ring swoosh photo frame",
+      name: "Baseball Photo Frame 2",
       category: PHOTO_FRAME_CATEGORY,
-      sourceId: "photo-frame-ring-swoosh",
-      url: `${PUBLIC_ASSET_ORIGIN}/photo-frames/photo-frame-ring-swoosh.png`
+      sourceId: "photo-frame-baseball-2",
+      url: "https://cdn.shopify.com/s/files/1/0649/3844/2958/files/Baseball_Photo_Frame_2.png?v=1779765234"
     }
   ];
 
@@ -5879,6 +5879,10 @@
         data.sourceAssetName,
         data.name
       ].filter(Boolean).join(" ").toLowerCase();
+      if (/baseball[_\s-]*photo[_\s-]*frame[_\s-]*1|photo-frame-baseball-1/.test(source)) return "baseball-1";
+      if (/baseball[_\s-]*photo[_\s-]*frame[_\s-]*2|photo-frame-baseball-2/.test(source)) return "baseball-2";
+      if (/soccer[_\s-]*photo[_\s-]*frame[_\s-]*1|photo-frame-soccer-1/.test(source)) return "soccer-1";
+      if (/soccer[_\s-]*photo[_\s-]*frame[_\s-]*2|photo-frame-soccer-2/.test(source)) return "soccer-2";
       if (source.includes("ring-swoosh")) return "ring-swoosh";
       if (source.includes("scallop")) return "scallop";
       if (source.includes("round-name")) return "round-name";
@@ -5888,6 +5892,10 @@
 
     function photoFramePhotoProfile(frame) {
       const key = photoFrameAssetKey(frame);
+      if (key === "baseball-1") return { x: 0.5, y: 0.44, width: 0.7, height: 0.7, borderWidth: 0, layerOrder: "behind" };
+      if (key === "baseball-2") return { x: 0.5, y: 0.43, width: 0.58, height: 0.58, borderWidth: 0, layerOrder: "behind" };
+      if (key === "soccer-1") return { x: 0.5, y: 0.44, width: 0.46, height: 0.46, borderWidth: 0, layerOrder: "behind" };
+      if (key === "soccer-2") return { x: 0.5, y: 0.45, width: 0.52, height: 0.52, borderWidth: 0, layerOrder: "behind" };
       if (key === "ring-swoosh") return { x: 0.5, y: 0.43, width: 0.72, height: 1.02 };
       if (key === "scallop") return { x: 0.5, y: 0.38, width: 0.9, height: 0.98 };
       if (key === "round-name") return { x: 0.5, y: 0.37, width: 0.88, height: 0.95 };
@@ -5928,10 +5936,11 @@
       if (existing) canvas.remove(existing);
       const image = await loadImage(data.photoDataUrl);
       const placement = photoFramePhotoPlacement(frame);
+      const profile = photoFramePhotoProfile(frame);
       const photoCanvas = circularPlayerPhotoCanvas(image, placement.diameter, {
-        borderWidth: Math.max(3, placement.diameter * 0.045),
+        borderWidth: profile.borderWidth === 0 ? 0 : Math.max(3, placement.diameter * 0.045),
         borderColor: "#ffffff",
-        accentColor: "#d71920",
+        accentColor: profile.borderWidth === 0 ? "" : "#d71920",
         offsetX: data.photoOffsetX || 0,
         offsetY: data.photoOffsetY || 0,
         zoom: data.photoZoom || 1
@@ -5955,7 +5964,7 @@
       frame.set({ data: { ...data, framePhotoLayerId: layer.data.layerId } });
       const frameIndex = canvas.getObjects().indexOf(frame);
       canvas.add(layer);
-      if (frameIndex >= 0) layer.moveTo(frameIndex + 1);
+      if (frameIndex >= 0) layer.moveTo(profile.layerOrder === "behind" ? frameIndex : frameIndex + 1);
       canvas.setActiveObject(frame);
       frame.setCoords();
       canvas.renderAll();
