@@ -79,6 +79,13 @@
     }
   ];
 
+  const PHOTO_FRAME_NAME_COVER_PROFILES = {
+    "baseball-1": { x: 0.18, y: 0.59, width: 0.64, height: 0.22, radius: 0.12 },
+    "baseball-2": { x: 0.2, y: 0.52, width: 0.62, height: 0.22, radius: 0.12 },
+    "soccer-1": { x: 0.18, y: 0.5, width: 0.64, height: 0.22, radius: 0.12 },
+    "soccer-2": { x: 0.22, y: 0.54, width: 0.58, height: 0.2, radius: 0.12 }
+  };
+
   function normalizeShape(shape, hasDesign) {
     if (MVP_5X3_ONLY) return "rectangle";
     const value = String(shape || "").toLowerCase().replace(/[\s_-]+/g, "");
@@ -1302,6 +1309,7 @@
     let assetDragState = null;
     let suppressAssetClick = false;
     const imageElementCache = new Map();
+    const photoFrameImageElementCache = new Map();
     const designCartStorageKey = "team-banner-design-cart:v1";
     let designCart = loadDesignCart();
 
@@ -2569,6 +2577,16 @@
           if (!img) {
             setStatus("Could not load that asset.");
             return;
+          }
+          if (isPhotoFrameAssetConfig(item, { category: item.category, role: categoryLayerRole(item.category) })) {
+            const sourceElement = img.getElement ? img.getElement() : img._element;
+            const cleanedElement = cleanPhotoFrameImageElement(sourceElement || img, item, {
+              category: item.category,
+              role: categoryLayerRole(item.category),
+              name: item.name,
+              sourceUrl: item.url
+            }, canvasSafeImageUrl(item.url, imageProxyEndpoint));
+            if (cleanedElement && cleanedElement !== sourceElement) img = new fabric.Image(cleanedElement);
           }
           img.set({
             crossOrigin: "anonymous",
@@ -5782,13 +5800,87 @@
       return layerImage;
     }
 
+    function photoFrameAssetKeyFromText(text) {
+      const source = String(text || "").toLowerCase();
+      if (/baseball[_\s-]*photo[_\s-]*frame[_\s-]*1|photo-frame-baseball-1/.test(source)) return "baseball-1";
+      if (/baseball[_\s-]*photo[_\s-]*frame[_\s-]*2|photo-frame-baseball-2/.test(source)) return "baseball-2";
+      if (/soccer[_\s-]*photo[_\s-]*frame[_\s-]*1|photo-frame-soccer-1/.test(source)) return "soccer-1";
+      if (/soccer[_\s-]*photo[_\s-]*frame[_\s-]*2|photo-frame-soccer-2/.test(source)) return "soccer-2";
+      if (source.includes("ring-swoosh")) return "ring-swoosh";
+      if (source.includes("scallop")) return "scallop";
+      if (source.includes("round-name")) return "round-name";
+      if (source.includes("circle-gloss")) return "circle-gloss";
+      return "";
+    }
+
+    function isPhotoFrameAssetConfig(asset, config = {}) {
+      return config.role === "template-photo-frame"
+        || config.category === PHOTO_FRAME_CATEGORY
+        || normalizeAssetCategory(asset || {}) === PHOTO_FRAME_CATEGORY;
+    }
+
+    function fillRoundedCanvasRect(ctx, x, y, width, height, radius) {
+      const r = Math.max(0, Math.min(radius || 0, width / 2, height / 2));
+      ctx.beginPath();
+      if (ctx.roundRect) {
+        ctx.roundRect(x, y, width, height, r);
+      } else {
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + width - r, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+        ctx.lineTo(x + width, y + height - r);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+        ctx.lineTo(x + r, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+      }
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function cleanPhotoFrameImageElement(image, asset, config = {}, cacheKey = "") {
+      if (!isPhotoFrameAssetConfig(asset, config)) return image;
+      const text = [
+        asset && asset.sourceId,
+        asset && asset.name,
+        asset && asset.url,
+        config.name,
+        config.sourceUrl
+      ].filter(Boolean).join(" ");
+      const key = photoFrameAssetKeyFromText(text);
+      const profile = PHOTO_FRAME_NAME_COVER_PROFILES[key];
+      if (!profile) return image;
+      const cacheId = `${cacheKey || text}:${key}:no-player-text`;
+      if (photoFrameImageElementCache.has(cacheId)) return photoFrameImageElementCache.get(cacheId);
+      const naturalWidth = image.naturalWidth || image.width || 1;
+      const naturalHeight = image.naturalHeight || image.height || 1;
+      const frameCanvas = document.createElement("canvas");
+      frameCanvas.width = naturalWidth;
+      frameCanvas.height = naturalHeight;
+      const ctx = frameCanvas.getContext("2d");
+      ctx.drawImage(image, 0, 0, naturalWidth, naturalHeight);
+      ctx.fillStyle = profile.fill || "rgba(250, 250, 247, 0.98)";
+      fillRoundedCanvasRect(
+        ctx,
+        naturalWidth * profile.x,
+        naturalHeight * profile.y,
+        naturalWidth * profile.width,
+        naturalHeight * profile.height,
+        Math.min(naturalWidth, naturalHeight) * profile.radius
+      );
+      photoFrameImageElementCache.set(cacheId, frameCanvas);
+      return frameCanvas;
+    }
+
     async function addAssetImageLayer(asset, config) {
       if (!asset || !asset.url) return null;
       const source = canvasSafeImageUrl(asset.url, imageProxyEndpoint);
       try {
         const image = imageElementCache.get(source) || await loadImage(source);
         imageElementCache.set(source, image);
-        return addImageElementLayer(image, {
+        const layerImage = cleanPhotoFrameImageElement(image, asset, config, source);
+        return addImageElementLayer(layerImage, {
           ...config,
           name: config.name || asset.name,
           category: asset.category,
@@ -5905,20 +5997,11 @@
 
     function photoFrameAssetKey(frame) {
       const data = frame && frame.data ? frame.data : {};
-      const source = [
+      return photoFrameAssetKeyFromText([
         data.sourceAssetUrl,
         data.sourceAssetName,
         data.name
-      ].filter(Boolean).join(" ").toLowerCase();
-      if (/baseball[_\s-]*photo[_\s-]*frame[_\s-]*1|photo-frame-baseball-1/.test(source)) return "baseball-1";
-      if (/baseball[_\s-]*photo[_\s-]*frame[_\s-]*2|photo-frame-baseball-2/.test(source)) return "baseball-2";
-      if (/soccer[_\s-]*photo[_\s-]*frame[_\s-]*1|photo-frame-soccer-1/.test(source)) return "soccer-1";
-      if (/soccer[_\s-]*photo[_\s-]*frame[_\s-]*2|photo-frame-soccer-2/.test(source)) return "soccer-2";
-      if (source.includes("ring-swoosh")) return "ring-swoosh";
-      if (source.includes("scallop")) return "scallop";
-      if (source.includes("round-name")) return "round-name";
-      if (source.includes("circle-gloss")) return "circle-gloss";
-      return "";
+      ].filter(Boolean).join(" "));
     }
 
     function photoFramePhotoProfile(frame) {
@@ -5988,7 +6071,7 @@
       const patchLayer = photoFrameNamePatchLayer(frame);
       const textLayer = photoFrameNameLayer(frame);
       if (patchLayer) patchLayer.moveTo(frameIndex + 1);
-      if (textLayer) textLayer.moveTo(frameIndex + 2);
+      if (textLayer) textLayer.moveTo(frameIndex + (patchLayer ? 2 : 1));
     }
 
     function fitPhotoFrameNameTextLayer(textLayer, placement) {
@@ -6037,26 +6120,9 @@
       let textLayer = photoFrameNameLayer(frame);
       const nameText = options.text || data.playerName || (textLayer && textLayer.text) || "Player";
 
-      if (!patchLayer) {
-        patchLayer = new fabric.Rect({
-          left: placement.left,
-          top: placement.top,
-          originX: "center",
-          originY: "center",
-          fill: "#ffffff",
-          stroke: "#ffffff",
-          strokeWidth: 0,
-          selectable: false,
-          evented: false,
-          data: {
-            name: "Photo frame name cover",
-            role: "template-photo-frame-name-patch",
-            frameLayerId,
-            excludeFromLayerList: true
-          }
-        });
-        canvas.add(patchLayer);
-        ensureLayerId(patchLayer);
+      if (patchLayer) {
+        canvas.remove(patchLayer);
+        patchLayer = null;
       }
 
       if (!textLayer) {
@@ -6092,7 +6158,7 @@
           ...data,
           playerName: nameText,
           frameNameLayerId: textLayer.data.layerId,
-          frameNamePatchLayerId: patchLayer.data.layerId
+          frameNamePatchLayerId: ""
         }
       });
       positionPhotoFrameNameLayer(frame);
