@@ -79,6 +79,17 @@
     "soccer-1": { x: 0.18, y: 0.5, width: 0.64, height: 0.22, radius: 0.12 },
     "soccer-2": { x: 0.22, y: 0.54, width: 0.58, height: 0.2, radius: 0.12 }
   };
+  const SCHOOL_SPORTS = [
+    { value: "baseball", label: "Baseball", short: "BB", primary: "#d71920", accent: "#0b2f63", glow: "#f8fafc", venue: "diamond" },
+    { value: "softball", label: "Softball", short: "SB", primary: "#facc15", accent: "#111827", glow: "#fef3c7", venue: "diamond" },
+    { value: "soccer", label: "Soccer", short: "SC", primary: "#16a34a", accent: "#052e16", glow: "#bbf7d0", venue: "pitch" },
+    { value: "basketball", label: "Basketball", short: "BK", primary: "#f97316", accent: "#111827", glow: "#fed7aa", venue: "court" },
+    { value: "football", label: "Football", short: "FB", primary: "#ca8a04", accent: "#111827", glow: "#fde68a", venue: "field" },
+    { value: "volleyball", label: "Volleyball", short: "VB", primary: "#ec4899", accent: "#111827", glow: "#fbcfe8", venue: "court" },
+    { value: "track", label: "Track & Field", short: "TF", primary: "#f59e0b", accent: "#0f172a", glow: "#fde68a", venue: "track" }
+  ];
+  const SCHOOL_SPORT_VALUES = SCHOOL_SPORTS.map((sport) => sport.value);
+  const SCHOOL_SPORT_ASSETS = makeSchoolSportAssets();
 
   function normalizeShape(shape, hasDesign) {
     if (MVP_5X3_ONLY) return "rectangle";
@@ -87,8 +98,225 @@
     if (/homeplatepennant|platepennant|homepennant/.test(value)) return "homeplatepennant";
     if (/homeplate|plate/.test(value)) return "homeplate";
     if (/triangle|pennant/.test(value)) return "triangle";
-    if (/banner|rect|rectangle|soccer|baseball|softball|hem|grommet|polepocket/.test(value)) return "rectangle";
+    if (/banner|rect|rectangle|soccer|baseball|softball|basketball|football|volleyball|track|field|hem|grommet|polepocket/.test(value)) return "rectangle";
     return "rectangle";
+  }
+
+  function schoolSportConfig(value) {
+    const normalized = String(value || "").toLowerCase().replace(/[\s_]+/g, "-");
+    return SCHOOL_SPORTS.find((sport) => sport.value === normalized) || null;
+  }
+
+  function schoolSportLabel(value) {
+    return (schoolSportConfig(value) || {}).label || "All sports";
+  }
+
+  function detectSchoolSport(text) {
+    const source = String(text || "").toLowerCase();
+    if (/\bbaseball\b/.test(source)) return "baseball";
+    if (/\bsoftball\b/.test(source)) return "softball";
+    if (/\bsoccer\b/.test(source)) return "soccer";
+    if (/\bbasketball\b|\bhoops?\b/.test(source)) return "basketball";
+    if (/\bfootball\b|\bgridiron\b/.test(source)) return "football";
+    if (/\bvolleyball\b|\bvolley\b/.test(source)) return "volleyball";
+    if (/\btrack\b|\bfield\b|\bcross\s*country\b|\brunning\b/.test(source)) return "track";
+    return "";
+  }
+
+  function svgDataUrl(svg) {
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  }
+
+  function schoolSportSourceId(sport, category, key) {
+    return `school-sport-${sport.value}-${category.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${key}`;
+  }
+
+  function schoolSportAsset(sport, category, key, name, svg) {
+    return {
+      name: `${sport.label} ${name}`,
+      category,
+      sourceId: schoolSportSourceId(sport, category, key),
+      sourceType: "school-sport-free-svg",
+      role: category === PHOTO_FRAME_CATEGORY
+        ? "photo-frame"
+        : category.indexOf("BG ") === 0
+          ? "background"
+          : category === "Accessory"
+            ? "player-icon"
+            : category === "Team name"
+              ? "team-logo"
+              : "clipart",
+      url: svgDataUrl(svg),
+      svgUrl: "",
+      assetTags: [
+        "tbd:school-sport-free-svg",
+        `tbd:sport:${sport.value}`,
+        `tbd:asset-category:${category.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`
+      ],
+      matchKey: `${sport.label} ${sport.value} ${category} ${name} middle school high school team`.toLowerCase()
+    };
+  }
+
+  function sportBallSvg(sport, cx = 0, cy = 0, r = 80) {
+    const p = sport.primary;
+    const a = sport.accent;
+    if (sport.value === "football") {
+      return `
+        <ellipse cx="${cx}" cy="${cy}" rx="${r * 1.18}" ry="${r * 0.64}" fill="${p}" stroke="#fff" stroke-width="${r * 0.08}"/>
+        <path d="M${cx - r * 0.82} ${cy} C${cx - r * 0.34} ${cy - r * 0.28} ${cx + r * 0.34} ${cy - r * 0.28} ${cx + r * 0.82} ${cy}" fill="none" stroke="${a}" stroke-width="${r * 0.08}"/>
+        <path d="M${cx - r * 0.82} ${cy} C${cx - r * 0.34} ${cy + r * 0.28} ${cx + r * 0.34} ${cy + r * 0.28} ${cx + r * 0.82} ${cy}" fill="none" stroke="${a}" stroke-width="${r * 0.08}"/>
+        <path d="M${cx - r * 0.22} ${cy} H${cx + r * 0.22}" stroke="#fff" stroke-width="${r * 0.09}" stroke-linecap="round"/>
+        ${[-0.12, 0, 0.12].map((offset) => `<path d="M${cx + r * offset} ${cy - r * 0.16} V${cy + r * 0.16}" stroke="#fff" stroke-width="${r * 0.045}" stroke-linecap="round"/>`).join("")}
+      `;
+    }
+    if (sport.value === "volleyball") {
+      return `
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff" stroke="${a}" stroke-width="${r * 0.08}"/>
+        <path d="M${cx} ${cy - r} C${cx - r * 0.18} ${cy - r * 0.42} ${cx + r * 0.18} ${cy - r * 0.18} ${cx + r} ${cy - r * 0.08}" fill="none" stroke="${p}" stroke-width="${r * 0.13}" stroke-linecap="round"/>
+        <path d="M${cx - r * 0.9} ${cy - r * 0.38} C${cx - r * 0.18} ${cy - r * 0.2} ${cx + r * 0.12} ${cy + r * 0.22} ${cx + r * 0.36} ${cy + r * 0.92}" fill="none" stroke="${p}" stroke-width="${r * 0.13}" stroke-linecap="round"/>
+        <path d="M${cx - r * 0.72} ${cy + r * 0.7} C${cx - r * 0.12} ${cy + r * 0.42} ${cx + r * 0.26} ${cy + r * 0.1} ${cx + r * 0.72} ${cy - r * 0.66}" fill="none" stroke="${a}" stroke-width="${r * 0.09}" stroke-linecap="round"/>
+      `;
+    }
+    if (sport.value === "soccer") {
+      return `
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff" stroke="${a}" stroke-width="${r * 0.08}"/>
+        <polygon points="${cx},${cy - r * 0.42} ${cx + r * 0.38},${cy - r * 0.14} ${cx + r * 0.24},${cy + r * 0.32} ${cx - r * 0.24},${cy + r * 0.32} ${cx - r * 0.38},${cy - r * 0.14}" fill="${a}"/>
+        <path d="M${cx} ${cy - r * 0.42} L${cx} ${cy - r * 0.9} M${cx + r * 0.38} ${cy - r * 0.14} L${cx + r * 0.86} ${cy - r * 0.28} M${cx + r * 0.24} ${cy + r * 0.32} L${cx + r * 0.54} ${cy + r * 0.74} M${cx - r * 0.24} ${cy + r * 0.32} L${cx - r * 0.54} ${cy + r * 0.74} M${cx - r * 0.38} ${cy - r * 0.14} L${cx - r * 0.86} ${cy - r * 0.28}" stroke="${a}" stroke-width="${r * 0.07}"/>
+      `;
+    }
+    if (sport.value === "baseball" || sport.value === "softball") {
+      return `
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="${sport.value === "softball" ? "#fef08a" : "#fff"}" stroke="${a}" stroke-width="${r * 0.06}"/>
+        <path d="M${cx - r * 0.52} ${cy - r * 0.82} C${cx - r * 0.16} ${cy - r * 0.28} ${cx - r * 0.16} ${cy + r * 0.28} ${cx - r * 0.52} ${cy + r * 0.82}" fill="none" stroke="${p}" stroke-width="${r * 0.07}"/>
+        <path d="M${cx + r * 0.52} ${cy - r * 0.82} C${cx + r * 0.16} ${cy - r * 0.28} ${cx + r * 0.16} ${cy + r * 0.28} ${cx + r * 0.52} ${cy + r * 0.82}" fill="none" stroke="${p}" stroke-width="${r * 0.07}"/>
+      `;
+    }
+    return `
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="${p}" stroke="#fff" stroke-width="${r * 0.08}"/>
+      <path d="M${cx - r} ${cy} H${cx + r} M${cx} ${cy - r} V${cy + r}" stroke="${a}" stroke-width="${r * 0.07}"/>
+      <path d="M${cx - r * 0.62} ${cy - r * 0.78} C${cx - r * 0.2} ${cy - r * 0.18} ${cx - r * 0.2} ${cy + r * 0.18} ${cx - r * 0.62} ${cy + r * 0.78} M${cx + r * 0.62} ${cy - r * 0.78} C${cx + r * 0.2} ${cy - r * 0.18} ${cx + r * 0.2} ${cy + r * 0.18} ${cx + r * 0.62} ${cy + r * 0.78}" fill="none" stroke="${a}" stroke-width="${r * 0.07}"/>
+    `;
+  }
+
+  function venueLinesSvg(sport, width, height) {
+    const cx = width / 2;
+    const cy = height * 0.58;
+    if (sport.venue === "field") {
+      return `
+        <path d="M0 ${height * 0.68} H${width}" stroke="#f8fafc" stroke-opacity=".75" stroke-width="5"/>
+        ${[0.2, 0.35, 0.5, 0.65, 0.8].map((x) => `<path d="M${width * x} ${height * 0.38} V${height}" stroke="#f8fafc" stroke-opacity=".38" stroke-width="3"/>`).join("")}
+        <text x="${cx}" y="${height * 0.82}" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="${height * 0.14}" fill="#fff" fill-opacity=".2">50</text>
+      `;
+    }
+    if (sport.venue === "court") {
+      return `
+        <rect x="${width * 0.08}" y="${height * 0.3}" width="${width * 0.84}" height="${height * 0.52}" rx="18" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="5"/>
+        <circle cx="${cx}" cy="${cy}" r="${height * 0.18}" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="5"/>
+        <path d="M${cx} ${height * 0.3} V${height * 0.82}" stroke="#fff" stroke-opacity=".45" stroke-width="5"/>
+      `;
+    }
+    if (sport.venue === "track") {
+      return `
+        <path d="M${width * 0.06} ${height * 0.76} C${width * 0.26} ${height * 0.38} ${width * 0.74} ${height * 0.38} ${width * 0.94} ${height * 0.76}" fill="none" stroke="#fff" stroke-opacity=".42" stroke-width="8"/>
+        <path d="M${width * 0.14} ${height * 0.82} C${width * 0.3} ${height * 0.52} ${width * 0.7} ${height * 0.52} ${width * 0.86} ${height * 0.82}" fill="none" stroke="#fff" stroke-opacity=".34" stroke-width="5"/>
+        <path d="M${cx} ${height * 0.36} V${height * 0.84}" stroke="#fff" stroke-opacity=".22" stroke-width="4"/>
+      `;
+    }
+    return `
+      <path d="M${width * 0.14} ${height * 0.72} C${width * 0.3} ${height * 0.48} ${width * 0.7} ${height * 0.48} ${width * 0.86} ${height * 0.72}" fill="none" stroke="#fff" stroke-opacity=".42" stroke-width="5"/>
+      <path d="M${cx} ${height * 0.34} V${height * 0.82}" stroke="#fff" stroke-opacity=".3" stroke-width="4"/>
+    `;
+  }
+
+  function sportBackgroundSvg(sport, type = "rectangle") {
+    const width = type === "rectangle" || type === "polepocket" ? 1500 : 900;
+    const height = 900;
+    const maskShape = type === "triangle"
+      ? `<polygon points="36,70 864,70 450,850" fill="url(#bg)"/>`
+      : type === "homeplatepennant"
+        ? `<polygon points="32,32 868,32 868,500 450,868 32,500" fill="url(#bg)"/>`
+        : `<rect width="${width}" height="${height}" fill="url(#bg)"/>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+      <defs>
+        <radialGradient id="bg" cx="50%" cy="38%" r="76%"><stop offset="0" stop-color="${sport.glow}"/><stop offset=".34" stop-color="${sport.primary}"/><stop offset="1" stop-color="${sport.accent}"/></radialGradient>
+        <linearGradient id="shade" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".52"/><stop offset=".5" stop-color="#000" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity=".52"/></linearGradient>
+      </defs>
+      ${maskShape}
+      <rect width="${width}" height="${height}" fill="url(#shade)"/>
+      ${Array.from({ length: 11 }, (_, index) => `<circle cx="${width * (index / 10)}" cy="${height * 0.18}" r="${width * 0.018}" fill="#fff" fill-opacity=".55"/>`).join("")}
+      ${venueLinesSvg(sport, width, height)}
+      <g opacity=".3">${sportBallSvg(sport, width * 0.16, height * 0.25, Math.min(width, height) * 0.11)}</g>
+      <g opacity=".22">${sportBallSvg(sport, width * 0.84, height * 0.28, Math.min(width, height) * 0.1)}</g>
+    </svg>`;
+  }
+
+  function sportClipArtSvg(sport) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="760" height="520" viewBox="0 0 760 520">
+      <defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000" flood-opacity=".35"/></filter></defs>
+      <g filter="url(#shadow)">
+        <path d="M92 330 C184 216 290 162 380 168 C470 162 576 216 668 330" fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round"/>
+        <path d="M92 330 C184 216 290 162 380 168 C470 162 576 216 668 330" fill="none" stroke="${sport.primary}" stroke-width="18" stroke-linecap="round"/>
+        ${sportBallSvg(sport, 380, 236, 118)}
+        <path d="M218 414 H542 L592 468 H168 Z" fill="${sport.accent}" stroke="#fff" stroke-width="14"/>
+        <text x="380" y="454" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="58" fill="#fff">${sport.short}</text>
+      </g>
+    </svg>`;
+  }
+
+  function sportPlayerIconSvg(sport) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 420 420">
+      <defs><radialGradient id="g" cx="50%" cy="38%" r="65%"><stop offset="0" stop-color="${sport.glow}"/><stop offset=".7" stop-color="${sport.primary}"/><stop offset="1" stop-color="${sport.accent}"/></radialGradient></defs>
+      <circle cx="210" cy="210" r="188" fill="url(#g)" stroke="#fff" stroke-width="18"/>
+      <circle cx="210" cy="210" r="162" fill="none" stroke="${sport.accent}" stroke-opacity=".5" stroke-width="10"/>
+      ${sportBallSvg(sport, 210, 188, 106)}
+      <path d="M104 306 H316 L342 354 H78 Z" fill="${sport.accent}" stroke="#fff" stroke-width="10"/>
+      <text x="210" y="342" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="44" fill="#fff">${sport.short}</text>
+    </svg>`;
+  }
+
+  function sportTeamLogoSvg(sport) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+      <defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="8" flood-color="#000" flood-opacity=".45"/></filter></defs>
+      <g filter="url(#shadow)">
+        <path d="M450 34 L738 138 L690 392 L450 486 L210 392 L162 138 Z" fill="${sport.accent}" stroke="#fff" stroke-width="18"/>
+        <path d="M450 74 L694 160 L654 362 L450 442 L246 362 L206 160 Z" fill="${sport.primary}" stroke="${sport.glow}" stroke-width="10"/>
+        ${sportBallSvg(sport, 450, 192, 86)}
+        <text x="450" y="344" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="96" fill="#fff" stroke="${sport.accent}" stroke-width="8" paint-order="stroke">TEAM</text>
+        <text x="450" y="400" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="42" fill="${sport.glow}">${sport.label.toUpperCase()}</text>
+      </g>
+    </svg>`;
+  }
+
+  function sportPhotoFrameSvg(sport) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="760" height="760" viewBox="0 0 760 760">
+      <defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="7" flood-color="#000" flood-opacity=".38"/></filter></defs>
+      <g filter="url(#shadow)">
+        <circle cx="380" cy="292" r="220" fill="transparent" stroke="#fff" stroke-width="36"/>
+        <circle cx="380" cy="292" r="198" fill="transparent" stroke="${sport.primary}" stroke-width="16"/>
+        <circle cx="380" cy="292" r="178" fill="transparent" stroke="${sport.accent}" stroke-width="8"/>
+        <g transform="translate(380 552)">${sportBallSvg(sport, 0, 0, 86)}</g>
+        <path d="M154 438 C242 402 518 402 606 438 L640 586 C532 628 228 628 120 586 Z" fill="#fff" stroke="${sport.accent}" stroke-width="14"/>
+        <path d="M178 478 C276 452 484 452 582 478" fill="none" stroke="${sport.primary}" stroke-width="8" stroke-linecap="round"/>
+      </g>
+    </svg>`;
+  }
+
+  function makeSchoolSportAssets() {
+    return SCHOOL_SPORTS
+      .filter((sport) => ["basketball", "football", "volleyball", "track"].includes(sport.value))
+      .flatMap((sport) => {
+        const playerIconName = sport.value === "track" ? "Event Player Icon" : "Ball Player Icon";
+        return [
+        schoolSportAsset(sport, "BG Hem & Grommets", "hem-background", "Arena Background", sportBackgroundSvg(sport, "rectangle")),
+        schoolSportAsset(sport, "BG Pole Pocket", "pole-background", "Pole Pocket Stadium Background", sportBackgroundSvg(sport, "polepocket")),
+        schoolSportAsset(sport, "BG Triangle", "triangle-background", "Triangle Pennant Background", sportBackgroundSvg(sport, "triangle")),
+        schoolSportAsset(sport, "BG Home Plate", "homeplate-background", "Home Plate Shield Background", sportBackgroundSvg(sport, "homeplatepennant")),
+        schoolSportAsset(sport, "Clip art", "motion-clipart", "Motion Clip Art", sportClipArtSvg(sport)),
+        schoolSportAsset(sport, "Accessory", "player-icon", playerIconName, sportPlayerIconSvg(sport)),
+        schoolSportAsset(sport, "Team name", "team-logo", "Team Logo Badge", sportTeamLogoSvg(sport)),
+        schoolSportAsset(sport, PHOTO_FRAME_CATEGORY, "photo-frame", "Photo Frame", sportPhotoFrameSvg(sport))
+        ];
+      });
   }
 
   function isRectangularShape(shape) {
@@ -152,7 +380,7 @@
       .join(" ")
       .toLowerCase();
     if (/\b(home\s*plate|homeplate|triangle|pennant)\b/.test(text)) return false;
-    return /\b(banner|hem|grommet|pole\s*pocket|polepocket|soccer|baseball|softball)\b/.test(text);
+    return /\b(banner|hem|grommet|pole\s*pocket|polepocket|soccer|baseball|softball|basketball|football|volleyball|track|field)\b/.test(text);
   }
 
   function assetCategoryFromText(value) {
@@ -1017,7 +1245,7 @@
     function withPreloadedPhotoFrameAssets(list) {
       const normalized = (Array.isArray(list) ? list : []).map(normalizeAsset);
       const seen = new Set(normalized.map((asset) => String(asset.url || "")));
-      PHOTO_FRAME_ASSETS.map(normalizeAsset).forEach((asset) => {
+      [...PHOTO_FRAME_ASSETS, ...SCHOOL_SPORT_ASSETS].map(normalizeAsset).forEach((asset) => {
         if (seen.has(asset.url)) return;
         normalized.push(asset);
         seen.add(asset.url);
@@ -1058,7 +1286,7 @@
     function stripLayerTerms(value) {
       return compactWhitespace(
         layerMatchText(value)
-          .replace(/\b(softball|baseball|soccer|football|basketball)\b/g, " ")
+          .replace(/\b(softball|baseball|soccer|football|basketball|volleyball|volley|track|field|cross|country|running)\b/g, " ")
           .replace(/\b(homeplate|home|plate|triangle|pennant|banners|banner|hem|grommets|pole|pocket|custom|team|picture|copy)\b/g, " ")
       );
     }
@@ -1070,7 +1298,7 @@
         launch.product && launch.product.title,
         launch.product && launch.product.handle,
         String(launch.title || "").split(" - ")[0],
-        String(launch.handle || "").replace(/-(soccer|baseball|softball|homeplate|home-plate|triangle|banner|banners|pennant).*$/i, "")
+        String(launch.handle || "").replace(/-(soccer|baseball|softball|basketball|football|volleyball|track|field|homeplate|home-plate|triangle|banner|banners|pennant).*$/i, "")
       ];
       const keys = [];
       raw.forEach((value) => {
@@ -1098,11 +1326,7 @@
     }
 
     function sportForProduct() {
-      const text = productLayerContext().toLowerCase();
-      if (/\bbaseball\b/.test(text)) return "baseball";
-      if (/\bsoftball\b/.test(text)) return "softball";
-      if (/\bsoccer\b/.test(text)) return "soccer";
-      return "";
+      return detectSchoolSport(productLayerContext());
     }
 
     function backgroundCategoryForProduct() {
@@ -2312,10 +2536,7 @@
     }
 
     function templateSportLabel(sport) {
-      if (sport === "baseball") return "Baseball";
-      if (sport === "softball") return "Softball";
-      if (sport === "soccer") return "Soccer";
-      return "All sports";
+      return schoolSportLabel(sport);
     }
 
     function productSport(product) {
@@ -2323,10 +2544,7 @@
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
-      if (/\bbaseball\b/.test(text)) return "baseball";
-      if (/\bsoftball\b/.test(text)) return "softball";
-      if (/\bsoccer\b/.test(text)) return "soccer";
-      return "other";
+      return detectSchoolSport(text) || "other";
     }
 
     function productTemplateType(product) {
@@ -4367,6 +4585,7 @@
       if (key === "baseball-2") return { x: 0.5, y: 0.43, width: 0.58, height: 0.58, borderWidth: 0, layerOrder: "behind" };
       if (key === "soccer-1") return { x: 0.5, y: 0.44, width: 0.46, height: 0.46, borderWidth: 0, layerOrder: "behind" };
       if (key === "soccer-2") return { x: 0.5, y: 0.45, width: 0.52, height: 0.52, borderWidth: 0, layerOrder: "behind" };
+      if (["basketball-1", "football-1", "volleyball-1", "track-1"].includes(key)) return { x: 0.5, y: 0.38, width: 0.62, height: 0.62, borderWidth: 0, layerOrder: "behind" };
       if (key === "ring-swoosh") return { x: 0.5, y: 0.43, width: 0.72, height: 1.02 };
       if (key === "scallop") return { x: 0.5, y: 0.38, width: 0.9, height: 0.98 };
       if (key === "round-name") return { x: 0.5, y: 0.37, width: 0.88, height: 0.95 };
@@ -4380,6 +4599,7 @@
       if (key === "baseball-2") return { x: 0.5, y: 0.67, width: 0.52, height: 0.13, fontSize: 0.088 };
       if (key === "soccer-1") return { x: 0.5, y: 0.68, width: 0.52, height: 0.12, fontSize: 0.082 };
       if (key === "soccer-2") return { x: 0.5, y: 0.69, width: 0.5, height: 0.12, fontSize: 0.086 };
+      if (["basketball-1", "football-1", "volleyball-1", "track-1"].includes(key)) return { x: 0.5, y: 0.74, width: 0.58, height: 0.13, fontSize: 0.088 };
       return { x: 0.5, y: 0.75, width: 0.62, height: 0.14, fontSize: 0.1 };
     }
 
@@ -4812,6 +5032,10 @@
       if (/baseball[_\s-]*photo[_\s-]*frame[_\s-]*2|photo-frame-baseball-2/.test(source)) return "baseball-2";
       if (/soccer[_\s-]*photo[_\s-]*frame[_\s-]*1|photo-frame-soccer-1/.test(source)) return "soccer-1";
       if (/soccer[_\s-]*photo[_\s-]*frame[_\s-]*2|photo-frame-soccer-2/.test(source)) return "soccer-2";
+      if (/basketball.*photo.*frame|school-sport-basketball.*photo-frame/.test(source)) return "basketball-1";
+      if (/football.*photo.*frame|school-sport-football.*photo-frame/.test(source)) return "football-1";
+      if (/volleyball.*photo.*frame|school-sport-volleyball.*photo-frame/.test(source)) return "volleyball-1";
+      if (/track.*photo.*frame|field.*photo.*frame|school-sport-track.*photo-frame/.test(source)) return "track-1";
       if (source.includes("ring-swoosh")) return "ring-swoosh";
       if (source.includes("scallop")) return "scallop";
       if (source.includes("round-name")) return "round-name";
