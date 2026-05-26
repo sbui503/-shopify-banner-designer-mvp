@@ -19,6 +19,17 @@
   const DEFAULT_CUSTOM_DESIGN_VARIANT_ID = "43534427029710";
   const DEFAULT_CUSTOM_DESIGN_PRODUCT_URL = `${SHOPIFY_STORE_ORIGIN}/products/custom-design-banner?variant=${DEFAULT_CUSTOM_DESIGN_VARIANT_ID}`;
   const DEFAULT_CUSTOM_DESIGN_CHECKOUT_URL = `${SHOPIFY_STORE_ORIGIN}/cart/${DEFAULT_CUSTOM_DESIGN_VARIANT_ID}:1?return_to=/checkouts/cn/${DEFAULT_CUSTOM_DESIGN_VARIANT_ID}`;
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "\"": "&quot;",
+      "'": "&#39;"
+    })[char]);
+  }
+
   let WIDTH = BANNER_WIDTH;
   let HEIGHT = BANNER_HEIGHT;
   let ARTBOARD_SHAPE = "rectangle";
@@ -692,6 +703,9 @@
     const size = artboardSizeForShape(ARTBOARD_SHAPE);
     WIDTH = MVP_5X3_ONLY ? BANNER_WIDTH : launch.width || size.width;
     HEIGHT = MVP_5X3_ONLY ? BANNER_HEIGHT : launch.height || size.height;
+    if (!MVP_5X3_ONLY && ARTBOARD_SHAPE === "triangle" && launch.image && !launch.height) {
+      HEIGHT = Math.round(WIDTH * (TRIANGLE_PRINT_HEIGHT / TRIANGLE_WIDTH));
+    }
   }
 
   function resolveSourceUrl(url) {

@@ -25,6 +25,17 @@
     triangle: "43537293050062",
     homeplatepennant: "43537293443278"
   };
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "\"": "&quot;",
+      "'": "&#39;"
+    })[char]);
+  }
+
   let WIDTH = BANNER_WIDTH;
   let HEIGHT = BANNER_HEIGHT;
   let ARTBOARD_SHAPE = "rectangle";
@@ -778,6 +789,9 @@
     const size = artboardSizeForShape(ARTBOARD_SHAPE);
     WIDTH = MVP_5X3_ONLY ? BANNER_WIDTH : launch.width || size.width;
     HEIGHT = MVP_5X3_ONLY ? BANNER_HEIGHT : launch.height || size.height;
+    if (!MVP_5X3_ONLY && ARTBOARD_SHAPE === "triangle" && launch.image && !launch.height) {
+      HEIGHT = Math.round(WIDTH * (TRIANGLE_PRINT_HEIGHT / TRIANGLE_WIDTH));
+    }
   }
 
   function resolveSourceUrl(url) {
