@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CannabisPack Pro - Premium Packaging Design Platform</title>
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #06070a; color: #e2e8f0; font-family: 'Inter', sans-serif; overflow: hidden; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #1a1d24; }
+        ::-webkit-scrollbar-thumb { background: #2d3139; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3d4149; }
+        
+        .panel { background: #0e1015; border: 1px solid #1e222b; }
+        .panel-header { background: #13161c; border-bottom: 1px solid #1e222b; }
+        
+        .tab { padding: 10px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; cursor: pointer; transition: all 0.2s; color: #64748b; border-bottom: 2px solid transparent; white-space: nowrap; }
+        .tab:hover { color: #94a3b8; background: rgba(255,255,255,0.02); }
+        .tab.active { color: #22c55e; border-bottom-color: #22c55e; background: rgba(34,197,94,0.05); }
+        
+        .tool { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 7px; cursor: pointer; transition: all 0.15s; color: #94a3b8; }
+        .tool:hover { background: #1e222b; color: #e2e8f0; }
+        .tool.active { background: rgba(34,197,94,0.15); color: #22c55e; }
+        
+        .canvas-area { background: #1a1d24; background-image: radial-gradient(circle, #252830 1px, transparent 1px); background-size: 20px 20px; }
+        
+        .layer-item { padding: 7px 10px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px; border-left: 3px solid transparent; font-size: 12px; }
+        .layer-item:hover { background: rgba(255,255,255,0.03); }
+        .layer-item.selected { background: rgba(34,197,94,0.08); border-left-color: #22c55e; }
+        
+        .prop-input { width: 100%; background: #1a1d24; border: 1px solid #2d3139; border-radius: 6px; padding: 6px 10px; color: #e2e8f0; font-size: 12px; outline: none; transition: border-color 0.15s; }
+        .prop-input:focus { border-color: #22c55e; }
+        
+        .btn-primary { background: linear-gradient(135deg, #22c55e, #16a34a); color: #000; font-weight: 600; padding: 8px 14px; border-radius: 8px; cursor: pointer; transition: all 0.15s; font-size: 12px; display: flex; align-items: center; gap: 6px; justify-content: center; }
+        .btn-primary:hover { background: linear-gradient(135deg, #16a34a, #15803d); transform: translateY(-1px); }
+        
+        .btn-ghost { background: transparent; color: #94a3b8; padding: 6px 10px; border-radius: 6px; cursor: pointer; transition: all 0.15s; font-size: 11px; display: flex; align-items: center; gap: 4px; }
+        .btn-ghost:hover { background: #1e222b; color: #e2e8f0; }
+        .btn-config { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; font-weight: 600; padding: 9px 12px; border-radius: 8px; cursor: pointer; transition: all 0.15s; font-size: 12px; display: flex; align-items: center; gap: 8px; justify-content: center; border: none; width: 100%; }
+        .btn-config:hover { background: linear-gradient(135deg, #2563eb, #1d4ed8); transform: translateY(-1px); }
+        
+        .template-card { cursor: pointer; transition: all 0.25s; border-radius: 10px; overflow: hidden; border: 2px solid transparent; }
+        .template-card:hover { border-color: #22c55e; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .template-card.active { border-color: #22c55e; }
+        
+        .asset-card { cursor: pointer; transition: all 0.15s; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid transparent; }
+        .asset-card:hover { background: rgba(255,255,255,0.05); border-color: #22c55e; }
+        
+        .color-dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.15s; }
+        .color-dot:hover { transform: scale(1.25); border-color: #fff; }
+        
+        .range-slider { -webkit-appearance: none; width: 100%; height: 4px; background: #2d3139; border-radius: 2px; outline: none; }
+        .range-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: #22c55e; border-radius: 50%; cursor: pointer; }
+        
+        .notification { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(135deg, #22c55e, #16a34a); color: #000; padding: 12px 20px; border-radius: 10px; font-weight: 600; font-size: 13px; animation: slideIn 0.3s ease; z-index: 2000; box-shadow: 0 10px 30px rgba(34,197,94,0.3); }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
+        .fabric-canvas { box-shadow: 0 0 80px rgba(0,0,0,0.6); }
+        
+        .brand-card { cursor: pointer; padding: 14px; border-radius: 10px; border: 1px solid #1e222b; transition: all 0.2s; background: #0a0c10; }
+        .brand-card:hover { border-color: #22c55e; background: rgba(34,197,94,0.03); transform: translateY(-2px); }
+        
+        .size-preset { padding: 12px 14px; border-radius: 10px; cursor: pointer; transition: all 0.15s; border: 1px solid #1e222b; display: flex; align-items: center; gap: 12px; background: #0a0c10; }
+        .size-preset:hover { background: rgba(255,255,255,0.03); border-color: #2d3139; }
+        .size-preset.active { background: rgba(34,197,94,0.1); border-color: #22c55e; }
+        
+        .category-btn { transition: all 0.15s; }
+        .category-btn.active { background: #22c55e; color: #000; font-weight: 600; }
+        
+        .tab-scroll { overflow-x: auto; white-space: nowrap; }
+        .tab-scroll::-webkit-scrollbar { display: none; }
+        
+        .size-card { padding: 14px; border-radius: 10px; border: 1px solid #1e222b; background: #0a0c10; transition: all 0.2s; cursor: pointer; }
+        .size-card:hover { border-color: #22c55e; background: rgba(34,197,94,0.03); }
+        .size-card.active { border-color: #22c55e; background: rgba(34,197,94,0.1); }
+        
+        .product-tab { padding: 10px 16px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.15s; color: #94a3b8; background: #1a1d24; border: 1px solid #2d3139; }
+        .product-tab:hover { background: #2d3139; }
+        .product-tab.active { background: #22c55e; color: #000; border-color: #22c55e; }
+        
+        .config-section { background: #1a1d24; border: 1px solid #2d3139; border-radius: 12px; padding: 16px; margin-top: 12px; }
+
+        /* Modal Styles */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: none; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: #1a1d24; border: 1px solid #2d3139; border-radius: 12px; padding: 24px; width: 400px; max-width: 90%; }
+        .modal-wide { width: min(1080px, 94vw); max-height: 90vh; overflow: hidden; }
+        .bg-card { border: 1px solid #1e222b; border-radius: 10px; overflow: hidden; cursor: pointer; background: #0a0c10; transition: all 0.2s; }
+        .bg-card:hover { border-color: #22c55e; transform: translateY(-2px); }
+        .bg-swatch { height: 72px; background-size: cover; background-position: center; }
+        .feature-toggle { display: flex; align-items: center; gap: 10px; padding: 8px 0; color: #cbd5e1; font-size: 14px; }
+        .feature-toggle input { width: 18px; height: 18px; accent-color: #22c55e; }
+        #threePreview { width: 100%; height: 440px; background: radial-gradient(circle at top, #243047, #06070a 62%); border-radius: 12px; cursor: grab; display: block; }
+        #threePreview:active { cursor: grabbing; }
+    </style>
+</head>
+<body>
+
+<div class="h-screen flex flex-col">
+    <!-- TOP TOOLBAR -->
+    <header class="h-12 panel-header flex items-center justify-between px-3 flex-shrink-0 z-50">
+        <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
+                <span class="text-lg"></span>
+                <span class="font-bold text-base tracking-tight" id="appNameDisplay">CannabisPack <span class="text-green-500">Pro</span></span>
+            </div>
+            <div class="h-4 w-px bg-gray-700"></div>
+            <div class="flex items-center gap-0.5">
+                <button onclick="undo()" class="tool" title="Undo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
+                <button onclick="redo()" class="tool" title="Redo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>
+            </div>
+            <div class="h-4 w-px bg-gray-700"></div>
+            
+            <!-- NEW TOOLS -->
+            <button onclick="toggleGuides()" class="tool" title="Bleed/Safe Zone Guides" id="btn-guides">📐</button>
+            <button onclick="openComplianceModal()" class="tool" title="Add Compliance Text">⚖️</button>
+            <button onclick="openQRModal()" class="tool" title="Generate QR Code">QR</button>
+            <button onclick="openBatchModal()" class="tool" title="Batch Export Sizes">📦</button>
+            <button onclick="open3DPreview()" class="tool" title="360 Preview">3D</button>
+            <button onclick="openAdminModal()" class="btn-ghost" title="Admin Configuration">Admin</button>
+
+            <div class="h-4 w-px bg-gray-700"></div>
+            <div id="canvasLabel" class="text-xs text-gray-500 font-medium truncate max-w-[150px]">2" x 3" Roll Sticker</div>
+        </div>
+        
+        <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-0.5 bg-gray-800/50 rounded-lg px-1.5 py-0.5">
+                <button onclick="zoomOut()" class="tool p-0.5 w-6 h-6"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg></button>
+                <span id="zoomLevel" class="text-xs font-mono w-8 text-center text-gray-400">100%</span>
+                <button onclick="zoomIn()" class="tool p-0.5 w-6 h-6"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></button>
+            </div>
+            <button onclick="importJSON()" class="btn-ghost">Import</button>
+            <button onclick="exportJSON()" class="btn-ghost">Save</button>
+            <button onclick="exportPNG()" class="btn-primary text-xs">PNG</button>
+            <button onclick="exportSVG()" class="btn-primary text-xs">SVG</button>
+        </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+        <!-- LEFT SIDEBAR -->
+        <aside class="w-72 panel flex flex-col flex-shrink-0">
+            <div class="flex panel-header tab-scroll">
+                <button class="tab active" data-tab="templates">Templates</button>
+                <button class="tab" data-tab="backgrounds">Backgrounds</button>
+                <button class="tab" data-tab="sizes">Sizes</button>
+                <button class="tab" data-tab="assets">Assets</button>
+                <button class="tab" data-tab="ai">AI</button>
+                <button class="tab" data-tab="brands">Brands</button>
+            </div>
+            
+            <!-- Templates -->
+            <div class="tab-panel flex-1 overflow-y-auto" data-panel="templates">
+                <div class="p-2 border-b border-gray-800">
+                    <div class="flex gap-1 flex-wrap">
+                        <button class="category-btn active text-xs px-2 py-1 rounded" onclick="setCategory(this,'all')">All</button>
+                        <button class="category-btn text-xs px-2 py-1 rounded bg-gray-800/50" onclick="setCategory(this,'label')">Labels</button>
+                        <button class="category-btn text-xs px-2 py-1 rounded bg-gray-800/50" onclick="setCategory(this,'packaging')">Bags</button>
+                        <button class="category-btn text-xs px-2 py-1 rounded bg-gray-800/50" onclick="setCategory(this,'sticker')">Stickers</button>
+                        <button class="category-btn text-xs px-2 py-1 rounded bg-gray-800/50" onclick="setCategory(this,'edibles')">Edibles</button>
+                    </div>
+                </div>
+                <div class="p-2">
+                    <div id="templateGrid" class="grid grid-cols-2 gap-2"></div>
+                </div>
+            </div>
+
+            <!-- Backgrounds -->
+            <div class="tab-panel flex-1 overflow-y-auto hidden" data-panel="backgrounds">
+                <div class="p-2 border-b border-gray-800">
+                    <p class="text-xs text-gray-500">Premade cannabis background plates for fast label mockups</p>
+                </div>
+                <div class="p-2">
+                    <div id="backgroundGrid" class="grid grid-cols-2 gap-2"></div>
+                </div>
+            </div>
+
+            <!-- Sizes Panel -->
+            <div class="tab-panel flex-1 overflow-y-auto hidden" data-panel="sizes">
+                <div class="p-2 border-b border-gray-800">
+                    <p class="text-xs text-gray-500 mb-2">Select print size from UPrinting catalog</p>
+                    <div class="flex flex-wrap gap-1 mb-3">
+                        <button class="product-tab active" onclick="setProductTab(this,'roll-stickers')">Roll Stickers</button>
+                        <button class="product-tab" onclick="setProductTab(this,'roll-labels')">Roll Labels</button>
+                        <button class="product-tab" onclick="setProductTab(this,'custom-labels')">Custom Labels</button>
+                        <button class="product-tab" onclick="setProductTab(this,'custom-stickers')">Custom Stickers</button>
+                    </div>
+                </div>
+                <div class="p-2">
+                    <button onclick="openUPrintingDesigner()" class="btn-config">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+                        Open UPrinting Designer
+                    </button>
+                </div>
+                <div class="p-2 pt-0">
+                    <div id="sizesGrid" class="grid grid-cols-1 gap-1.5"></div>
+                </div>
+            </div>
+            
+            <!-- Assets -->
+            <div class="tab-panel flex-1 overflow-y-auto hidden" data-panel="assets">
+                <div class="p-2">
+                    <input type="text" class="prop-input mb-2 text-xs" placeholder="Search assets..." oninput="filterAssets(this.value)">
+                    <div id="assetGrid" class="grid grid-cols-3 gap-1.5"></div>
+                </div>
+            </div>
+
+            <!-- AI Background Generator -->
+            <div class="tab-panel flex-1 overflow-y-auto hidden" data-panel="ai">
+                <div class="p-3 space-y-3">
+                    <div class="config-section">
+                        <h3 class="text-sm font-semibold text-green-400 mb-1">AI Background Generator</h3>
+                        <p class="text-xs text-gray-500 mb-3">Demo generator creates editable psychedelic, premium, or medical-style background plates.</p>
+                        <textarea id="aiPrompt" class="prop-input h-24 resize-none" placeholder="e.g. cosmic purple galaxy with neon green smoke trails, trippy leaves"></textarea>
+                        <button onclick="generateAIBackground()" class="btn-primary w-full mt-3">Generate BG</button>
+                    </div>
+                    <div id="aiMoodGrid" class="grid grid-cols-2 gap-2"></div>
+                </div>
+            </div>
+            
+            <!-- Brands -->
+            <div class="tab-panel flex-1 overflow-y-auto hidden" data-panel="brands">
+                <div class="p-2">
+                    <p class="text-xs text-gray-600 mb-2">Apply brand styles</p>
+                    <div id="brandList" class="space-y-2"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CANVAS -->
+        <main id="canvasContainer" class="flex-1 canvas-area flex items-center justify-center overflow-auto p-6">
+            <canvas id="mainCanvas" class="fabric-canvas"></canvas>
+        </main>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="w-64 panel flex flex-col flex-shrink-0">
+            <div class="panel-header px-2 py-2">
+                <div class="flex items-center gap-0.5">
+                    <button onclick="addText('Heading', {fontSize: 32, fontWeight: 'bold'})" class="tool" title="Text"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></button>
+                    <button onclick="addShape('rect')" class="tool" title="Rect"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></button>
+                    <button onclick="addShape('circle')" class="tool" title="Circle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></button>
+                    <button onclick="addShape('triangle')" class="tool" title="Triangle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 22 2 22"/></svg></button>
+                    <div class="w-px h-4 bg-gray-700"></div>
+                    <label class="tool" title="Upload"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><input type="file" id="fileUpload" accept="image/*" class="hidden"></label>
+                    <button onclick="groupObjects()" class="tool" title="Group"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/></svg></button>
+                </div>
+            </div>
+            
+            <div class="px-2 py-2 border-b border-gray-800">
+                <div class="flex items-center gap-1.5">
+                    <span class="text-xs text-gray-600">BG:</span>
+                    <div class="flex gap-1">
+                        <div class="color-dot bg-white" onclick="setBg('#ffffff')"></div>
+                        <div class="color-dot bg-black" onclick="setBg('#000000')"></div>
+                        <div class="color-dot" style="background:#f0fdf4" onclick="setBg('#f0fdf4')"></div>
+                        <div class="color-dot" style="background:#1a1a2e" onclick="setBg('#1a1a2e')"></div>
+                        <div class="color-dot" style="background:#d4a373" onclick="setBg('#d4a373')"></div>
+                        <div class="color-dot" style="background:#fce7f3" onclick="setBg('#fce7f3')"></div>
+                        <input type="color" class="w-4 h-4 rounded cursor-pointer border-0 bg-transparent p-0" onchange="setBg(this.value)">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel-header px-2 py-1.5">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase">Layers</h3>
+                    <span id="layerCount" class="text-xs text-gray-600 font-mono">0</span>
+                </div>
+            </div>
+            <div id="layerList" class="flex-1 overflow-y-auto min-h-[80px]"></div>
+            
+            <div class="panel-header px-2 py-1.5">
+                <h3 class="text-xs font-semibold text-gray-500 uppercase">Properties</h3>
+            </div>
+            <div id="propertiesPanel" class="overflow-y-auto flex-shrink-0 max-h-[40%]">
+                <div class="p-4 text-center">
+                    <p class="text-xs text-gray-600">Select element to edit</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+    
+    <footer class="h-6 bg-gray-900 border-t border-gray-800 flex items-center justify-between px-3 flex-shrink-0">
+        <div class="flex items-center gap-3">
+            <span id="canvasDims" class="text-xs text-gray-600 font-mono">576 x 864px</span>
+            <span id="canvasLabelFooter" class="text-xs text-gray-700">Roll Sticker</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="text-xs text-gray-700">Ctrl+Z Undo | Ctrl+S Save | Del Delete</span>
+            <span class="text-xs text-green-600 font-semibold"> Ready</span>
+        </div>
+    </footer>
+</div>
+
+<!-- MODALS -->
+<div id="modal-qr" class="modal-overlay">
+    <div class="modal">
+        <h3 class="text-lg font-bold mb-4">Generate QR Code</h3>
+        <input type="text" id="qr-input" placeholder="Enter URL or Text" class="prop-input mb-4">
+        <div class="flex gap-2">
+            <button onclick="generateQR()" class="btn-primary flex-1">Generate</button>
+            <button onclick="closeModal('modal-qr')" class="btn-ghost flex-1">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-batch" class="modal-overlay">
+    <div class="modal">
+        <h3 class="text-lg font-bold mb-4">Batch Export</h3>
+        <p class="text-xs text-gray-400 mb-4">Exports current design to selected sizes.</p>
+        <div class="max-h-60 overflow-y-auto mb-4 space-y-2" id="batch-list">
+            <!-- Checkboxes populated by JS -->
+        </div>
+        <div class="flex gap-2">
+            <button onclick="executeBatchExport()" class="btn-primary flex-1">Export Selected</button>
+            <button onclick="closeModal('modal-batch')" class="btn-ghost flex-1">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-compliance" class="modal-overlay">
+    <div class="modal">
+        <h3 class="text-lg font-bold mb-4">Add Compliance Text</h3>
+        <div class="space-y-2">
+            <button onclick="addCompliance('govt-warning')" class="w-full text-left p-2 bg-gray-800 rounded hover:bg-gray-700 text-sm">🚨 Government Warning (Standard)</button>
+            <button onclick="addCompliance('children-warning')" class="w-full text-left p-2 bg-gray-800 rounded hover:bg-gray-700 text-sm">👶 Keep Out of Reach of Children</button>
+            <button onclick="addCompliance('adult-use')" class="w-full text-left p-2 bg-gray-800 rounded hover:bg-gray-700 text-sm">🔞 For Adult Use Only</button>
+            <button onclick="addCompliance('lab-tested')" class="w-full text-left p-2 bg-gray-800 rounded hover:bg-gray-700 text-sm">🧪 Lab Tested & Verified</button>
+        </div>
+        <div class="mt-4 flex justify-end">
+            <button onclick="closeModal('modal-compliance')" class="btn-ghost">Close</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-admin" class="modal-overlay">
+    <div class="modal">
+        <h3 class="text-lg font-bold mb-4">Admin Configuration</h3>
+        <div class="mb-4">
+            <label class="text-xs text-gray-400 block mb-1">Company Name</label>
+            <input type="text" id="adminCompanyName" value="CannabisPack" class="prop-input">
+        </div>
+        <div class="mb-4">
+            <label class="text-xs text-gray-400 block mb-1">Primary Color</label>
+            <input type="color" id="adminPrimaryColor" value="#22c55e" class="w-16 h-10 rounded bg-transparent border border-gray-700">
+        </div>
+        <div class="border-t border-gray-800 pt-3 mb-4">
+            <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2">Client Features</p>
+            <label class="feature-toggle"><input type="checkbox" data-feature="templates" checked> Templates</label>
+            <label class="feature-toggle"><input type="checkbox" data-feature="backgrounds" checked> Backgrounds</label>
+            <label class="feature-toggle"><input type="checkbox" data-feature="assets" checked> Assets and icons</label>
+            <label class="feature-toggle"><input type="checkbox" data-feature="ai" checked> AI background generator</label>
+            <label class="feature-toggle"><input type="checkbox" data-feature="sizes" checked> UPrinting sizes</label>
+            <label class="feature-toggle"><input type="checkbox" data-feature="brands" checked> Brand kits</label>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="saveAdminConfig()" class="btn-primary flex-1">Save Configuration</button>
+            <button onclick="closeModal('modal-admin')" class="btn-ghost flex-1">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-3d" class="modal-overlay">
+    <div class="modal modal-wide">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h3 class="text-lg font-bold">360 Package Preview</h3>
+                <p class="text-xs text-gray-500">Drag the preview to rotate. Current canvas is mapped onto the package.</p>
+            </div>
+            <button onclick="close3DPreview()" class="btn-ghost">Close</button>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-4">
+            <canvas id="threePreview"></canvas>
+            <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="setPreviewPackage('jar')" class="product-tab active" data-package="jar">Jar</button>
+                    <button onclick="setPreviewPackage('mylar')" class="product-tab" data-package="mylar">Mylar</button>
+                    <button onclick="setPreviewPackage('tube')" class="product-tab" data-package="tube">Tube</button>
+                    <button onclick="setPreviewPackage('dropper')" class="product-tab" data-package="dropper">Dropper</button>
+                </div>
+                <div class="config-section">
+                    <label class="text-xs text-gray-400 block mb-2">Finish</label>
+                    <select id="finishSelect" class="prop-input" onchange="refresh3DPreview()">
+                        <option>Glossy</option>
+                        <option>Matte</option>
+                        <option>Soft Touch</option>
+                    </select>
+                </div>
+                <div class="config-section">
+                    <label class="text-xs text-gray-400 block mb-2">Lighting</label>
+                    <input type="range" id="lightIntensity" min="0.5" max="2.5" value="1.2" step="0.1" class="range-slider" oninput="updatePreviewLight(this.value)">
+                </div>
+                <button onclick="download3DMockup()" class="btn-primary w-full">Generate Mockup PNG</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ==================== DATA LAYER ====================
+const UPRINTING_SIZES = {
+    'roll-stickers': {
+        name: 'Roll Stickers',
+        sizes: [
+            { id: 'rs-1', name: '1" Round', w: 96, h: 96 },
+            { id: 'rs-2', name: '2" Round', w: 192, h: 192 },
+            { id: 'rs-3', name: '3" Round', w: 288, h: 288 },
+            { id: 'rs-4', name: '1" x 2"', w: 96, h: 192 },
+            { id: 'rs-5', name: '2" x 3"', w: 192, h: 288 },
+            { id: 'rs-6', name: '2" x 4"', w: 192, h: 384 },
+            { id: 'rs-7', name: '3" x 4"', w: 288, h: 384 },
+        ]
+    },
+    'roll-labels': {
+        name: 'Roll Labels',
+        sizes: [
+            { id: 'rl-1', name: '1" x 1"', w: 96, h: 96 },
+            { id: 'rl-2', name: '2" x 1"', w: 192, h: 96 },
+            { id: 'rl-3', name: '2" x 2"', w: 192, h: 192 },
+            { id: 'rl-4', name: '2" x 3"', w: 192, h: 288 },
+            { id: 'rl-5', name: '3" x 2"', w: 288, h: 192 },
+            { id: 'rl-6', name: '3" x 3"', w: 288, h: 288 },
+            { id: 'rl-7', name: '4" x 3"', w: 384, h: 288 },
+            { id: 'rl-8', name: '4" x 6"', w: 384, h: 576 },
+        ]
+    },
+    'custom-labels': {
+        name: 'Custom Labels',
+        sizes: [
+            { id: 'cl-1', name: '2" x 3"', w: 192, h: 288 },
+            { id: 'cl-2', name: '2" x 4"', w: 192, h: 384 },
+            { id: 'cl-3', name: '3" x 4"', w: 288, h: 384 },
+            { id: 'cl-4', name: '3" x 5"', w: 288, h: 480 },
+            { id: 'cl-5', name: '4" x 6"', w: 384, h: 576 },
+            { id: 'cl-6', name: '4" x 8"', w: 384, h: 768 },
+        ]
+    },
+    'custom-stickers': {
+        name: 'Custom Stickers',
+        sizes: [
+            { id: 'cs-1', name: '2" x 2"', w: 192, h: 192 },
+            { id: 'cs-2', name: '2" x 3"', w: 192, h: 288 },
+            { id: 'cs-3', name: '3" x 3"', w: 288, h: 288 },
+            { id: 'cs-4', name: '3" x 4"', w: 288, h: 384 },
+            { id: 'cs-5', name: '4" x 4"', w: 384, h: 384 },
+            { id: 'cs-6', name: '4" x 6"', w: 384, h: 576 },
+        ]
+    }
+};
+
+const UPRINTING_DESIGNER_URLS = {
+    'roll-stickers': 'https://editor.uprinting.com/personalization/personalize?token=c5186077e87e4bedbf2cbdf098adb30c&action=upload&page_id=110637&page_revision_id=362077&features=switch_orientation:1',
+    'roll-labels': 'https://editor.uprinting.com/personalization/personalize?token=c437fc1b9a6f4f9fa4f166ba18ddaa36&action=upload&page_id=110637&page_revision_id=362077&features=switch_orientation:1',
+    'custom-labels': 'https://editor.uprinting.com/personalization/personalize?token=1c9cad1522a94661a0fd9fbf65f366e1&action=upload&page_id=130033&page_revision_id=359824&features=switch_orientation:1',
+    'custom-stickers': 'https://editor.uprinting.com/personalization/personalize?token=1c0f937b950543988187c342f071a271&action=upload&page_id=130014&page_revision_id=359825&features=switch_orientation:1'
+};
+
+const BACKGROUND_PRESETS = [
+    { id: 'hybrid-1', name: 'Hybrid Leaf Mist', colors: ['#f7fff8', '#66d39a', '#137d4f'], accent: '#0f5132', pattern: 'leaves' },
+    { id: 'hybrid-2', name: 'Teal Botanical', colors: ['#f2fffc', '#55d6c2', '#135e59'], accent: '#0f766e', pattern: 'diagonal' },
+    { id: 'indica-1', name: 'Purple Galaxy', colors: ['#3b1d6e', '#7c3aed', '#10b981'], accent: '#d8b4fe', pattern: 'orbits' },
+    { id: 'sativa-1', name: 'Lime Energy', colors: ['#ecfccb', '#84cc16', '#15803d'], accent: '#064e3b', pattern: 'burst' },
+    { id: 'medical-1', name: 'Medical Clean', colors: ['#ffffff', '#dbeafe', '#2563eb'], accent: '#1d4ed8', pattern: 'grid' },
+    { id: 'luxury-1', name: 'Black Gold', colors: ['#050505', '#1f2937', '#d4af37'], accent: '#f8e7a1', pattern: 'seal' }
+];
+
+const AI_MOODS = [
+    { prompt: 'Cosmic purple galaxy with neon green smoke trails', preset: 'indica-1' },
+    { prompt: 'Luxury black mylar with gold foil seal pattern', preset: 'luxury-1' },
+    { prompt: 'Clean medical label background with blue grid', preset: 'medical-1' },
+    { prompt: 'Bright sativa lime leaf pattern for gummies', preset: 'sativa-1' }
+];
+
+const TEMPLATES = [
+    { id: 't1', name: 'Luxury Black Gold', category: 'label', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#0a0a0a' }, { type: 'text', text: 'PREMIUM STRAIN', left: 288, top: 50, fontSize: 32, fontFamily: 'Bebas Neue', fill: '#d4af37', textAlign: 'center', originX: 'center' }, { type: 'text', text: 'THC 28%', left: 180, top: 350, fontSize: 36, fontFamily: 'Montserrat', fontWeight: 'bold', fill: '#ffffff', textAlign: 'center', originX: 'center' }, { type: 'text', text: 'CBD 0.3%', left: 396, top: 350, fontSize: 36, fontFamily: 'Montserrat', fontWeight: 'bold', fill: '#ffffff', textAlign: 'center', originX: 'center' }] } },
+    { id: 't2', name: 'Organic Wellness', category: 'label', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#f0fdf4' }, { type: 'text', text: 'Green Valley', left: 288, top: 60, fontSize: 36, fontFamily: 'Playfair Display', fontWeight: 'bold', fill: '#15803d', textAlign: 'center', originX: 'center' }, { type: 'text', text: 'Sativa-Dominant Hybrid', left: 288, top: 110, fontSize: 20, fontFamily: 'Montserrat', fill: '#4ade80', textAlign: 'center', originX: 'center', fontWeight: '600' }] } },
+    { id: 't3', name: 'Retro Dispensary', category: 'label', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#d4a373' }, { type: 'text', text: 'HERBAL', left: 288, top: 80, fontSize: 52, fontFamily: 'Bebas Neue', fill: '#264653', textAlign: 'center', originX: 'center' }, { type: 'text', text: 'DISPENSARY', left: 288, top: 140, fontSize: 40, fontFamily: 'Bebas Neue', fill: '#264653', textAlign: 'center', originX: 'center' }] } },
+    { id: 't4', name: 'Medical Clean', category: 'label', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#ffffff' }, { type: 'rect', left: 0, top: 0, width: 10, height: 864, fill: '#2563eb' }, { type: 'text', text: 'MEDICAL CANNABIS', left: 40, top: 60, fontSize: 32, fontFamily: 'Inter', fontWeight: 'bold', fill: '#1e293b', textAlign: 'left', originX: 'left' }] } },
+    { id: 't5', name: 'Psychedelic Street', category: 'label', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 432, fill: '#ff2e63' }, { type: 'rect', left: 0, top: 432, width: 576, height: 432, fill: '#08d9d6' }, { type: 'text', text: 'HERBAL', left: 288, top: 100, fontSize: 72, fontFamily: 'Bebas Neue', fill: '#ffffff', textAlign: 'center', originX: 'center' }] } },
+    { id: 't6', name: 'Mylar Bag Bold', category: 'packaging', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#1a1a2e' }, { type: 'text', text: 'PREMIUM', left: 288, top: 100, fontSize: 56, fontFamily: 'Bebas Neue', fill: '#ffffff', textAlign: 'center', originX: 'center' }, { type: 'text', text: 'CANNABIS', left: 288, top: 170, fontSize: 64, fontFamily: 'Bebas Neue', fill: '#e94560', textAlign: 'center', originX: 'center' }] } },
+    { id: 't7', name: 'Minimal Modern', category: 'label', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#111827' }, { type: 'text', text: 'ELEVATE', left: 288, top: 100, fontSize: 64, fontFamily: 'Montserrat', fontWeight: '800', fill: '#ffffff', textAlign: 'center', originX: 'center' }] } },
+    { id: 't8', name: 'Gummy Edibles', category: 'edibles', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#fce7f3' }, { type: 'text', text: 'GUMMY BEARS', left: 288, top: 100, fontSize: 48, fontFamily: 'Bebas Neue', fill: '#ec4899', textAlign: 'center', originX: 'center' }] } }
+];
+
+const ASSETS_SVG = [
+    { id: 'a1', name: 'Cannabis Leaf', svg: 'M12,2C8,2 4,6 4,10c0,3 2,5 4,6l-2,4h4l2-3l2,3h4l-2-4c2-1,4-3,4-6C18,6,16,2,12,2z' },
+    { id: 'a2', name: 'Warning', svg: 'M12,2L1,21h22L12,2z M12,6l7.53,13H4.47L12,6z M11,10v4h2v-4H11z M11,16v2h2v-2H11z' },
+    { id: 'a3', name: 'Gold Seal', svg: 'M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z' },
+    { id: 'a4', name: 'Medical Cross', svg: 'M19,11h-6V5h-2v6H5v2h6v6h2v-6h6V11z' },
+    { id: 'a5', name: 'Oil Drop', svg: 'M12,2C8,6,4,10,4,14c0,4.42,3.58,8,8,8s8-3.58,8-8C20,10,16,6,12,2z' },
+    { id: 'a6', name: 'Jar', svg: 'M7,2h10v2H7V2z M6,4h12l-1,16H7L6,4z M8,6v12h8V6H8z' },
+    { id: 'a7', name: 'Vape', svg: 'M9,2h6v4h-1v14H10V6H9V2z M11,6h2V4h-2V6z' },
+    { id: 'a8', name: 'Capsule', svg: 'M17.5,4.5c-1.5-1.5-4-1.5-5.5,0l-7,7c-1.5,1.5-1.5,4,0,5.5l0,0c1.5,1.5,4,1.5,5.5,0l7-7C19,8.5,19,6,17.5,4.5z' },
+    { id: 'a9', name: 'Certificate', svg: 'M14,2H6C4.9,2,4,2.9,4,4v16c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2V8L14,2z M16,18H8v-2h8V18z M16,14H8v-2h8V14z' },
+    { id: 'a10', name: 'QR Code', svg: 'M3,11h8V3H3V11z M5,5h4v4H5V5z M3,21h8v-8H3V21z M5,15h4v4H5V15z M13,3v8h8V3H13z M19,9h-4V5h4V9z M13,21h4v-4h-4V21z M15,13h-2v8h8v-8H15z M17,17h2v2h-2V17z' },
+    { id: 'a11', name: 'Flower Bud', svg: 'M12,2C9,2 6,5 6,8c0,2 1,3 2,4l-1,3h2l1-2l1,2h2l-1-3c1-1,2-2,2-4C18,5,15,2,12,2z' },
+    { id: 'a12', name: 'Shield', svg: 'M12,1L3,5v6c0,5.55,3.84,10.74,9,12c5.16-1.26,9-6.45,9-12V5L12,1z M12,11.99h7c-0.53,4.12-3.28,7.79-7,8.94V12H5V6.3l7-3.11V11.99z' },
+    { id: 'a13', name: 'Star', svg: 'M12,17.27L18.18,21l-1.64-7.03L22,9.24l-7.19-0.61L12,2L9.19,8.63L2,9.24l5.46,4.73L5.82,21L12,17.27z' },
+    { id: 'a14', name: 'Heart', svg: 'M12,21.35l-1.45-1.32C5.4,15.36,2,12.28,2,8.5C2,5.42,4.42,3,7.5,3c1.74,0,3.41,0.81,4.5,2.09C13.09,3.81,14.76,3,16.5,3C19.58,3,22,5.42,22,8.5c0,3.78-3.4,6.86-8.55,11.54L12,21.35z' },
+    { id: 'a15', name: 'Crown', svg: 'M5,16L3,5l5.5,5L12,4l3.5,6L21,5l-2,11H5z M19,19H5v2h14V19z' },
+    { id: 'a16', name: 'Fire', svg: 'M12,23c-3.87,0-7-3.13-7-7c0-2.38,1.19-4.47,3-5.74C8,8.54,9.16,6.5,9.16,4c0-0.55,0.45-1,1-1s1,0.45,1,1c0,3.5-2.16,6.5-5.16,8.26C4.19,13.53,3,15.38,3,17.5C3,20.54,5.46,23,8.5,23H12c3.31,0,6-2.69,6-6c0-3.31-2.69-6-6-6c-1.66,0-3.14,0.68-4.24,1.76C9.13,11.68,10.5,10,12,10c3.31,0,6,2.69,6,6C18,20.31,15.31,23,12,23z' },
+    { id: 'a17', name: 'Lightning', svg: 'M7,2v11h3v9l7-12h-4l4-8H7z' },
+    { id: 'a18', name: 'Ribbon', svg: 'M12,2L1,7l11,5l9-4.09V17h2V7L12,2z M5,13.18v4L12,20l7-2.82v-4L12,17L5,13.18z' },
+    { id: 'a19', name: 'Diamond', svg: 'M19,3H5L2,9l10,13L22,9L19,3z M10,17.5L5.5,9.5h13L14,17.5H10z' },
+    { id: 'a20', name: 'Badge', svg: 'M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z' }
+];
+
+const BRAND_KITS = [
+    { id: 'b1', name: 'Luxury Black Gold', colors: ['#000000', '#d4af37', '#1a1a1a', '#ffffff'], fonts: ['Montserrat', 'Playfair Display'] },
+    { id: 'b2', name: 'Organic Wellness', colors: ['#15803d', '#4ade80', '#f0fdf4', '#064e3b'], fonts: ['Playfair Display', 'Inter'] },
+    { id: 'b3', name: 'Medical Clean', colors: ['#2563eb', '#93c5fd', '#ffffff', '#1e293b'], fonts: ['Inter', 'Montserrat'] },
+    { id: 'b4', name: 'Psychedelic Street', colors: ['#ff2e63', '#08d9d6', '#252a34', '#eaeaea'], fonts: ['Bebas Neue', 'Montserrat'] },
+    { id: 'b5', name: 'Retro Dispensary', colors: ['#d4a373', '#e9c46a', '#264653', '#e76f51'], fonts: ['Permanent Marker', 'Pacifico'] },
+    { id: 'b6', name: 'Minimal Modern', colors: ['#111827', '#f9fafb', '#6b7280', '#374151'], fonts: ['Inter', 'Montserrat'] }
+];
+
+// ==================== APP STATE ====================
+let canvas = null;
+let history = [];
+let historyIndex = -1;
+let currentSize = null;
+let currentProduct = 'roll-stickers';
+let selectedObject = null;
+let zoomLevel = 1;
+let activeTab = 'templates';
+let activeCategory = 'all';
+let guidesVisible = false;
+let guideObjects = [];
+let appConfig = {
+    companyName: 'CannabisPack',
+    primaryColor: '#22c55e',
+    features: { templates: true, backgrounds: true, sizes: true, assets: true, ai: true, brands: true }
+};
+let preview3d = { renderer: null, scene: null, camera: null, object: null, light: null, texture: null, dragging: false, lastX: 0, velocity: 0, package: 'jar', animationId: null };
+
+// ==================== INIT ====================
+function init() {
+    const defaultSize = UPRINTING_SIZES['roll-stickers'].sizes[4]; // 2" x 3"
+    canvas = new fabric.Canvas('mainCanvas', {
+        width: defaultSize.w,
+        height: defaultSize.h,
+        backgroundColor: '#ffffff',
+        preserveObjectStacking: true,
+        selection: true,
+        selectionColor: 'rgba(34,197,94,0.1)',
+        selectionBorderColor: '#22c55e',
+        selectionLineWidth: 2,
+    });
+
+    canvas.on('selection:created', onObjectSelected);
+    canvas.on('selection:updated', onObjectSelected);
+    canvas.on('selection:cleared', onSelectionCleared);
+    canvas.on('object:modified', saveHistory);
+    canvas.on('object:added', saveHistory);
+    canvas.on('object:removed', saveHistory);
+    canvas.on('text:changed', saveHistory);
+
+    currentSize = defaultSize;
+    saveHistory();
+    renderUI();
+    renderSizes();
+    setupEventListeners();
+}
+
+function saveHistory() {
+    const json = JSON.stringify(canvas.toJSON(['id', 'name', 'selectable', 'evented', 'excludeFromExport']));
+    if (historyIndex < history.length - 1) history = history.slice(0, historyIndex + 1);
+    history.push(json);
+    if (history.length > 50) history.shift();
+    historyIndex = history.length - 1;
+    updateLayerPanel();
+    updateProperties();
+}
+
+function undo() {
+    if (historyIndex > 0) {
+        historyIndex--;
+        canvas.loadFromJSON(history[historyIndex], () => { 
+            canvas.renderAll(); 
+            updateLayerPanel(); 
+            if(guidesVisible) renderGuides();
+        });
+    }
+}
+
+function redo() {
+    if (historyIndex < history.length - 1) {
+        historyIndex++;
+        canvas.loadFromJSON(history[historyIndex], () => { 
+            canvas.renderAll(); 
+            updateLayerPanel(); 
+            if(guidesVisible) renderGuides();
+        });
+    }
+}
+
+// ==================== CANVAS OPERATIONS ====================
+function setSize(sizeObj) {
+    currentSize = sizeObj;
+    canvas.setWidth(sizeObj.w);
+    canvas.setHeight(sizeObj.h);
+    canvas.renderAll();
+    document.getElementById('canvasDims').textContent = `${sizeObj.w} × ${sizeObj.h}px`;
+    document.getElementById('canvasLabel').textContent = `${sizeObj.name} (${Math.round(sizeObj.w/96)}" x ${Math.round(sizeObj.h/96)}")`;
+    document.getElementById('canvasLabelFooter').textContent = sizeObj.name;
+    if(guidesVisible) renderGuides();
+    saveHistory();
+    showNotification(`Size: ${sizeObj.name}`);
+}
+
+function loadTemplate(template) {
+    const scaleX = canvas.width / 576;
+    const scaleY = canvas.height / 864;
+
+    canvas.clear();
+    template.json.objects.forEach(source => {
+        const obj = { ...source };
+        const common = {
+            left: (obj.left || 0) * scaleX,
+            top: (obj.top || 0) * scaleY,
+            originX: obj.originX || 'left',
+            originY: obj.originY || 'top',
+            fill: obj.fill || '#111827',
+            name: obj.type === 'rect' && obj.left === 0 && obj.top === 0 ? `${template.name} Background` : `${template.name} ${obj.type}`
+        };
+        let fabricObj;
+        if (obj.type === 'rect') {
+            fabricObj = new fabric.Rect({
+                ...common,
+                width: (obj.width || 100) * scaleX,
+                height: (obj.height || 100) * scaleY,
+                rx: obj.rx || 0,
+                ry: obj.ry || 0
+            });
+        } else if (obj.type === 'text') {
+            fabricObj = new fabric.IText(obj.text || '', {
+                ...common,
+                fontSize: (obj.fontSize || 24) * Math.min(scaleX, scaleY),
+                fontFamily: obj.fontFamily || 'Inter',
+                fontWeight: obj.fontWeight || 'normal',
+                textAlign: obj.textAlign || 'left',
+                editable: true
+            });
+        }
+        if (fabricObj) canvas.add(fabricObj);
+    });
+
+    canvas.renderAll();
+    canvas.discardActiveObject();
+    saveHistory();
+    showNotification(`Loaded: ${template.name}`);
+}
+
+function addText(text = 'New Text', options = {}) {
+    const textObj = new fabric.IText(text, {
+        left: canvas.width / 2,
+        top: canvas.height / 2,
+        fontSize: options.fontSize || 24,
+        fontFamily: options.fontFamily || 'Inter',
+        fontWeight: options.fontWeight || 'normal',
+        fill: options.fill || '#000000',
+        textAlign: 'center',
+        originX: 'center',
+        originY: 'center',
+        ...options
+    });
+    canvas.add(textObj);
+    canvas.setActiveObject(textObj);
+    canvas.renderAll();
+    saveHistory();
+}
+
+function addShape(type, options = {}) {
+    let shape;
+    const defaults = { left: canvas.width/2, top: canvas.height/2, originX: 'center', originY: 'center' };
+    
+    switch(type) {
+        case 'rect':
+            shape = new fabric.Rect({ ...defaults, width: 100, height: 100, fill: options.fill || '#22c55e', rx: options.rx || 0, ry: options.ry || 0, ...options });
+            break;
+        case 'circle':
+            shape = new fabric.Circle({ ...defaults, radius: 50, fill: options.fill || '#22c55e', ...options });
+            break;
+        case 'triangle':
+            shape = new fabric.Triangle({ ...defaults, width: 100, height: 100, fill: options.fill || '#22c55e', ...options });
+            break;
+    }
+    if (shape) {
+        canvas.add(shape);
+        canvas.setActiveObject(shape);
+        canvas.renderAll();
+        saveHistory();
+    }
+}
+
+function addAssetSvg(assetId) {
+    const asset = ASSETS_SVG.find(a => a.id === assetId);
+    if (!asset) return;
+    fabric.loadSVGFromString(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="80" height="80" fill="#22c55e"><path d="${asset.svg}"/></svg>`, (objects, options) => {
+        const group = fabric.util.groupSVGElements(objects, options);
+        group.set({ left: canvas.width/2, top: canvas.height/2, originX: 'center', originY: 'center', name: asset.name });
+        canvas.add(group);
+        canvas.setActiveObject(group);
+        canvas.renderAll();
+        saveHistory();
+    });
+}
+
+function addImage(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        fabric.Image.fromURL(e.target.result, (img) => {
+            const scale = Math.min(canvas.width * 0.6 / img.width, canvas.height * 0.6 / img.height, 1);
+            img.set({ left: canvas.width/2, top: canvas.height/2, originX: 'center', originY: 'center', scaleX: scale, scaleY: scale });
+            canvas.add(img);
+            canvas.setActiveObject(img);
+            canvas.renderAll();
+            saveHistory();
+        });
+    };
+    reader.readAsDataURL(file);
+}
+
+function deleteSelected() {
+    const active = canvas.getActiveObject();
+    if (active) {
+        if (active.type === 'activeSelection') { active.forEachObject(obj => canvas.remove(obj)); canvas.discardActiveObject(); }
+        else { canvas.remove(active); }
+        canvas.renderAll();
+        saveHistory();
+    }
+}
+
+function duplicateSelected() {
+    const active = canvas.getActiveObject();
+    if (!active) return;
+    active.clone((cloned) => {
+        cloned.set({ left: active.left + 20, top: active.top + 20 });
+        canvas.add(cloned);
+        canvas.setActiveObject(cloned);
+        canvas.renderAll();
+        saveHistory();
+    });
+}
+
+function bringForward() { const a = canvas.getActiveObject(); if (a) { canvas.bringForward(a); canvas.renderAll(); saveHistory(); } }
+function sendBackward() { const a = canvas.getActiveObject(); if (a) { canvas.sendBackwards(a); canvas.renderAll(); saveHistory(); } }
+function lockObject() { const a = canvas.getActiveObject(); if (a) { a.set({ lockMovementX: true, lockMovementY: true, lockScalingX: true, lockScalingY: true, lockRotation: true }); canvas.renderAll(); saveHistory(); } }
+function unlockObject() { const a = canvas.getActiveObject(); if (a) { a.set({ lockMovementX: false, lockMovementY: false, lockScalingX: false, lockScalingY: false, lockRotation: false }); canvas.renderAll(); saveHistory(); } }
+function groupObjects() { const a = canvas.getActiveObject(); if (a && a.type === 'activeSelection') { a.toGroup(); canvas.renderAll(); saveHistory(); } }
+function ungroupObjects() { const a = canvas.getActiveObject(); if (a && a.type === 'group') { a.toActiveSelection(); canvas.renderAll(); saveHistory(); } }
+
+function exportPNG() {
+    // Temporarily hide guides
+    const wasVisible = guidesVisible;
+    if(wasVisible) hideGuides();
+
+    const dataURL = canvas.toDataURL({ format: 'png', multiplier: 2, quality: 1 });
+    downloadFile(dataURL, 'cannabispack-design.png');
+    showNotification('PNG exported!');
+
+    if(wasVisible) renderGuides();
+}
+
+function exportSVG() {
+    const wasVisible = guidesVisible;
+    if(wasVisible) hideGuides();
+
+    const svg = canvas.toSVG();
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    downloadFile(URL.createObjectURL(blob), 'cannabispack-design.svg');
+    showNotification('SVG exported!');
+
+    if(wasVisible) renderGuides();
+}
+
+function exportJSON() {
+    const json = JSON.stringify(canvas.toJSON(['id', 'name']), null, 2);
+    downloadFile(URL.createObjectURL(new Blob([json], { type: 'application/json' })), 'cannabispack-design.json');
+    showNotification('JSON saved!');
+}
+
+function importJSON() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            try {
+                canvas.loadFromJSON(JSON.parse(ev.target.result), () => { canvas.renderAll(); saveHistory(); showNotification('Imported!'); });
+            } catch (err) { showNotification('Invalid JSON'); }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+}
+
+function downloadFile(url, filename) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+// ==================== UI UPDATES ====================
+function onObjectSelected(e) { selectedObject = e.selected[0] || canvas.getActiveObject(); updateProperties(); updateLayerPanel(); }
+function onSelectionCleared() { selectedObject = null; updateProperties(); updateLayerPanel(); }
+
+function updateProperties() {
+    const panel = document.getElementById('propertiesPanel');
+    if (!selectedObject) {
+        panel.innerHTML = '<div class="p-4 text-center"><p class="text-xs text-gray-600">Select element to edit</p></div>';
+        return;
+    }
+    const obj = selectedObject;
+    let html = `
+        <div class="px-3 pb-2 border-b border-gray-800">
+            <h4 class="text-xs font-semibold text-gray-500 uppercase mb-2">Transform</h4>
+            <div class="grid grid-cols-2 gap-1.5 mb-1.5">
+                <div><label class="text-xs text-gray-600">X</label><input type="number" class="prop-input" id="propX" value="${Math.round(obj.left||0)}"></div>
+                <div><label class="text-xs text-gray-600">Y</label><input type="number" class="prop-input" id="propY" value="${Math.round(obj.top||0)}"></div>
+                <div><label class="text-xs text-gray-600">W</label><input type="number" class="prop-input" id="propW" value="${Math.round((obj.width||0)*(obj.scaleX||1))}"></div>
+                <div><label class="text-xs text-gray-600">H</label><input type="number" class="prop-input" id="propH" value="${Math.round((obj.height||0)*(obj.scaleY||1))}"></div>
+            </div>
+            <div class="mb-1.5">
+                <label class="text-xs text-gray-600">Rotation: ${Math.round(obj.angle||0)}°</label>
+                <input type="range" class="range-slider" id="propAngle" min="-180" max="180" value="${Math.round(obj.angle||0)}">
+            </div>
+            <div>
+                <label class="text-xs text-gray-600">Opacity: ${Math.round((obj.opacity||1)*100)}%</label>
+                <input type="range" class="range-slider" id="propOpacity" min="0" max="1" step="0.01" value="${obj.opacity||1}">
+            </div>
+        </div>`;
+    if (obj.fill && typeof obj.fill === 'string') {
+        html += `<div class="px-3 pb-2 border-b border-gray-800"><h4 class="text-xs font-semibold text-gray-500 uppercase mb-1.5">Fill</h4><div class="flex items-center gap-1.5"><input type="color" id="propFill" value="${obj.fill}" class="w-7 h-7 rounded cursor-pointer border-0 bg-transparent"><input type="text" id="propFillText" value="${obj.fill}" class="prop-input flex-1 text-xs"></div></div>`;
+    }
+    if (obj.type === 'i-text' || obj.type === 'text') {
+        html += `<div class="px-3 pb-2 border-b border-gray-800"><h4 class="text-xs font-semibold text-gray-500 uppercase mb-1.5">Typography</h4>
+            <select id="propFontFamily" class="prop-input mb-1.5 text-xs">${['Inter','Playfair Display','Bebas Neue','Montserrat','Pacifico','Permanent Marker','Roboto'].map(f=>`<option value="${f}" ${obj.fontFamily===f?'selected':''}>${f}</option>`).join('')}</select>
+            <div class="grid grid-cols-2 gap-1.5 mb-1.5">
+                <div><label class="text-xs text-gray-600">Size</label><input type="number" id="propFontSize" value="${obj.fontSize||20}" class="prop-input text-xs"></div>
+                <div><label class="text-xs text-gray-600">Weight</label><select id="propFontWeight" class="prop-input text-xs"><option value="normal" ${obj.fontWeight==='normal'?'selected':''}>Normal</option><option value="bold" ${obj.fontWeight==='bold'?'selected':''}>Bold</option><option value="800" ${obj.fontWeight==='800'?'selected':''}>Extra Bold</option></select></div>
+            </div>
+            <div class="flex gap-0.5 mb-1.5">
+                <button onclick="setTextAlign('left')" class="tool flex-1 ${obj.textAlign==='left'?'active':''}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg></button>
+                <button onclick="setTextAlign('center')" class="tool flex-1 ${obj.textAlign==='center'?'active':''}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></button>
+                <button onclick="setTextAlign('right')" class="tool flex-1 ${obj.textAlign==='right'?'active':''}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="6" y1="18" x2="21" y2="18"/></svg></button>
+            </div></div>`;
+    }
+    if (obj.type === 'rect') {
+        html += `<div class="px-3 pb-2 border-b border-gray-800"><h4 class="text-xs font-semibold text-gray-500 uppercase mb-1.5">Radius</h4><div><label class="text-xs text-gray-600">${obj.rx||0}px</label><input type="range" class="range-slider" id="propRadius" min="0" max="100" value="${obj.rx||0}"></div></div>`;
+    }
+    html += `<div class="px-3 pt-2 pb-3"><div class="grid grid-cols-2 gap-1.5 mb-1.5">
+        <button onclick="duplicateSelected()" class="btn-ghost justify-center text-xs">Copy</button>
+        <button onclick="deleteSelected()" class="btn-ghost justify-center text-xs text-red-400">Delete</button></div>
+        <div class="grid grid-cols-3 gap-1"><button onclick="bringForward()" class="btn-ghost justify-center text-xs">↑ Up</button><button onclick="sendBackward()" class="btn-ghost justify-center text-xs">↓ Down</button>
+        <button onclick="${obj.lockMovementX?'unlockObject()':'lockObject()'}" class="btn-ghost justify-center text-xs">${obj.lockMovementX?'Unlock':'Lock'}</button></div></div>`;
+    panel.innerHTML = html;
+    bindPropertyEvents();
+}
+
+function bindPropertyEvents() {
+    const bind = (id, prop, transform) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', (e) => {
+            let val = e.target.value;
+            if (transform) val = transform(val);
+            selectedObject.set(prop, val);
+            canvas.renderAll();
+        });
+        el.addEventListener('change', () => saveHistory());
+    };
+    bind('propX', 'left', v => parseInt(v) || 0);
+    bind('propY', 'top', v => parseInt(v) || 0);
+    bind('propW', 'scaleX', v => (parseInt(v) || 100) / (selectedObject.width || 1));
+    bind('propH', 'scaleY', v => (parseInt(v) || 100) / (selectedObject.height || 1));
+    bind('propAngle', 'angle', v => parseInt(v) || 0);
+    bind('propOpacity', 'opacity', v => parseFloat(v) || 0);
+    bind('propFill', 'fill', v => v);
+    bind('propFillText', 'fill', v => v);
+    bind('propFontSize', 'fontSize', v => parseInt(v) || 12);
+    bind('propFontFamily', 'fontFamily', v => v);
+    bind('propFontWeight', 'fontWeight', v => v);
+    bind('propRadius', 'rx', v => parseInt(v) || 0);
+    bind('propRadius', 'ry', v => parseInt(v) || 0);
+}
+
+function setTextAlign(align) {
+    if (selectedObject && (selectedObject.type === 'i-text' || selectedObject.type === 'text')) {
+        selectedObject.set('textAlign', align);
+        canvas.renderAll();
+        saveHistory();
+        updateProperties();
+    }
+}
+
+function updateLayerPanel() {
+    const list = document.getElementById('layerList');
+    const objects = canvas.getObjects().filter(o => !o.excludeFromExport);
+    let html = '';
+    for (let i = objects.length - 1; i >= 0; i--) {
+        const obj = objects[i];
+        const isActive = obj === selectedObject;
+        const icon = obj.type === 'i-text' || obj.type === 'text' ? '📝' : obj.type === 'rect' ? '⬜' : obj.type === 'circle' ? '' : obj.type === 'triangle' ? '' : '🖼';
+        html += `<div class="layer-item ${isActive ? 'selected' : ''}" onclick="selectLayer(${canvas.getObjects().indexOf(obj)})"><span class="text-xs">${icon}</span><span class="flex-1 truncate">${obj.name || obj.type}</span><button onclick="event.stopPropagation(); toggleLayerVisibility(${canvas.getObjects().indexOf(obj)})" class="text-xs opacity-40 hover:opacity-100 px-1">${obj.visible === false ? '🗨' : '👁'}</button></div>`;
+    }
+    if (objects.length === 0) html = '<div class="p-4 text-center text-gray-600 text-xs">No layers yet</div>';
+    list.innerHTML = html;
+    document.getElementById('layerCount').textContent = objects.length;
+}
+
+function selectLayer(i) { const obj = canvas.getObjects()[i]; if (obj) { canvas.setActiveObject(obj); canvas.renderAll(); } }
+function toggleLayerVisibility(i) { const obj = canvas.getObjects()[i]; if (obj) { obj.set('visible', obj.visible === false); canvas.renderAll(); saveHistory(); } }
+function setBg(color) { canvas.setBackgroundColor(color, canvas.renderAll.bind(canvas)); saveHistory(); }
+
+function updateUI() {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === activeTab));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('hidden', p.dataset.panel !== activeTab));
+}
+
+// ==================== RENDER ====================
+function renderUI() {
+    renderTemplates();
+    renderBackgrounds();
+    renderAssets();
+    renderAiMoods();
+    renderBrands();
+    updateUI();
+}
+
+function renderTemplates() {
+    const grid = document.getElementById('templateGrid');
+    const filtered = activeCategory === 'all' ? TEMPLATES : TEMPLATES.filter(t => t.category === activeCategory);
+    grid.innerHTML = filtered.map(t => `
+        <div class="template-card" onclick="loadTemplate(TEMPLATES.find(x=>x.id==='${t.id}'))">
+            <div class="h-20 w-full flex items-center justify-center" style="background: ${getTemplatePreview(t)}">
+                <span class="text-xs font-medium px-2 text-center leading-tight ${getTemplateTextColor(t)}">${t.name}</span>
+            </div>
+            <div class="px-2 py-1.5 bg-gray-800/50"><p class="text-xs font-medium text-gray-300 truncate">${t.name}</p></div>
+        </div>`).join('');
+}
+
+function getTemplatePreview(t) {
+    if (t.json && t.json.objects) {
+        const bg = t.json.objects.find(o => o.type === 'rect' && o.left === 0 && o.top === 0 && o.width > 100);
+        return bg ? bg.fill : '#1a1a2e';
+    }
+    return '#1a1a2e';
+}
+function getTemplateTextColor(t) {
+    const bg = getTemplatePreview(t);
+    return ['#ffffff','#f0fdf4','#fce7f3','#fef3c7'].includes(bg) ? 'text-gray-800' : 'text-gray-300';
+}
+
+function renderBackgrounds() {
+    const grid = document.getElementById('backgroundGrid');
+    if (!grid) return;
+    grid.innerHTML = BACKGROUND_PRESETS.map(bg => `
+        <div class="bg-card" onclick="applyBackgroundPreset('${bg.id}')">
+            <div class="bg-swatch" style="background-image:url('${backgroundSvgDataUrl(bg)}')"></div>
+            <div class="px-2 py-2">
+                <p class="text-xs font-semibold text-gray-200 truncate">${bg.name}</p>
+                <p class="text-[10px] text-gray-500 uppercase tracking-wide">${bg.pattern}</p>
+            </div>
+        </div>`).join('');
+}
+
+function renderAiMoods() {
+    const grid = document.getElementById('aiMoodGrid');
+    if (!grid) return;
+    grid.innerHTML = AI_MOODS.map(mood => `
+        <button class="bg-card text-left" onclick="document.getElementById('aiPrompt').value='${mood.prompt.replace(/'/g, "\\'")}'; applyBackgroundPreset('${mood.preset}')">
+            <div class="p-3 text-xs text-gray-300 leading-snug">${mood.prompt}</div>
+        </button>`).join('');
+}
+
+function backgroundSvgDataUrl(bg) {
+    const [c1, c2, c3] = bg.colors;
+    const accent = bg.accent || '#ffffff';
+    const motifs = {
+        leaves: `<path d="M75 18c-22 8-36 26-40 50 23-4 42-18 50-40 6 18 18 32 34 41 4-23-4-43-27-57-5 20-5 38-1 55-11-18-19-34-16-49z" fill="${accent}" opacity=".34"/><path d="M230 54c-18 7-30 21-34 40 19-3 34-15 42-32 3 16 12 28 27 36 3-20-6-38-25-48-3 16-4 31-1 45-8-14-13-27-9-41z" fill="${accent}" opacity=".22"/>`,
+        diagonal: `<path d="M-40 110L110 -40h45L5 110zM95 150L310 -65h45L140 150z" fill="${accent}" opacity=".24"/>`,
+        orbits: `<circle cx="90" cy="60" r="42" fill="none" stroke="${accent}" stroke-width="3" opacity=".45"/><circle cx="225" cy="88" r="70" fill="none" stroke="${accent}" stroke-width="2" opacity=".25"/><circle cx="188" cy="38" r="7" fill="${accent}" opacity=".7"/>`,
+        burst: `<path d="M150 75L170 0l8 76 64-40-47 58 76 7-75 21 40 64-58-47-8 76-20-75-64 40 47-58-76-8 75-20-40-65z" fill="${accent}" opacity=".28"/>`,
+        grid: `<path d="M0 30h300M0 60h300M0 90h300M0 120h300M30 0v150M60 0v150M90 0v150M120 0v150M150 0v150M180 0v150M210 0v150M240 0v150M270 0v150" stroke="${accent}" stroke-width="1" opacity=".22"/>`,
+        seal: `<circle cx="150" cy="75" r="42" fill="none" stroke="${accent}" stroke-width="5" opacity=".42"/><path d="M150 28l9 28 29-1-24 17 10 27-24-16-23 17 8-28-23-17 29 1z" fill="${accent}" opacity=".5"/>`
+    };
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150" viewBox="0 0 300 150"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${c1}"/><stop offset=".55" stop-color="${c2}"/><stop offset="1" stop-color="${c3}"/></linearGradient></defs><rect width="300" height="150" fill="url(#g)"/>${motifs[bg.pattern] || motifs.leaves}</svg>`;
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
+function applyBackgroundPreset(id) {
+    const bg = BACKGROUND_PRESETS.find(item => item.id === id);
+    if (!bg) return;
+    fabric.Image.fromURL(backgroundSvgDataUrl(bg), img => {
+        img.set({ left: 0, top: 0, scaleX: canvas.width / img.width, scaleY: canvas.height / img.height, selectable: false, evented: false, name: `${bg.name} Background` });
+        canvas.getObjects().filter(o => {
+            const scaledWidth = (o.width || 0) * (o.scaleX || 1);
+            const scaledHeight = (o.height || 0) * (o.scaleY || 1);
+            return (o.name && o.name.includes('Background')) || (o.type === 'rect' && o.left === 0 && o.top === 0 && scaledWidth >= canvas.width * 0.9 && scaledHeight >= canvas.height * 0.9);
+        }).forEach(o => canvas.remove(o));
+        canvas.add(img);
+        canvas.sendToBack(img);
+        canvas.renderAll();
+        saveHistory();
+        updateLayerPanel();
+        showNotification(`Applied background: ${bg.name}`);
+    }, { crossOrigin: 'anonymous' });
+}
+
+function generateAIBackground() {
+    const prompt = (document.getElementById('aiPrompt').value || '').toLowerCase();
+    let preset = 'hybrid-1';
+    if (prompt.includes('purple') || prompt.includes('cosmic') || prompt.includes('galaxy')) preset = 'indica-1';
+    if (prompt.includes('gold') || prompt.includes('luxury') || prompt.includes('foil')) preset = 'luxury-1';
+    if (prompt.includes('medical') || prompt.includes('clean') || prompt.includes('blue')) preset = 'medical-1';
+    if (prompt.includes('lime') || prompt.includes('bright') || prompt.includes('sativa')) preset = 'sativa-1';
+    applyBackgroundPreset(preset);
+    showNotification('AI background generated for demo');
+}
+
+function renderAssets() {
+    const grid = document.getElementById('assetGrid');
+    grid.innerHTML = ASSETS_SVG.map(a => `
+        <div class="asset-card" onclick="addAssetSvg('${a.id}')">
+            <div class="w-10 h-10 flex items-center justify-center mb-1"><svg viewBox="0 0 24 24" class="w-7 h-7 text-green-500"><path d="${a.svg}" fill="currentColor"/></svg></div>
+            <span class="text-xs text-gray-400 text-center leading-tight">${a.name}</span>
+        </div>`).join('');
+}
+
+function renderBrands() {
+    const list = document.getElementById('brandList');
+    list.innerHTML = BRAND_KITS.map(b => `
+        <div class="brand-card" onclick="applyBrandKit('${b.id}')">
+            <div class="flex items-center justify-between mb-2"><span class="text-sm font-medium text-gray-200">${b.name}</span></div>
+            <div class="flex gap-1 mb-2">${b.colors.map(c => `<div class="w-5 h-5 rounded-full" style="background:${c}; border: 1px solid rgba(255,255,255,0.1);"></div>`).join('')}</div>
+            <div class="text-xs text-gray-500">${b.fonts.join(' • ')}</div>
+        </div>`).join('');
+}
+
+function renderSizes() {
+    const grid = document.getElementById('sizesGrid');
+    const cat = UPRINTING_SIZES[currentProduct];
+    
+    grid.innerHTML = `
+        <div class="config-section mb-3">
+            <div class="flex items-center justify-between mb-2">
+                <h4 class="text-sm font-semibold text-green-400">${cat.name}</h4>
+                <span class="text-xs text-gray-500">${cat.sizes.length} sizes</span>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-1.5 max-h-[calc(100vh-380px)] overflow-y-auto pr-1">
+            ${cat.sizes.map(s => `
+                <div class="size-card ${currentSize && currentSize.id === s.id ? 'active' : ''}" onclick="setSize(UPRINTING_SIZES['${currentProduct}'].sizes[${cat.sizes.indexOf(s)}])">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 border border-gray-700 rounded flex items-center justify-center text-xs bg-gray-800/50 flex-shrink-0"></div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs font-medium text-gray-200 truncate">${s.name}</div>
+                            <div class="text-xs text-gray-500">${s.w}×${s.h}px</div>
+                        </div>
+                    </div>
+                </div>`).join('')}
+        </div>`;
+}
+
+function applyBrandKit(brandId) {
+    const brand = BRAND_KITS.find(b => b.id === brandId);
+    if (!brand) return;
+    if (selectedObject) {
+        if (selectedObject.fill && typeof selectedObject.fill === 'string') selectedObject.set('fill', brand.colors[0]);
+        if (selectedObject.type === 'i-text' || selectedObject.type === 'text') selectedObject.set('fontFamily', brand.fonts[0]);
+        canvas.renderAll();
+        saveHistory();
+    } else {
+        canvas.setBackgroundColor(brand.colors[2] || '#ffffff', canvas.renderAll.bind(canvas));
+        saveHistory();
+    }
+    showNotification(`Applied: ${brand.name}`);
+}
+
+function showNotification(msg) {
+    const existing = document.querySelector('.notification');
+    if (existing) existing.remove();
+    const el = document.createElement('div');
+    el.className = 'notification';
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2500);
+}
+
+function openUPrintingDesigner() {
+    const url = UPRINTING_DESIGNER_URLS[currentProduct] || UPRINTING_DESIGNER_URLS['roll-stickers'];
+    window.open(url, '_blank', 'noopener,noreferrer');
+    showNotification('Opened UPrinting designer reference');
+}
+
+function openAdminModal() {
+    document.getElementById('adminCompanyName').value = appConfig.companyName;
+    document.getElementById('adminPrimaryColor').value = appConfig.primaryColor;
+    document.querySelectorAll('#modal-admin [data-feature]').forEach(input => {
+        input.checked = appConfig.features[input.dataset.feature] !== false;
+    });
+    document.getElementById('modal-admin').classList.add('active');
+}
+
+function saveAdminConfig() {
+    appConfig.companyName = document.getElementById('adminCompanyName').value || 'CannabisPack';
+    appConfig.primaryColor = document.getElementById('adminPrimaryColor').value || '#22c55e';
+    document.querySelectorAll('#modal-admin [data-feature]').forEach(input => {
+        appConfig.features[input.dataset.feature] = input.checked;
+    });
+    document.getElementById('appNameDisplay').innerHTML = `${appConfig.companyName} <span class="text-green-500">Pro</span>`;
+    document.querySelectorAll('.tab').forEach(tab => {
+        const feature = tab.dataset.tab;
+        tab.style.display = appConfig.features[feature] === false ? 'none' : '';
+    });
+    document.documentElement.style.setProperty('--client-primary', appConfig.primaryColor);
+    closeModal('modal-admin');
+    showNotification('White-label configuration saved');
+}
+
+function open3DPreview() {
+    document.getElementById('modal-3d').classList.add('active');
+    setTimeout(init3DPreview, 50);
+}
+
+function close3DPreview() {
+    closeModal('modal-3d');
+    if (preview3d.animationId) cancelAnimationFrame(preview3d.animationId);
+    preview3d.animationId = null;
+}
+
+function setPreviewPackage(type) {
+    preview3d.package = type;
+    document.querySelectorAll('[data-package]').forEach(btn => btn.classList.toggle('active', btn.dataset.package === type));
+    refresh3DPreview();
+}
+
+function init3DPreview() {
+    const previewCanvas = document.getElementById('threePreview');
+    if (!previewCanvas || !window.THREE) return;
+    const width = previewCanvas.clientWidth || 720;
+    const height = previewCanvas.clientHeight || 440;
+    if (!preview3d.renderer) {
+        preview3d.renderer = new THREE.WebGLRenderer({ canvas: previewCanvas, antialias: true, preserveDrawingBuffer: true, alpha: true });
+        preview3d.scene = new THREE.Scene();
+        preview3d.camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
+        preview3d.camera.position.set(0, 0.45, 5.2);
+        preview3d.light = new THREE.DirectionalLight(0xffffff, 1.2);
+        preview3d.light.position.set(3, 5, 4);
+        preview3d.scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+        preview3d.scene.add(preview3d.light);
+        previewCanvas.addEventListener('pointerdown', e => { preview3d.dragging = true; preview3d.lastX = e.clientX; previewCanvas.setPointerCapture(e.pointerId); });
+        previewCanvas.addEventListener('pointermove', e => {
+            if (!preview3d.dragging || !preview3d.object) return;
+            const delta = e.clientX - preview3d.lastX;
+            preview3d.object.rotation.y += delta * 0.012;
+            preview3d.velocity = delta * 0.0018;
+            preview3d.lastX = e.clientX;
+        });
+        previewCanvas.addEventListener('pointerup', () => { preview3d.dragging = false; });
+    }
+    preview3d.renderer.setSize(width, height, false);
+    preview3d.camera.aspect = width / height;
+    preview3d.camera.updateProjectionMatrix();
+    refresh3DPreview();
+    animate3DPreview();
+}
+
+function refresh3DPreview() {
+    if (!preview3d.scene || !canvas) return;
+    if (preview3d.object) {
+        preview3d.scene.remove(preview3d.object);
+        preview3d.object.traverse?.(child => {
+            if (child.geometry) child.geometry.dispose();
+            if (child.material) child.material.dispose();
+        });
+    }
+    const textureCanvas = document.createElement('canvas');
+    const sourceDataUrl = canvas.toDataURL({ format: 'png', multiplier: 1, quality: 1 });
+    const texture = new THREE.TextureLoader().load(sourceDataUrl, () => {
+        texture.needsUpdate = true;
+        preview3d.renderer.render(preview3d.scene, preview3d.camera);
+    });
+    texture.colorSpace = THREE.SRGBColorSpace;
+    preview3d.texture = texture;
+    const finish = document.getElementById('finishSelect')?.value || 'Glossy';
+    const roughness = finish === 'Matte' ? 0.82 : finish === 'Soft Touch' ? 0.55 : 0.25;
+    const labelMaterial = new THREE.MeshStandardMaterial({ map: texture, roughness, metalness: 0.04 });
+    const darkMaterial = new THREE.MeshStandardMaterial({ color: 0x0c0f14, roughness: 0.45, metalness: 0.08 });
+    const group = new THREE.Group();
+    if (preview3d.package === 'mylar') {
+        const pouch = new THREE.Mesh(new THREE.BoxGeometry(2.35, 3.2, 0.32), labelMaterial);
+        const edge = new THREE.Mesh(new THREE.BoxGeometry(2.52, 3.38, 0.22), darkMaterial);
+        edge.position.z = -0.1;
+        group.add(edge, pouch);
+    } else if (preview3d.package === 'tube') {
+        const body = new THREE.Mesh(new THREE.CylinderGeometry(0.78, 0.78, 3.2, 64, 1, true), labelMaterial);
+        const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.82, 0.82, 0.42, 64), darkMaterial);
+        cap.position.y = 1.8;
+        group.add(body, cap);
+    } else if (preview3d.package === 'dropper') {
+        const bottle = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.7, 2.15, 64, 1, true), labelMaterial);
+        const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.9, 48), darkMaterial);
+        cap.position.y = 1.5;
+        const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.42, 32, 16), darkMaterial);
+        bulb.position.y = 2.12;
+        group.add(bottle, cap, bulb);
+    } else {
+        const jar = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.05, 1.85, 96, 1, true), labelMaterial);
+        const cap = new THREE.Mesh(new THREE.CylinderGeometry(1.08, 1.08, 0.42, 96), darkMaterial);
+        cap.position.y = 1.13;
+        const base = new THREE.Mesh(new THREE.CylinderGeometry(1.02, 1.02, 0.16, 96), new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.45 }));
+        base.position.y = -1.02;
+        group.add(jar, cap, base);
+    }
+    group.rotation.x = -0.08;
+    preview3d.object = group;
+    preview3d.scene.add(group);
+}
+
+function animate3DPreview() {
+    if (!preview3d.renderer || !preview3d.scene || !preview3d.camera) return;
+    if (preview3d.object && !preview3d.dragging) {
+        preview3d.object.rotation.y += preview3d.velocity || 0.006;
+        preview3d.velocity *= 0.96;
+        if (Math.abs(preview3d.velocity) < 0.003) preview3d.velocity = 0.006;
+    }
+    preview3d.renderer.render(preview3d.scene, preview3d.camera);
+    preview3d.animationId = requestAnimationFrame(animate3DPreview);
+}
+
+function updatePreviewLight(value) {
+    if (preview3d.light) preview3d.light.intensity = Number(value);
+}
+
+function download3DMockup() {
+    if (!preview3d.renderer) return;
+    downloadFile(preview3d.renderer.domElement.toDataURL('image/png'), `cannapack-${preview3d.package}-mockup.png`);
+    showNotification('3D mockup exported');
+}
+
+// ==================== NEW FEATURES IMPLEMENTATION ====================
+
+// 1. BLEED / SAFE ZONE GUIDES
+function toggleGuides() {
+    guidesVisible = !guidesVisible;
+    document.getElementById('btn-guides').classList.toggle('active', guidesVisible);
+    if (guidesVisible) {
+        renderGuides();
+    } else {
+        hideGuides();
+    }
+}
+
+function renderGuides() {
+    hideGuides();
+    const w = canvas.width;
+    const h = canvas.height;
+    // 0.25 inch safe zone at 300 DPI = 75px
+    const safeZone = 75; 
+    
+    // Safe Zone (Green Dashed)
+    const safeRect = new fabric.Rect({
+        left: safeZone,
+        top: safeZone,
+        width: w - (safeZone * 2),
+        height: h - (safeZone * 2),
+        fill: 'transparent',
+        stroke: '#22c55e',
+        strokeWidth: 2,
+        strokeDashArray: [10, 10],
+        selectable: false,
+        evented: false,
+        excludeFromExport: true,
+        name: 'Safe Zone Guide'
+    });
+    
+    // Cut Line (Red Dashed)
+    const cutRect = new fabric.Rect({
+        left: 0,
+        top: 0,
+        width: w,
+        height: h,
+        fill: 'transparent',
+        stroke: '#ef4444',
+        strokeWidth: 2,
+        strokeDashArray: [5, 5],
+        selectable: false,
+        evented: false,
+        excludeFromExport: true,
+        name: 'Cut Line Guide'
+    });
+
+    canvas.add(safeRect);
+    canvas.add(cutRect);
+    canvas.sendToBack(safeRect);
+    canvas.sendToBack(cutRect);
+    guideObjects = [safeRect, cutRect];
+    canvas.renderAll();
+}
+
+function hideGuides() {
+    guideObjects.forEach(obj => canvas.remove(obj));
+    guideObjects = [];
+    canvas.renderAll();
+}
+
+// 2. COMPLIANCE TEXT GENERATOR
+function openComplianceModal() {
+    document.getElementById('modal-compliance').classList.add('active');
+}
+
+function addCompliance(type) {
+    let text = "";
+    let fontSize = 14;
+    
+    switch(type) {
+        case 'govt-warning':
+            text = "GOVERNMENT WARNING: This product contains cannabis, a Schedule I controlled substance under federal law.";
+            fontSize = 12;
+            break;
+        case 'children-warning':
+            text = "KEEP OUT OF REACH OF CHILDREN";
+            fontSize = 16;
+            break;
+        case 'adult-use':
+            text = "FOR ADULT USE ONLY (21+)";
+            fontSize = 16;
+            break;
+        case 'lab-tested':
+            text = "LAB TESTED & VERIFIED";
+            fontSize = 14;
+            break;
+    }
+
+    const complianceText = new fabric.IText(text, {
+        left: 20,
+        top: canvas.height - 40,
+        width: canvas.width - 40,
+        fontSize: fontSize,
+        fontFamily: 'Inter',
+        fontWeight: 'bold',
+        fill: '#ef4444',
+        textAlign: 'center',
+        originX: 'left',
+        originY: 'bottom',
+        name: 'Compliance Text'
+    });
+
+    canvas.add(complianceText);
+    canvas.setActiveObject(complianceText);
+    canvas.renderAll();
+    saveHistory();
+    closeModal('modal-compliance');
+    showNotification('Compliance text added');
+}
+
+// 3. QR CODE GENERATOR
+function openQRModal() {
+    document.getElementById('modal-qr').classList.add('active');
+}
+
+function generateQR() {
+    const url = document.getElementById('qr-input').value;
+    if (!url) return;
+
+    // Create a temporary div for QRCode.js to render into
+    const tempDiv = document.createElement('div');
+    new QRCode(tempDiv, {
+        text: url,
+        width: 128,
+        height: 128,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+
+    // Wait for image to generate
+    setTimeout(() => {
+        const img = tempDiv.querySelector('img');
+        if (img) {
+            fabric.Image.fromURL(img.src, (fabricImg) => {
+                fabricImg.set({
+                    left: canvas.width / 2,
+                    top: canvas.height / 2,
+                    originX: 'center',
+                    originY: 'center',
+                    name: 'QR Code'
+                });
+                canvas.add(fabricImg);
+                canvas.setActiveObject(fabricImg);
+                canvas.renderAll();
+                saveHistory();
+                closeModal('modal-qr');
+                showNotification('QR Code added');
+            });
+        }
+    }, 100);
+}
+
+// 4. BATCH EXPORT
+function openBatchModal() {
+    const list = document.getElementById('batch-list');
+    list.innerHTML = '';
+    
+    // Flatten all sizes
+    let allSizes = [];
+    Object.values(UPRINTING_SIZES).forEach(cat => {
+        allSizes = allSizes.concat(cat.sizes);
+    });
+
+    // Remove duplicates by ID
+    allSizes = allSizes.filter((v,i,a)=>a.findIndex(t=>(t.id===v.id))===i);
+
+    allSizes.forEach(size => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center gap-2 p-2 bg-gray-800 rounded cursor-pointer hover:bg-gray-700';
+        div.innerHTML = `
+            <input type="checkbox" class="batch-check" value="${size.id}" data-w="${size.w}" data-h="${size.h}" data-name="${size.name}">
+            <span class="text-xs flex-1">${size.name}</span>
+            <span class="text-xs text-gray-500">${size.w}x${size.h}</span>
+        `;
+        list.appendChild(div);
+    });
+
+    document.getElementById('modal-batch').classList.add('active');
+}
+
+async function executeBatchExport() {
+    const checkboxes = document.querySelectorAll('.batch-check:checked');
+    if (checkboxes.length === 0) {
+        showNotification('Select at least one size');
+        return;
+    }
+
+    showNotification(`Exporting ${checkboxes.length} sizes...`);
+    
+    // Save current state to restore later
+    const originalJson = JSON.stringify(canvas.toJSON(['id', 'name', 'selectable', 'evented', 'excludeFromExport']));
+    const originalWidth = canvas.width;
+    const originalHeight = canvas.height;
+
+    // Hide guides for export
+    const wasVisible = guidesVisible;
+    if(wasVisible) hideGuides();
+
+    for (const cb of checkboxes) {
+        const w = parseInt(cb.dataset.w);
+        const h = parseInt(cb.dataset.h);
+        const name = cb.dataset.name.replace(/[^a-zA-Z0-9]/g, '_');
+
+        // Resize canvas
+        canvas.setWidth(w);
+        canvas.setHeight(h);
+
+        // Scale objects
+        const scaleX = w / originalWidth;
+        const scaleY = h / originalHeight;
+        
+        canvas.getObjects().forEach(obj => {
+            if (!obj.excludeFromExport) {
+                obj.left = (obj.left || 0) * scaleX;
+                obj.top = (obj.top || 0) * scaleY;
+                if (obj.width) obj.set({ width: obj.width * scaleX });
+                if (obj.height) obj.set({ height: obj.height * scaleY });
+                if (obj.fontSize) obj.set({ fontSize: obj.fontSize * Math.min(scaleX, scaleY) });
+                obj.scaleX = (obj.scaleX || 1) * scaleX; // Approximate scaling for complex objects
+                obj.scaleY = (obj.scaleY || 1) * scaleY;
+            }
+        });
+
+        canvas.renderAll();
+
+        // Export
+        const dataURL = canvas.toDataURL({ format: 'png', multiplier: 2, quality: 1 });
+        downloadFile(dataURL, `design-${name}.png`);
+        
+        // Small delay to prevent browser blocking
+        await new Promise(r => setTimeout(r, 500));
+    }
+
+    // Restore original state
+    canvas.loadFromJSON(originalJson, () => {
+        canvas.setWidth(originalWidth);
+        canvas.setHeight(originalHeight);
+        canvas.renderAll();
+        if(wasVisible) renderGuides();
+        saveHistory();
+        closeModal('modal-batch');
+        showNotification('Batch export complete!');
+    });
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+}
+
+// ==================== EVENT LISTENERS ====================
+function setupEventListeners() {
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            activeTab = tab.dataset.tab;
+            updateUI();
+            if (activeTab === 'sizes') renderSizes();
+        });
+    });
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+        if (e.ctrlKey || e.metaKey) {
+            if (e.key === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); }
+            if (e.key === 'y') { e.preventDefault(); redo(); }
+            if (e.key === 's') { e.preventDefault(); exportJSON(); }
+            if (e.key === 'e') { e.preventDefault(); exportPNG(); }
+            if (e.key === 'd') { e.preventDefault(); duplicateSelected(); }
+        }
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+            if (selectedObject && selectedObject.type !== 'i-text') { e.preventDefault(); deleteSelected(); }
+        }
+        if (e.key === 'Escape') { 
+            canvas.discardActiveObject(); 
+            canvas.renderAll(); 
+            updateProperties(); 
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+        }
+    });
+    
+    document.getElementById('canvasContainer').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget || e.target.classList.contains('canvas-area')) {
+            canvas.discardActiveObject();
+            canvas.renderAll();
+            updateProperties();
+            updateLayerPanel();
+        }
+    });
+    
+    document.getElementById('fileUpload').addEventListener('change', (e) => {
+        if (e.target.files[0]) addImage(e.target.files[0]);
+    });
+}
+
+function setCategory(btn, cat) {
+    activeCategory = cat;
+    document.querySelectorAll('.category-btn').forEach(b => { b.classList.remove('active'); b.classList.add('bg-gray-800/50'); });
+    btn.classList.add('active');
+    btn.classList.remove('bg-gray-800/50');
+    renderTemplates();
+}
+
+function setProductTab(btn, product) {
+    currentProduct = product;
+    document.querySelectorAll('.product-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    renderSizes();
+}
+
+function zoomIn() { zoomLevel = Math.min(3, zoomLevel + 0.1); applyZoom(); }
+function zoomOut() { zoomLevel = Math.max(0.2, zoomLevel - 0.1); applyZoom(); }
+function applyZoom() {
+    canvas.setZoom(zoomLevel);
+    canvas.setWidth(currentSize.w * zoomLevel);
+    canvas.setHeight(currentSize.h * zoomLevel);
+    canvas.renderAll();
+    document.getElementById('zoomLevel').textContent = Math.round(zoomLevel * 100) + '%';
+}
+
+function filterAssets(query) {
+    const grid = document.getElementById('assetGrid');
+    const filtered = query ? ASSETS_SVG.filter(a => a.name.toLowerCase().includes(query.toLowerCase())) : ASSETS_SVG;
+    grid.innerHTML = filtered.map(a => `
+        <div class="asset-card" onclick="addAssetSvg('${a.id}')">
+            <div class="w-10 h-10 flex items-center justify-center mb-1"><svg viewBox="0 0 24 24" class="w-7 h-7 text-green-500"><path d="${a.svg}" fill="currentColor"/></svg></div>
+            <span class="text-xs text-gray-400 text-center leading-tight">${a.name}</span>
+        </div>`).join('');
+}
+
+// ==================== STARTUP ====================
+window.onload = () => {
+    init();
+    loadTemplate(TEMPLATES[0]);
+};
+</script>
+</body>
+</html>
