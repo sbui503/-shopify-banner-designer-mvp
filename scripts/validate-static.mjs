@@ -15,7 +15,11 @@ const required = [
   'generateAIBackground',
   'QRCode',
   'THREE',
-  'fabric'
+  'fabric',
+  'Bui Banner',
+  'createMagicLayers',
+  'openMobilePanel',
+  'assetCategoryGrid'
 ];
 
 const missing = required.filter(item => !html.includes(item));

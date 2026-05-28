@@ -99,6 +99,33 @@
         .feature-toggle input { width: 18px; height: 18px; accent-color: #22c55e; }
         #threePreview { width: 100%; height: 440px; background: radial-gradient(circle at top, #243047, #06070a 62%); border-radius: 12px; cursor: grab; display: block; }
         #threePreview:active { cursor: grabbing; }
+        .logo-loader { width: 18px; height: 18px; border-radius: 6px; position: relative; background: linear-gradient(135deg, #22c55e, #38bdf8); box-shadow: 0 0 18px rgba(34,197,94,0.35); }
+        .logo-loader:before, .logo-loader:after { content: ""; position: absolute; inset: 4px; border: 2px solid rgba(255,255,255,0.85); border-radius: 4px; animation: logoPulse 2.2s infinite ease-in-out; }
+        .logo-loader:after { inset: -4px; border-color: rgba(56,189,248,0.28); animation-delay: .35s; }
+        @keyframes logoPulse { 0%, 100% { transform: rotate(0deg) scale(1); opacity: .9; } 50% { transform: rotate(135deg) scale(.72); opacity: .55; } }
+        .mobile-panel-bar { display: none; }
+        .mobile-panel-close { display: none; }
+        .asset-category-btn { padding: 6px 8px; border-radius: 7px; background: #1a1d24; border: 1px solid #2d3139; color: #94a3b8; font-size: 11px; font-weight: 600; }
+        .asset-category-btn.active { background: #22c55e; color: #020617; border-color: #22c55e; }
+        @media (max-width: 768px) {
+            body { overflow: hidden; }
+            header { height: 54px !important; gap: 8px; }
+            header > div:first-child { min-width: 0; gap: 8px; }
+            header > div:last-child { gap: 4px; }
+            #canvasLabel, header .h-4.w-px, header .btn-ghost:not([title="Admin Configuration"]) { display: none; }
+            .mobile-panel-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 8px; background: #0e1015; border-bottom: 1px solid #1e222b; }
+            .mobile-panel-bar button { min-height: 40px; border-radius: 8px; background: #1a1d24; border: 1px solid #2d3139; color: #cbd5e1; font-size: 12px; font-weight: 700; }
+            .mobile-panel-bar button.active { background: #22c55e; color: #020617; border-color: #22c55e; }
+            #leftSidebar, #rightSidebar { position: fixed; top: 54px; bottom: 0; z-index: 900; width: min(86vw, 360px) !important; transform: translateX(-105%); transition: transform .22s ease; box-shadow: 0 20px 50px rgba(0,0,0,.45); }
+            #rightSidebar { right: 0; transform: translateX(105%); }
+            body.mobile-left-open #leftSidebar { transform: translateX(0); }
+            body.mobile-right-open #rightSidebar { transform: translateX(0); }
+            .mobile-panel-close { display: flex; align-items: center; justify-content: space-between; min-height: 42px; padding: 0 10px; border-bottom: 1px solid #1e222b; background: #13161c; }
+            #canvasContainer { padding: 12px; align-items: flex-start; }
+            .modal { width: min(94vw, 420px); }
+            .modal-wide { width: 96vw; max-height: 92vh; overflow-y: auto; }
+            #threePreview { height: 320px; }
+        }
     </style>
 </head>
 <body>
@@ -108,8 +135,8 @@
     <header class="h-12 panel-header flex items-center justify-between px-3 flex-shrink-0 z-50">
         <div class="flex items-center gap-3">
             <div class="flex items-center gap-2">
-                <span class="text-lg"></span>
-                <span class="font-bold text-base tracking-tight" id="appNameDisplay">CannabisPack <span class="text-green-500">Pro</span></span>
+                <span class="logo-loader" aria-hidden="true"></span>
+                <span class="font-bold text-base tracking-tight" id="appNameDisplay">Bui Banner <span class="text-green-500">Pro</span></span>
             </div>
             <div class="h-4 w-px bg-gray-700"></div>
             <div class="flex items-center gap-0.5">
@@ -123,6 +150,7 @@
             <button onclick="openComplianceModal()" class="tool" title="Add Compliance Text">⚖️</button>
             <button onclick="openQRModal()" class="tool" title="Generate QR Code">QR</button>
             <button onclick="openBatchModal()" class="tool" title="Batch Export Sizes">📦</button>
+            <button onclick="createMagicLayers()" class="tool" title="Magic Layer Stack">ML</button>
             <button onclick="open3DPreview()" class="tool" title="360 Preview">3D</button>
             <button onclick="openAdminModal()" class="btn-ghost" title="Admin Configuration">Admin</button>
 
@@ -143,9 +171,21 @@
         </div>
     </header>
 
+    <div class="mobile-panel-bar">
+        <button data-mobile-panel="templates" onclick="openMobilePanel('left','templates')">Design</button>
+        <button data-mobile-panel="assets" onclick="openMobilePanel('left','assets')">Assets</button>
+        <button data-mobile-panel="ai" onclick="openMobilePanel('left','ai')">AI</button>
+        <button data-mobile-panel="layers" onclick="openMobilePanel('right')">Layers</button>
+        <button onclick="open3DPreview()">3D</button>
+    </div>
+
     <div class="flex-1 flex overflow-hidden">
         <!-- LEFT SIDEBAR -->
-        <aside class="w-72 panel flex flex-col flex-shrink-0">
+        <aside id="leftSidebar" class="w-72 panel flex flex-col flex-shrink-0">
+            <div class="mobile-panel-close">
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Design Panels</span>
+                <button onclick="closeMobilePanels()" class="btn-ghost">Close</button>
+            </div>
             <div class="flex panel-header tab-scroll">
                 <button class="tab active" data-tab="templates">Templates</button>
                 <button class="tab" data-tab="backgrounds">Backgrounds</button>
@@ -184,19 +224,13 @@
             <!-- Sizes Panel -->
             <div class="tab-panel flex-1 overflow-y-auto hidden" data-panel="sizes">
                 <div class="p-2 border-b border-gray-800">
-                    <p class="text-xs text-gray-500 mb-2">Select print size from UPrinting catalog</p>
+                    <p class="text-xs text-gray-500 mb-2">Select print size from the production catalog</p>
                     <div class="flex flex-wrap gap-1 mb-3">
                         <button class="product-tab active" onclick="setProductTab(this,'roll-stickers')">Roll Stickers</button>
                         <button class="product-tab" onclick="setProductTab(this,'roll-labels')">Roll Labels</button>
                         <button class="product-tab" onclick="setProductTab(this,'custom-labels')">Custom Labels</button>
                         <button class="product-tab" onclick="setProductTab(this,'custom-stickers')">Custom Stickers</button>
                     </div>
-                </div>
-                <div class="p-2">
-                    <button onclick="openUPrintingDesigner()" class="btn-config">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
-                        Open UPrinting Designer
-                    </button>
                 </div>
                 <div class="p-2 pt-0">
                     <div id="sizesGrid" class="grid grid-cols-1 gap-1.5"></div>
@@ -207,6 +241,7 @@
             <div class="tab-panel flex-1 overflow-y-auto hidden" data-panel="assets">
                 <div class="p-2">
                     <input type="text" class="prop-input mb-2 text-xs" placeholder="Search assets..." oninput="filterAssets(this.value)">
+                    <div id="assetCategoryGrid" class="flex flex-wrap gap-1.5 mb-2"></div>
                     <div id="assetGrid" class="grid grid-cols-3 gap-1.5"></div>
                 </div>
             </div>
@@ -239,7 +274,11 @@
         </main>
 
         <!-- RIGHT SIDEBAR -->
-        <aside class="w-64 panel flex flex-col flex-shrink-0">
+        <aside id="rightSidebar" class="w-64 panel flex flex-col flex-shrink-0">
+            <div class="mobile-panel-close">
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Layers & Properties</span>
+                <button onclick="closeMobilePanels()" class="btn-ghost">Close</button>
+            </div>
             <div class="panel-header px-2 py-2">
                 <div class="flex items-center gap-0.5">
                     <button onclick="addText('Heading', {fontSize: 32, fontWeight: 'bold'})" class="tool" title="Text"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></button>
@@ -344,7 +383,7 @@
         <h3 class="text-lg font-bold mb-4">Admin Configuration</h3>
         <div class="mb-4">
             <label class="text-xs text-gray-400 block mb-1">Company Name</label>
-            <input type="text" id="adminCompanyName" value="CannabisPack" class="prop-input">
+            <input type="text" id="adminCompanyName" value="Bui Banner" class="prop-input">
         </div>
         <div class="mb-4">
             <label class="text-xs text-gray-400 block mb-1">Primary Color</label>
@@ -356,7 +395,7 @@
             <label class="feature-toggle"><input type="checkbox" data-feature="backgrounds" checked> Backgrounds</label>
             <label class="feature-toggle"><input type="checkbox" data-feature="assets" checked> Assets and icons</label>
             <label class="feature-toggle"><input type="checkbox" data-feature="ai" checked> AI background generator</label>
-            <label class="feature-toggle"><input type="checkbox" data-feature="sizes" checked> UPrinting sizes</label>
+            <label class="feature-toggle"><input type="checkbox" data-feature="sizes" checked> Production size catalog</label>
             <label class="feature-toggle"><input type="checkbox" data-feature="brands" checked> Brand kits</label>
         </div>
         <div class="flex gap-2">
@@ -383,6 +422,8 @@
                     <button onclick="setPreviewPackage('mylar')" class="product-tab" data-package="mylar">Mylar</button>
                     <button onclick="setPreviewPackage('tube')" class="product-tab" data-package="tube">Tube</button>
                     <button onclick="setPreviewPackage('dropper')" class="product-tab" data-package="dropper">Dropper</button>
+                    <button onclick="setPreviewPackage('sticker')" class="product-tab" data-package="sticker">Sticker</button>
+                    <button onclick="setPreviewPackage('cart')" class="product-tab" data-package="cart">Cart</button>
                 </div>
                 <div class="config-section">
                     <label class="text-xs text-gray-400 block mb-2">Finish</label>
@@ -404,7 +445,7 @@
 
 <script>
 // ==================== DATA LAYER ====================
-const UPRINTING_SIZES = {
+const PRINT_SIZES = {
     'roll-stickers': {
         name: 'Roll Stickers',
         sizes: [
@@ -454,13 +495,6 @@ const UPRINTING_SIZES = {
     }
 };
 
-const UPRINTING_DESIGNER_URLS = {
-    'roll-stickers': 'https://editor.uprinting.com/personalization/personalize?token=c5186077e87e4bedbf2cbdf098adb30c&action=upload&page_id=110637&page_revision_id=362077&features=switch_orientation:1',
-    'roll-labels': 'https://editor.uprinting.com/personalization/personalize?token=c437fc1b9a6f4f9fa4f166ba18ddaa36&action=upload&page_id=110637&page_revision_id=362077&features=switch_orientation:1',
-    'custom-labels': 'https://editor.uprinting.com/personalization/personalize?token=1c9cad1522a94661a0fd9fbf65f366e1&action=upload&page_id=130033&page_revision_id=359824&features=switch_orientation:1',
-    'custom-stickers': 'https://editor.uprinting.com/personalization/personalize?token=1c0f937b950543988187c342f071a271&action=upload&page_id=130014&page_revision_id=359825&features=switch_orientation:1'
-};
-
 const BACKGROUND_PRESETS = [
     { id: 'hybrid-1', name: 'Hybrid Leaf Mist', colors: ['#f7fff8', '#66d39a', '#137d4f'], accent: '#0f5132', pattern: 'leaves' },
     { id: 'hybrid-2', name: 'Teal Botanical', colors: ['#f2fffc', '#55d6c2', '#135e59'], accent: '#0f766e', pattern: 'diagonal' },
@@ -485,7 +519,22 @@ const TEMPLATES = [
     { id: 't5', name: 'Psychedelic Street', category: 'label', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 432, fill: '#ff2e63' }, { type: 'rect', left: 0, top: 432, width: 576, height: 432, fill: '#08d9d6' }, { type: 'text', text: 'HERBAL', left: 288, top: 100, fontSize: 72, fontFamily: 'Bebas Neue', fill: '#ffffff', textAlign: 'center', originX: 'center' }] } },
     { id: 't6', name: 'Mylar Bag Bold', category: 'packaging', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#1a1a2e' }, { type: 'text', text: 'PREMIUM', left: 288, top: 100, fontSize: 56, fontFamily: 'Bebas Neue', fill: '#ffffff', textAlign: 'center', originX: 'center' }, { type: 'text', text: 'CANNABIS', left: 288, top: 170, fontSize: 64, fontFamily: 'Bebas Neue', fill: '#e94560', textAlign: 'center', originX: 'center' }] } },
     { id: 't7', name: 'Minimal Modern', category: 'label', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#111827' }, { type: 'text', text: 'ELEVATE', left: 288, top: 100, fontSize: 64, fontFamily: 'Montserrat', fontWeight: '800', fill: '#ffffff', textAlign: 'center', originX: 'center' }] } },
-    { id: 't8', name: 'Gummy Edibles', category: 'edibles', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#fce7f3' }, { type: 'text', text: 'GUMMY BEARS', left: 288, top: 100, fontSize: 48, fontFamily: 'Bebas Neue', fill: '#ec4899', textAlign: 'center', originX: 'center' }] } }
+    { id: 't8', name: 'Gummy Edibles', category: 'edibles', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#fce7f3' }, { type: 'text', text: 'GUMMY BEARS', left: 288, top: 100, fontSize: 48, fontFamily: 'Bebas Neue', fill: '#ec4899', textAlign: 'center', originX: 'center' }] } },
+    { id: 't9', name: 'Fruit Dose Gummies', category: 'edibles', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#fb7185' }, { type: 'rect', left: 0, top: 0, width: 576, height: 190, fill: '#fff7ed' }, { type: 'text', text: 'BERRY BURST', left: 288, top: 48, fontSize: 54, fontFamily: 'Bebas Neue', fill: '#111827', textAlign: 'center', originX: 'center' }, { type: 'text', text: '10MG EACH • 100MG THC', left: 288, top: 130, fontSize: 22, fontFamily: 'Montserrat', fontWeight: 'bold', fill: '#be123c', textAlign: 'center', originX: 'center' }, { type: 'text', text: 'HYBRID ENHANCED GUMMIES', left: 288, top: 650, fontSize: 25, fontFamily: 'Montserrat', fill: '#fff7ed', textAlign: 'center', originX: 'center', fontWeight: '700' }] } },
+    { id: 't10', name: 'Mint Tin Clean', category: 'edibles', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#ecfeff' }, { type: 'rect', left: 42, top: 58, width: 492, height: 748, fill: '#0f172a', rx: 28, ry: 28 }, { type: 'text', text: 'ROYAL MINT', left: 288, top: 130, fontSize: 58, fontFamily: 'Bebas Neue', fill: '#67e8f9', textAlign: 'center', originX: 'center' }, { type: 'text', text: 'FAST ACTING • 100MG THC', left: 288, top: 210, fontSize: 22, fontFamily: 'Montserrat', fill: '#f8fafc', textAlign: 'center', originX: 'center', fontWeight: '700' }, { type: 'text', text: '20 PIECES', left: 288, top: 680, fontSize: 28, fontFamily: 'Montserrat', fill: '#94a3b8', textAlign: 'center', originX: 'center', fontWeight: '800' }] } },
+    { id: 't11', name: 'Diamond Vape Cart', category: 'sticker', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#101827' }, { type: 'rect', left: 0, top: 350, width: 576, height: 164, fill: '#22c55e' }, { type: 'text', text: 'MELTED DIAMOND', left: 288, top: 96, fontSize: 44, fontFamily: 'Montserrat', fill: '#f8fafc', textAlign: 'center', originX: 'center', fontWeight: '900' }, { type: 'text', text: 'LIVE RESIN VAPORIZER', left: 288, top: 166, fontSize: 24, fontFamily: 'Montserrat', fill: '#86efac', textAlign: 'center', originX: 'center', fontWeight: '700' }, { type: 'text', text: '1.0G • 90% THC', left: 288, top: 407, fontSize: 35, fontFamily: 'Bebas Neue', fill: '#020617', textAlign: 'center', originX: 'center' }] } },
+    { id: 't12', name: 'Solventless Rosin', category: 'label', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#f8fafc' }, { type: 'rect', left: 0, top: 0, width: 576, height: 142, fill: '#f59e0b' }, { type: 'text', text: 'COLD CURE ROSIN', left: 288, top: 54, fontSize: 47, fontFamily: 'Bebas Neue', fill: '#111827', textAlign: 'center', originX: 'center' }, { type: 'text', text: 'PAPAYA DREAM', left: 288, top: 260, fontSize: 50, fontFamily: 'Playfair Display', fill: '#0f172a', textAlign: 'center', originX: 'center', fontWeight: 'bold' }, { type: 'text', text: '1G • SINGLE SOURCE • HYBRID', left: 288, top: 620, fontSize: 22, fontFamily: 'Montserrat', fill: '#92400e', textAlign: 'center', originX: 'center', fontWeight: '800' }] } },
+    { id: 't13', name: 'Bulk Flower Pouch', category: 'packaging', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#022c22' }, { type: 'rect', left: 44, top: 62, width: 488, height: 740, fill: '#064e3b', rx: 34, ry: 34 }, { type: 'text', text: 'SUN GROWN FLOWER', left: 288, top: 120, fontSize: 44, fontFamily: 'Bebas Neue', fill: '#bbf7d0', textAlign: 'center', originX: 'center' }, { type: 'text', text: 'LEMON CHERRY', left: 288, top: 330, fontSize: 56, fontFamily: 'Montserrat', fill: '#fef3c7', textAlign: 'center', originX: 'center', fontWeight: '900' }, { type: 'text', text: '28G • HYBRID • 29% THC', left: 288, top: 670, fontSize: 25, fontFamily: 'Montserrat', fill: '#86efac', textAlign: 'center', originX: 'center', fontWeight: '800' }] } },
+    { id: 't14', name: 'Tablet Dose Medical', category: 'label', json: { objects: [{ type: 'rect', left: 0, top: 0, width: 576, height: 864, fill: '#eff6ff' }, { type: 'rect', left: 0, top: 0, width: 82, height: 864, fill: '#2563eb' }, { type: 'text', text: 'DOSE TABLETS', left: 330, top: 92, fontSize: 46, fontFamily: 'Inter', fill: '#0f172a', textAlign: 'center', originX: 'center', fontWeight: '900' }, { type: 'text', text: '25MG THC • 2MG CBD', left: 330, top: 178, fontSize: 25, fontFamily: 'Montserrat', fill: '#1d4ed8', textAlign: 'center', originX: 'center', fontWeight: '800' }, { type: 'text', text: 'KEEP OUT OF REACH OF CHILDREN', left: 330, top: 690, fontSize: 18, fontFamily: 'Montserrat', fill: '#334155', textAlign: 'center', originX: 'center', fontWeight: '700' }] } }
+];
+
+const ASSET_CATEGORIES = [
+    { id: 'all', label: 'All' },
+    { id: 'product', label: 'Product' },
+    { id: 'dose', label: 'Dose' },
+    { id: 'legal', label: 'Legal' },
+    { id: 'badges', label: 'Badges' },
+    { id: 'decor', label: 'Decor' }
 ];
 
 const ASSETS_SVG = [
@@ -508,7 +557,19 @@ const ASSETS_SVG = [
     { id: 'a17', name: 'Lightning', svg: 'M7,2v11h3v9l7-12h-4l4-8H7z' },
     { id: 'a18', name: 'Ribbon', svg: 'M12,2L1,7l11,5l9-4.09V17h2V7L12,2z M5,13.18v4L12,20l7-2.82v-4L12,17L5,13.18z' },
     { id: 'a19', name: 'Diamond', svg: 'M19,3H5L2,9l10,13L22,9L19,3z M10,17.5L5.5,9.5h13L14,17.5H10z' },
-    { id: 'a20', name: 'Badge', svg: 'M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z' }
+    { id: 'a20', name: 'Badge', category: 'badges', svg: 'M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z' },
+    { id: 'a21', name: 'Gummy Cube', category: 'product', svg: 'M5,7l7-4l7,4v10l-7,4l-7-4V7z M7,8.2v7.6l5,2.9l5-2.9V8.2l-5-2.9L7,8.2z M9,10h6v2H9v-2z' },
+    { id: 'a22', name: 'Vape Cartridge', category: 'product', svg: 'M9,2h6v4h2v13c0,1.1-.9,2-2,2H9c-1.1,0-2-.9-2-2V6h2V2z M10,8v10h4V8h-4z' },
+    { id: 'a23', name: 'Disposable Pen', category: 'product', svg: 'M8,3h8c.55,0,1,.45,1,1v16c0,.55-.45,1-1,1H8c-.55,0-1-.45-1-1V4c0-.55,.45-1,1-1z M10,6v12h4V6h-4z' },
+    { id: 'a24', name: 'Pre Roll', category: 'product', svg: 'M4,17L17,4l3,3L7,20H4v-3z M15,6L6,15l3,3l9-9l-3-3z' },
+    { id: 'a25', name: 'Rosin Jar', category: 'product', svg: 'M6,5h12v3H6V5z M7,8h10l1,11H6L7,8z M9,11h6v5H9v-5z' },
+    { id: 'a26', name: 'Mylar Pouch', category: 'product', svg: 'M6,3h12l1,18H5L6,3z M8,6h8v3H8V6z M8,12h8v6H8v-6z' },
+    { id: 'a27', name: 'THC Badge', category: 'dose', svg: 'M12,2l3,3h4v4l3,3l-3,3v4h-4l-3,3l-3-3H5v-4l-3-3l3-3V5h4l3-3z M8,11h8v2H8v-2z M11,7h2v10h-2V7z' },
+    { id: 'a28', name: 'CBD Ratio', category: 'dose', svg: 'M6,5h12v14H6V5z M8,8h3v3H8V8z M13,8h3v3h-3V8z M8,13h8v2H8v-2z' },
+    { id: 'a29', name: 'Sale Tag', category: 'badges', svg: 'M3,12l9-9h8v8l-9,9L3,12z M16,6.5A1.5,1.5 0,1 0,16,9.5A1.5,1.5 0,0 0,16,6.5z' },
+    { id: 'a30', name: 'Lab Result', category: 'legal', svg: 'M9,2h6v2l-1,2v4l5,8c.8,1.3-.1,3-1.6,3H6.6c-1.5,0-2.4-1.7-1.6-3l5-8V6L9,4V2z M9,16h6l-2-4h-2l-2,4z' },
+    { id: 'a31', name: 'Child Lock', category: 'legal', svg: 'M7,10V8c0-2.8,2.2-5,5-5s5,2.2,5,5v2h1v11H6V10h1z M9,10h6V8c0-1.7-1.3-3-3-3S9,6.3,9,8v2z' },
+    { id: 'a32', name: 'Terpene Drops', category: 'decor', svg: 'M8,3c-3,4-5,7-5,10a5,5 0,0 0,10,0c0-3-2-6-5-10z M16,6c-2.3,3-4,5.4-4,7.8a4,4 0,0 0,8,0c0-2.4-1.7-4.8-4-7.8z' }
 ];
 
 const BRAND_KITS = [
@@ -530,10 +591,11 @@ let selectedObject = null;
 let zoomLevel = 1;
 let activeTab = 'templates';
 let activeCategory = 'all';
+let activeAssetCategory = 'all';
 let guidesVisible = false;
 let guideObjects = [];
 let appConfig = {
-    companyName: 'CannabisPack',
+    companyName: 'Bui Banner',
     primaryColor: '#22c55e',
     features: { templates: true, backgrounds: true, sizes: true, assets: true, ai: true, brands: true }
 };
@@ -541,7 +603,7 @@ let preview3d = { renderer: null, scene: null, camera: null, object: null, light
 
 // ==================== INIT ====================
 function init() {
-    const defaultSize = UPRINTING_SIZES['roll-stickers'].sizes[4]; // 2" x 3"
+    const defaultSize = PRINT_SIZES['roll-stickers'].sizes[4]; // 2" x 3"
     canvas = new fabric.Canvas('mainCanvas', {
         width: defaultSize.w,
         height: defaultSize.h,
@@ -1033,11 +1095,36 @@ function generateAIBackground() {
 
 function renderAssets() {
     const grid = document.getElementById('assetGrid');
-    grid.innerHTML = ASSETS_SVG.map(a => `
+    const cats = document.getElementById('assetCategoryGrid');
+    if (cats) {
+        cats.innerHTML = ASSET_CATEGORIES.map(cat => `<button class="asset-category-btn ${activeAssetCategory === cat.id ? 'active' : ''}" onclick="setAssetCategory('${cat.id}')">${cat.label}</button>`).join('');
+    }
+    grid.innerHTML = getFilteredAssets().map(a => `
         <div class="asset-card" onclick="addAssetSvg('${a.id}')">
             <div class="w-10 h-10 flex items-center justify-center mb-1"><svg viewBox="0 0 24 24" class="w-7 h-7 text-green-500"><path d="${a.svg}" fill="currentColor"/></svg></div>
             <span class="text-xs text-gray-400 text-center leading-tight">${a.name}</span>
         </div>`).join('');
+}
+
+function getAssetCategory(asset) {
+    if (asset.category) return asset.category;
+    if (['Warning', 'Certificate', 'QR Code', 'Shield'].includes(asset.name)) return 'legal';
+    if (['Gold Seal', 'Star', 'Heart', 'Crown', 'Ribbon', 'Diamond', 'Badge'].includes(asset.name)) return 'badges';
+    if (['Jar', 'Vape', 'Capsule', 'Flower Bud'].includes(asset.name)) return 'product';
+    return 'decor';
+}
+
+function getFilteredAssets(query = '') {
+    return ASSETS_SVG.filter(asset => {
+        const matchesCategory = activeAssetCategory === 'all' || getAssetCategory(asset) === activeAssetCategory;
+        const matchesQuery = !query || asset.name.toLowerCase().includes(query.toLowerCase());
+        return matchesCategory && matchesQuery;
+    });
+}
+
+function setAssetCategory(category) {
+    activeAssetCategory = category;
+    renderAssets();
 }
 
 function renderBrands() {
@@ -1052,7 +1139,7 @@ function renderBrands() {
 
 function renderSizes() {
     const grid = document.getElementById('sizesGrid');
-    const cat = UPRINTING_SIZES[currentProduct];
+    const cat = PRINT_SIZES[currentProduct];
     
     grid.innerHTML = `
         <div class="config-section mb-3">
@@ -1063,7 +1150,7 @@ function renderSizes() {
         </div>
         <div class="grid grid-cols-2 gap-1.5 max-h-[calc(100vh-380px)] overflow-y-auto pr-1">
             ${cat.sizes.map(s => `
-                <div class="size-card ${currentSize && currentSize.id === s.id ? 'active' : ''}" onclick="setSize(UPRINTING_SIZES['${currentProduct}'].sizes[${cat.sizes.indexOf(s)}])">
+                <div class="size-card ${currentSize && currentSize.id === s.id ? 'active' : ''}" onclick="setSize(PRINT_SIZES['${currentProduct}'].sizes[${cat.sizes.indexOf(s)}])">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 border border-gray-700 rounded flex items-center justify-center text-xs bg-gray-800/50 flex-shrink-0"></div>
                         <div class="min-w-0 flex-1">
@@ -1100,10 +1187,80 @@ function showNotification(msg) {
     setTimeout(() => el.remove(), 2500);
 }
 
-function openUPrintingDesigner() {
-    const url = UPRINTING_DESIGNER_URLS[currentProduct] || UPRINTING_DESIGNER_URLS['roll-stickers'];
-    window.open(url, '_blank', 'noopener,noreferrer');
-    showNotification('Opened UPrinting designer reference');
+function createMagicLayers() {
+    const active = canvas.getActiveObject();
+    if (!active) {
+        addText('SELECT A FLAT IMAGE OR DESIGN ELEMENT', { top: 42, fontSize: 18, fill: '#94a3b8', fontFamily: 'Montserrat', fontWeight: '700' });
+        showNotification('Select an element, then tap Magic Layer');
+        return;
+    }
+    active.clone(topClone => {
+        const center = active.getCenterPoint();
+        const shadow = new fabric.Rect({
+            left: center.x + 10,
+            top: center.y + 12,
+            width: active.getScaledWidth() + 18,
+            height: active.getScaledHeight() + 18,
+            fill: 'rgba(0,0,0,0.35)',
+            rx: 18,
+            ry: 18,
+            originX: 'center',
+            originY: 'center',
+            selectable: false,
+            evented: false,
+            name: 'Magic Layer Shadow'
+        });
+        const underbase = new fabric.Rect({
+            left: center.x,
+            top: center.y,
+            width: active.getScaledWidth() + 10,
+            height: active.getScaledHeight() + 10,
+            fill: '#ffffff',
+            rx: 14,
+            ry: 14,
+            originX: 'center',
+            originY: 'center',
+            selectable: false,
+            evented: false,
+            name: 'Magic Layer White Underbase'
+        });
+        const glow = new fabric.Rect({
+            left: center.x - 7,
+            top: center.y - 7,
+            width: active.getScaledWidth() + 8,
+            height: active.getScaledHeight() + 8,
+            fill: 'rgba(34,197,94,0.22)',
+            rx: 16,
+            ry: 16,
+            originX: 'center',
+            originY: 'center',
+            selectable: false,
+            evented: false,
+            name: 'Magic Layer Accent Glow'
+        });
+        topClone.set({ left: active.left, top: active.top, name: 'Magic Layer Top Artwork' });
+        canvas.add(shadow, glow, underbase, topClone);
+        canvas.bringToFront(topClone);
+        canvas.setActiveObject(topClone);
+        canvas.renderAll();
+        saveHistory();
+        showNotification('Magic Layer stack created');
+    });
+}
+
+function openMobilePanel(side, tabName) {
+    if (tabName) {
+        activeTab = tabName;
+        updateUI();
+    }
+    document.body.classList.toggle('mobile-left-open', side === 'left');
+    document.body.classList.toggle('mobile-right-open', side === 'right');
+    document.querySelectorAll('[data-mobile-panel]').forEach(btn => btn.classList.toggle('active', btn.dataset.mobilePanel === tabName || (side === 'right' && btn.dataset.mobilePanel === 'layers')));
+}
+
+function closeMobilePanels() {
+    document.body.classList.remove('mobile-left-open', 'mobile-right-open');
+    document.querySelectorAll('[data-mobile-panel]').forEach(btn => btn.classList.remove('active'));
 }
 
 function openAdminModal() {
@@ -1116,7 +1273,7 @@ function openAdminModal() {
 }
 
 function saveAdminConfig() {
-    appConfig.companyName = document.getElementById('adminCompanyName').value || 'CannabisPack';
+    appConfig.companyName = document.getElementById('adminCompanyName').value || 'Bui Banner';
     appConfig.primaryColor = document.getElementById('adminPrimaryColor').value || '#22c55e';
     document.querySelectorAll('#modal-admin [data-feature]').forEach(input => {
         appConfig.features[input.dataset.feature] = input.checked;
@@ -1206,6 +1363,16 @@ function refresh3DPreview() {
         const edge = new THREE.Mesh(new THREE.BoxGeometry(2.52, 3.38, 0.22), darkMaterial);
         edge.position.z = -0.1;
         group.add(edge, pouch);
+    } else if (preview3d.package === 'sticker') {
+        const plate = new THREE.Mesh(new THREE.BoxGeometry(2.75, 3.75, 0.08), labelMaterial);
+        const backing = new THREE.Mesh(new THREE.BoxGeometry(2.9, 3.9, 0.04), new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.65 }));
+        backing.position.z = -0.08;
+        group.add(backing, plate);
+    } else if (preview3d.package === 'cart') {
+        const carton = new THREE.Mesh(new THREE.BoxGeometry(1.55, 3.25, 0.95), labelMaterial);
+        const cap = new THREE.Mesh(new THREE.BoxGeometry(1.65, 0.18, 1.05), darkMaterial);
+        cap.position.y = 1.72;
+        group.add(carton, cap);
     } else if (preview3d.package === 'tube') {
         const body = new THREE.Mesh(new THREE.CylinderGeometry(0.78, 0.78, 3.2, 64, 1, true), labelMaterial);
         const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.82, 0.82, 0.42, 64), darkMaterial);
@@ -1418,7 +1585,7 @@ function openBatchModal() {
     
     // Flatten all sizes
     let allSizes = [];
-    Object.values(UPRINTING_SIZES).forEach(cat => {
+    Object.values(PRINT_SIZES).forEach(cat => {
         allSizes = allSizes.concat(cat.sizes);
     });
 
@@ -1540,6 +1707,7 @@ function setupEventListeners() {
     
     document.getElementById('canvasContainer').addEventListener('click', (e) => {
         if (e.target === e.currentTarget || e.target.classList.contains('canvas-area')) {
+            if (window.innerWidth <= 768) closeMobilePanels();
             canvas.discardActiveObject();
             canvas.renderAll();
             updateProperties();
@@ -1579,7 +1747,7 @@ function applyZoom() {
 
 function filterAssets(query) {
     const grid = document.getElementById('assetGrid');
-    const filtered = query ? ASSETS_SVG.filter(a => a.name.toLowerCase().includes(query.toLowerCase())) : ASSETS_SVG;
+    const filtered = getFilteredAssets(query);
     grid.innerHTML = filtered.map(a => `
         <div class="asset-card" onclick="addAssetSvg('${a.id}')">
             <div class="w-10 h-10 flex items-center justify-center mb-1"><svg viewBox="0 0 24 24" class="w-7 h-7 text-green-500"><path d="${a.svg}" fill="currentColor"/></svg></div>
