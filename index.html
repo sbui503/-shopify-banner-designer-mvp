@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bangers&family=Bebas+Neue&family=Fredoka:wght@500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=Luckiest+Guy&family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&family=Permanent+Marker&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Rubik+Mono+One&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #06070a; color: #e2e8f0; font-family: 'Inter', sans-serif; overflow: hidden; }
@@ -107,6 +107,11 @@
         .mobile-panel-close { display: none; }
         .asset-category-btn { padding: 6px 8px; border-radius: 7px; background: #1a1d24; border: 1px solid #2d3139; color: #94a3b8; font-size: 11px; font-weight: 600; }
         .asset-category-btn.active { background: #22c55e; color: #020617; border-color: #22c55e; }
+        .text-preset-btn { min-height: 48px; padding: 8px; border-radius: 8px; background: #10131a; border: 1px solid #242935; color: #cbd5e1; text-align: left; transition: all .15s; }
+        .text-preset-btn:hover { border-color: #22c55e; background: rgba(34,197,94,.05); }
+        .generator-pill { padding: 5px 8px; border-radius: 999px; background: rgba(34,197,94,.12); color: #86efac; font-size: 10px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; }
+        .logo-upload-box { border: 1px dashed #334155; border-radius: 10px; padding: 10px; background: #0a0c10; cursor: pointer; transition: all .15s; }
+        .logo-upload-box:hover { border-color: #22c55e; background: rgba(34,197,94,.04); }
         @media (max-width: 768px) {
             body { overflow: hidden; }
             header { height: 54px !important; gap: 8px; }
@@ -151,6 +156,7 @@
             <button onclick="openQRModal()" class="tool" title="Generate QR Code">QR</button>
             <button onclick="openBatchModal()" class="tool" title="Batch Export Sizes">📦</button>
             <button onclick="createMagicLayers()" class="tool" title="Magic Layer Stack">ML</button>
+            <button onclick="makeRoundText('arc')" class="tool" title="Make Text Round">ARC</button>
             <button onclick="open3DPreview()" class="tool" title="360 Preview">3D</button>
             <button onclick="openAdminModal()" class="btn-ghost" title="Admin Configuration">Admin</button>
 
@@ -206,6 +212,13 @@
                         <button class="category-btn text-xs px-2 py-1 rounded bg-gray-800/50" onclick="setCategory(this,'edibles')">Edibles</button>
                     </div>
                 </div>
+                <div class="p-2 border-b border-gray-800">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Editable Text</span>
+                        <button onclick="makeRoundText('arc')" class="btn-ghost text-[10px]">Round</button>
+                    </div>
+                    <div id="textPresetGrid" class="grid grid-cols-2 gap-1.5"></div>
+                </div>
                 <div class="p-2">
                     <div id="templateGrid" class="grid grid-cols-2 gap-2"></div>
                 </div>
@@ -249,6 +262,31 @@
             <!-- AI Background Generator -->
             <div class="tab-panel flex-1 overflow-y-auto hidden" data-panel="ai">
                 <div class="p-3 space-y-3">
+                    <div class="config-section">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-semibold text-green-400">Template Generator Source</h3>
+                            <span class="generator-pill">Layout AI</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-3">Upload a logo, enter a product prompt, and generate an original editable label layout.</p>
+                        <label class="logo-upload-box block mb-3">
+                            <input type="file" id="generatorLogoUpload" accept="image/*" class="hidden">
+                            <span id="generatorLogoStatus" class="text-xs text-gray-400">Upload logo or brand mark</span>
+                        </label>
+                        <input id="generatorStrain" class="prop-input mb-2" placeholder="Strain / product name e.g. Purple Haze">
+                        <div class="grid grid-cols-2 gap-2 mb-2">
+                            <input id="generatorType" class="prop-input" placeholder="Product e.g. Live Resin">
+                            <input id="generatorPotency" class="prop-input" placeholder="Potency e.g. 24% THC">
+                        </div>
+                        <select id="generatorLayoutStyle" class="prop-input mb-2">
+                            <option value="auto">Auto layout</option>
+                            <option value="psychedelic-grid">Psychedelic grid</option>
+                            <option value="bubble-sticker">Bubble sticker</option>
+                            <option value="compliance-label">Compliance label</option>
+                            <option value="premium-jar">Premium jar</option>
+                        </select>
+                        <textarea id="generatorPrompt" class="prop-input h-20 resize-none" placeholder="Prompt: neon candy waves, fruit clip art, barcode panel, medical white label..."></textarea>
+                        <button onclick="generateTemplateFromPrompt()" class="btn-primary w-full mt-3">Generate Editable Template</button>
+                    </div>
                     <div class="config-section">
                         <h3 class="text-sm font-semibold text-green-400 mb-1">AI Background Generator</h3>
                         <p class="text-xs text-gray-500 mb-3">Demo generator creates editable psychedelic, premium, or medical-style background plates.</p>
@@ -504,6 +542,17 @@ const BACKGROUND_PRESETS = [
     { id: 'luxury-1', name: 'Black Gold', colors: ['#050505', '#1f2937', '#d4af37'], accent: '#f8e7a1', pattern: 'seal' }
 ];
 
+const FONT_OPTIONS = ['Inter','Montserrat','Bebas Neue','Bangers','Luckiest Guy','Fredoka','Archivo Black','Rubik Mono One','Permanent Marker','Pacifico','Playfair Display','Roboto'];
+
+const TEXT_PRESETS = [
+    { id: 'bubble', name: 'Bubble Strain', sample: 'KAWAII', text: 'KAWAII', fontFamily: 'Luckiest Guy', fontSize: 66, fill: '#ff5ec4', stroke: '#111827', strokeWidth: 4 },
+    { id: 'arc', name: 'Curved Brand', sample: 'PURE LABEL', text: 'PURE LABEL', fontFamily: 'Bangers', fontSize: 38, fill: '#f8fafc', stroke: '#0f172a', strokeWidth: 2, rounded: true },
+    { id: 'dose', name: 'Dose Line', sample: '24% THC', text: '24% THC\n3% TERPS', fontFamily: 'Montserrat', fontSize: 24, fill: '#111827', fontWeight: '800' },
+    { id: 'marker', name: 'Street Marker', sample: 'GELATO #33', text: 'GELATO #33', fontFamily: 'Permanent Marker', fontSize: 44, fill: '#0f172a', stroke: '#ffffff', strokeWidth: 2 },
+    { id: 'mono', name: 'Lab Block', sample: 'BATCH ID', text: 'BATCH ID\nLAB TESTED', fontFamily: 'Rubik Mono One', fontSize: 18, fill: '#111827' },
+    { id: 'script', name: 'Fruit Script', sample: 'Forbidden', text: 'Forbidden Fruit', fontFamily: 'Pacifico', fontSize: 44, fill: '#facc15', stroke: '#7c2d12', strokeWidth: 2 }
+];
+
 const AI_MOODS = [
     { prompt: 'Cosmic purple galaxy with neon green smoke trails', preset: 'indica-1' },
     { prompt: 'Luxury black mylar with gold foil seal pattern', preset: 'luxury-1' },
@@ -594,6 +643,7 @@ let activeCategory = 'all';
 let activeAssetCategory = 'all';
 let guidesVisible = false;
 let guideObjects = [];
+let generatorLogoDataUrl = null;
 let appConfig = {
     companyName: 'Bui Banner',
     primaryColor: '#22c55e',
@@ -707,6 +757,8 @@ function loadTemplate(template) {
                 fontFamily: obj.fontFamily || 'Inter',
                 fontWeight: obj.fontWeight || 'normal',
                 textAlign: obj.textAlign || 'left',
+                stroke: obj.stroke || null,
+                strokeWidth: obj.strokeWidth || 0,
                 editable: true
             });
         }
@@ -736,6 +788,63 @@ function addText(text = 'New Text', options = {}) {
     canvas.setActiveObject(textObj);
     canvas.renderAll();
     saveHistory();
+}
+
+function addTextPreset(presetId) {
+    const preset = TEXT_PRESETS.find(item => item.id === presetId);
+    if (!preset) return;
+    addText(preset.text, {
+        fontFamily: preset.fontFamily,
+        fontSize: preset.fontSize,
+        fontWeight: preset.fontWeight || 'normal',
+        fill: preset.fill,
+        stroke: preset.stroke || null,
+        strokeWidth: preset.strokeWidth || 0,
+        name: `${preset.name} Text`
+    });
+    if (preset.rounded) makeRoundText('arc');
+}
+
+function makeRoundText(mode = 'arc') {
+    const active = canvas.getActiveObject();
+    const sourceText = active && (active.type === 'i-text' || active.type === 'text') ? active.text : 'BUI BANNER PRO';
+    const style = active && (active.type === 'i-text' || active.type === 'text') ? active : {};
+    const chars = sourceText.replace(/\s+/g, ' ').trim().split('');
+    const radius = Math.max(95, Math.min(canvas.width, canvas.height) * 0.34);
+    const startAngle = mode === 'circle' ? -180 : -150;
+    const span = mode === 'circle' ? 340 : 120;
+    const centerX = active?.left || canvas.width / 2;
+    const centerY = active?.top || canvas.height * 0.36;
+    const letters = chars.map((char, index) => {
+        const t = chars.length === 1 ? 0.5 : index / (chars.length - 1);
+        const angle = (startAngle + span * t) * Math.PI / 180;
+        return new fabric.IText(char, {
+            left: Math.cos(angle) * radius,
+            top: Math.sin(angle) * radius,
+            fontSize: style.fontSize || 36,
+            fontFamily: style.fontFamily || 'Bangers',
+            fontWeight: style.fontWeight || 'normal',
+            fill: style.fill || '#f8fafc',
+            stroke: style.stroke || '#0f172a',
+            strokeWidth: style.strokeWidth || 1,
+            originX: 'center',
+            originY: 'center',
+            angle: angle * 180 / Math.PI + 90
+        });
+    });
+    if (active && (active.type === 'i-text' || active.type === 'text')) canvas.remove(active);
+    const group = new fabric.Group(letters, {
+        left: centerX,
+        top: centerY,
+        originX: 'center',
+        originY: 'center',
+        name: 'Round Text'
+    });
+    canvas.add(group);
+    canvas.setActiveObject(group);
+    canvas.renderAll();
+    saveHistory();
+    showNotification('Round text created');
 }
 
 function addShape(type, options = {}) {
@@ -909,7 +1018,7 @@ function updateProperties() {
     }
     if (obj.type === 'i-text' || obj.type === 'text') {
         html += `<div class="px-3 pb-2 border-b border-gray-800"><h4 class="text-xs font-semibold text-gray-500 uppercase mb-1.5">Typography</h4>
-            <select id="propFontFamily" class="prop-input mb-1.5 text-xs">${['Inter','Playfair Display','Bebas Neue','Montserrat','Pacifico','Permanent Marker','Roboto'].map(f=>`<option value="${f}" ${obj.fontFamily===f?'selected':''}>${f}</option>`).join('')}</select>
+            <select id="propFontFamily" class="prop-input mb-1.5 text-xs">${FONT_OPTIONS.map(f=>`<option value="${f}" ${obj.fontFamily===f?'selected':''}>${f}</option>`).join('')}</select>
             <div class="grid grid-cols-2 gap-1.5 mb-1.5">
                 <div><label class="text-xs text-gray-600">Size</label><input type="number" id="propFontSize" value="${obj.fontSize||20}" class="prop-input text-xs"></div>
                 <div><label class="text-xs text-gray-600">Weight</label><select id="propFontWeight" class="prop-input text-xs"><option value="normal" ${obj.fontWeight==='normal'?'selected':''}>Normal</option><option value="bold" ${obj.fontWeight==='bold'?'selected':''}>Bold</option><option value="800" ${obj.fontWeight==='800'?'selected':''}>Extra Bold</option></select></div>
@@ -918,7 +1027,8 @@ function updateProperties() {
                 <button onclick="setTextAlign('left')" class="tool flex-1 ${obj.textAlign==='left'?'active':''}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg></button>
                 <button onclick="setTextAlign('center')" class="tool flex-1 ${obj.textAlign==='center'?'active':''}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></button>
                 <button onclick="setTextAlign('right')" class="tool flex-1 ${obj.textAlign==='right'?'active':''}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="6" y1="18" x2="21" y2="18"/></svg></button>
-            </div></div>`;
+            </div>
+            <button onclick="makeRoundText('arc')" class="btn-ghost justify-center text-xs w-full">Make Round Text</button></div>`;
     }
     if (obj.type === 'rect') {
         html += `<div class="px-3 pb-2 border-b border-gray-800"><h4 class="text-xs font-semibold text-gray-500 uppercase mb-1.5">Radius</h4><div><label class="text-xs text-gray-600">${obj.rx||0}px</label><input type="range" class="range-slider" id="propRadius" min="0" max="100" value="${obj.rx||0}"></div></div>`;
@@ -995,6 +1105,7 @@ function updateUI() {
 // ==================== RENDER ====================
 function renderUI() {
     renderTemplates();
+    renderTextPresets();
     renderBackgrounds();
     renderAssets();
     renderAiMoods();
@@ -1012,6 +1123,16 @@ function renderTemplates() {
             </div>
             <div class="px-2 py-1.5 bg-gray-800/50"><p class="text-xs font-medium text-gray-300 truncate">${t.name}</p></div>
         </div>`).join('');
+}
+
+function renderTextPresets() {
+    const grid = document.getElementById('textPresetGrid');
+    if (!grid) return;
+    grid.innerHTML = TEXT_PRESETS.map(preset => `
+        <button class="text-preset-btn" onclick="addTextPreset('${preset.id}')">
+            <span class="block text-xs leading-tight" style="font-family:'${preset.fontFamily}'; color:${preset.fill}; -webkit-text-stroke:${preset.strokeWidth || 0}px ${preset.stroke || 'transparent'};">${preset.sample}</span>
+            <span class="block text-[10px] text-gray-500 mt-1">${preset.name}</span>
+        </button>`).join('');
 }
 
 function getTemplatePreview(t) {
@@ -1091,6 +1212,87 @@ function generateAIBackground() {
     if (prompt.includes('lime') || prompt.includes('bright') || prompt.includes('sativa')) preset = 'sativa-1';
     applyBackgroundPreset(preset);
     showNotification('AI background generated for demo');
+}
+
+function generateTemplateFromPrompt() {
+    const strain = document.getElementById('generatorStrain')?.value.trim() || 'Purple Haze';
+    const type = document.getElementById('generatorType')?.value.trim() || 'Premium Flower';
+    const potency = document.getElementById('generatorPotency')?.value.trim() || '24% THC';
+    const prompt = (document.getElementById('generatorPrompt')?.value || '').toLowerCase();
+    let style = document.getElementById('generatorLayoutStyle')?.value || 'auto';
+    if (style === 'auto') {
+        if (prompt.includes('medical') || prompt.includes('barcode') || prompt.includes('compliance')) style = 'compliance-label';
+        else if (prompt.includes('jar') || prompt.includes('gold') || prompt.includes('premium')) style = 'premium-jar';
+        else if (prompt.includes('bubble') || prompt.includes('sticker') || prompt.includes('candy')) style = 'bubble-sticker';
+        else style = 'psychedelic-grid';
+    }
+    canvas.clear();
+    if (style === 'compliance-label') renderComplianceGeneratedTemplate(strain, type, potency);
+    else if (style === 'premium-jar') renderPremiumGeneratedTemplate(strain, type, potency);
+    else if (style === 'bubble-sticker') renderBubbleGeneratedTemplate(strain, type, potency);
+    else renderPsychedelicGeneratedTemplate(strain, type, potency);
+    if (generatorLogoDataUrl) addGeneratorLogo();
+    canvas.renderAll();
+    saveHistory();
+    showNotification('Editable template generated');
+}
+
+function renderPsychedelicGeneratedTemplate(strain, type, potency) {
+    const colors = ['#22d3ee', '#a855f7', '#f472b6', '#84cc16', '#facc15', '#38bdf8'];
+    const cols = 2;
+    const rows = 3;
+    for (let i = 0; i < cols * rows; i++) {
+        const x = (i % cols) * canvas.width / cols;
+        const y = Math.floor(i / cols) * canvas.height / rows;
+        canvas.add(new fabric.Rect({ left: x, top: y, width: canvas.width / cols, height: canvas.height / rows, fill: colors[i % colors.length], selectable: false, evented: false, name: 'Generated Psychedelic Plate' }));
+        canvas.add(new fabric.Path(`M ${x} ${y + 20} C ${x + 70} ${y - 25}, ${x + 120} ${y + 85}, ${x + canvas.width / cols} ${y + 35}`, { fill: '', stroke: '#111827', strokeWidth: 3, opacity: .28, selectable: false, evented: false, name: 'Generated Wave Line' }));
+    }
+    addText(strain.toUpperCase(), { top: canvas.height * .42, fontSize: 58, fontFamily: 'Luckiest Guy', fill: '#ff5ec4', stroke: '#111827', strokeWidth: 5, name: 'Generated Bubble Strain' });
+    addText(type.toUpperCase(), { top: canvas.height * .58, fontSize: 22, fontFamily: 'Montserrat', fontWeight: '800', fill: '#ffffff', stroke: '#111827', strokeWidth: 1, name: 'Generated Product Type' });
+    addText(potency, { top: canvas.height * .68, fontSize: 20, fontFamily: 'Rubik Mono One', fill: '#111827', name: 'Generated Potency' });
+}
+
+function renderBubbleGeneratedTemplate(strain, type, potency) {
+    canvas.setBackgroundColor('#f8fafc', canvas.renderAll.bind(canvas));
+    canvas.add(new fabric.Circle({ left: canvas.width * .5, top: canvas.height * .44, radius: Math.min(canvas.width, canvas.height) * .36, fill: '#f0abfc', originX: 'center', originY: 'center', opacity: .85, name: 'Generated Sticker Bubble' }));
+    canvas.add(new fabric.Circle({ left: canvas.width * .3, top: canvas.height * .24, radius: 42, fill: '#22c55e', originX: 'center', originY: 'center', opacity: .75, name: 'Generated Accent Bubble' }));
+    canvas.add(new fabric.Circle({ left: canvas.width * .75, top: canvas.height * .67, radius: 58, fill: '#38bdf8', originX: 'center', originY: 'center', opacity: .65, name: 'Generated Accent Bubble' }));
+    addText(strain.toUpperCase(), { top: canvas.height * .4, fontSize: 52, fontFamily: 'Bangers', fill: '#0f172a', stroke: '#ffffff', strokeWidth: 3, name: 'Generated Sticker Title' });
+    makeRoundText('arc');
+    addText(`${type} • ${potency}`.toUpperCase(), { top: canvas.height * .7, fontSize: 18, fontFamily: 'Montserrat', fontWeight: '800', fill: '#0f172a', name: 'Generated Sticker Details' });
+}
+
+function renderComplianceGeneratedTemplate(strain, type, potency) {
+    canvas.setBackgroundColor('#ffffff', canvas.renderAll.bind(canvas));
+    canvas.add(new fabric.Rect({ left: 0, top: 0, width: canvas.width, height: canvas.height * .18, fill: '#22c55e', name: 'Generated Header Bar' }));
+    canvas.add(new fabric.Rect({ left: canvas.width * .08, top: canvas.height * .18, width: canvas.width * .84, height: canvas.height * .64, fill: '#ffffff', stroke: '#111827', strokeWidth: 2, name: 'Generated Compliance Panel' }));
+    addText(strain.toUpperCase(), { top: canvas.height * .32, fontSize: 32, fontFamily: 'Montserrat', fontWeight: '900', fill: '#111827', name: 'Generated Compliance Title' });
+    addText(`${type}\n${potency}`, { top: canvas.height * .43, fontSize: 16, fontFamily: 'Montserrat', fontWeight: '800', fill: '#334155', name: 'Generated Compliance Details' });
+    for (let i = 0; i < 18; i++) {
+        canvas.add(new fabric.Rect({ left: canvas.width * .22 + i * 5, top: canvas.height * .57, width: i % 3 === 0 ? 3 : 1.5, height: 42, fill: '#111827', name: 'Generated Barcode' }));
+    }
+    addText('LAB TESTED • KEEP OUT OF REACH OF CHILDREN', { top: canvas.height * .76, fontSize: 10, fontFamily: 'Inter', fontWeight: '800', fill: '#475569', name: 'Generated Warning Text' });
+}
+
+function renderPremiumGeneratedTemplate(strain, type, potency) {
+    canvas.setBackgroundColor('#09090b', canvas.renderAll.bind(canvas));
+    canvas.add(new fabric.Rect({ left: canvas.width * .08, top: canvas.height * .06, width: canvas.width * .84, height: canvas.height * .88, fill: '#111827', stroke: '#d4af37', strokeWidth: 3, rx: 22, ry: 22, name: 'Generated Premium Frame' }));
+    canvas.add(new fabric.Circle({ left: canvas.width / 2, top: canvas.height * .3, radius: 58, fill: 'transparent', stroke: '#d4af37', strokeWidth: 5, originX: 'center', originY: 'center', name: 'Generated Seal Ring' }));
+    addText('BUI BANNER', { top: canvas.height * .18, fontSize: 22, fontFamily: 'Playfair Display', fontWeight: 'bold', fill: '#f8e7a1', name: 'Generated Brand Text' });
+    makeRoundText('arc');
+    addText(strain.toUpperCase(), { top: canvas.height * .48, fontSize: 42, fontFamily: 'Bebas Neue', fill: '#ffffff', name: 'Generated Premium Strain' });
+    addText(`${type} • ${potency}`.toUpperCase(), { top: canvas.height * .6, fontSize: 18, fontFamily: 'Montserrat', fontWeight: '800', fill: '#d4af37', name: 'Generated Premium Details' });
+}
+
+function addGeneratorLogo() {
+    fabric.Image.fromURL(generatorLogoDataUrl, img => {
+        const scale = Math.min(canvas.width * .32 / img.width, canvas.height * .16 / img.height, 1);
+        img.set({ left: canvas.width / 2, top: canvas.height * .12, originX: 'center', originY: 'center', scaleX: scale, scaleY: scale, name: 'Uploaded Logo' });
+        canvas.add(img);
+        canvas.bringToFront(img);
+        canvas.renderAll();
+        saveHistory();
+    });
 }
 
 function renderAssets() {
@@ -1717,6 +1919,17 @@ function setupEventListeners() {
     
     document.getElementById('fileUpload').addEventListener('change', (e) => {
         if (e.target.files[0]) addImage(e.target.files[0]);
+    });
+    document.getElementById('generatorLogoUpload')?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            generatorLogoDataUrl = ev.target.result;
+            document.getElementById('generatorLogoStatus').textContent = `Logo ready: ${file.name}`;
+            showNotification('Logo loaded for generator');
+        };
+        reader.readAsDataURL(file);
     });
 }
 

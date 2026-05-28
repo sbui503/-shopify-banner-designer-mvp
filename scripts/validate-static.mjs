@@ -19,7 +19,11 @@ const required = [
   'Bui Banner',
   'createMagicLayers',
   'openMobilePanel',
-  'assetCategoryGrid'
+  'assetCategoryGrid',
+  'TEXT_PRESETS',
+  'makeRoundText',
+  'generateTemplateFromPrompt',
+  'generatorLogoUpload'
 ];
 
 const missing = required.filter(item => !html.includes(item));
