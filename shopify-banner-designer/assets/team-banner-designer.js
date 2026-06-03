@@ -580,10 +580,23 @@
     }
   }
 
+  function showStartupError(root, message) {
+    const status = root.querySelector("[data-tbd-status]");
+    if (status) status.textContent = message;
+    root.classList.add("tbd--startup-error");
+  }
+
   async function init(root) {
     const canvasEl = root.querySelector("[data-tbd-canvas]");
-    if (!canvasEl || !window.fabric) {
-      window.setTimeout(() => init(root), 80);
+    if (!canvasEl) return;
+    if (!window.fabric) {
+      const attempts = Number(root.dataset.fabricWaitAttempts || "0");
+      if (attempts < 60) {
+        root.dataset.fabricWaitAttempts = String(attempts + 1);
+        window.setTimeout(() => init(root), 80);
+      } else {
+        showStartupError(root, "Designer could not load. Refresh the page or check that Fabric.js is not blocked.");
+      }
       return;
     }
 
@@ -2176,7 +2189,13 @@
         button.dataset.category = asset.category || "Other";
         button.title = asset.name;
         button.draggable = true;
-        button.innerHTML = `<img loading="lazy" alt="${asset.name.replace(/"/g, "&quot;")}" src="${asset.url}"><span>${asset.name}</span>`;
+        const image = document.createElement("img");
+        image.loading = "lazy";
+        image.alt = asset.name;
+        image.src = asset.url;
+        const label = document.createElement("span");
+        label.textContent = asset.name;
+        button.append(image, label);
         button.addEventListener("click", (event) => {
           if (suppressAssetClick) {
             event.preventDefault();
@@ -3434,7 +3453,11 @@
         const saved = await saveDesign();
         const checkoutUrl = checkoutUrlWithDesignAttributes(customCheckoutUrl, saved);
         setStatus("Sending proof email...");
-        await sendProofEmail(saved, checkoutUrl);
+        try {
+          await sendProofEmail(saved, checkoutUrl);
+        } catch (emailError) {
+          setStatus("Proof email could not be sent. Opening checkout anyway...");
+        }
         setStatus("Opening checkout...");
         navigateToCheckout(checkoutUrl);
       } catch (error) {
@@ -3443,9 +3466,18 @@
     }
 
     async function saveOrAddToCart() {
+      const cartButtons = [...root.querySelectorAll("[data-tbd-add-cart]")];
+      cartButtons.forEach((button) => {
+        button.disabled = true;
+        button.setAttribute("aria-busy", "true");
+      });
       setStatus("Saving design...");
       if (customCheckoutUrl) {
         await saveAndOpenCustomCheckout();
+        cartButtons.forEach((button) => {
+          button.disabled = false;
+          button.removeAttribute("aria-busy");
+        });
         return;
       }
       if (!canUseSameOriginCart) {
@@ -3460,6 +3492,10 @@
         } catch (error) {
             setStatus("Could not save. Try Save editable file.");
         }
+        cartButtons.forEach((button) => {
+          button.disabled = false;
+          button.removeAttribute("aria-busy");
+        });
         return;
       }
 
@@ -3485,6 +3521,11 @@
         setStatus("Added to cart.");
       } catch (error) {
         setStatus("Could not add to cart. Check the product and save endpoint.");
+      } finally {
+        cartButtons.forEach((button) => {
+          button.disabled = false;
+          button.removeAttribute("aria-busy");
+        });
       }
     }
 

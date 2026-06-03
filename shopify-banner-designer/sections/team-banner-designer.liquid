@@ -378,7 +378,7 @@
 
         <aside class="tbd__panel tbd__panel--assets" data-tbd-panel="assets" hidden>
           <div class="tbd__panel-head">
-            <input class="tbd__search tbd__asset-search" data-tbd-search type="search" placeholder="search">
+            <input class="tbd__search tbd__asset-search" data-tbd-search type="search" placeholder="search" aria-label="Search banner assets">
             <select class="tbd__asset-category" data-tbd-category-select aria-label="Asset category"></select>
             <button class="tbd__find" data-tbd-find type="button">Find</button>
             <button class="tbd__close" data-tbd-panel-toggle="assets" type="button">Close</button>
@@ -427,9 +427,9 @@
 
         <div class="tbd__workspace">
           <div class="tbd__stage">
-            <canvas data-tbd-canvas width="900" height="780"></canvas>
+            <canvas data-tbd-canvas width="900" height="780" role="application" aria-label="Interactive custom team banner design canvas">Your browser does not support the interactive banner designer canvas. Please use a current version of Chrome, Edge, Safari, or Firefox.</canvas>
           </div>
-          <p class="tbd__status" data-tbd-status aria-live="polite"></p>
+          <p class="tbd__status" data-tbd-status role="status" aria-live="polite" aria-atomic="true">Loading banner designer...</p>
         </div>
 
         <aside class="tbd__layer-panel" aria-label="Layer list">
