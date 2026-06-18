@@ -1,0 +1,31 @@
+# Cursor Cloud Agent (Cross-Project Run Contract)
+
+Use this same contract for every repo to keep local AI behavior consistent.
+
+## Start of each session
+1) Confirm current branch and sync: `git status` then `git pull`.
+2) Quick sanity check: `git branch --show-current` and review `README.md`.
+3) Setup:
+   - If `npm run setup:local` exists: `npm run setup:local`
+   - Else run `npm ci` (or `npm install` if lockfile not present)
+4) Run app:
+   - If `npm run dev:local` exists: `npm run dev:local`
+   - Else if `npm run dev` exists: `npm run dev`
+5) Validate:
+   - If `npm run verify:local` exists: `npm run verify:local`
+   - Else run `npm run lint` when present, then `npm run build` when present.
+6) For native flows, if scripts exist, run `npm run native:sync`, then `npm run native:ios` or `npm run native:android`.
+
+## Collaboration rules
+- Keep existing functionality intact.
+- Keep file edits minimal and scoped.
+- Do not commit secrets. Use `.env.local` / project secret store.
+- Before changing API, data, or checkout/payment flow, ask for approval.
+- Keep all local model handoff notes in `docs/handoff-lm-studio-cursor.md` when requested.
+
+## Preferred handoff artifacts
+- `docs/local-ai-runbook.md` if present
+- `local-runner-profile.json` if present
+- `README.md` run instructions
+- `.env.example` for required environment variables
+
