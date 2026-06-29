@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bui-banner-pro.vercel.app/schemas/strain-hero-manifest.schema.json",
+  "title": "BUI Pro Strain Hero Background Manifest",
+  "type": "object",
+  "required": ["version", "generatedAt", "strainHeroImages"],
+  "properties": {
+    "version": { "type": "string" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "source": { "type": "string" },
+    "sourceRange": {
+      "type": "object",
+      "properties": {
+        "pageStart": { "type": "integer" },
+        "pageEnd": { "type": "integer" },
+        "pageSize": { "type": "integer" }
+      }
+    },
+    "licensePolicy": { "type": "string" },
+    "strainHeroImages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["slug", "name", "heroImage"],
+        "properties": {
+          "slug": { "type": "string" },
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "sourceUrl": { "type": "string" },
+          "page": { "type": "integer" },
+          "licenseStatus": { "enum": ["owned", "licensed", "partner-provided", "public-domain", "verbal_approval_pending_written", "unknown"] },
+          "heroImage": {
+            "type": "object",
+            "required": ["url"],
+            "properties": {
+              "url": { "type": "string" },
+              "width": { "type": "integer" },
+              "height": { "type": "integer" },
+              "alt": { "type": "string" },
+              "dominantColors": { "type": "array", "items": { "type": "string" } },
+              "licenseStatus": { "enum": ["owned", "licensed", "partner-provided", "public-domain", "verbal_approval_pending_written", "unknown"] }
+            }
+          }
+        }
+      }
+    }
+  }
+}

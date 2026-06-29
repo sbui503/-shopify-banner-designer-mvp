@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-05-28T00:00:00.000Z",
+  "source": "Authorized Weedmaps API/export or partner-provided strain background feed",
+  "sourceRange": {
+    "pageStart": 1,
+    "pageEnd": 588,
+    "pageSize": 20
+  },
+  "licensePolicy": "Do not import Weedmaps imagery unless the image URL is licensed, partner-provided, or approved for BUI Pro use. Store source attribution and license status for every row.",
+  "strainHeroImages": [
+    {
+      "slug": "blue-dream-demo",
+      "name": "Blue Dream Demo Plate",
+      "type": "hybrid",
+      "sourceUrl": "https://weedmaps.com/strains",
+      "page": 1,
+      "licenseStatus": "owned",
+      "heroImage": {
+        "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 320'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1'%3E%3Cstop stop-color='%2338bdf8'/%3E%3Cstop offset='1' stop-color='%235b21b6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='640' height='320' rx='36' fill='url(%23g)'/%3E%3Cpath d='M40 180c100-90 180 80 300-20s180 10 260-60' fill='none' stroke='%23bfdbfe' stroke-width='20' opacity='.32'/%3E%3C/svg%3E",
+        "width": 640,
+        "height": 320,
+        "alt": "Original blue-purple demo strain background",
+        "dominantColors": ["#38bdf8", "#5b21b6"],
+        "licenseStatus": "owned"
+      }
+    }
+  ]
+}

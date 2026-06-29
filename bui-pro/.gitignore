@@ -1,0 +1,17 @@
+.playwright-cli
+.vercel
+backups/*.before-*
+data/*.generated.json
+!data/strain-hero-manifest.generated.json
+!data/text-font-presets.generated.json
+!data/brand-logo-manifest.generated.json
+!data/zooniform-template-manifest.generated.json
+data/weedmaps-public-strain-image-urls*.json
+data/weedmaps-brand-logo-urls*.json
+data/weedmaps-*-export.json
+data/*.proof.json
+output/playwright/*.png
+!output/playwright/audit-final-desktop-default.png
+!output/playwright/audit-final-mobile-default.png
+!output/playwright/audit-final-mobile-product-types-clean.png
+!output/playwright/audit-mobile-24x28-loaded-template-final.png

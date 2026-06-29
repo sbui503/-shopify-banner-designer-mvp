@@ -1,0 +1,22 @@
+{
+  "name": "bui-pro-design-tool",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "npm run build:css && node scripts/validate-static.mjs",
+    "test": "npm run build:css && node scripts/validate-static.mjs",
+    "build:css": "BROWSERSLIST_IGNORE_OLD_DATA=1 tailwindcss -c tailwind.config.cjs -i styles/tailwind.css -o assets/tailwind.css --minify",
+    "manifest:strain": "node scripts/build-weedmaps-strain-manifest.mjs",
+    "manifest:brand": "node scripts/build-weedmaps-brand-manifest.mjs",
+    "manifest:text-fonts": "node scripts/generate-text-font-presets.mjs",
+    "manifest:zooniform": "node scripts/build-zooniform-template-manifest.mjs",
+    "weedmaps:scrape:brand-logos": "python3 scripts/scrape_weedmaps_brand_logo_urls.py 1 100 data/weedmaps-brand-logo-urls.json data/brand-logo-manifest.generated.json",
+    "weedmaps:scrape:strain-images": "python3 scripts/scrape_weedmaps_strain_image_urls.py 1 588 data/weedmaps-public-strain-image-urls.json data/strain-hero-manifest.generated.json",
+    "weedmaps:fetch:strains": "node scripts/fetch-weedmaps-catalog-export.mjs strains data/weedmaps-strains-export.json 1 588 20",
+    "weedmaps:fetch:brands": "node scripts/fetch-weedmaps-catalog-export.mjs brands data/weedmaps-brands-export.json 1 40 150"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

@@ -1,0 +1,179 @@
+{% liquid
+  assign form_id = 'bui-sticker-form-' | append: section.id
+  assign designer_url = section.settings.designer_url | default: 'https://bui-byfruvy04-sbui503s-projects.vercel.app'
+%}
+
+<section id="bui-sticker-{{ section.id }}" class="bui-sticker-shopify" data-bui-sticker-section data-margin="{{ section.settings.margin_percent | default: 20 }}" data-designer-url="{{ designer_url | escape }}">
+  <div class="bui-sticker-shell">
+    <div class="bui-sticker-head">
+      <div>
+        <p class="bui-kicker">BUI Banner Pro</p>
+        <h2>{{ section.settings.heading | escape }}</h2>
+      </div>
+      <button type="button" class="bui-open-designer" data-open-designer>Customize Design</button>
+    </div>
+
+    <div class="bui-sticker-grid">
+      <div class="bui-preview" data-material-preview>
+        <div class="bui-preview-card">
+          <div class="bui-shape-preview" data-shape-preview>
+            <span data-preview-text>{{ product.title | default: 'Custom Sticker' | escape }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bui-options">
+        <div class="bui-field-row">
+          <label>Sticker Type<select data-field="stickerType"></select></label>
+          <label>Shape<select data-field="shape"></select></label>
+        </div>
+        <div class="bui-field-row">
+          <label>Width In.<input data-field="width" type="number" min="0.5" max="18" step="0.05" value="2"></label>
+          <label>Height In.<input data-field="height" type="number" min="0.5" max="18" step="0.05" value="2"></label>
+        </div>
+        <div class="bui-field-row">
+          <label>Material<select data-field="material"></select></label>
+          <label>Finish<select data-field="finish"></select></label>
+        </div>
+        <div class="bui-field-row">
+          <label>White Ink<select data-field="whiteInk"></select></label>
+          <label>Bundling<select data-field="bundling"></select></label>
+        </div>
+        <div class="bui-field-row">
+          <label>Printing Time<select data-field="printingTime"></select></label>
+          <label>Quantity<select data-field="quantity"></select></label>
+        </div>
+        <label class="bui-upload">Custom Shape / Artwork
+          <input type="file" name="properties[Custom Shape / Artwork]" form="{{ form_id }}" accept="image/svg+xml,.svg,image/*">
+        </label>
+      </div>
+    </div>
+
+    <div class="bui-quote">
+      <div>
+        <p>BUI Estimate</p>
+        <strong data-quote-total>$0.00</strong>
+        <span data-quote-unit>$0.000 each</span>
+      </div>
+      <small data-quote-summary></small>
+    </div>
+
+    {% form 'product', product, id: form_id, class: 'bui-cart-form', enctype: 'multipart/form-data' %}
+      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+      <input type="hidden" name="quantity" value="1">
+      <input type="hidden" name="properties[Sticker Type]" data-prop="stickerType">
+      <input type="hidden" name="properties[Shape]" data-prop="shape">
+      <input type="hidden" name="properties[Size]" data-prop="size">
+      <input type="hidden" name="properties[Material]" data-prop="material">
+      <input type="hidden" name="properties[Finish]" data-prop="finish">
+      <input type="hidden" name="properties[White Ink]" data-prop="whiteInk">
+      <input type="hidden" name="properties[Bundling]" data-prop="bundling">
+      <input type="hidden" name="properties[Printing Time]" data-prop="printingTime">
+      <input type="hidden" name="properties[Sticker Quantity]" data-prop="quantity">
+      <input type="hidden" name="properties[BUI Quote]" data-prop="quote">
+      <input type="hidden" name="properties[Reference Estimate]" data-prop="reference">
+      <input type="hidden" name="properties[Designer URL]" value="{{ designer_url | escape }}">
+      <button type="submit" class="bui-add-cart">{{ section.settings.cart_label | escape }}</button>
+    {% endform %}
+  </div>
+
+  <div class="bui-designer-modal" hidden data-designer-modal>
+    <div class="bui-modal-bar">
+      <strong>BUI Banner Pro Designer</strong>
+      <button type="button" data-close-designer>Close</button>
+    </div>
+    <iframe title="BUI Banner Pro Designer" data-designer-frame loading="lazy"></iframe>
+  </div>
+</section>
+
+<style>
+  .bui-sticker-shopify{--bui:#22c55e;--ink:#111827;--muted:#64748b;--line:#d8dee8;font-family:Inter,system-ui,sans-serif;color:var(--ink);margin:24px 0}
+  .bui-sticker-shell{border:1px solid var(--line);border-radius:14px;padding:18px;background:#fff;box-shadow:0 12px 34px rgba(15,23,42,.08)}
+  .bui-sticker-head,.bui-quote{display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .bui-kicker{margin:0 0 4px;color:var(--bui);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+  .bui-sticker-head h2{margin:0;font-size:clamp(20px,3vw,30px)}
+  .bui-open-designer,.bui-add-cart{border:0;border-radius:10px;padding:12px 16px;background:var(--bui);color:#04130a;font-weight:800;cursor:pointer}
+  .bui-sticker-grid{display:grid;grid-template-columns:minmax(220px,.9fr) 1.1fr;gap:18px;margin-top:18px}
+  .bui-preview{min-height:300px;border-radius:12px;background:#e5e7eb;display:grid;place-items:center;overflow:hidden;position:relative}
+  .bui-preview:before{content:"";position:absolute;inset:0;background:var(--material-bg,transparent);opacity:var(--material-opacity,.95)}
+  .bui-preview-card{position:relative;width:76%;aspect-ratio:1/1;display:grid;place-items:center}
+  .bui-shape-preview{width:76%;height:76%;background:#fff;border:2px solid #cbd5e1;display:grid;place-items:center;text-align:center;padding:16px;font-weight:900;box-shadow:0 8px 22px rgba(15,23,42,.18)}
+  .bui-shape-preview[data-shape="circle"]{border-radius:50%}
+  .bui-shape-preview[data-shape="oval"]{border-radius:50%;height:56%}
+  .bui-shape-preview[data-shape="rounded-rectangle"],.bui-shape-preview[data-shape="rounded-square"]{border-radius:18px}
+  .bui-shape-preview[data-shape="rounded-square"]{width:68%;height:68%}
+  .bui-shape-preview[data-shape="arch"]{border-radius:48% 48% 10px 10px}
+  .bui-shape-preview[data-shape="hexagon"]{clip-path:polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0 50%)}
+  .bui-shape-preview[data-shape="heart"]{clip-path:polygon(50% 92%,20% 66%,8% 44%,8% 24%,18% 10%,33% 8%,45% 18%,50% 30%,55% 18%,67% 8%,82% 10%,92% 24%,92% 44%,80% 66%)}
+  .bui-shape-preview[data-shape="starburst"]{clip-path:polygon(50% 0,58% 28%,85% 15%,72% 42%,100% 50%,72% 58%,85% 85%,58% 72%,50% 100%,42% 72%,15% 85%,28% 58%,0 50%,28% 42%,15% 15%,42% 28%)}
+  .bui-shape-preview[data-shape="lollipop"]{border-radius:50%;position:relative}.bui-shape-preview[data-shape="lollipop"]:after{content:"";position:absolute;width:12%;height:38%;background:#fff;border:2px solid #cbd5e1;bottom:-34%;border-radius:999px}
+  .bui-shape-preview[data-shape="triangle"]{clip-path:polygon(50% 4%,96% 96%,4% 96%)}
+  .bui-shape-preview[data-shape="home-plate"]{clip-path:polygon(6% 6%,94% 6%,94% 58%,50% 96%,6% 58%)}
+  .bui-field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+  .bui-options label,.bui-upload{display:grid;gap:5px;font-size:12px;font-weight:800;color:#475569}
+  .bui-options select,.bui-options input,.bui-upload input{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px;background:#fff;color:#0f172a}
+  .bui-quote{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}.bui-quote p{margin:0;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.bui-quote strong{display:block;font-size:28px;color:var(--bui)}.bui-quote span,.bui-quote small{color:var(--muted)}
+  .bui-cart-form{margin-top:14px}.bui-add-cart{width:100%}
+  .bui-designer-modal{position:fixed;z-index:999999;inset:2vh 2vw;background:#0b0f17;border-radius:16px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.45)}.bui-modal-bar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;color:#fff;background:#111827}.bui-modal-bar button{border:0;border-radius:8px;padding:8px 12px}.bui-designer-modal iframe{width:100%;height:calc(100% - 52px);border:0;background:#111827}
+  @media(max-width:749px){.bui-sticker-grid{grid-template-columns:1fr}.bui-field-row{grid-template-columns:1fr}.bui-sticker-head{align-items:flex-start;flex-direction:column}.bui-open-designer{width:100%}}
+</style>
+
+<script>
+(() => {
+  const root = document.getElementById('bui-sticker-{{ section.id }}');
+  if (!root) return;
+  const margin = 1 + (parseFloat(root.dataset.margin || '20') / 100);
+  const designerUrl = root.dataset.designerUrl;
+  const data = {
+    stickerTypes:[['die-cut','Die-Cut Singles',1],['roll','Roll',0.88],['sheet','Sheet',0.82],['kiss-cut','Kiss-Cut Singles',1.06],['banner','Banner',1.32],['home-plate-product','Home Plate Product',1.18],['logo-text','Logo & Text',1.12],['photo-sample','Photo & Sample',1.24]],
+    shapes:[['rounded-rectangle','Rectangle',1],['rounded-square','Square',1],['circle','Circle',1.02],['oval','Oval',1.04],['arch','Arch',1.08],['hexagon','Hexagon',1.1],['heart','Heart',1.12],['starburst','Starburst',1.14],['lollipop','Lollipop',1.1],['triangle','Triangle',1.08],['home-plate','Home Plate',1.12],['custom','Custom',1.18]],
+    materials:[['white-paper','White Paper',1,'white'],['white-bopp','White BOPP',1.18,'white'],['removable-white-bopp','Removable White BOPP',1.24,'white'],['white-outdoor-bopp','White Outdoor BOPP',1.34,'gloss'],['clear-bopp','Clear BOPP',1.28,'clear'],['metallic-silver-bopp','Metallic Silver BOPP',1.42,'metallic'],['holographic-rainbow-bopp','Holographic Rainbow BOPP',1.62,'holographic'],['high-gloss-outdoor-vinyl','High Gloss Outdoor White Vinyl',1.5,'gloss'],['white-vellum-estate-8','White Vellum Texture Estate #8',1.2,'paper'],['white-laid-estate-4','White Laid Texture Estate #4',1.22,'paper'],['cream-laid-estate-9','Cream Laid Texture Estate #9',1.24,'cream'],['kraft-paper','100% Recycled Kraft Paper',1.12,'kraft']],
+    finishes:[['gloss-laminate','Gloss Laminate',1],['matte-laminate','Matte Laminate',1.04],['soft-touch-laminate','Soft Touch Laminate',1.12],['gloss-coating','Gloss Coating',0.95],['matte-coating','Matte Coating',0.98],['none','No Lamination',0.88]],
+    whiteInk:[['background-clear','Make background clear',1],['everything-transparent','Make everything transparent',1.05],['white-areas-clear','Make white areas clear',1.04],['follow-file','Follow file settings',1],['everything-metallic','Make everything metallic',1.1],['background-metallic','Make only the background metallic',1.08],['white-areas-metallic','Make white areas metallic',1.07],['everything-kraft','Make everything kraft',1.06],['background-kraft','Make only the background kraft',1.04],['white-areas-kraft','Make white areas kraft',1.04]],
+    printingTime:[['3-business-days','3 Business Days',1],['2-business-days','2 Business Days',1.18],['1-business-day','1 Business Day',1.35]],
+    quantities:[100,125,150,200,250,500,1000,2000,2500,3000,4000,5000,6000,7000,8000,9000,10000,11000,12000,13000,14000,15000,16000,17000,18000,19000,20000,21000,22000,23000,24000,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,80000,85000,90000,95000,100000]
+  };
+  const state = { stickerType:'die-cut', shape:'rounded-rectangle', width:2, height:2, material:'white-paper', finish:'gloss-laminate', whiteInk:'background-clear', bundling:'none', printingTime:'3-business-days', quantity:1000 };
+  const find = (list, id) => list.find(x => x[0] === id) || list[0];
+  const select = name => root.querySelector(`[data-field="${name}"]`);
+  const fillSelect = (name, list, selected = state[name]) => { select(name).innerHTML = list.map(x => `<option value="${x[0]}"${x[0]===selected?' selected':''}>${x[1]}</option>`).join(''); };
+  fillSelect('stickerType', data.stickerTypes); fillSelect('shape', data.shapes); fillSelect('material', data.materials); fillSelect('finish', data.finishes); fillSelect('whiteInk', data.whiteInk); fillSelect('printingTime', data.printingTime);
+  select('bundling').innerHTML = '<option value="none">None</option><option value="shrink">Shrink Wrapping</option>';
+  select('quantity').innerHTML = data.quantities.map(q => `<option value="${q}"${q===state.quantity?' selected':''}>${q.toLocaleString()} stickers</option>`).join('');
+  const materialBg = preview => ({ clear:'linear-gradient(45deg,rgba(56,189,248,.22),rgba(255,255,255,.18))', metallic:'linear-gradient(135deg,#e5e7eb,#94a3b8,#f8fafc)', holographic:'linear-gradient(135deg,#22d3ee,#f472b6,#facc15,#22c55e)', kraft:'#b88955', paper:'repeating-linear-gradient(90deg,#f8fafc,#f8fafc 8px,#e2e8f0 9px)', cream:'#f7e8b5', gloss:'linear-gradient(135deg,#fff,#dbeafe)' }[preview] || '#e5e7eb');
+  function calculate(){
+    const type = find(data.stickerTypes,state.stickerType), shape = find(data.shapes,state.shape), material = find(data.materials,state.material), finish = find(data.finishes,state.finish), whiteInk = find(data.whiteInk,state.whiteInk), printTime = find(data.printingTime,state.printingTime);
+    const area = Math.max(1, state.width * state.height), areaFactor = Math.max(.75, Math.pow(area / 4, .64)), quantityFactor = Math.max(.38, Math.pow(1000 / state.quantity, .32)), bundling = state.bundling === 'shrink' ? 1.08 : 1;
+    const reference = Math.max(18, state.quantity * .0448 * quantityFactor * areaFactor * type[2] * shape[2] * material[2] * finish[2] * whiteInk[2] * printTime[2] * bundling);
+    return { reference, total: reference * margin, type, shape, material, finish, whiteInk, printTime };
+  }
+  function render(){
+    const quote = calculate();
+    root.querySelector('[data-quote-total]').textContent = `$${quote.total.toFixed(2)}`;
+    root.querySelector('[data-quote-unit]').textContent = `$${(quote.total / state.quantity).toFixed(3)} each`;
+    root.querySelector('[data-quote-summary]').textContent = `${quote.type[1]} • ${quote.shape[1]} • ${quote.material[1]} • ${quote.finish[1]} • ${quote.printTime[1]} • Reference $${quote.reference.toFixed(2)} + ${Math.round((margin - 1) * 100)}%`;
+    root.querySelector('[data-shape-preview]').dataset.shape = state.shape;
+    root.querySelector('[data-material-preview]').style.setProperty('--material-bg', materialBg(quote.material[3]));
+    root.querySelector('[data-material-preview]').style.setProperty('--material-opacity', quote.material[3] === 'clear' ? '.55' : '.95');
+    const props = { stickerType: quote.type[1], shape: quote.shape[1], size: `${state.width}" x ${state.height}"`, material: quote.material[1], finish: quote.finish[1], whiteInk: quote.whiteInk[1], bundling: state.bundling === 'shrink' ? 'Shrink Wrapping' : 'None', printingTime: quote.printTime[1], quantity: state.quantity.toLocaleString(), quote: `$${quote.total.toFixed(2)}`, reference: `$${quote.reference.toFixed(2)}` };
+    Object.entries(props).forEach(([key,value]) => { const input = root.querySelector(`[data-prop="${key}"]`); if (input) input.value = value; });
+  }
+  root.querySelectorAll('[data-field]').forEach(el => el.addEventListener('change', () => { state[el.dataset.field] = ['width','height'].includes(el.dataset.field) ? parseFloat(el.value || '1') : el.dataset.field === 'quantity' ? parseInt(el.value,10) : el.value; render(); }));
+  root.querySelector('[data-open-designer]').addEventListener('click', () => { root.querySelector('[data-designer-frame]').src = designerUrl; root.querySelector('[data-designer-modal]').hidden = false; });
+  root.querySelector('[data-close-designer]').addEventListener('click', () => { root.querySelector('[data-designer-modal]').hidden = true; });
+  render();
+})();
+</script>
+
+{% schema %}
+{
+  "name": "BUI Sticker Designer",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Customize sticker order" },
+    { "type": "text", "id": "designer_url", "label": "BUI designer URL", "default": "https://bui-byfruvy04-sbui503s-projects.vercel.app" },
+    { "type": "range", "id": "margin_percent", "label": "BUI margin percent", "min": 0, "max": 60, "step": 1, "default": 20 },
+    { "type": "text", "id": "cart_label", "label": "Cart button label", "default": "Add quoted sticker order to cart" }
+  ],
+  "presets": [{ "name": "BUI Sticker Designer" }]
+}
+{% endschema %}

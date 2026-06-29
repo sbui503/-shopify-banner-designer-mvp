@@ -1,0 +1,1412 @@
+{
+  "sourceUrl": "https://zooniformprinting.com/content/Templates",
+  "generatedAt": "2026-06-29T06:51:17.490Z",
+  "count": 71,
+  "groups": [
+    {
+      "id": "bookmarks",
+      "label": "BOOKMARKS",
+      "category": "bookmark",
+      "count": 6
+    },
+    {
+      "id": "brochures-8-5x11",
+      "label": "BROCHURES 8.5\"x11\"",
+      "category": "brochure",
+      "count": 9
+    },
+    {
+      "id": "brochures-8-5x14",
+      "label": "BROCHURES 8.5\"x14\"",
+      "category": "brochure",
+      "count": 9
+    },
+    {
+      "id": "brochures-11x17",
+      "label": "BROCHURES 11\"x17\"",
+      "category": "brochure",
+      "count": 9
+    },
+    {
+      "id": "cards-and-flyers-flat",
+      "label": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "count": 18
+    },
+    {
+      "id": "door-hangers",
+      "label": "DOOR HANGERS",
+      "category": "door-hanger",
+      "count": 3
+    },
+    {
+      "id": "greeting-cards",
+      "label": "GREETING CARDS",
+      "category": "flat",
+      "count": 6
+    },
+    {
+      "id": "multi-page",
+      "label": "MULTI-PAGE",
+      "category": "print-template",
+      "count": 3
+    },
+    {
+      "id": "sell-sheets",
+      "label": "SELL SHEETS",
+      "category": "sell-sheet",
+      "count": 2
+    },
+    {
+      "id": "stationery",
+      "label": "STATIONERY",
+      "category": "print-template",
+      "count": 2
+    },
+    {
+      "id": "posters",
+      "label": "POSTERS",
+      "category": "poster",
+      "count": 4
+    }
+  ],
+  "templates": [
+    {
+      "id": "zooniform-bookmarks-2x8",
+      "name": "2\"x8\" BOOKMARKS",
+      "displayName": "2\"x8\"",
+      "group": "BOOKMARKS",
+      "category": "bookmark",
+      "dimensionLabel": "2\" x 8\"",
+      "widthIn": 2,
+      "heightIn": 8,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/2x8_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/2x8_Photoshop%20%281%29.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/2x8_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/2x8_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-bookmarks-2x6",
+      "name": "2\"x6\" BOOKMARKS",
+      "displayName": "2\"x6\"",
+      "group": "BOOKMARKS",
+      "category": "bookmark",
+      "dimensionLabel": "2\" x 6\"",
+      "widthIn": 2,
+      "heightIn": 6,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/2x6_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/2x6_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/2x6_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/2x6_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-bookmarks-2-125x5-5",
+      "name": "2.125\"x5.5\" BOOKMARKS",
+      "displayName": "2.125\"x5.5\"",
+      "group": "BOOKMARKS",
+      "category": "bookmark",
+      "dimensionLabel": "2.125\" x 5.5\"",
+      "widthIn": 2.125,
+      "heightIn": 5.5,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/5.5x2.125_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/5.5x2.125_Photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/5.5x2.125_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/5.5x2.125_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-bookmarks-2-75x8-5",
+      "name": "2.75\"x8.5\" BOOKMARKS",
+      "displayName": "2.75\"x8.5\"",
+      "group": "BOOKMARKS",
+      "category": "bookmark",
+      "dimensionLabel": "2.75\" x 8.5\"",
+      "widthIn": 2.75,
+      "heightIn": 8.5,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/2.75x8.5_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/2.75x8.5_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/2.75x8.5_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/2.75x8.5_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-bookmarks-3-5x8-5",
+      "name": "3.5\"x8.5\" BOOKMARKS",
+      "displayName": "3.5\"x8.5\"",
+      "group": "BOOKMARKS",
+      "category": "bookmark",
+      "dimensionLabel": "3.5\" x 8.5\"",
+      "widthIn": 3.5,
+      "heightIn": 8.5,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x3.5_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x3.5_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/3.5x8.5_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x3.5_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-bookmarks-1-5x7",
+      "name": "1.5\"x7\" BOOKMARKS",
+      "displayName": "1.5\"x7\"",
+      "group": "BOOKMARKS",
+      "category": "bookmark",
+      "dimensionLabel": "1.5\" x 7\"",
+      "widthIn": 1.5,
+      "heightIn": 7,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/1.5x7_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/1.5x7_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/1.5x7_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/1.5x7_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x11-accordion-fold",
+      "name": "Accordion fold BROCHURES 8.5\"x11\"",
+      "displayName": "Accordion fold",
+      "group": "BROCHURES 8.5\"x11\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_illustrator_accordion_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_photoshop_accordion_fold.zip",
+        "jpg": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_JPG_accordion_fold 2.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_PDF_accordion_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x11-double-gate-fold",
+      "name": "Double gate fold BROCHURES 8.5\"x11\"",
+      "displayName": "Double gate fold",
+      "group": "BROCHURES 8.5\"x11\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_illustrator_double_gate_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_photoshop_double_gate_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_JPG_double_gate_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_PDF_double_gate_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x11-double-parallel-fold",
+      "name": "Double Parallel fold BROCHURES 8.5\"x11\"",
+      "displayName": "Double Parallel fold",
+      "group": "BROCHURES 8.5\"x11\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_illustrator_double paralel_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_photoshop_double paralel_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_JPG_double paralel_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_PDF_double paralel_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x11-flat-no-folding",
+      "name": "Flat (no folding) BROCHURES 8.5\"x11\"",
+      "displayName": "Flat (no folding)",
+      "group": "BROCHURES 8.5\"x11\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_illustrator_flat.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_Photoshop_flat.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_JPG_flat.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_PDF_flat.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x11-gate-fold",
+      "name": "Gate fold BROCHURES 8.5\"x11\"",
+      "displayName": "Gate fold",
+      "group": "BROCHURES 8.5\"x11\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_illustrator_gate_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_photoshop_gate_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_JPG_gate_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_PDF_gate_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x11-half-fold",
+      "name": "Half fold BROCHURES 8.5\"x11\"",
+      "displayName": "Half fold",
+      "group": "BROCHURES 8.5\"x11\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_illustrator_half_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_photoshop_half_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/B%2011x8.5_JPG_half_fold.jpg.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_PDF_half_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x11-roll-fold",
+      "name": "Roll fold BROCHURES 8.5\"x11\"",
+      "displayName": "Roll fold",
+      "group": "BROCHURES 8.5\"x11\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_illustrator_roll_fold_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_photoshop_roll_fold_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_JPG_roll_fold_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_PDF_roll_fold_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x11-tri-fold",
+      "name": "Tri-fold BROCHURES 8.5\"x11\"",
+      "displayName": "Tri-fold",
+      "group": "BROCHURES 8.5\"x11\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_illustrator_tri_fold_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_photohop_tri_fold_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_JPG_tri_fold_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_PDF_tri_fold_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x11-z-fold",
+      "name": "Z-fold BROCHURES 8.5\"x11\"",
+      "displayName": "Z-fold",
+      "group": "BROCHURES 8.5\"x11\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_illustrator_z_fold_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_photoshop_z_fold_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_JPG_z_fold_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_PDF_z_fold_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x14-accordion-fold",
+      "name": "Accordion fold BROCHURES 8.5\"x14\"",
+      "displayName": "Accordion fold",
+      "group": "BROCHURES 8.5\"x14\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 14\"",
+      "widthIn": 8.5,
+      "heightIn": 14,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14%20accordion-%20fold%20illustrator%20.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14%20accordion%20fold%20photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_JPG_accordion_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14%20accordion-%20fold%20pdf.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x14-double-gate-fold",
+      "name": "Double gate fold BROCHURES 8.5\"x14\"",
+      "displayName": "Double gate fold",
+      "group": "BROCHURES 8.5\"x14\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 14\"",
+      "widthIn": 8.5,
+      "heightIn": 14,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_illustrator_double_gate_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_photoshop_double_gate_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_JPG_double_gate_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_PDF_double_gate_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x14-double-parallel-fold",
+      "name": "Double parallel fold BROCHURES 8.5\"x14\"",
+      "displayName": "Double parallel fold",
+      "group": "BROCHURES 8.5\"x14\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 14\"",
+      "widthIn": 8.5,
+      "heightIn": 14,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_illustrator_double paralel_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_photoshop_double paralel_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_JPG_double paralel_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_PDF_double paralel_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x14-flat-no-folding",
+      "name": "Flat (no folding) BROCHURES 8.5\"x14\"",
+      "displayName": "Flat (no folding)",
+      "group": "BROCHURES 8.5\"x14\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 14\"",
+      "widthIn": 8.5,
+      "heightIn": 14,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_illustrator_flat.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_photoshop_flat.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_JPG_flat.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_PDF_flat.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x14-gate-fold",
+      "name": "Gate fold BROCHURES 8.5\"x14\"",
+      "displayName": "Gate fold",
+      "group": "BROCHURES 8.5\"x14\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 14\"",
+      "widthIn": 8.5,
+      "heightIn": 14,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_illustrator_gate_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_photoshop_gate_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_JPG_gate_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_PDF_gate_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x14-half-fold",
+      "name": "Half fold BROCHURES 8.5\"x14\"",
+      "displayName": "Half fold",
+      "group": "BROCHURES 8.5\"x14\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 14\"",
+      "widthIn": 8.5,
+      "heightIn": 14,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_illustrator_half_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_Photoshop_half_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_JPG_half_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_PDF_half_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x14-roll-fold",
+      "name": "Roll fold BROCHURES 8.5\"x14\"",
+      "displayName": "Roll fold",
+      "group": "BROCHURES 8.5\"x14\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 14\"",
+      "widthIn": 8.5,
+      "heightIn": 14,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_illustrator_roll_fold_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_photoshop_roll_fold_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_JPG_roll_fold_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_PDF_roll_fold_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x14-tri-fold",
+      "name": "Tri-fold BROCHURES 8.5\"x14\"",
+      "displayName": "Tri-fold",
+      "group": "BROCHURES 8.5\"x14\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 14\"",
+      "widthIn": 8.5,
+      "heightIn": 14,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_illustrator_tri_fold_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_photoshop_tri_fold_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_JPG_tri_fold_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_PDF_tri_fold_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-8-5x14-z-fold",
+      "name": "Z-fold BROCHURES 8.5\"x14\"",
+      "displayName": "Z-fold",
+      "group": "BROCHURES 8.5\"x14\"",
+      "category": "brochure",
+      "dimensionLabel": "8.5\" x 14\"",
+      "widthIn": 8.5,
+      "heightIn": 14,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_illustrator_z_fold_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_photoshop_z_fold_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_JPG_z_fold_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_PDF_z_fold_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-11x17-accordion-fold",
+      "name": "Accordion fold BROCHURES 11\"x17\"",
+      "displayName": "Accordion fold",
+      "group": "BROCHURES 11\"x17\"",
+      "category": "brochure",
+      "dimensionLabel": "11\" x 17\"",
+      "widthIn": 11,
+      "heightIn": 17,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_illustrator_accordion_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_photoshop_accordion_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_JPG_accordion_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11X17_PDF_accordion_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-11x17-double-gate-fold",
+      "name": "Double gate fold BROCHURES 11\"x17\"",
+      "displayName": "Double gate fold",
+      "group": "BROCHURES 11\"x17\"",
+      "category": "brochure",
+      "dimensionLabel": "11\" x 17\"",
+      "widthIn": 11,
+      "heightIn": 17,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_illustrator_double_gate_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_photoshop_double_gate_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_JPG_double_gate_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_PDF_double_gate_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-11x17-double-parallel-fold",
+      "name": "Double parallel fold BROCHURES 11\"x17\"",
+      "displayName": "Double parallel fold",
+      "group": "BROCHURES 11\"x17\"",
+      "category": "brochure",
+      "dimensionLabel": "11\" x 17\"",
+      "widthIn": 11,
+      "heightIn": 17,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_illustrator_double paralel_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_photoshop_double paralel_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_JPG_double paralel_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_PDF_double paralel_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-11x17-flat-no-folding",
+      "name": "Flat (no folding) BROCHURES 11\"x17\"",
+      "displayName": "Flat (no folding)",
+      "group": "BROCHURES 11\"x17\"",
+      "category": "brochure",
+      "dimensionLabel": "11\" x 17\"",
+      "widthIn": 11,
+      "heightIn": 17,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_illustrator_flat.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_photoshop_flat.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_JPG_flat.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_PDF_flat.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-11x17-gate-fold",
+      "name": "Gate fold BROCHURES 11\"x17\"",
+      "displayName": "Gate fold",
+      "group": "BROCHURES 11\"x17\"",
+      "category": "brochure",
+      "dimensionLabel": "11\" x 17\"",
+      "widthIn": 11,
+      "heightIn": 17,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_illustrator_gate_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_photoshop_gate_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_JPG_gate_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_PDF_gate_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-11x17-half-fold",
+      "name": "Half fold BROCHURES 11\"x17\"",
+      "displayName": "Half fold",
+      "group": "BROCHURES 11\"x17\"",
+      "category": "brochure",
+      "dimensionLabel": "11\" x 17\"",
+      "widthIn": 11,
+      "heightIn": 17,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_illustrator_half_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_photoshop_half_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_JPG_half_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_PDF_half_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-11x17-roll-fold",
+      "name": "Roll fold BROCHURES 11\"x17\"",
+      "displayName": "Roll fold",
+      "group": "BROCHURES 11\"x17\"",
+      "category": "brochure",
+      "dimensionLabel": "11\" x 17\"",
+      "widthIn": 11,
+      "heightIn": 17,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_illustrator_roll_fold_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_photoshop_roll_fold_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_JPG_roll_fold_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_PDF_roll_fold_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-11x17-tri-fold",
+      "name": "Tri-fold BROCHURES 11\"x17\"",
+      "displayName": "Tri-fold",
+      "group": "BROCHURES 11\"x17\"",
+      "category": "brochure",
+      "dimensionLabel": "11\" x 17\"",
+      "widthIn": 11,
+      "heightIn": 17,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_illustrator_tri_fold_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_photoshop_tri_fold_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_JPG_tri_fold_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_PDF_tri_fold_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-brochures-11x17-z-fold",
+      "name": "Z-fold BROCHURES 11\"x17\"",
+      "displayName": "Z-fold",
+      "group": "BROCHURES 11\"x17\"",
+      "category": "brochure",
+      "dimensionLabel": "11\" x 17\"",
+      "widthIn": 11,
+      "heightIn": 17,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_illustrator_z_fold_fold.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_photoshop_z_fold_fold.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_JPG_z_fold_fold.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_PDF_z_fold_fold.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-3-5x2",
+      "name": "3.5\"x2\" CARDS and FLYERS (Flat)",
+      "displayName": "3.5\"x2\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "3.5\" x 2\"",
+      "widthIn": 3.5,
+      "heightIn": 2,
+      "orientation": "landscape",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/illustrator business cards.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/photoshop business cards.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/BC_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/pdf business cards.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-2x8",
+      "name": "2\"x8\" CARDS and FLYERS (Flat)",
+      "displayName": "2\"x8\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "2\" x 8\"",
+      "widthIn": 2,
+      "heightIn": 8,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/2x8_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/2x8_Photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/2x8_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/2x8_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-2-5x2-5",
+      "name": "2.5\"x2.5\" CARDS and FLYERS (Flat)",
+      "displayName": "2.5\"x2.5\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "2.5\" x 2.5\"",
+      "widthIn": 2.5,
+      "heightIn": 2.5,
+      "orientation": "landscape",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/2.5x2.5_illustrator.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/2.5x2.5_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/2.5x2.5_PDF.zip"
+      },
+      "formatCount": 3
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-2-75x4-25",
+      "name": "2.75\"x4.25\" CARDS and FLYERS (Flat)",
+      "displayName": "2.75\"x4.25\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "2.75\" x 4.25\"",
+      "widthIn": 2.75,
+      "heightIn": 4.25,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/2.75x4.25_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/2.75x4.25_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/2.75x4.25_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/2.75x4.25_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-3x4",
+      "name": "3\"x4\" CARDS and FLYERS (Flat)",
+      "displayName": "3\"x4\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "3\" x 4\"",
+      "widthIn": 3,
+      "heightIn": 4,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4x3_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4x3_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/3x4_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4x3_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-4x4",
+      "name": "4\"x4\" CARDS and FLYERS (Flat)",
+      "displayName": "4\"x4\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "4\" x 4\"",
+      "widthIn": 4,
+      "heightIn": 4,
+      "orientation": "landscape",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4x4_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4x4_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4x4_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4x4_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-4-25x5-5",
+      "name": "4.25\"x5.5\" CARDS and FLYERS (Flat)",
+      "displayName": "4.25\"x5.5\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "4.25\" x 5.5\"",
+      "widthIn": 4.25,
+      "heightIn": 5.5,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4.25x5.5_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4.25x5.5_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/5.5x4.25_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4.25x5.5_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-4x6",
+      "name": "4\"x6\" CARDS and FLYERS (Flat)",
+      "displayName": "4\"x6\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "4\" x 6\"",
+      "widthIn": 4,
+      "heightIn": 6,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4x6_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4x6_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4x6_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4x6_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-4-25x6",
+      "name": "4.25\"x6\" CARDS and FLYERS (Flat)",
+      "displayName": "4.25\"x6\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "4.25\" x 6\"",
+      "widthIn": 4.25,
+      "heightIn": 6,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4.25x6_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4.25x6_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/6x4.25_jpg.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4.25x6_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-4-25x11",
+      "name": "4.25\"x11\" CARDS and FLYERS (Flat)",
+      "displayName": "4.25\"x11\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "4.25\" x 11\"",
+      "widthIn": 4.25,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/4.25x11_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/4.25x11_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/4.25x11_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/4.25x11_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-5x7",
+      "name": "5\"x7\" CARDS and FLYERS (Flat)",
+      "displayName": "5\"x7\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "5\" x 7\"",
+      "widthIn": 5,
+      "heightIn": 7,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/5x7_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/5x7_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/5x7_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/5x7_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-4x9",
+      "name": "4\"x9\" CARDS and FLYERS (Flat)",
+      "displayName": "4\"x9\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "4\" x 9\"",
+      "widthIn": 4,
+      "heightIn": 9,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4x9_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4x9_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4x9_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/4x9_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-5-5x8-5",
+      "name": "5.5\"x8.5\" CARDS and FLYERS (Flat)",
+      "displayName": "5.5\"x8.5\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "5.5\" x 8.5\"",
+      "widthIn": 5.5,
+      "heightIn": 8.5,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/8.5x5.5_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/8.5x5.5_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/8.5x5.5_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/Cards/8.5x5.5_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-6x9",
+      "name": "6\"x9\" CARDS and FLYERS (Flat)",
+      "displayName": "6\"x9\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "6\" x 9\"",
+      "widthIn": 6,
+      "heightIn": 9,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/6x9_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/6x9_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/6x9_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/6x9_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-8-5x3-5",
+      "name": "8.5\"x3.5\" CARDS and FLYERS (Flat)",
+      "displayName": "8.5\"x3.5\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "8.5\" x 3.5\"",
+      "widthIn": 8.5,
+      "heightIn": 3.5,
+      "orientation": "landscape",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x3.5_illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x3.5_photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/3.5x8.5_JPG.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x3.5_PDF.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-8-5x11",
+      "name": "8.5\"x11\" CARDS and FLYERS (Flat)",
+      "displayName": "8.5\"x11\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_illustrator_flat.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_Photoshop_flat.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_JPG_flat.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_PDF_flat.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-8-5x14",
+      "name": "8.5\"x14\" CARDS and FLYERS (Flat)",
+      "displayName": "8.5\"x14\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "8.5\" x 14\"",
+      "widthIn": 8.5,
+      "heightIn": 14,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_illustrator_flat.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_photoshop_flat.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_JPG_flat.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x14_PDF_flat.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-cards-and-flyers-flat-11x17",
+      "name": "11\"x17\" CARDS and FLYERS (Flat)",
+      "displayName": "11\"x17\"",
+      "group": "CARDS and FLYERS (Flat)",
+      "category": "flat",
+      "dimensionLabel": "11\" x 17\"",
+      "widthIn": 11,
+      "heightIn": 17,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_illustrator_flat.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_photoshop_flat.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_JPG_flat.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/11x17_PDF_flat.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-door-hangers-3-5x8-5",
+      "name": "3.5\"x8.5\" DOOR HANGERS",
+      "displayName": "3.5\"x8.5\"",
+      "group": "DOOR HANGERS",
+      "category": "door-hanger",
+      "dimensionLabel": "3.5\" x 8.5\"",
+      "widthIn": 3.5,
+      "heightIn": 8.5,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/3.5x8.5_illustrator_DH.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/3.5x8.5_photoshop_DH.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/3.5x8.5_JPG_DH.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/3.5x8.5_PDF_DH.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-door-hangers-4x7",
+      "name": "4\"x7\" DOOR HANGERS",
+      "displayName": "4\"x7\"",
+      "group": "DOOR HANGERS",
+      "category": "door-hanger",
+      "dimensionLabel": "4\" x 7\"",
+      "widthIn": 4,
+      "heightIn": 7,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/4x7_illustrator_DH.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/4x7_photoshop_DH.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/4x7_JPG_DH.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/4x7_PDF_DH.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-door-hangers-4-25x11",
+      "name": "4.25\"x11\" DOOR HANGERS",
+      "displayName": "4.25\"x11\"",
+      "group": "DOOR HANGERS",
+      "category": "door-hanger",
+      "dimensionLabel": "4.25\" x 11\"",
+      "widthIn": 4.25,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/4.25x11_illustrator_DH.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/4.25x11_photoshop_DH.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/4.25x11_JPG_DH.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/4.25x11_PDF_DH.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-greeting-cards-5-5x8-5-folded-to-5-5x4-25",
+      "name": "5.5\"x8.5\" (folded to 5.5\"x4.25\") GREETING CARDS",
+      "displayName": "5.5\"x8.5\" (folded to 5.5\"x4.25\")",
+      "group": "GREETING CARDS",
+      "category": "flat",
+      "dimensionLabel": "5.5\" x 8.5\"",
+      "widthIn": 5.5,
+      "heightIn": 8.5,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/5.5x8.5_illustrator_GC.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/5.5x8.5_photoshop_GC.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/5.5x8.5_JPG_GC.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/5.5x8.5_PDF_GC.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-greeting-cards-7x10-folded-to-5x7",
+      "name": "7\"x10\" (folded to 5\"x7\") GREETING CARDS",
+      "displayName": "7\"x10\" (folded to 5\"x7\")",
+      "group": "GREETING CARDS",
+      "category": "flat",
+      "dimensionLabel": "7\" x 10\"",
+      "widthIn": 7,
+      "heightIn": 10,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/7x10_illustrator_GC.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/7x10_photoshop_GC.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/7x10_JPG_GC.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/7x10_PDF_GC.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-greeting-cards-8-5x11-folded-to-5-5x8-5",
+      "name": "8.5\"x11\" (folded to 5.5\"x8.5\") GREETING CARDS",
+      "displayName": "8.5\"x11\" (folded to 5.5\"x8.5\")",
+      "group": "GREETING CARDS",
+      "category": "flat",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_illustrator_GC.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_photoshop_GC.zip",
+        "jpg": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_JPG_GC.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11_PDF_GC.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-greeting-cards-9x12-two-pockets",
+      "name": "9\"x12\" - two pockets GREETING CARDS",
+      "displayName": "9\"x12\" - two pockets",
+      "group": "GREETING CARDS",
+      "category": "flat",
+      "dimensionLabel": "9\" x 12\"",
+      "widthIn": 9,
+      "heightIn": 12,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/lllustrator two pockets.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/folder_9x12_two_pockets.psd.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/indesign 2 pockets.indd.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/pdf two pockets.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-greeting-cards-9x12-left-pocket",
+      "name": "9\"x12\" - left pocket GREETING CARDS",
+      "displayName": "9\"x12\" - left pocket",
+      "group": "GREETING CARDS",
+      "category": "flat",
+      "dimensionLabel": "9\" x 12\"",
+      "widthIn": 9,
+      "heightIn": 12,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/lllustrator left pocket.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/folder_9x12_right_pocket.psd.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/indesign left pocket.indd.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/pdf left pocket.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-greeting-cards-9x12-right-pocket",
+      "name": "9\"x12\" - right pocket GREETING CARDS",
+      "displayName": "9\"x12\" - right pocket",
+      "group": "GREETING CARDS",
+      "category": "flat",
+      "dimensionLabel": "9\" x 12\"",
+      "widthIn": 9,
+      "heightIn": 12,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/lllustrator right pocket.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/folder_9x12_right_pocket.psd.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/indesign right pocket.indd.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/pdf right pocket.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-multi-page-8-5x11-8-12-16-20-pages",
+      "name": "8.5\"x11\" (8, 12, 16, 20 pages) MULTI-PAGE",
+      "displayName": "8.5\"x11\" (8, 12, 16, 20 pages)",
+      "group": "MULTI-PAGE",
+      "category": "print-template",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/8.5x11 booklet.zip"
+      },
+      "formatCount": 1
+    },
+    {
+      "id": "zooniform-multi-page-5-5x8-5-8-12-16-20-pages",
+      "name": "5.5\"x8.5\" (8, 12, 16, 20 pages) MULTI-PAGE",
+      "displayName": "5.5\"x8.5\" (8, 12, 16, 20 pages)",
+      "group": "MULTI-PAGE",
+      "category": "print-template",
+      "dimensionLabel": "5.5\" x 8.5\"",
+      "widthIn": 5.5,
+      "heightIn": 8.5,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/5.5x8.5 booklet.zip"
+      },
+      "formatCount": 1
+    },
+    {
+      "id": "zooniform-multi-page-6x9-8-12-16-20-pages",
+      "name": "6\"x9\" (8, 12, 16, 20 pages) MULTI-PAGE",
+      "displayName": "6\"x9\" (8, 12, 16, 20 pages)",
+      "group": "MULTI-PAGE",
+      "category": "print-template",
+      "dimensionLabel": "6\" x 9\"",
+      "widthIn": 6,
+      "heightIn": 9,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/6x9 booklet.zip"
+      },
+      "formatCount": 1
+    },
+    {
+      "id": "zooniform-sell-sheets-sell-sheets-8-5x11",
+      "name": "Sell sheets 8.5\"x11\" SELL SHEETS",
+      "displayName": "Sell sheets 8.5\"x11\"",
+      "group": "SELL SHEETS",
+      "category": "sell-sheet",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/illustrator sell sheet 8.5x11.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/pdf sell sheet 8.5x11.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/indesign sell sheet 8.5x11.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/pdf sell sheet 8.5x11.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-sell-sheets-sell-sheets-11x17",
+      "name": "Sell sheets 11\"x17\" SELL SHEETS",
+      "displayName": "Sell sheets 11\"x17\"",
+      "group": "SELL SHEETS",
+      "category": "sell-sheet",
+      "dimensionLabel": "11\" x 17\"",
+      "widthIn": 11,
+      "heightIn": 17,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/illustrator sell sheets 11x17.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/photoshop sell sheets 11x17.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/indesing sellsheet 11x17.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/pdf sell sheets 11x17.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-stationery-letterhead-8-5x11",
+      "name": "Letterhead 8.5\"x11\" STATIONERY",
+      "displayName": "Letterhead 8.5\"x11\"",
+      "group": "STATIONERY",
+      "category": "print-template",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/illustrator letterhead 8.5x11.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/photoshop letterhead.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/indesign letterhead.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/pdf letterhead 8.5x11.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-stationery-10-envelope",
+      "name": "#10 envelope STATIONERY",
+      "displayName": "#10 envelope",
+      "group": "STATIONERY",
+      "category": "print-template",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/no 10 envelope illustrator.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/No 10 envelope photoshop.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/no 10 envelope indesign.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/No 10 evelope pdf.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-posters-8-5x11",
+      "name": "8.5\"x11\" POSTERS",
+      "displayName": "8.5\"x11\"",
+      "group": "POSTERS",
+      "category": "poster",
+      "dimensionLabel": "8.5\" x 11\"",
+      "widthIn": 8.5,
+      "heightIn": 11,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/illustrator posters 8.5x11.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/photoshop poster 8.5x11.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/indesign poster 8.5x11.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/pdf posters 8.5x11.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-posters-12x18",
+      "name": "12\"x18\" POSTERS",
+      "displayName": "12\"x18\"",
+      "group": "POSTERS",
+      "category": "poster",
+      "dimensionLabel": "12\" x 18\"",
+      "widthIn": 12,
+      "heightIn": 18,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/illustrator posters 12x18.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/photoshop poster 12x18.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/indesign poster 12x18.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/pdf posters 12x18.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-posters-13x19",
+      "name": "13\"x19\" POSTERS",
+      "displayName": "13\"x19\"",
+      "group": "POSTERS",
+      "category": "poster",
+      "dimensionLabel": "13\" x 19\"",
+      "widthIn": 13,
+      "heightIn": 19,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/illustrator posters 13x19.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/photoshop poster 13x19.zip",
+        "indesign": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/indesign poster 13x19.zip",
+        "pdf": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/pdf posters 13x19.zip"
+      },
+      "formatCount": 4
+    },
+    {
+      "id": "zooniform-posters-24x28",
+      "name": "24\"x28\" POSTERS",
+      "displayName": "24\"x28\"",
+      "group": "POSTERS",
+      "category": "poster",
+      "dimensionLabel": "24\" x 28\"",
+      "widthIn": 24,
+      "heightIn": 28,
+      "orientation": "portrait",
+      "sourceUrl": "https://zooniformprinting.com/content/Templates",
+      "links": {
+        "illustrator": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/illustrator posters 24x28.zip",
+        "photoshop": "https://s3.amazonaws.com/downloads.presscentric.com/products/templates/photoshop poster 24x28 2.zip"
+      },
+      "formatCount": 2
+    }
+  ]
+}

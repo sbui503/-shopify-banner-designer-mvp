@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bui-banner-pro.vercel.app/schemas/brand-assets.schema.json",
+  "title": "BUI Pro Brand Asset Manifest",
+  "type": "object",
+  "required": ["version", "generatedAt", "brands"],
+  "properties": {
+    "version": { "type": "string" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "source": { "type": "string" },
+    "licensePolicy": { "type": "string" },
+    "brands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["slug", "name", "logo"],
+        "properties": {
+          "slug": { "type": "string" },
+          "name": { "type": "string" },
+          "sourceUrl": { "type": "string" },
+          "licenseStatus": { "enum": ["owned", "licensed", "partner-provided", "public-domain", "verbal_approval_pending_written", "unknown"] },
+          "colors": { "type": "array", "items": { "type": "string" } },
+          "categories": { "type": "array", "items": { "type": "string" } },
+          "logo": {
+            "type": "object",
+            "required": ["url"],
+            "properties": {
+              "url": { "type": "string" },
+              "format": { "type": "string" },
+              "transparent": { "type": "boolean" },
+              "licenseStatus": { "enum": ["owned", "licensed", "partner-provided", "public-domain", "verbal_approval_pending_written", "unknown"] }
+            }
+          }
+        }
+      }
+    }
+  }
+}

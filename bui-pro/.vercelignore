@@ -1,0 +1,8 @@
+.playwright-cli
+.vercel
+backups
+data/weedmaps-public-strain-image-urls.json
+data/weedmaps-brand-logo-urls.json
+data/weedmaps-strains-export.json
+data/weedmaps-brands-export.json
+output/
