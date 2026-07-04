@@ -23,6 +23,7 @@
     "assets:sync-design-tool": "node scripts/sync-design-tool-assets.mjs",
     "svg:promote-root-exact": "node scripts/promote-root-design-db-exact-matches.mjs --apply",
     "guard:legacy-domains": "node scripts/guard-legacy-domains.mjs",
+    "test": "node --test tests/*.test.mjs",
     "predeploy": "npm run guard:legacy-domains",
     "vercel-build": "npm run guard:legacy-domains"
   },
