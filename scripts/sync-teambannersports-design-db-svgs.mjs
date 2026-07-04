@@ -8,7 +8,7 @@ const ROOT = path.resolve(__dirname, "..");
 const SVG_DIR = path.join(ROOT, "public", "svg-layer-templates");
 const MANIFEST_FILE = path.join(ROOT, "public", "svg-layer-templates.json");
 const OUTPUT_DIR = path.join(ROOT, "outputs", `true-source-svg-discovery-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}`);
-const CRUD_URL = "https://sv.lct.vn/crud/find";
+const CRUD_URL = process.env.TEAM_BANNER_DESIGN_DB_API_URL;
 const DB = "teambannersports_com";
 const COLLECTION = "designs";
 const ADMIN_BASE = "https://lct-designs.s3.us-west-1.amazonaws.com/admin-designs";
@@ -16,6 +16,10 @@ const ADMIN_BASE = "https://lct-designs.s3.us-west-1.amazonaws.com/admin-designs
 const args = new Set(process.argv.slice(2));
 const shouldApply = args.has("--apply");
 const shouldDownload = !args.has("--no-download");
+
+if (!CRUD_URL) {
+  throw new Error("TEAM_BANNER_DESIGN_DB_API_URL is required; the legacy design DB endpoint is intentionally disabled.");
+}
 
 function compact(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
