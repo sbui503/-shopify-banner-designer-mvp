@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const API_URL = "https://sv.lct.vn/crud/find";
+const API_URL = process.env.TEAM_BANNER_DESIGN_TOOL_API_URL;
 const DB = "teamsportbanners";
 const COLLECTION = "tool_assets";
 const DEFAULT_OUTPUT = "public/team-banner-assets.shopify.json";
@@ -10,6 +10,10 @@ const PAGE_LIMIT = 500;
 
 const outputPath = process.argv[2] || DEFAULT_OUTPUT;
 const reportDir = process.argv[3] || DEFAULT_REPORT_DIR;
+
+if (!API_URL) {
+  throw new Error("TEAM_BANNER_DESIGN_TOOL_API_URL is required; the legacy design tool endpoint is intentionally disabled.");
+}
 
 const TYPE_CATEGORY = new Map([
   ["bg_hem_grommets", "BG Hem & Grommets"],
