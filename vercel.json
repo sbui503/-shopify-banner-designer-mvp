@@ -72,7 +72,15 @@
       "destination": "/"
     },
     {
+      "source": "/custom-design-request/",
+      "destination": "/"
+    },
+    {
       "source": "/design-tool",
+      "destination": "/"
+    },
+    {
+      "source": "/design-tool/",
       "destination": "/"
     },
     {
