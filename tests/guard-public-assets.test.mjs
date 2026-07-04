@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import fs from "node:fs";
 import http from "node:http";
 import os from "node:os";
@@ -112,6 +112,35 @@ function runGuard(root, env = {}) {
   });
 }
 
+function runGuardAsync(root, env = {}) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, ["scripts/guard-public-assets.mjs"], {
+      cwd: root,
+      env: {
+        ...process.env,
+        ASSET_GUARD_REMOTE: "0",
+        ...env
+      },
+      stdio: ["ignore", "pipe", "pipe"]
+    });
+    let stdout = "";
+    let stderr = "";
+
+    child.stdout.setEncoding("utf8");
+    child.stderr.setEncoding("utf8");
+    child.stdout.on("data", (chunk) => {
+      stdout += chunk;
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk;
+    });
+    child.on("error", reject);
+    child.on("close", (status) => {
+      resolve({ status, stdout, stderr });
+    });
+  });
+}
+
 function listen(server) {
   return new Promise((resolve, reject) => {
     server.once("error", reject);
@@ -171,7 +200,7 @@ test("checks only non-API remote boot assets from index.html", async (t) => {
     remoteBootAssetUrl: `http://127.0.0.1:${address.port}/missing-boot.png`
   });
 
-  const result = runGuard(root, {
+  const result = await runGuardAsync(root, {
     ASSET_GUARD_REMOTE: "1",
     ASSET_GUARD_REMOTE_TIMEOUT_MS: "1000"
   });
