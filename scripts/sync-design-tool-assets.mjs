@@ -168,7 +168,6 @@ const uncategorized = assets.filter((asset) => asset.rawType === "");
 const manifest = {
   generatedAt: new Date().toISOString(),
   source: "https://teambannersports.com/design-tool/?m=5 reference asset API",
-  sourceApi: API_URL,
   db: DB,
   collection: COLLECTION,
   totalFromApi: total,
