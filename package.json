@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vercel dev",
     "start": "node --version",
+    "test": "node --test tests/*.test.mjs",
     "qa:graphic": "node scripts/qa-product-graphic-accuracy.mjs",
     "qa:graphic:strict": "node scripts/qa-product-graphic-accuracy.mjs --strict",
     "svg:visual-match": "python3 scripts/promote-visual-exact-svg-matches.py --apply",

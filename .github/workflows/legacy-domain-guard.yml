@@ -18,5 +18,8 @@ jobs:
         with:
           node-version: 20
 
+      - name: Run regression tests
+        run: npm test
+
       - name: Run deployment guards
         run: npm run guard:deploy
