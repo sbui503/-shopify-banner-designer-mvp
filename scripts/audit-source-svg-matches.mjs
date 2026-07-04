@@ -7,8 +7,8 @@ const SVG_DIR = "public/svg-layer-templates";
 const PUBLIC_SOURCE_MAP = "public/team-banner-source-svg-map.json";
 const PUBLIC_CANDIDATE_MAP = "public/team-banner-source-svg-candidates.json";
 const OUTPUT_DIR = "outputs/source-svg-match-audit-20260523";
-const ADMIN_DESIGN_BASE = "https://lct-designs.s3.us-west-1.amazonaws.com/admin-designs";
-const SOURCE_ORIGIN = "https://teambannersports.com";
+const ADMIN_DESIGN_BASE = requiredLegacyEnv("TEAM_BANNER_LEGACY_ADMIN_DESIGN_BASE");
+const SOURCE_ORIGIN = requiredLegacyEnv("TEAM_BANNER_LEGACY_SOURCE_ORIGIN");
 
 const CATEGORY_SEEDS = [
   ["baseball", "rectangle", "/baseball-banners/hem-grommets-baseball-banners/"],
@@ -41,8 +41,8 @@ const MANUAL_SOURCE_OVERRIDES = {
     svg: "1641354165414",
     reason: "manual-visual-match:shopify-allstar-baseball-product",
     fallbackAssets: {
-      backgroundUrl: "https://lct-designs.s3.us-west-1.amazonaws.com/assets/libs/935487f9716520789a9bc32ddef9d3cb.svg",
-      backgroundSource: "svg-template-asset"
+      backgroundUrl: "",
+      backgroundSource: "disabled-legacy-template-asset"
     }
   },
   "all-star-02-baseball-banner": {
@@ -50,6 +50,18 @@ const MANUAL_SOURCE_OVERRIDES = {
     reason: "manual-visual-match:shopify-allstar2-baseball-product"
   }
 };
+
+function requiredLegacyEnv(name) {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`${name} is required; legacy source matching is disabled by default.`);
+  }
+  return value.replace(/\/$/, "");
+}
+
+function escapeRegex(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 function compact(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
@@ -184,8 +196,8 @@ function extractTeamBannerLinks(html, baseUrl) {
 function extractAdminSvgUrls(text) {
   const urls = new Set();
   const raw = String(text || "");
-  const full = /https:\/\/lct-designs\.s3\.us-west-1\.amazonaws\.com\/admin-designs\/([0-9]+)\.(?:svg|png)/gi;
-  const encoded = /https%3A%2F%2Flct-designs\.s3\.us-west-1\.amazonaws\.com%2Fadmin-designs%2F([0-9]+)\.(?:svg|png)/gi;
+  const full = new RegExp(`${escapeRegex(ADMIN_DESIGN_BASE)}\\/([0-9]+)\\.(?:svg|png)`, "gi");
+  const encoded = new RegExp(`${escapeRegex(encodeURIComponent(ADMIN_DESIGN_BASE))}%2F([0-9]+)\\.(?:svg|png)`, "gi");
   const relative = /admin-designs\/([0-9]+)\.(?:svg|png)/gi;
   for (const match of raw.matchAll(full)) urls.add(`${ADMIN_DESIGN_BASE}/${match[1]}.svg`);
   for (const match of raw.matchAll(encoded)) urls.add(`${ADMIN_DESIGN_BASE}/${match[1]}.svg`);
@@ -898,7 +910,7 @@ async function main() {
   const missingCount = logRows.filter((row) => !row.layoutSvg).length;
   const sourceMap = {
     generatedAt: new Date().toISOString(),
-    source: "teambannersports.com",
+    source: "legacy-source-disabled",
     productCount: products.length,
     mappedCount: completeMaps.length,
     matchedCount,
@@ -911,7 +923,7 @@ async function main() {
   };
   const candidateMap = {
     generatedAt: sourceMap.generatedAt,
-    source: "teambannersports.com",
+    source: "legacy-source-disabled",
     productCount: products.length,
     mappedCount: completeMaps.length,
     matchedCount,

@@ -10,11 +10,19 @@ const OUTPUT_DIR = path.join(ROOT, "outputs", "shopify-import-ready-20260523");
 
 const DEFAULT_POLE_CSV = "/tmp/codex-remote-attachments/019e3c2b-c637-7f10-aa03-0a2a8b8bd4df/8FDCC48C-FC45-4877-A8DC-CE0508697921/1-shopify_pole_pocket_banners_with_seo.csv";
 const DEFAULT_HEM_CSV = "/tmp/codex-remote-attachments/019e3c2b-c637-7f10-aa03-0a2a8b8bd4df/8FDCC48C-FC45-4877-A8DC-CE0508697921/2-shopify_hem_grommet_baseball_banners.csv";
+const LEGACY_SOURCE_ORIGIN = process.env.TEAM_BANNER_LEGACY_SOURCE_ORIGIN || "";
+
+function legacySourceUrl(pathname) {
+  if (!LEGACY_SOURCE_ORIGIN) {
+    throw new Error("TEAM_BANNER_LEGACY_SOURCE_ORIGIN is required; legacy source imports are disabled by default.");
+  }
+  return new URL(pathname, LEGACY_SOURCE_ORIGIN).href;
+}
 
 const CATEGORIES = {
   poleBaseball: {
     key: "pole-baseball",
-    baseUrl: "https://teambannersports.com/baseball-banners/pole-pocket-baseball-banners",
+    baseUrl: legacySourceUrl("/baseball-banners/pole-pocket-baseball-banners"),
     type: "Pole Pocket Baseball Banner",
     bannerType: "Pole Pocket",
     sport: "Baseball",
@@ -22,7 +30,7 @@ const CATEGORIES = {
   },
   poleSoftball: {
     key: "pole-softball",
-    baseUrl: "https://teambannersports.com/softball-banners/pole-pocket-softball-banners",
+    baseUrl: legacySourceUrl("/softball-banners/pole-pocket-softball-banners"),
     type: "Pole Pocket Softball Banner",
     bannerType: "Pole Pocket",
     sport: "Softball",
@@ -30,7 +38,7 @@ const CATEGORIES = {
   },
   poleSoccer: {
     key: "pole-soccer",
-    baseUrl: "https://teambannersports.com/soccer-banners/pole-pocket-soccer-banners",
+    baseUrl: legacySourceUrl("/soccer-banners/pole-pocket-soccer-banners"),
     type: "Pole Pocket Soccer Banner",
     bannerType: "Pole Pocket",
     sport: "Soccer",
@@ -38,7 +46,7 @@ const CATEGORIES = {
   },
   hemBaseball: {
     key: "hem-baseball",
-    baseUrl: "https://teambannersports.com/baseball-banners/hem-grommets-baseball-banners",
+    baseUrl: legacySourceUrl("/baseball-banners/hem-grommets-baseball-banners"),
     type: "Hem & Grommet Baseball Banner",
     bannerType: "Hem & Grommet",
     sport: "Baseball",

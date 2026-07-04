@@ -29,7 +29,7 @@ import numpy as np
 from PIL import Image, ImageChops, ImageOps
 
 
-ADMIN_DESIGN_BASE = "https://lct-designs.s3.us-west-1.amazonaws.com/admin-designs"
+ADMIN_DESIGN_BASE = os.environ.get("TEAM_BANNER_LEGACY_ADMIN_DESIGN_BASE", "").rstrip("/")
 DEFAULT_PRODUCTS = "public/team-banner-products.json"
 DEFAULT_TEMPLATES = "public/svg-layer-templates.json"
 DEFAULT_SOURCE_MAP = "public/team-banner-source-svg-map.json"

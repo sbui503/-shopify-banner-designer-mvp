@@ -3,13 +3,28 @@ import path from "node:path";
 
 const SVG_DIR = "public/svg-layer-templates";
 const MANIFEST_PATH = "public/svg-layer-templates.json";
-const DEFAULT_SOURCES = [
-  "https://teambannersports.com/team-banner/little-knights-soccer-banner-12874",
-  "https://lct-designs.s3.us-west-1.amazonaws.com/admin-designs/1660095824436.svg"
-];
-const ADMIN_DESIGN_BASE = "https://lct-designs.s3.us-west-1.amazonaws.com/admin-designs";
+const DEFAULT_SOURCES = [];
+const ADMIN_DESIGN_BASE = process.env.TEAM_BANNER_LEGACY_ADMIN_DESIGN_BASE || "";
 
 const sources = process.argv.slice(2).length ? process.argv.slice(2) : DEFAULT_SOURCES;
+if (!sources.length) {
+  throw new Error("Pass explicit template source URLs; legacy defaults are disabled.");
+}
+
+function requiredAdminDesignBase() {
+  if (!ADMIN_DESIGN_BASE) {
+    throw new Error("TEAM_BANNER_LEGACY_ADMIN_DESIGN_BASE is required for admin-designs recovery.");
+  }
+  return ADMIN_DESIGN_BASE.replace(/\/$/, "");
+}
+
+function escapeRegex(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function adminDesignUrl(id) {
+  return `${requiredAdminDesignBase()}/${id}.svg`;
+}
 
 function decodeHtml(value) {
   return String(value || "")
@@ -42,13 +57,15 @@ function extractSvgUrls(textOrUrl) {
   const urls = new Set();
   const raw = String(textOrUrl || "");
   if (/^https?:\/\/.+\.svg(?:[?#].*)?$/i.test(raw)) urls.add(raw);
-  const fullPattern = /https:\/\/lct-designs\.s3\.us-west-1\.amazonaws\.com\/admin-designs\/([0-9]+)\.(?:svg|png)/gi;
-  for (const match of raw.matchAll(fullPattern)) urls.add(`${ADMIN_DESIGN_BASE}/${match[1]}.svg`);
-  const encodedPattern = /https%3A%2F%2Flct-designs\.s3\.us-west-1\.amazonaws\.com%2Fadmin-designs%2F([0-9]+)\.(?:svg|png)/gi;
-  for (const match of raw.matchAll(encodedPattern)) urls.add(`${ADMIN_DESIGN_BASE}/${match[1]}.svg`);
+  if (ADMIN_DESIGN_BASE) {
+    const fullPattern = new RegExp(`${escapeRegex(requiredAdminDesignBase())}\\/([0-9]+)\\.(?:svg|png)`, "gi");
+    for (const match of raw.matchAll(fullPattern)) urls.add(adminDesignUrl(match[1]));
+    const encodedPattern = new RegExp(`${escapeRegex(encodeURIComponent(requiredAdminDesignBase()))}%2F([0-9]+)\\.(?:svg|png)`, "gi");
+    for (const match of raw.matchAll(encodedPattern)) urls.add(adminDesignUrl(match[1]));
+  }
   const relativePattern = /admin-designs\/([0-9]+)\.(?:svg|png)/gi;
   for (const match of raw.matchAll(relativePattern)) {
-    urls.add(`${ADMIN_DESIGN_BASE}/${match[1]}.svg`);
+    urls.add(adminDesignUrl(match[1]));
   }
   return [...urls];
 }
@@ -146,7 +163,7 @@ function readTemplateMeta(file, hintsByFile = new Map()) {
     name: file.replace(/\.svg$/i, ""),
     title: templateTitle(file, info, svg),
     url: `/svg-layer-templates/${file}`,
-    sourceUrl: hint.svgUrl || `https://lct-designs.s3.us-west-1.amazonaws.com/admin-designs/${file}`,
+    sourceUrl: hint.svgUrl || `/svg-layer-templates/${file}`,
     sourcePage: hint.page || "",
     type: mapType(searchable),
     sport: inferSport(searchable),

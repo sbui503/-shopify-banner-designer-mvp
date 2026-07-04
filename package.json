@@ -21,7 +21,10 @@
     "svg:strict-native-policy": "node scripts/enforce-strict-native-source-policy.mjs --apply",
     "qa:cart-source": "node scripts/qa-cart-source-regression.mjs",
     "assets:sync-design-tool": "node scripts/sync-design-tool-assets.mjs",
-    "svg:promote-root-exact": "node scripts/promote-root-design-db-exact-matches.mjs --apply"
+    "svg:promote-root-exact": "node scripts/promote-root-design-db-exact-matches.mjs --apply",
+    "guard:legacy-domains": "node scripts/guard-legacy-domains.mjs",
+    "predeploy": "npm run guard:legacy-domains",
+    "vercel-build": "npm run guard:legacy-domains"
   },
   "dependencies": {
     "@vercel/blob": "^0.27.3"

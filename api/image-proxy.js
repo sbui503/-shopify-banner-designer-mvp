@@ -1,9 +1,9 @@
 const ALLOWED_HOSTS = new Set([
+  "b4cuoooyldjrdeea.public.blob.vercel-storage.com",
   "cdn.shopify.com",
   "files-mentioned-by-the-user-shopify.vercel.app",
-  "lct-designs.s3.us-west-1.amazonaws.com",
   "teamsportbanners.com",
-  "teambannersports.com"
+  "teamsportbanners.vercel.app"
 ]);
 
 function setCors(response) {

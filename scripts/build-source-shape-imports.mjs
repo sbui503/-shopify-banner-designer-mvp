@@ -9,11 +9,19 @@ const SVG_DIR = path.join(PUBLIC_DIR, "svg-layer-templates");
 const OUTPUT_DIR = path.join(ROOT, "outputs", "shopify-import-ready-20260524-shapes");
 const TEMPLATE_CSV = "/Users/si/Downloads/Team Sport Banner Product template - Sheet1.csv";
 const SHOPIFY_FILES_BASE = "https://cdn.shopify.com/s/files/1/0649/3844/2958/files/";
+const LEGACY_SOURCE_ORIGIN = process.env.TEAM_BANNER_LEGACY_SOURCE_ORIGIN || "";
+
+function legacySourceUrl(pathname) {
+  if (!LEGACY_SOURCE_ORIGIN) {
+    throw new Error("TEAM_BANNER_LEGACY_SOURCE_ORIGIN is required; legacy source imports are disabled by default.");
+  }
+  return new URL(pathname, LEGACY_SOURCE_ORIGIN).href;
+}
 
 const CATEGORIES = [
   {
     key: "hem-grommet-baseball",
-    baseUrl: "https://teambannersports.com/baseball-banners/hem-grommets-baseball-banners",
+    baseUrl: legacySourceUrl("/baseball-banners/hem-grommets-baseball-banners"),
     sport: "Baseball",
     sourceSport: "baseball",
     shape: "rectangle",
@@ -27,7 +35,7 @@ const CATEGORIES = [
   },
   {
     key: "hem-grommet-softball",
-    baseUrl: "https://teambannersports.com/softball-banners/hem-grommets-softball-banners",
+    baseUrl: legacySourceUrl("/softball-banners/hem-grommets-softball-banners"),
     sport: "Softball",
     sourceSport: "softball",
     shape: "rectangle",
@@ -41,7 +49,7 @@ const CATEGORIES = [
   },
   {
     key: "hem-grommet-soccer",
-    baseUrl: "https://teambannersports.com/soccer-banners/hem-grommets-soccer-banners",
+    baseUrl: legacySourceUrl("/soccer-banners/hem-grommets-soccer-banners"),
     sport: "Soccer",
     sourceSport: "soccer",
     shape: "rectangle",
@@ -55,7 +63,7 @@ const CATEGORIES = [
   },
   {
     key: "triangle-softball",
-    baseUrl: "https://teambannersports.com/softball-banners/triangle-softball-banners",
+    baseUrl: legacySourceUrl("/softball-banners/triangle-softball-banners"),
     sport: "Softball",
     sourceSport: "softball",
     shape: "triangle",
@@ -69,7 +77,7 @@ const CATEGORIES = [
   },
   {
     key: "triangle-soccer",
-    baseUrl: "https://teambannersports.com/soccer-banners/triangle-soccer-banners",
+    baseUrl: legacySourceUrl("/soccer-banners/triangle-soccer-banners"),
     sport: "Soccer",
     sourceSport: "soccer",
     shape: "triangle",
@@ -83,7 +91,7 @@ const CATEGORIES = [
   },
   {
     key: "home-plate-baseball",
-    baseUrl: "https://teambannersports.com/baseball-banners/home-plate-baseball-pennants",
+    baseUrl: legacySourceUrl("/baseball-banners/home-plate-baseball-pennants"),
     sport: "Baseball",
     sourceSport: "baseball",
     shape: "homeplatepennant",
@@ -97,7 +105,7 @@ const CATEGORIES = [
   },
   {
     key: "home-plate-softball",
-    baseUrl: "https://teambannersports.com/softball-banners/home-plate-softball-banners",
+    baseUrl: legacySourceUrl("/softball-banners/home-plate-softball-banners"),
     sport: "Softball",
     sourceSport: "softball",
     shape: "homeplatepennant",
@@ -111,7 +119,7 @@ const CATEGORIES = [
   },
   {
     key: "home-plate-soccer",
-    baseUrl: "https://teambannersports.com/soccer-banners/home-plate-soccer-banners",
+    baseUrl: legacySourceUrl("/soccer-banners/home-plate-soccer-banners"),
     sport: "Soccer",
     sourceSport: "soccer",
     shape: "homeplatepennant",
@@ -128,7 +136,7 @@ const CATEGORIES = [
 const DISCOVERY_ONLY_CATEGORIES = [
   {
     key: "triangle-baseball",
-    baseUrl: "https://teambannersports.com/baseball-banners/triangle-baseball-pennants",
+    baseUrl: legacySourceUrl("/baseball-banners/triangle-baseball-pennants"),
     sport: "Baseball",
     sourceSport: "baseball",
     shape: "triangle",

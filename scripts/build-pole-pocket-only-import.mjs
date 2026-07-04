@@ -9,25 +9,33 @@ const SVG_DIR = path.join(PUBLIC_DIR, "svg-layer-templates");
 const OUTPUT_DIR = path.join(ROOT, "outputs", "shopify-import-ready-20260523");
 const TEMPLATE_CSV = "/Users/si/Downloads/Team Sport Banner Product template - Sheet1.csv";
 const SHOPIFY_FILES_BASE = "https://cdn.shopify.com/s/files/1/0649/3844/2958/files/";
+const LEGACY_SOURCE_ORIGIN = process.env.TEAM_BANNER_LEGACY_SOURCE_ORIGIN || "";
+
+function legacySourceUrl(pathname) {
+  if (!LEGACY_SOURCE_ORIGIN) {
+    throw new Error("TEAM_BANNER_LEGACY_SOURCE_ORIGIN is required; legacy source imports are disabled by default.");
+  }
+  return new URL(pathname, LEGACY_SOURCE_ORIGIN).href;
+}
 
 const CATEGORIES = [
   {
     key: "pole-pocket-baseball",
-    baseUrl: "https://teambannersports.com/baseball-banners/pole-pocket-baseball-banners",
+    baseUrl: legacySourceUrl("/baseball-banners/pole-pocket-baseball-banners"),
     sport: "Baseball",
     typeLabel: "Pole Pocket Baseball Banner",
     skuPrefix: "PPB"
   },
   {
     key: "pole-pocket-softball",
-    baseUrl: "https://teambannersports.com/softball-banners/pole-pocket-softball-banners",
+    baseUrl: legacySourceUrl("/softball-banners/pole-pocket-softball-banners"),
     sport: "Softball",
     typeLabel: "Pole Pocket Softball Banner",
     skuPrefix: "PPSB"
   },
   {
     key: "pole-pocket-soccer",
-    baseUrl: "https://teambannersports.com/soccer-banners/pole-pocket-soccer-banners",
+    baseUrl: legacySourceUrl("/soccer-banners/pole-pocket-soccer-banners"),
     sport: "Soccer",
     typeLabel: "Pole Pocket Soccer Banner",
     skuPrefix: "PPSC"
