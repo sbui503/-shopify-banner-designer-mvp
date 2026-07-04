@@ -6,6 +6,16 @@ This Vercel app hosts:
 - `/api/designs`
 - a small onboarding page at `/`
 
+## Deployment guard
+
+Every Vercel build must pass `npm run guard:deploy`. The guard blocks:
+
+- retired Team Banner domain references
+- missing files referenced by `public/index.html`, the designer CSS/JS, and the public JSON manifests
+- unreachable boot-time remote asset URLs in `public/index.html`
+
+Do not bypass `vercel-build` or `predeploy` for production deploys.
+
 After deployment, update the Shopify app config:
 
 ```toml

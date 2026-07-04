@@ -23,8 +23,10 @@
     "assets:sync-design-tool": "node scripts/sync-design-tool-assets.mjs",
     "svg:promote-root-exact": "node scripts/promote-root-design-db-exact-matches.mjs --apply",
     "guard:legacy-domains": "node scripts/guard-legacy-domains.mjs",
-    "predeploy": "npm run guard:legacy-domains",
-    "vercel-build": "npm run guard:legacy-domains"
+    "guard:assets": "node scripts/guard-public-assets.mjs",
+    "guard:deploy": "npm run guard:legacy-domains && npm run guard:assets",
+    "predeploy": "npm run guard:deploy",
+    "vercel-build": "npm run guard:deploy"
   },
   "dependencies": {
     "@vercel/blob": "^0.27.3"

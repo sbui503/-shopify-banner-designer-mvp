@@ -1,4 +1,4 @@
-name: Legacy Domain Guard
+name: Deployment Guards
 
 on:
   push:
@@ -18,5 +18,5 @@ jobs:
         with:
           node-version: 20
 
-      - name: Check retired domains
-        run: npm run guard:legacy-domains
+      - name: Run deployment guards
+        run: npm run guard:deploy
