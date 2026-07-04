@@ -1,7 +1,6 @@
 {
   "generatedAt": "2026-05-20T20:21:02.404Z",
   "source": "https://teambannersports.com/design-tool/?m=1 reference asset API",
-  "sourceApi": "https://sv.lct.vn/crud/find",
   "db": "teamsportbanners",
   "collection": "tool_assets",
   "assets": [
