@@ -2783,6 +2783,29 @@
       return "rectangle";
     }
 
+    function generatedProductPreviewUrl(product, handle) {
+      const explicitSvg = product.templateSvg || product.layerConfig?.layoutSvgUrl || product.layerConfig?.layoutSvg || "";
+      if (explicitSvg) return resolveSourceUrl(explicitSvg);
+      return handle ? resolveSourceUrl(`/generated-product-svgs/${handle}.svg`) : "";
+    }
+
+    function markTemplateImageBroken(template, image) {
+      if (!template || !template.fallbackImage || template.imageBroken) return false;
+      template.imageBroken = true;
+      if (image && image.src !== template.fallbackImage) {
+        image.src = template.fallbackImage;
+      }
+      if (selectedTemplate && selectedTemplate.key === template.key) {
+        selectedTemplate.imageBroken = true;
+      }
+      return true;
+    }
+
+    function templateDesignImage(template) {
+      if (!template) return "";
+      return template.imageBroken && template.fallbackImage ? template.fallbackImage : template.image;
+    }
+
     function normalizeTemplateProduct(product) {
       if (!product || !product.image) return null;
       const title = product.title || product.handle || "Banner template";
@@ -2794,6 +2817,8 @@
         handle,
         title,
         image: resolveSourceUrl(product.image),
+        fallbackImage: generatedProductPreviewUrl(product, handle),
+        imageBroken: false,
         price: product.price || "",
         type,
         sport,
@@ -2820,7 +2845,14 @@
     function selectTemplate(template, options = {}) {
       selectedTemplate = template || null;
       if (els.templatePreviewImage) {
-        els.templatePreviewImage.src = selectedTemplate ? selectedTemplate.image : "";
+        els.templatePreviewImage.onerror = null;
+        if (selectedTemplate && selectedTemplate.fallbackImage && selectedTemplate.fallbackImage !== selectedTemplate.image) {
+          els.templatePreviewImage.onerror = () => {
+            els.templatePreviewImage.onerror = null;
+            markTemplateImageBroken(selectedTemplate, els.templatePreviewImage);
+          };
+        }
+        els.templatePreviewImage.src = selectedTemplate ? templateDesignImage(selectedTemplate) : "";
         els.templatePreviewImage.alt = selectedTemplate ? `${selectedTemplate.title} preview` : "Selected banner template preview";
       }
       if (els.templatePreviewTitle) els.templatePreviewTitle.textContent = selectedTemplate ? selectedTemplate.title : "Choose a template";
@@ -2872,10 +2904,16 @@
             card.dataset.tbdTemplateKey = template.key;
             card.setAttribute("aria-current", selectedTemplate && selectedTemplate.key === template.key ? "true" : "false");
             card.innerHTML = `
-              <img loading="lazy" alt="${escapeHtml(template.title)} preview" src="${template.image}">
+              <img loading="lazy" alt="${escapeHtml(template.title)} preview" src="${templateDesignImage(template)}">
               <strong>${escapeHtml(template.title)}</strong>
               <span>${templateSportLabel(template.sport)}</span>
             `;
+            const previewImage = card.querySelector("img");
+            if (previewImage && template.fallbackImage && template.fallbackImage !== template.image) {
+              previewImage.addEventListener("error", () => {
+                markTemplateImageBroken(template, previewImage);
+              }, { once: true });
+            }
             card.addEventListener("click", () => {
               selectTemplate(template, { scroll: false });
               setStatus(`${template.title} preview selected. Tap Design this to edit it.`);
@@ -2960,7 +2998,7 @@
       launch.headline = "";
       launch.tags = product.tags || "";
       launch.collections = [product.type, product.productCategory].filter(Boolean).join(" ");
-      launch.image = template.image || product.image || "";
+      launch.image = templateDesignImage(template) || product.image || "";
       launch.price = product.price || template.price || "";
       launch.sizeLabel = "";
       launch.shape = nextShape;
