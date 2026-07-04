@@ -16,11 +16,19 @@
       "destination": "/"
     },
     {
+      "source": "/team-banner/",
+      "destination": "/"
+    },
+    {
       "source": "/team-banner/:path*",
       "destination": "/"
     },
     {
       "source": "/collections",
+      "destination": "/"
+    },
+    {
+      "source": "/collections/",
       "destination": "/"
     },
     {
@@ -32,11 +40,19 @@
       "destination": "/"
     },
     {
+      "source": "/products/",
+      "destination": "/"
+    },
+    {
       "source": "/products/:path*",
       "destination": "/"
     },
     {
       "source": "/pages",
+      "destination": "/"
+    },
+    {
+      "source": "/pages/",
       "destination": "/"
     },
     {
@@ -48,6 +64,10 @@
       "destination": "/"
     },
     {
+      "source": "/baseball-banners/",
+      "destination": "/"
+    },
+    {
       "source": "/baseball-banners/:path*",
       "destination": "/"
     },
@@ -56,11 +76,19 @@
       "destination": "/"
     },
     {
+      "source": "/softball-banners/",
+      "destination": "/"
+    },
+    {
       "source": "/softball-banners/:path*",
       "destination": "/"
     },
     {
       "source": "/soccer-banners",
+      "destination": "/"
+    },
+    {
+      "source": "/soccer-banners/",
       "destination": "/"
     },
     {
@@ -92,7 +120,15 @@
       "destination": "/"
     },
     {
+      "source": "/cart/",
+      "destination": "/"
+    },
+    {
       "source": "/checkout",
+      "destination": "/"
+    },
+    {
+      "source": "/checkout/",
       "destination": "/"
     },
     {
@@ -104,6 +140,10 @@
       "destination": "/"
     },
     {
+      "source": "/account/",
+      "destination": "/"
+    },
+    {
       "source": "/account/:path*",
       "destination": "/"
     },
@@ -112,7 +152,15 @@
       "destination": "/"
     },
     {
+      "source": "/order-detail/",
+      "destination": "/"
+    },
+    {
       "source": "/sign-in",
+      "destination": "/"
+    },
+    {
+      "source": "/sign-in/",
       "destination": "/"
     },
     {
@@ -120,7 +168,15 @@
       "destination": "/"
     },
     {
+      "source": "/sign-up/",
+      "destination": "/"
+    },
+    {
       "source": "/official-notice",
+      "destination": "/"
+    },
+    {
+      "source": "/official-notice/",
       "destination": "/"
     }
   ],
