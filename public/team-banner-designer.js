@@ -11,10 +11,10 @@
   const ASSETS_PER_PAGE = 48;
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
   const DEFAULT_IMAGE_PROXY_URL = "https://files-mentioned-by-the-user-shopify.vercel.app/api/image-proxy";
-  const SHOPIFY_STORE_ORIGIN = "https://teamsportbanners.com";
+  const CHECKOUT_ORIGIN = "";
   const DEFAULT_CUSTOM_DESIGN_VARIANT_ID = "43534427029710";
-  const DEFAULT_CUSTOM_DESIGN_PRODUCT_URL = `${SHOPIFY_STORE_ORIGIN}/products/custom-design-banner?variant=${DEFAULT_CUSTOM_DESIGN_VARIANT_ID}`;
-  const DEFAULT_CUSTOM_DESIGN_CHECKOUT_URL = `${SHOPIFY_STORE_ORIGIN}/cart/${DEFAULT_CUSTOM_DESIGN_VARIANT_ID}:1?return_to=/checkouts/cn/${DEFAULT_CUSTOM_DESIGN_VARIANT_ID}`;
+  const DEFAULT_CUSTOM_DESIGN_PRODUCT_URL = "";
+  const DEFAULT_CUSTOM_DESIGN_CHECKOUT_URL = "";
   const CUSTOM_DESIGN_VARIANT_BY_SHAPE = {
     triangle: "43537293050062",
     homeplatepennant: "43537293443278"
@@ -356,7 +356,7 @@
   function absoluteShopifyUrl(value) {
     if (!value) return "";
     try {
-      return new URL(value, SHOPIFY_STORE_ORIGIN).href;
+      return new URL(value, window.location.origin).href;
     } catch (error) {
       return String(value);
     }
@@ -365,7 +365,8 @@
   function customDesignCheckoutUrl(variantId) {
     const id = String(variantId || DEFAULT_CUSTOM_DESIGN_VARIANT_ID).trim();
     if (!id) return DEFAULT_CUSTOM_DESIGN_PRODUCT_URL;
-    return `${SHOPIFY_STORE_ORIGIN}/cart/${encodeURIComponent(id)}:1?return_to=/checkouts/cn/${encodeURIComponent(id)}`;
+    if (!CHECKOUT_ORIGIN) return "";
+    return `${CHECKOUT_ORIGIN}/cart/${encodeURIComponent(id)}:1?return_to=/checkouts/cn/${encodeURIComponent(id)}`;
   }
 
   function designerAssetUrl(fileName) {
@@ -412,9 +413,13 @@
     if (!raw) return "";
     try {
       const url = new URL(raw, window.location.origin);
+      const queryHandle = url.searchParams.get("productHandle") || url.searchParams.get("handle");
+      if (queryHandle) return queryHandle;
       const match = url.pathname.match(/\/products\/([^/?#]+)/i);
       return match ? decodeURIComponent(match[1]) : "";
     } catch (error) {
+      const queryMatch = raw.match(/[?&](?:productHandle|handle)=([^&#]+)/i);
+      if (queryMatch) return decodeURIComponent(queryMatch[1]);
       const match = raw.match(/\/products\/([^/?#]+)/i);
       return match ? decodeURIComponent(match[1]) : "";
     }
@@ -918,14 +923,6 @@
       if (!response.ok) throw new Error("Source SVG map request failed");
       const data = await response.json();
       const maps = Array.isArray(data.maps) ? data.maps : Array.isArray(data) ? data : [];
-      const validMap = (item) => item
-        && (
-          String(item.matchStatus || "matched").toLowerCase() === "matched"
-          || (
-            launch.allowCandidateSourceMap
-            && ["review", "candidate"].includes(String(item.matchStatus || "").toLowerCase())
-          )
-        );
       const launchImageKey = imageFileKey(launch.image);
       const handleCandidates = [
         launch.handle,
@@ -934,6 +931,21 @@
         handleFromUrl(window.location.href),
         handleFromUrl(document.referrer)
       ].filter(Boolean);
+      const itemMatchesHandle = (item) => handleCandidates.some((candidate) => (
+        String(item.handle || "") === candidate || String(item.productHandle || "") === candidate
+      ));
+      const validMap = (item) => item
+        && (
+          String(item.matchStatus || "matched").toLowerCase() === "matched"
+          || (
+            launch.allowCandidateSourceMap
+            && ["review", "candidate"].includes(String(item.matchStatus || "").toLowerCase())
+          )
+          || (
+            itemMatchesHandle(item)
+            && ["review", "candidate"].includes(String(item.matchStatus || "").toLowerCase())
+          )
+        );
       const imageMatch = launchImageKey
         ? maps.find((item) => validMap(item) && imageFileKey(item.productImage) === launchImageKey)
         : null;
@@ -1728,6 +1740,17 @@
           || layoutSource === "product-image-fallback"
           || matchStatus.includes("product-image")
         );
+    }
+
+    function usesSourceVectorBackground(config = currentLayerConfig()) {
+      const backgroundUrls = Array.isArray(config.backgroundUrls) ? config.backgroundUrls : [];
+      const values = [
+        config.backgroundUrl,
+        config.backgroundSvgUrl,
+        ...backgroundUrls
+      ].filter(Boolean);
+      return values.includes(VECTOR_BACKGROUND_HREF)
+        || String(config.backgroundSource || "").toLowerCase() === "source-svg-vector-background";
     }
 
     function productImageFallbackTextOpacity(value = 1, config = currentLayerConfig()) {
@@ -2793,9 +2816,12 @@
     }
 
     function generatedProductPreviewUrl(product) {
-      if (!hasConfirmedSourceTemplate(product)) return "";
-      const explicitSvg = product.templateSvg || product.layerConfig?.layoutSvgUrl || product.layerConfig?.layoutSvg || "";
+      const layoutSvgId = product.layerConfig?.layoutSvg || "";
+      const explicitSvg = product.templateSvg
+        || product.layerConfig?.layoutSvgUrl
+        || (layoutSvgId ? `/svg-layer-templates/${String(layoutSvgId).replace(/\.svg$/i, "")}.svg` : "");
       if (explicitSvg) return resolveSourceUrl(explicitSvg);
+      if (!hasConfirmedSourceTemplate(product)) return "";
       return "";
     }
 
@@ -4744,8 +4770,9 @@
     }
 
     function checkoutUrlWithDesignAttributes(checkoutUrl, saved) {
+      if (!checkoutUrl) return "";
       try {
-        const url = new URL(checkoutUrl, SHOPIFY_STORE_ORIGIN);
+        const url = new URL(checkoutUrl, window.location.origin);
         const attributes = {
           "Design ID": saved && saved.id,
           "Design Preview": saved && saved.previewUrl,
@@ -4805,6 +4832,9 @@
     }
 
     function cartLineUrl(items = designCart) {
+      const configuredCheckout = currentCustomCheckoutUrl();
+      if (configuredCheckout) return configuredCheckout;
+      if (!CHECKOUT_ORIGIN) return "";
       const counts = items.reduce((map, item) => {
         const id = String(item.variantId || "").trim();
         if (!id) return map;
@@ -4812,7 +4842,7 @@
         return map;
       }, new Map());
       const lines = [...counts.entries()].map(([id, quantity]) => `${encodeURIComponent(id)}:${quantity}`).join(",");
-      return `${SHOPIFY_STORE_ORIGIN}/cart/${lines || `${DEFAULT_CUSTOM_DESIGN_VARIANT_ID}:1`}?return_to=/checkout`;
+      return `${CHECKOUT_ORIGIN}/cart/${lines || `${DEFAULT_CUSTOM_DESIGN_VARIANT_ID}:1`}?return_to=/checkout`;
     }
 
     function redirectToShopifyCheckout() {
@@ -4821,7 +4851,11 @@
         return;
       }
       const checkoutUrl = cartLineUrl(designCart);
-      setStatus("Opening Shopify checkout...");
+      if (!checkoutUrl) {
+        setStatus("Checkout is not configured for this designer.");
+        return;
+      }
+      setStatus("Opening checkout...");
       window.location.assign(checkoutUrl);
     }
 
@@ -4852,7 +4886,7 @@
         els.cartSummary.textContent = count === 1 ? "1 item in cart" : `${count} items in cart`;
         els.cartSummary.hidden = count === 0;
       }
-      if (els.cartCheckout) els.cartCheckout.disabled = count === 0;
+      if (els.cartCheckout) els.cartCheckout.disabled = count === 0 || !cartLineUrl(designCart);
       if (!els.cartItems) return;
       els.cartItems.innerHTML = "";
       designCart.slice().reverse().forEach((item, reverseIndex) => {
@@ -7315,6 +7349,26 @@
 
       try {
         const layerConfig = currentLayerConfig();
+        if (launch.image && launch.autoLayer === "png" && usesSourceVectorBackground(layerConfig)) {
+          setStatus("Loading exact product background...");
+          try {
+            const image = await loadImage(canvasSafeImageUrl(launch.image, imageProxyEndpoint));
+            addExactProductBackground(image, {
+              sourceUrl: launch.image,
+              source: "product-image-vector-background-fallback"
+            });
+            canvas.discardActiveObject();
+            keepGuideOnTop();
+            canvas.renderAll();
+            saveHistory();
+            updateSelectionControls();
+            setStatus(`${name} loaded as exact full-background artwork.`);
+            return;
+          } catch (error) {
+            if (!launch.templateSvg) throw error;
+            setStatus("Product image unavailable. Loading product SVG layers...");
+          }
+        }
         const shouldUseMatchedSvg = !launch.layerMap
           && launch.templateSvg
           && (launch.sourceTemplateOnly || layerConfig.layoutSource === "svg-template")

@@ -1,7 +1,6 @@
 const ALLOWED_HOSTS = new Set([
   "cdn.shopify.com",
   "files-mentioned-by-the-user-shopify.vercel.app",
-  "teamsportbanners.com",
   "teamsportbanners.vercel.app"
 ]);
 
