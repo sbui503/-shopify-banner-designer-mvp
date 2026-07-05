@@ -2784,10 +2784,19 @@
       return "rectangle";
     }
 
-    function generatedProductPreviewUrl(product, handle) {
+    function hasConfirmedSourceTemplate(product) {
+      const config = product?.layerConfig || {};
+      return Boolean(product?.templateSvg)
+        && config.sourceEditable === true
+        && config.needsSourceSvg !== true
+        && config.objectLayerMode !== "needs-source-svg";
+    }
+
+    function generatedProductPreviewUrl(product) {
+      if (!hasConfirmedSourceTemplate(product)) return "";
       const explicitSvg = product.templateSvg || product.layerConfig?.layoutSvgUrl || product.layerConfig?.layoutSvg || "";
       if (explicitSvg) return resolveSourceUrl(explicitSvg);
-      return handle ? resolveSourceUrl(`/generated-product-svgs/${handle}.svg`) : "";
+      return "";
     }
 
     function markTemplateImageBroken(template, image) {
@@ -2809,6 +2818,7 @@
 
     function normalizeTemplateProduct(product) {
       if (!product || !product.image) return null;
+      if (!hasConfirmedSourceTemplate(product)) return null;
       const title = product.title || product.handle || "Banner template";
       const handle = product.handle || titleSlug(title);
       const type = productTemplateType(product);
@@ -2818,7 +2828,7 @@
         handle,
         title,
         image: resolveSourceUrl(product.image),
-        fallbackImage: generatedProductPreviewUrl(product, handle),
+        fallbackImage: generatedProductPreviewUrl(product),
         imageBroken: false,
         price: product.price || "",
         type,

@@ -36,7 +36,6 @@ DEFAULT_SOURCE_MAP = "public/team-banner-source-svg-map.json"
 DEFAULT_CANDIDATE_MAP = "public/team-banner-source-svg-candidates.json"
 DEFAULT_OUTPUT_DIR = "outputs/visual-exact-svg-match-20260523"
 DEFAULT_CACHE_DIR = "outputs/visual-exact-svg-match-cache"
-DEFAULT_FALLBACK_DIR = "public/generated-product-svgs"
 
 
 def compact(value: Any) -> str:
@@ -343,84 +342,6 @@ def svg_escape(value: Any) -> str:
     )
 
 
-def fallback_svg_name(product: dict[str, Any]) -> str:
-    handle = re.sub(r"[^a-z0-9_-]+", "-", str(product.get("handle") or filename_base(product.get("image"))).lower()).strip("-")
-    return f"{handle or 'product'}.svg"
-
-
-def write_product_image_svg(product: dict[str, Any], fingerprint: Fingerprint, fallback_dir: Path) -> str:
-    fallback_dir.mkdir(parents=True, exist_ok=True)
-    width = max(1, int(fingerprint.width or 760))
-    height = max(1, int(fingerprint.height or 454))
-    file_name = fallback_svg_name(product)
-    file_path = fallback_dir / file_name
-    image = resolve_url(product.get("image"))
-    title = svg_escape(product.get("title") or product.get("handle"))
-    image_attr = svg_escape(image)
-    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" width="{width}" height="{height}" data-info="{{&quot;name&quot;:&quot;{title}&quot;,&quot;type&quot;:&quot;product-image-svg-fallback&quot;}}">
-  <image class="background locked product-image-fallback" href="{image_attr}" x="0" y="0" width="{width}" height="{height}" preserveAspectRatio="xMidYMid meet"/>
-</svg>
-'''
-    file_path.write_text(svg, encoding="utf-8")
-    return f"/generated-product-svgs/{file_name}"
-
-
-def fallback_layer_config(product: dict[str, Any], svg_url: str) -> dict[str, Any]:
-    config = dict(product.get("layerConfig") or {})
-    config.update({
-        "backgroundUrl": config.get("backgroundUrl") or product.get("image") or "",
-        "backgroundSource": config.get("backgroundSource") or "product-image",
-        "layoutSource": "product-image-object-fallback",
-        "layoutSvg": filename_base(svg_url),
-        "layoutSvgUrl": svg_url,
-        "assetMatchStatus": "product-image-object-fallback",
-        "objectLayerMode": "product-image-object-fallback",
-        "fullyEditable": True,
-        "sourceEditable": False,
-        "visualExact": True,
-        "needsSourceSvg": True,
-    })
-    return config
-
-
-def fallback_source_row(product: dict[str, Any], svg_url: str, best: dict[str, Any] | None = None) -> dict[str, Any]:
-    shape = normalize_shape(product.get("shape") or product.get("title") or product.get("handle")) or "rectangle"
-    reasons = [
-        "generated-editable-object-fallback",
-        "exact-product-image-retained-as-visual-reference",
-        "no-visual-source-preview-match-in-3996-library",
-        "source-svg-still-needed-for-native-object-editing",
-    ]
-    if best and best.get("bestTemplate"):
-        reasons.append(f"nearest-source-svg:{best.get('bestTemplate')}")
-    if best and isinstance(best.get("bestRmse"), float):
-        reasons.append(f"nearest-rmse:{best.get('bestRmse'):.5f}")
-    return {
-        "handle": product.get("handle"),
-        "title": product.get("title"),
-        "shape": shape,
-        "productShape": product.get("shape") or shape,
-        "sourceShape": shape,
-        "templateSvg": svg_url,
-        "sourceTemplatePage": "",
-        "sourceTemplateSvg": "",
-        "matchStatus": "matched",
-        "matchScore": 900,
-        "matchMargin": 0,
-        "matchReasons": reasons,
-        "matchConfidence": "product-image-object-fallback",
-        "sourceType": "product-image-object-fallback",
-        "editableLayerMode": "product-image-object-fallback",
-        "fullyEditable": True,
-        "sourceEditable": False,
-        "visualExact": True,
-        "needsSourceSvg": True,
-        "productImage": product.get("image"),
-        "productUrl": product.get("url") or f"https://teamsportbanners.com/products/{product.get('handle')}",
-        "layerConfig": fallback_layer_config(product, svg_url),
-    }
-
-
 def find_visual_match(
     product: dict[str, Any],
     templates: list[dict[str, Any]],
@@ -536,8 +457,6 @@ def main() -> int:
     parser.add_argument("--id-rmse-threshold", type=float, default=0.085)
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--all", action="store_true", help="Re-check already matched rows too.")
-    parser.add_argument("--generate-fallback-svgs", action="store_true", help="Create exact visual SVG wrappers for products that have no source-template match.")
-    parser.add_argument("--fallback-dir", default=DEFAULT_FALLBACK_DIR)
     args = parser.parse_args()
 
     output_dir = Path(args.output_dir)
@@ -608,17 +527,6 @@ def main() -> int:
                 errored += 1
                 result = "error"
                 next_rows.append(row)
-            elif args.generate_fallback_svgs:
-                product_fp = fingerprint_url(product.get("image"), cache_dir)
-                if product_fp.ok:
-                    svg_url = write_product_image_svg(product, product_fp, Path(args.fallback_dir))
-                    next_rows.append(fallback_source_row(product, svg_url, match))
-                    fallback_generated += 1
-                    result = "fallback-svg"
-                else:
-                    next_rows.append(row)
-                    errored += 1
-                    result = "error"
             else:
                 rejected += 1
                 result = "not-exact"

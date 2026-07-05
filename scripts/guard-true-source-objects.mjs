@@ -1,6 +1,8 @@
 import fs from "node:fs";
+import path from "node:path";
 
 const VECTOR_BACKGROUND_HREF = "__source_svg_vector_background__";
+const GENERATED_PRODUCT_SVG_DIR = "public/generated-product-svgs";
 
 const DATA_FILES = [
   "public/team-banner-products.json",
@@ -9,16 +11,38 @@ const DATA_FILES = [
   "public/svg-layer-templates.json"
 ];
 
+const TEXT_FILES = [
+  "public/team-banner-designer.js",
+  "scripts/promote-visual-exact-svg-matches.py"
+];
+
 const FORBIDDEN_VALUE_PATTERNS = [
   /product-image-(?:object-)?fallback/i,
   /generated-native-object-svg/i,
+  /generated-product-svgs/i,
   /generated-placeholder/i,
   /placeholder-(?:team|art|player)/i,
   /^data:image\/svg\+xml/i
 ];
 
+const FORBIDDEN_TEXT_PATTERNS = [
+  /generated-product-svgs/i
+];
+
 function readJson(file) {
   return JSON.parse(fs.readFileSync(file, "utf8"));
+}
+
+function* walkFiles(dir) {
+  if (!fs.existsSync(dir)) return;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      yield* walkFiles(fullPath);
+    } else if (entry.isFile()) {
+      yield fullPath;
+    }
+  }
 }
 
 function isForbiddenValue(value) {
@@ -40,6 +64,16 @@ function scanValue(value, pointer, findings) {
   }
 }
 
+function scanTextFile(file, findings) {
+  const text = fs.readFileSync(file, "utf8");
+  if (FORBIDDEN_TEXT_PATTERNS.some((pattern) => pattern.test(text))) {
+    findings.push({
+      pointer: file,
+      value: "text file references generated product preview SVG assets"
+    });
+  }
+}
+
 function sourceRows(data) {
   return Array.isArray(data?.maps) ? data.maps : [];
 }
@@ -50,6 +84,19 @@ function productRows(data) {
 
 function isSourceEditable(row = {}) {
   return row.sourceEditable === true || row.layerConfig?.sourceEditable === true;
+}
+
+function isActiveDesignProduct(product = {}) {
+  return product.status === "active" && product.type !== "easify_addon_product";
+}
+
+function hasConfirmedSourceProduct(product = {}, source = {}) {
+  const config = product.layerConfig || {};
+  return Boolean(product.templateSvg)
+    && source?.matchStatus === "matched"
+    && config.sourceEditable === true
+    && config.needsSourceSvg !== true
+    && config.objectLayerMode !== "needs-source-svg";
 }
 
 function assertSourceRow(row, pointer, findings) {
@@ -85,6 +132,13 @@ function main() {
   const findings = [];
   const sourceByHandle = new Map();
 
+  for (const file of walkFiles(GENERATED_PRODUCT_SVG_DIR)) {
+    findings.push({
+      pointer: file,
+      value: "generated product preview SVGs are disabled; use matched /svg-layer-templates source SVGs"
+    });
+  }
+
   for (const file of DATA_FILES) {
     const data = readJson(file);
     scanValue(data, file, findings);
@@ -103,10 +157,22 @@ function main() {
         value: `product promoted without matched source row: ${source?.matchStatus || "missing"}`
       });
     }
+    if (isActiveDesignProduct(product) && !hasConfirmedSourceProduct(product, source)) {
+      findings.push({
+        pointer: `public/team-banner-products.json/products/${index}`,
+        value: `active design product is not backed by a matched source SVG: ${product.handle || "missing-handle"}`
+      });
+    }
   });
+
+  for (const file of TEXT_FILES) {
+    if (fs.existsSync(file)) scanTextFile(file, findings);
+  }
 
   const summary = {
     checkedFiles: DATA_FILES,
+    checkedTextFiles: TEXT_FILES.filter((file) => fs.existsSync(file)),
+    blockedArtifactDir: GENERATED_PRODUCT_SVG_DIR,
     findings: findings.slice(0, 50),
     findingCount: findings.length
   };
