@@ -13,6 +13,9 @@ Every Vercel build must pass `npm run guard:deploy`. The guard blocks:
 - retired Team Banner domain references
 - missing files referenced by `public/index.html`, the designer CSS/JS, and the public JSON manifests
 - unreachable boot-time remote asset URLs in `public/index.html`
+- source-object fallback markers in product/source manifests, including generated placeholder SVG data URIs, product-image fallback modes, and generated-native SVG promotions
+- non-matched candidate/review rows being promoted as editable source objects
+- strict product graphic QA below the 99% target
 
 Do not bypass `vercel-build` or `predeploy` for production deploys.
 

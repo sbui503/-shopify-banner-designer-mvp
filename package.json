@@ -24,7 +24,8 @@
     "svg:promote-root-exact": "node scripts/promote-root-design-db-exact-matches.mjs --apply",
     "guard:legacy-domains": "node scripts/guard-legacy-domains.mjs",
     "guard:assets": "node scripts/guard-public-assets.mjs",
-    "guard:deploy": "npm run guard:legacy-domains && npm run guard:assets",
+    "guard:true-source-objects": "node scripts/guard-true-source-objects.mjs",
+    "guard:deploy": "npm run guard:legacy-domains && npm run guard:assets && npm run guard:true-source-objects && npm run qa:graphic:strict",
     "predeploy": "npm run guard:deploy",
     "vercel-build": "npm run guard:deploy"
   },

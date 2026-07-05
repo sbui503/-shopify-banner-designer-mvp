@@ -92,11 +92,6 @@ function xmlEscape(value) {
     .replace(/>/g, "&gt;");
 }
 
-function placeholderDataUri(label, color = "#d7dde8") {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160"><rect width="240" height="160" rx="12" fill="${color}"/><text x="120" y="86" text-anchor="middle" font-size="24" font-family="Arial" fill="#394150">${xmlEscape(label)}</text></svg>`;
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
-}
-
 function artboardFor(shape, fallbackSvg = "") {
   if (fallbackSvg && fs.existsSync(fallbackSvg)) {
     const root = (fs.readFileSync(fallbackSvg, "utf8").match(/<svg\b[^>]*>/i) || [""])[0];
@@ -161,10 +156,19 @@ function textLayout(role, index, count, artboard) {
 function buildNativeSvg(product, row, config, svgName, artboard) {
   const shape = normalizeShape(row.shape || product.shape || product.title || product.handle);
   const title = product.title || row.title || product.handle;
-  const backgroundUrl = firstUrl(config, ["backgroundSvgUrl", "backgroundUrl", "backgroundUrls"], product.image || row.productImage);
-  const logoUrl = distinctObjectUrl(firstUrl(config, ["logoSvgUrl", "logoUrl", "logoUrls"], ""), backgroundUrl, "Team", "#d7dde8");
-  const clipartUrl = distinctObjectUrl(firstUrl(config, ["clipartSvgUrl", "clipartUrl", "clipartUrls"], ""), backgroundUrl, "Art", "#e3ebd8");
-  const accessoryUrl = distinctObjectUrl(firstUrl(config, ["accessorySvgUrl", "accessoryUrl", "accessoryUrls"], ""), backgroundUrl, "Player", "#f1dfd5");
+  const backgroundUrl = firstUrl(config, ["backgroundSvgUrl", "backgroundUrl", "backgroundUrls"], "");
+  if (numberValue(config.backgroundCount, 1) > 0 && !backgroundUrl) {
+    throw new Error("Missing true source background URL; refusing to use product image fallback.");
+  }
+  const logoUrl = numberValue(config.teamLogoCount, 0) > 0
+    ? distinctObjectUrl(firstUrl(config, ["logoSvgUrl", "logoUrl", "logoUrls"], ""), backgroundUrl, "team logo")
+    : "";
+  const clipartUrl = numberValue(config.clipartCount, 0) > 0
+    ? distinctObjectUrl(firstUrl(config, ["clipartSvgUrl", "clipartUrl", "clipartUrls"], ""), backgroundUrl, "clipart")
+    : "";
+  const accessoryUrl = numberValue(config.playerIconCount, 0) > 0
+    ? distinctObjectUrl(firstUrl(config, ["accessorySvgUrl", "accessoryUrl", "accessoryUrls"], ""), backgroundUrl, "player icon")
+    : "";
 
   const imageEntries = [];
   const roleSummary = [];
@@ -225,8 +229,10 @@ function buildNativeSvg(product, row, config, svgName, artboard) {
   };
 }
 
-function distinctObjectUrl(candidate, backgroundUrl, label, color) {
-  if (!candidate || candidate === backgroundUrl) return placeholderDataUri(label, color);
+function distinctObjectUrl(candidate, backgroundUrl, label) {
+  if (!candidate || candidate === backgroundUrl) {
+    throw new Error(`Missing true source object URL for ${label}; refusing to generate a placeholder object.`);
+  }
   return candidate;
 }
 

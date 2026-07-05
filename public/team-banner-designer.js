@@ -19,6 +19,7 @@
     triangle: "43537293050062",
     homeplatepennant: "43537293443278"
   };
+  const VECTOR_BACKGROUND_HREF = "__source_svg_vector_background__";
   let WIDTH = BANNER_WIDTH;
   let HEIGHT = BANNER_HEIGHT;
   let ARTBOARD_SHAPE = "rectangle";
@@ -3607,6 +3608,27 @@
       };
     }
 
+    function minBackgroundCoverForShape(shape) {
+      return shape === "triangle" || shape === "homeplatepennant" ? 0.28 : 0.48;
+    }
+
+    function svgHasSourceVectorBackground(svgRoot) {
+      return Boolean(svgRoot.querySelector("g.model, g.mask, path, rect, polygon, polyline, circle, ellipse"));
+    }
+
+    function svgShouldUseVectorBackground(svgRoot, imageEntries, viewBox) {
+      if (!svgHasSourceVectorBackground(svgRoot)) return false;
+      const minCover = minBackgroundCoverForShape(ARTBOARD_SHAPE);
+      const explicitBackground = imageEntries.find((entry) => /background/.test(entry.className));
+      const lockedCoverBackground = imageEntries.find((entry) => /locked/.test(entry.className) && (entry.area / Math.max(1, viewBox.width * viewBox.height)) >= minCover);
+      const classBackground = explicitBackground || lockedCoverBackground;
+      if (classBackground) return false;
+      if (!imageEntries.length) return true;
+      const largestImage = imageEntries.slice().sort((a, b) => b.area - a.area)[0];
+      const coverRatio = (largestImage ? largestImage.area : 0) / Math.max(1, viewBox.width * viewBox.height);
+      return coverRatio < minCover;
+    }
+
     function svgPointToCanvas(point, viewBox, placement) {
       const scaleX = placement.scaleX || placement.scale || 1;
       const scaleY = placement.scaleY || placement.scale || 1;
@@ -3772,7 +3794,7 @@
         return map;
       }, new Map());
       const background = imageEntries.find((entry) => entry.role === "template-background")
-        || imageEntries.find((entry) => /background|locked/.test(entry.className))
+        || imageEntries.find((entry) => /background/.test(entry.className))
         || imageEntries.slice().sort((a, b) => b.area - a.area)[0]
         || imageEntries[0];
       if (background) background.role = "template-background";
@@ -3857,6 +3879,29 @@
           role: "svg-layer"
         };
       });
+      if (svgShouldUseVectorBackground(svgRoot, imageEntries, viewBox)) {
+        imageEntries.push({
+          tag: "vector-background",
+          index: -1,
+          href: VECTOR_BACKGROUND_HREF,
+          className: "vector-background locked",
+          matrix: [1, 0, 0, 1, 0, 0],
+          x: viewBox.x,
+          y: viewBox.y,
+          width: viewBox.width,
+          height: viewBox.height,
+          box: {
+            left: viewBox.x,
+            top: viewBox.y,
+            width: viewBox.width,
+            height: viewBox.height,
+            centerX: viewBox.x + viewBox.width / 2,
+            centerY: viewBox.y + viewBox.height / 2
+          },
+          area: viewBox.width * viewBox.height,
+          role: "svg-layer"
+        });
+      }
       classifySvgTemplateImages(imageEntries, layerConfig);
 
       let playerTextIndex = 0;
@@ -3908,7 +3953,57 @@
       return image;
     }
 
+    function addSvgTemplateVectorBackgroundLayer(entry, box) {
+      const common = {
+        fill: "#ffffff",
+        stroke: "transparent",
+        strokeWidth: 0,
+        selectable: false,
+        evented: false,
+        data: {
+          name: "Background",
+          role: "template-background",
+          locked: true,
+          showInLayerList: true,
+          sourceUrl: entry.href || VECTOR_BACKGROUND_HREF,
+          source: "source-svg-vector-background"
+        }
+      };
+      let layer;
+      if (isHomePlateShape(ARTBOARD_SHAPE)) {
+        layer = new fabric.Polygon([
+          { x: box.left, y: box.top },
+          { x: box.left + box.width, y: box.top },
+          { x: box.left + box.width, y: box.top + box.height * 0.56 },
+          { x: box.left + box.width / 2, y: box.top + box.height },
+          { x: box.left, y: box.top + box.height * 0.56 }
+        ], common);
+      } else if (ARTBOARD_SHAPE === "triangle") {
+        layer = new fabric.Polygon([
+          { x: box.left, y: box.top },
+          { x: box.left + box.width, y: box.top },
+          { x: box.left + box.width / 2, y: box.top + box.height }
+        ], common);
+      } else {
+        layer = new fabric.Rect({
+          left: box.left,
+          top: box.top,
+          width: box.width,
+          height: box.height,
+          ...common
+        });
+      }
+      ensureLayerId(layer);
+      canvas.add(layer);
+      layer.sendToBack();
+      setObjectLocked(layer, true);
+      return layer;
+    }
+
     async function addSvgTemplateImageLayer(entry, box, options, viewBox, placementContext) {
+      if (entry.tag === "vector-background") {
+        return addSvgTemplateVectorBackgroundLayer(entry, box);
+      }
       const role = entry.role || "svg-layer";
       const preserveSvgAssets = Boolean(options && options.preserveSvgAssets);
       const layerConfig = options && options.layerConfig ? options.layerConfig : {};
