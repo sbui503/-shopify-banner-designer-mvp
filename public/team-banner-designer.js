@@ -7349,7 +7349,7 @@
 
       try {
         const layerConfig = currentLayerConfig();
-        if (launch.image && launch.autoLayer === "png" && usesSourceVectorBackground(layerConfig)) {
+        if (launch.image && ["png", "svg", "magic"].includes(launch.autoLayer) && usesSourceVectorBackground(layerConfig)) {
           setStatus("Loading exact product background...");
           try {
             const image = await loadImage(canvasSafeImageUrl(launch.image, imageProxyEndpoint));
