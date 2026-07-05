@@ -27,9 +27,9 @@ function publicFileForUrl(url) {
 function documentedQuarantinedHandles() {
   return readText(QUARANTINE_DOC)
     .split("\n")
-    .filter((line) => line.startsWith("| "))
+    .filter((line) => line.includes("https://teamsportbanners.com/products/"))
     .map((line) => line.split("|")[1]?.trim())
-    .filter((handle) => handle && handle !== "Handle" && !handle.startsWith("---"));
+    .filter(Boolean);
 }
 
 function hasConfirmedSourceTemplate(product = {}) {
