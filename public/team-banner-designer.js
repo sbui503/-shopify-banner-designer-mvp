@@ -11,10 +11,10 @@
   const ASSETS_PER_PAGE = 48;
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
   const DEFAULT_IMAGE_PROXY_URL = "https://files-mentioned-by-the-user-shopify.vercel.app/api/image-proxy";
-  const CHECKOUT_ORIGIN = "";
+  const SHOPIFY_STORE_ORIGIN = "https://teamsportbanners.com";
   const DEFAULT_CUSTOM_DESIGN_VARIANT_ID = "43534427029710";
-  const DEFAULT_CUSTOM_DESIGN_PRODUCT_URL = "";
-  const DEFAULT_CUSTOM_DESIGN_CHECKOUT_URL = "";
+  const DEFAULT_CUSTOM_DESIGN_PRODUCT_URL = `${SHOPIFY_STORE_ORIGIN}/products/custom-design-banner?variant=${DEFAULT_CUSTOM_DESIGN_VARIANT_ID}`;
+  const DEFAULT_CUSTOM_DESIGN_CHECKOUT_URL = `${SHOPIFY_STORE_ORIGIN}/cart/${DEFAULT_CUSTOM_DESIGN_VARIANT_ID}:1?return_to=/checkouts/cn/${DEFAULT_CUSTOM_DESIGN_VARIANT_ID}`;
   const CUSTOM_DESIGN_VARIANT_BY_SHAPE = {
     triangle: "43537293050062",
     homeplatepennant: "43537293443278"
@@ -356,7 +356,7 @@
   function absoluteShopifyUrl(value) {
     if (!value) return "";
     try {
-      return new URL(value, window.location.origin).href;
+      return new URL(value, SHOPIFY_STORE_ORIGIN).href;
     } catch (error) {
       return String(value);
     }
@@ -365,8 +365,7 @@
   function customDesignCheckoutUrl(variantId) {
     const id = String(variantId || DEFAULT_CUSTOM_DESIGN_VARIANT_ID).trim();
     if (!id) return DEFAULT_CUSTOM_DESIGN_PRODUCT_URL;
-    if (!CHECKOUT_ORIGIN) return "";
-    return `${CHECKOUT_ORIGIN}/cart/${encodeURIComponent(id)}:1?return_to=/checkouts/cn/${encodeURIComponent(id)}`;
+    return `${SHOPIFY_STORE_ORIGIN}/cart/${encodeURIComponent(id)}:1?return_to=/checkouts/cn/${encodeURIComponent(id)}`;
   }
 
   function designerAssetUrl(fileName) {
@@ -1171,6 +1170,9 @@
       selection: true
     });
     root.tbdCanvas = canvas;
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => canvas.requestRenderAll()).catch(() => {});
+    }
     [canvas.wrapperEl, canvas.lowerCanvasEl, canvas.upperCanvasEl].forEach((element) => {
       if (!element) return;
       element.style.touchAction = "none";
@@ -2008,8 +2010,13 @@
       root.classList.toggle("tbd--mobile-text-active", Boolean(isText));
       if (els.fontFamily && isText) {
         const family = String(obj.fontFamily || "");
-        els.fontFamily.value = family.includes("Impact")
-          ? "Impact, Arial Black, Arial, sans-serif"
+        const normalizedFamily = family.replace(/["']/g, "").trim();
+        const matchingOption = Array.from(els.fontFamily.options).find((option) => {
+          const optionFamily = String(option.value || "").split(",")[0].replace(/["']/g, "").trim();
+          return optionFamily && normalizedFamily.includes(optionFamily);
+        });
+        els.fontFamily.value = matchingOption
+          ? matchingOption.value
           : family.includes("Georgia")
             ? "Georgia, serif"
             : family.includes("Arial Black")
@@ -2436,7 +2443,7 @@
         top: point.top,
         originX: "center",
         fill: (els.fill && els.fill.value) || "#d71920",
-        fontFamily: "Arial Black, Arial, sans-serif",
+        fontFamily: "\"American Captain\", Impact, \"Arial Black\", sans-serif",
         fontSize: isRectangularShape(ARTBOARD_SHAPE) ? 54 : 78,
         stroke: "#ffffff",
         strokeWidth: 5,
@@ -4834,7 +4841,6 @@
     function cartLineUrl(items = designCart) {
       const configuredCheckout = currentCustomCheckoutUrl();
       if (configuredCheckout) return configuredCheckout;
-      if (!CHECKOUT_ORIGIN) return "";
       const counts = items.reduce((map, item) => {
         const id = String(item.variantId || "").trim();
         if (!id) return map;
@@ -4842,7 +4848,7 @@
         return map;
       }, new Map());
       const lines = [...counts.entries()].map(([id, quantity]) => `${encodeURIComponent(id)}:${quantity}`).join(",");
-      return `${CHECKOUT_ORIGIN}/cart/${lines || `${DEFAULT_CUSTOM_DESIGN_VARIANT_ID}:1`}?return_to=/checkout`;
+      return `${SHOPIFY_STORE_ORIGIN}/cart/${lines || `${DEFAULT_CUSTOM_DESIGN_VARIANT_ID}:1`}?return_to=/checkout`;
     }
 
     function redirectToShopifyCheckout() {
@@ -5214,7 +5220,7 @@
         originX: config.originX || "center",
         originY: config.originY || "center",
         fill: config.fill || "#ffffff",
-        fontFamily: config.fontFamily || "Impact, Arial Black, Arial, sans-serif",
+        fontFamily: config.fontFamily || "\"American Captain\", Impact, \"Arial Black\", sans-serif",
         fontSize: config.fontSize,
         fontWeight: 900,
         stroke: config.stroke || "#6b6b6b",
@@ -6059,7 +6065,7 @@
           stroke: controlValue(els.strokes, "#000000"),
           strokeWidth: Number(controlValue(els.strokeWidths, 0.5)) || 0,
           fontSize: Number(controlValue(els.sizes, 40)) || 40,
-          fontFamily: els.fontFamily ? els.fontFamily.value : "Impact, Arial Black, Arial, sans-serif",
+          fontFamily: els.fontFamily ? els.fontFamily.value : "\"American Captain\", Impact, \"Arial Black\", sans-serif",
           charSpacing: Number(controlValue(els.charSpacings, 0)) || 0,
           lineHeight: Math.max(0.6, Number(controlValue(els.lineHeights, 1)) || 1),
           opacity: 1
@@ -6077,7 +6083,7 @@
         originX: "center",
         originY: "center",
         fill: controlValue(els.fills, "#ffffff"),
-        fontFamily: els.fontFamily ? els.fontFamily.value : "Impact, Arial Black, Arial, sans-serif",
+        fontFamily: els.fontFamily ? els.fontFamily.value : "\"American Captain\", Impact, \"Arial Black\", sans-serif",
         fontSize: Number(controlValue(els.sizes, 40)) || 40,
         fontWeight: 900,
         charSpacing: Number(controlValue(els.charSpacings, 0)) || 0,
