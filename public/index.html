@@ -3,7 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Team Banner Designer MVP</title>
+    <title>Team Banner Designer | Custom Team Sports Banners</title>
+    <meta name="description" content="Design custom baseball, softball, soccer, triangle, home plate, and 5x3 team banners with editable templates, team names, and proof checkout.">
+    <meta name="theme-color" content="#1E3A8A">
+    <meta property="og:title" content="Team Banner Designer">
+    <meta property="og:description" content="Create and proof custom Team Sport Banners online.">
     <link rel="icon" href="data:,">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -122,10 +126,10 @@
 
         <button class="tbd__toolbar-upload" data-tbd-upload-trigger type="button" aria-label="Upload logo" data-tooltip="Upload logo" data-mobile-label="LOGO"><svg class="tbd__icon"><use href="#tbd-i-upload"></use></svg><span>Upload</span></button>
         <button class="tbd__toolbar-template" data-tbd-panel-toggle="templates" type="button" aria-label="Templates" data-tooltip="Templates" data-mobile-label="TEMPLATE"><svg class="tbd__icon"><use href="#tbd-i-template"></use></svg><span>Template</span></button>
-        <button class="tbd__toolbar-assets" data-tbd-panel-toggle="assets" type="button" aria-label="Assets, Art, TeamName" data-tooltip="Assets, Art TeamName" data-mobile-label="ASSET"><svg class="tbd__icon"><use href="#tbd-i-folder-plus"></use></svg><span>Assets, Art<br>TeamName</span></button>
+        <button class="tbd__toolbar-assets" data-tbd-panel-toggle="assets" type="button" aria-label="Assets, Art, TeamName" data-tooltip="Assets, Art TeamName" data-mobile-label="Assets"><svg class="tbd__icon"><use href="#tbd-i-folder-plus"></use></svg><span>Assets, Art<br>TeamName</span></button>
         <a class="tbd__toolbar-contact" href="mailto:info@tsbanners.com" aria-label="Contact us" data-tooltip="Contact us" data-mobile-label="CONTACT US"><svg class="tbd__icon"><use href="#tbd-i-contact"></use></svg><span>Contact Us</span></a>
         <button class="tbd__toolbar-cart" data-tbd-add-cart type="button" aria-label="Add to cart" data-tooltip="Add to cart" data-mobile-label="ADD TO CART"><svg class="tbd__icon tbd__toolbar-mobile-icon"><use href="#tbd-i-cart"></use></svg><span>+ Add<br>To Cart</span><b class="tbd__cart-count" data-tbd-cart-count hidden>0</b></button>
-        <button class="tbd__toolbar-basket" data-tbd-panel-toggle="inspector" type="button" aria-label="Settings" data-tooltip="Settings" data-mobile-label="SETTING"><svg class="tbd__icon"><use href="#tbd-i-gear"></use></svg><span>Setting</span></button>
+        <button class="tbd__toolbar-basket" data-tbd-panel-toggle="inspector" type="button" aria-label="Settings" data-tooltip="Settings" data-mobile-label="Settings"><svg class="tbd__icon"><use href="#tbd-i-gear"></use></svg><span>Setting</span></button>
       </div>
 
       <div class="tbd__mobile-editbar" aria-label="Mobile edit controls">
@@ -361,7 +365,7 @@
 
         <aside class="tbd__panel tbd__panel--assets" data-tbd-panel="assets" hidden>
           <div class="tbd__panel-head">
-            <input class="tbd__search tbd__asset-search" data-tbd-search type="search" placeholder="search">
+            <input class="tbd__search tbd__asset-search" data-tbd-search type="search" placeholder="search" aria-label="Search banner assets">
             <select class="tbd__asset-category" data-tbd-category-select aria-label="Asset category"></select>
             <button class="tbd__find" data-tbd-find type="button">Find</button>
             <button class="tbd__close" data-tbd-panel-toggle="assets" type="button">Close</button>
@@ -410,9 +414,9 @@
 
         <div class="tbd__workspace">
           <div class="tbd__stage">
-            <canvas data-tbd-canvas width="900" height="780"></canvas>
+            <canvas data-tbd-canvas width="900" height="780" role="application" aria-label="Interactive custom team banner design canvas">Your browser does not support the interactive banner designer canvas. Please use a current version of Chrome, Edge, Safari, or Firefox.</canvas>
           </div>
-          <p class="tbd__status" data-tbd-status aria-live="polite"></p>
+          <p class="tbd__status" data-tbd-status role="status" aria-live="polite" aria-atomic="true">Loading banner designer...</p>
         </div>
 
         <aside class="tbd__layer-panel" aria-label="Layer list">
