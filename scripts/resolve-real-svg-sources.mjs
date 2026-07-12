@@ -7,9 +7,9 @@ const SVG_MANIFEST = "public/svg-layer-templates.json";
 const SOURCE_MAP_PATH = "public/team-banner-source-svg-map.json";
 const CANDIDATE_MAP_PATH = "public/team-banner-source-svg-candidates.json";
 const OUTPUT_DIR = "outputs/real-svg-source-discovery-20260523";
-const SOURCE_ORIGIN = requiredLegacyEnv("TEAM_BANNER_LEGACY_SOURCE_ORIGIN");
-const SITEMAP_URL = new URL("/sitemap.xml", SOURCE_ORIGIN).href;
-const ADMIN_DESIGN_BASE = requiredLegacyEnv("TEAM_BANNER_LEGACY_ADMIN_DESIGN_BASE");
+const SITEMAP_URL = "https://teambannersports.com/sitemap.xml";
+const SOURCE_ORIGIN = "https://teambannersports.com";
+const ADMIN_DESIGN_BASE = "https://lct-designs.s3.us-west-1.amazonaws.com/admin-designs";
 
 const args = new Set(process.argv.slice(2));
 const shouldDownloadAll = args.has("--download-all");
@@ -17,18 +17,6 @@ const shouldApply = args.has("--apply");
 const shouldRefreshSitemap = !args.has("--local-only");
 const maxDownloadArg = process.argv.find((arg) => arg.startsWith("--max-download="));
 const maxDownload = maxDownloadArg ? Number(maxDownloadArg.split("=")[1]) : Infinity;
-
-function requiredLegacyEnv(name) {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`${name} is required; legacy source recovery is disabled by default.`);
-  }
-  return value.replace(/\/$/, "");
-}
-
-function escapeRegex(value) {
-  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
 
 function compact(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
@@ -137,8 +125,8 @@ function extractAdminDesignIds(text) {
   const ids = new Set();
   const raw = String(text || "");
   const patterns = [
-    new RegExp(`${escapeRegex(ADMIN_DESIGN_BASE)}\\/([0-9]{10,})\\.(?:svg|png|jpe?g)`, "gi"),
-    new RegExp(`${escapeRegex(encodeURIComponent(ADMIN_DESIGN_BASE))}%2F([0-9]{10,})\\.(?:svg|png|jpe?g)`, "gi"),
+    /https:\/\/lct-designs\.s3\.us-west-1\.amazonaws\.com\/admin-designs\/([0-9]{10,})\.(?:svg|png|jpe?g)/gi,
+    /https%3A%2F%2Flct-designs\.s3\.us-west-1\.amazonaws\.com%2Fadmin-designs%2F([0-9]{10,})\.(?:svg|png|jpe?g)/gi,
     /admin-designs\/([0-9]{10,})\.(?:svg|png|jpe?g)/gi
   ];
   for (const pattern of patterns) {

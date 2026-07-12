@@ -1,12 +1,11 @@
 const ALLOWED_HOSTS = new Set([
   "cdn.shopify.com",
+  "b4cuoooyldjrdeea.public.blob.vercel-storage.com",
   "files-mentioned-by-the-user-shopify.vercel.app",
-  "teamsportbanners.vercel.app"
+  "lct-designs.s3.us-west-1.amazonaws.com",
+  "teamsportbanners.com",
+  "teambannersports.com"
 ]);
-
-function isAllowedHost(hostname) {
-  return ALLOWED_HOSTS.has(hostname) || hostname.endsWith(".public.blob.vercel-storage.com");
-}
 
 function setCors(response) {
   response.setHeader("Access-Control-Allow-Origin", "*");
@@ -22,7 +21,7 @@ function parseTargetUrl(request) {
   if (target.protocol !== "https:") {
     throw new Error("Only HTTPS images are supported.");
   }
-  if (!isAllowedHost(target.hostname)) {
+  if (!ALLOWED_HOSTS.has(target.hostname)) {
     throw new Error("Image host is not allowed.");
   }
   return target;

@@ -17,13 +17,19 @@ Shopify still requires one hidden line-item ID for checkout, so use `product.sel
 {% assign product_image = product.featured_image | image_url: width: 1600 %}
 {% assign product_tags = product.tags | join: ',' %}
 {% assign product_collections = product.collections | map: 'handle' | join: ',' %}
+{% assign is_design_product = true %}
+{% if product.type == 'easify_addon_product' or product.featured_image == blank %}
+  {% assign is_design_product = false %}
+{% endif %}
 
+{% if is_design_product %}
 <a
   class="button button--secondary"
   href="{{ designer_url }}?productTitle={{ product.title | url_encode }}&productHandle={{ product.handle | url_encode }}&productImage={{ product_image | url_encode }}&productTags={{ product_tags | url_encode }}&productCollections={{ product_collections | url_encode }}&cartVariantId={{ product.selected_or_first_available_variant.id }}&sizeLabel={{ '60" x 36"' | url_encode }}&price={{ product.price | money_without_currency | url_encode }}&autoLoadProduct=1&autoLayer=png"
 >
   Design It Yourself
 </a>
+{% endif %}
 ```
 
 If you ever need to override the collection/tag detection, you can still pass `productShape` directly:
@@ -44,13 +50,19 @@ For exact editable SVG layers, add a product metafield that stores the product S
 {% assign product_svg = product.metafields.custom.design_svg | file_url %}
 {% assign product_tags = product.tags | join: ',' %}
 {% assign product_collections = product.collections | map: 'handle' | join: ',' %}
+{% assign is_design_product = true %}
+{% if product.type == 'easify_addon_product' or product.featured_image == blank or product_svg == blank %}
+  {% assign is_design_product = false %}
+{% endif %}
 
+{% if is_design_product %}
 <a
   class="button button--secondary"
   href="{{ designer_url }}?productTitle={{ product.title | url_encode }}&productHandle={{ product.handle | url_encode }}&productImage={{ product_image | url_encode }}&templateSvg={{ product_svg | url_encode }}&productTags={{ product_tags | url_encode }}&productCollections={{ product_collections | url_encode }}&cartVariantId={{ product.selected_or_first_available_variant.id }}&sizeLabel={{ '60" x 36"' | url_encode }}&price={{ product.price | money_without_currency | url_encode }}&autoLoadProduct=1&autoLayer=svg"
 >
   Design It Yourself
 </a>
+{% endif %}
 ```
 
 For live Shopify checkout, the strongest setup is still the embedded Shopify section/app block because `/cart/add.js` runs on `teamsportbanners.com`. The Vercel link is best as the test/proof URL unless you also redirect back to Shopify after saving.

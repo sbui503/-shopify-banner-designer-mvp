@@ -180,7 +180,6 @@ function normalizeProducts(productsData, sourceRows) {
     }
 
     needsSourceSvgProducts += 1;
-    const isDesignProduct = product.type !== "easify_addon_product";
     const config = {
       ...normalized.config,
       sourceEditable: false,
@@ -192,7 +191,6 @@ function normalizeProducts(productsData, sourceRows) {
     delete config.assetMatchStatus;
     return {
       ...product,
-      status: isDesignProduct ? "needs-source-svg" : product.status,
       templateSvg: undefined,
       layerConfig: config
     };

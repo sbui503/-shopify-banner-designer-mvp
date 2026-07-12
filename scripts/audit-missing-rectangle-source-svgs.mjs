@@ -1,22 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const ROOT = requiredLegacyEnv("TEAM_BANNER_LEGACY_SOURCE_ORIGIN");
+const ROOT = "https://teambannersports.com";
 const OUTPUT_DIR = `outputs/rectangle-baseball-softball-missing-svg-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}`;
 const FALLBACKS_CSV = "outputs/product-graphic-qa-20260524-current-final-verify/product-graphic-qa-object-fallbacks.csv";
 const SOURCE_SVGS_CSV = "outputs/teambannersports-collection-scrape-20260524/source-svgs.csv";
 const SOURCE_PAGES_CSV = "outputs/teambannersports-collection-scrape-20260524/team-banner-pages.csv";
 const SOURCE_MAP_JSON = "public/team-banner-source-svg-map.json";
 const SVG_DIR = "public/svg-layer-templates";
-const ADMIN_BASE = requiredLegacyEnv("TEAM_BANNER_LEGACY_ADMIN_DESIGN_BASE");
-
-function requiredLegacyEnv(name) {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`${name} is required; legacy source recovery is disabled by default.`);
-  }
-  return value.replace(/\/$/, "");
-}
+const ADMIN_BASE = "https://lct-designs.s3.us-west-1.amazonaws.com/admin-designs";
 
 const COLLECTIONS = [
   {

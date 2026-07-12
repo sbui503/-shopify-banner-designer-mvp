@@ -11,6 +11,7 @@ const OUTPUT_DIR = path.join(ROOT, "outputs", `true-source-svg-discovery-${new D
 const CRUD_URL = process.env.TEAM_BANNER_DESIGN_DB_API_URL;
 const DB = "teambannersports_com";
 const COLLECTION = "designs";
+const ADMIN_BASE = "https://lct-designs.s3.us-west-1.amazonaws.com/admin-designs";
 
 const args = new Set(process.argv.slice(2));
 const shouldApply = args.has("--apply");
@@ -290,7 +291,7 @@ function readTemplateMeta(file, doc = {}, previous = {}) {
     name,
     title: previous.title || templateTitle(file, info, svg, doc),
     url: publicSvgUrl(file),
-    sourceUrl: doc.svg_url || previous.sourceUrl || "",
+    sourceUrl: doc.svg_url || previous.sourceUrl || (adminIdFromUrl(file) ? `${ADMIN_BASE}/${name}.svg` : ""),
     previewUrl: doc.jpg_url || previous.previewUrl || "",
     sourcePage: previous.sourcePage || "",
     sourceTitle: doc.label || previous.sourceTitle || "",
