@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const SOURCE_ORIGIN = requiredLegacyEnv("TEAM_BANNER_LEGACY_SOURCE_ORIGIN");
+const SOURCE_ORIGIN = "https://teambannersports.com";
 const SITEMAP_URL = `${SOURCE_ORIGIN}/sitemap.xml`;
-const ADMIN_DESIGN_BASE = requiredLegacyEnv("TEAM_BANNER_LEGACY_ADMIN_DESIGN_BASE");
+const ADMIN_DESIGN_BASE = "https://lct-designs.s3.us-west-1.amazonaws.com/admin-designs";
 const SVG_DIR = "public/svg-layer-templates";
 const INDEX_PATH = "public/teambannersports-source-svg-index.json";
 const OUTPUT_DIR = `outputs/teambannersports-collection-scrape-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}`;
@@ -17,18 +17,6 @@ const shouldDownload = args.has("--download") || args.has("--apply");
 const shouldApply = args.has("--apply");
 const concurrency = Math.max(1, Number(args.get("--concurrency") || 8));
 const maxTeamPages = Number(args.get("--max-team-pages") || Infinity);
-
-function requiredLegacyEnv(name) {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`${name} is required; legacy source scraping is disabled by default.`);
-  }
-  return value.replace(/\/$/, "");
-}
-
-function escapeRegex(value) {
-  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
 
 function compact(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
@@ -127,8 +115,8 @@ function extractAdminDesignIds(text) {
   const ids = new Set();
   const raw = String(text || "");
   const patterns = [
-    new RegExp(`${escapeRegex(ADMIN_DESIGN_BASE)}\\/([0-9]{10,})\\.(?:svg|png|jpe?g)`, "gi"),
-    new RegExp(`${escapeRegex(encodeURIComponent(ADMIN_DESIGN_BASE))}%2F([0-9]{10,})\\.(?:svg|png|jpe?g)`, "gi"),
+    /https:\/\/lct-designs\.s3\.us-west-1\.amazonaws\.com\/admin-designs\/([0-9]{10,})\.(?:svg|png|jpe?g)/gi,
+    /https%3A%2F%2Flct-designs\.s3\.us-west-1\.amazonaws\.com%2Fadmin-designs%2F([0-9]{10,})\.(?:svg|png|jpe?g)/gi,
     /admin-designs\/([0-9]{10,})\.(?:svg|png|jpe?g)/gi
   ];
   for (const pattern of patterns) {

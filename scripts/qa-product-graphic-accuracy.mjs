@@ -6,7 +6,6 @@ const SOURCE_MAP_PATH = "public/team-banner-source-svg-map.json";
 const SVG_MANIFEST = "public/svg-layer-templates.json";
 const SVG_DIR = "public/svg-layer-templates";
 const TARGET_PASS_RATE = 99;
-const VECTOR_BACKGROUND_HREF = "__source_svg_vector_background__";
 
 const args = new Set(process.argv.slice(2));
 const strictMode = args.has("--strict");
@@ -338,15 +337,6 @@ function parseDataInfo(svgText) {
   }
 }
 
-function minBackgroundCoverForShape(shape) {
-  return shape === "triangle" || shape === "homeplatepennant" ? 0.28 : 0.48;
-}
-
-function hasSourceVectorBackground(svgText) {
-  return /<g\b[^>]*class=["'][^"']*(?:model|mask)[^"']*["']/i.test(String(svgText || ""))
-    || /<(path|rect|polygon|polyline|circle|ellipse)\b/i.test(String(svgText || ""));
-}
-
 function textRole(text) {
   if (/^player$/i.test(String(text || "").trim())) return "template-player-text";
   if (/^year$/i.test(String(text || "").trim())) return "template-year-text";
@@ -364,9 +354,9 @@ function classifySvgImages(images, config = {}) {
     if (image.href) hrefCounts.set(image.href, (hrefCounts.get(image.href) || 0) + 1);
   }
 
-  const classBackground = images.find((entry) => entry.role === "template-background")
-    || images.find((entry) => /background/.test(entry.className));
+  const classBackground = images.find((entry) => /background|locked/.test(entry.className));
   const background = classBackground
+    || images.find((entry) => entry.role === "template-background")
     || images.slice().sort((a, b) => b.area - a.area)[0]
     || images[0]
     || null;
@@ -450,32 +440,14 @@ function parseSvg(svgText, config = {}) {
       role: "svg-layer"
     };
   });
-  const shape = normalizeShape([info.type, info.name, info.information].filter(Boolean).join(" "));
-  const largestImage = images.slice().sort((a, b) => b.area - a.area)[0] || null;
-  const artboardArea = Math.max(1, viewBox.width * viewBox.height);
-  const minCover = minBackgroundCoverForShape(shape);
-  const explicitBackground = images.find((entry) => /background/.test(entry.className));
-  const lockedCoverBackground = images.find((entry) => /locked/.test(entry.className) && (entry.area / artboardArea) >= minCover);
-  const classBackground = explicitBackground || lockedCoverBackground;
-  const shouldUseVectorBackground = hasSourceVectorBackground(svgText)
-    && (!images.length || (!classBackground && ((largestImage?.area || 0) / artboardArea) < minCover));
-  if (shouldUseVectorBackground) {
+  if (!images.length && /<(path|rect|polygon|polyline|circle|ellipse)\b/i.test(svgText)) {
     images.push({
       tag: "vector-background",
-      index: -1,
-      href: VECTOR_BACKGROUND_HREF,
-      file: VECTOR_BACKGROUND_HREF,
+      index: 0,
+      href: "__vector_background__",
+      file: "__vector_background__",
       className: "vector-background locked",
-      box: {
-        left: viewBox.x,
-        top: viewBox.y,
-        right: viewBox.x + viewBox.width,
-        bottom: viewBox.y + viewBox.height,
-        width: viewBox.width,
-        height: viewBox.height,
-        centerX: viewBox.x + viewBox.width / 2,
-        centerY: viewBox.y + viewBox.height / 2
-      },
+      box: { x: viewBox.x, y: viewBox.y, width: viewBox.width, height: viewBox.height },
       area: viewBox.width * viewBox.height,
       role: "svg-layer"
     });
