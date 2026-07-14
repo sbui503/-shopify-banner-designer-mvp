@@ -19,6 +19,7 @@
     triangle: "43537293050062",
     homeplatepennant: "43537293443278"
   };
+  const VECTOR_BACKGROUND_HREF = "__source_svg_vector_background__";
   let WIDTH = BANNER_WIDTH;
   let HEIGHT = BANNER_HEIGHT;
   let ARTBOARD_SHAPE = "rectangle";
@@ -326,7 +327,7 @@
       allowCandidateSourceMap,
       layerMapsUrl: get("layerMapsUrl") || get("layerMapUrl"),
       layerConfig: parseLayerConfigTags(tags, shape, productImage),
-      hasDesign: autoLoadProduct && autoLayer !== "blank" && Boolean(productImage || templateSvg)
+      hasDesign: autoLoadProduct && autoLayer !== "blank" && Boolean(productImage || templateSvg || get("productHandle") || get("handle"))
     };
   }
 
@@ -411,9 +412,13 @@
     if (!raw) return "";
     try {
       const url = new URL(raw, window.location.origin);
+      const queryHandle = url.searchParams.get("productHandle") || url.searchParams.get("handle");
+      if (queryHandle) return queryHandle;
       const match = url.pathname.match(/\/products\/([^/?#]+)/i);
       return match ? decodeURIComponent(match[1]) : "";
     } catch (error) {
+      const queryMatch = raw.match(/[?&](?:productHandle|handle)=([^&#]+)/i);
+      if (queryMatch) return decodeURIComponent(queryMatch[1]);
       const match = raw.match(/\/products\/([^/?#]+)/i);
       return match ? decodeURIComponent(match[1]) : "";
     }
@@ -463,6 +468,56 @@
     return designImageId(config.layoutSvg || config.layoutSvgUrl || templateSvg || "");
   }
 
+  function layerConfigCountValue(config = {}, key) {
+    const value = Number(config[key] || 0);
+    return Number.isFinite(value) ? value : 0;
+  }
+
+  function sourceRoleCounts(config = {}) {
+    const counts = {};
+    if (!Array.isArray(config.sourceRoleSummary)) return counts;
+    config.sourceRoleSummary.forEach((entry) => {
+      const role = String(entry && entry.role ? entry.role : "").toLowerCase();
+      if (!role) return;
+      counts[role] = (counts[role] || 0) + 1;
+    });
+    return counts;
+  }
+
+  function sourceRoleCount(counts, roles) {
+    return roles.reduce((total, role) => total + (counts[role] || 0), 0);
+  }
+
+  function sourceImageCoverageIssues(shape, requiredConfig = {}, candidateConfig = {}) {
+    if (!candidateConfig || typeof candidateConfig !== "object") return ["missing-candidate-layer-config"];
+    const issues = [];
+    const counts = sourceRoleCounts(candidateConfig);
+    const hasRoleSummary = Array.isArray(candidateConfig.sourceRoleSummary);
+    const checks = [
+      ["backgroundCount", ["background"], 1],
+      ["teamLogoCount", ["teamlogo", "team-name", "team_name"], 1]
+    ];
+    if (isRectangularShape(shape)) {
+      checks.push(["playerIconCount", ["playericon", "player-icon", "accessory"], Infinity]);
+    }
+
+    checks.forEach(([key, roles, cap]) => {
+      const required = layerConfigCountValue(requiredConfig, key);
+      if (!required) return;
+      const expected = cap === Infinity ? required : Math.min(required, cap);
+      const available = hasRoleSummary
+        ? sourceRoleCount(counts, roles)
+        : layerConfigCountValue(candidateConfig, key);
+      if (available < expected) issues.push(`${key}:${available}/${expected}`);
+    });
+
+    return issues;
+  }
+
+  function hasSourceImageCoverage(shape, requiredConfig = {}, candidateConfig = {}) {
+    return sourceImageCoverageIssues(shape, requiredConfig, candidateConfig).length === 0;
+  }
+
   function isSourceSvgLayerConfig(config = {}, templateSvg = "") {
     const layoutSvg = config.layoutSvg || config.layoutSvgUrl || templateSvg || "";
     if (!layoutSvg) return false;
@@ -470,6 +525,8 @@
     const objectLayerMode = String(config.objectLayerMode || "").toLowerCase();
     const assetStatus = String(config.assetMatchStatus || "").toLowerCase();
     if (/product-image/.test(layoutSource) || /product-image/.test(objectLayerMode) || /product-image/.test(assetStatus)) return false;
+    if (config.needsSourceSvg === true || config.sourceEditable === false) return false;
+    if (/needs-source-svg|candidate|review/.test(layoutSource) || /needs-source-svg|candidate|review/.test(objectLayerMode) || /needs-source-svg|candidate|review/.test(assetStatus)) return false;
     return Boolean(
       layoutSource === "svg-template"
       || objectLayerMode === "source-svg"
@@ -526,6 +583,38 @@
       layoutSvgUrl: "",
       assetMatchStatus: "product-image-fallback"
     };
+  }
+
+  function unverifiedProductSourceConfig(config = {}) {
+    return {
+      ...config,
+      layoutSource: "needs-source-svg",
+      layoutSvg: "",
+      layoutSvgUrl: "",
+      assetMatchStatus: "needs-source-svg",
+      objectLayerMode: "needs-source-svg",
+      sourceEditable: false,
+      needsSourceSvg: true
+    };
+  }
+
+  function requiresVerifiedProductSource(launch = {}) {
+    return Boolean(
+      launch.autoLoadProduct
+      && launch.autoLayer !== "blank"
+      && (launch.handle || launch.product || launch.productUrl)
+    );
+  }
+
+  function hasVerifiedProductSource(launch = {}) {
+    const config = launch.layerConfig || {};
+    return Boolean(
+      launch.templateSvg
+      && String(config.objectLayerMode || "").toLowerCase() === "source-svg"
+      && String(config.layoutSource || "").toLowerCase() === "svg-template"
+      && config.sourceEditable !== false
+      && config.needsSourceSvg !== true
+    );
   }
 
   const localProductSvgTemplateCache = new Map();
@@ -729,7 +818,9 @@
       launch.productUrl = launch.productUrl || match.url || match.path || "";
       launch.title = !launch.title || launch.title === "Team Banner" ? match.title || launch.title : launch.title;
       launch.tags = launch.tags || match.tags || "";
-      launch.image = launch.image || match.image || "";
+      launch.image = launch.image && match.image && sameImageFile(launch.image, match.image)
+        ? match.image
+        : launch.image || match.image || "";
       launch.price = launch.price || match.price || "";
       launch.product = match;
       launch.shape = inferLaunchShape(
@@ -747,17 +838,29 @@
         ].join(" "),
         Boolean(match.image || launch.image || launch.templateSvg)
       );
+      const tagLayerConfig = parseLayerConfigTags(launch.tags, launch.shape, launch.image);
+      const productTagLayerConfig = parseLayerConfigTags(match.tags || launch.tags, launch.shape, launch.image || match.image);
+      const requiredLayerConfig = mergeLayerConfig(
+        launch.shape,
+        launch.image,
+        tagLayerConfig,
+        productTagLayerConfig
+      );
       const manifestLayerConfig = mergeLayerConfig(
         launch.shape,
         launch.image,
-        parseLayerConfigTags(launch.tags, launch.shape, launch.image),
+        requiredLayerConfig,
         match.layerConfig
       );
       const manifestTemplateSvg = match.templateSvg || manifestLayerConfig.layoutSvgUrl || "";
       const explicitTemplateSvg = launch.templateSvg || "";
-      const trustedManifestSvg = isExactProductSvg(match, manifestLayerConfig, launch.image, manifestTemplateSvg);
-      const trustedExplicitSvg = explicitTemplateSvg && designImageId(explicitTemplateSvg) === designImageId(launch.image || match.image);
-      const imageIdTemplateSvg = trustedManifestSvg || trustedExplicitSvg
+      const manifestHasCoverage = hasSourceImageCoverage(launch.shape, requiredLayerConfig, manifestLayerConfig);
+      const manifestImageId = designImageId(launch.image || match.image || "");
+      const manifestSvgId = layerConfigSvgId(manifestLayerConfig, manifestTemplateSvg);
+      const manifestExactImageSvg = Boolean(manifestImageId && manifestSvgId && manifestImageId === manifestSvgId);
+      const trustedManifestSvg = (manifestHasCoverage || manifestExactImageSvg) && isExactProductSvg(match, manifestLayerConfig, launch.image, manifestTemplateSvg);
+      const trustedExplicitSvg = manifestHasCoverage && explicitTemplateSvg && designImageId(explicitTemplateSvg) === designImageId(launch.image || match.image);
+      const imageIdTemplateSvg = trustedManifestSvg || trustedExplicitSvg || !manifestHasCoverage
         ? ""
         : await localProductSvgTemplateForImage(launch.image || match.image);
       const imageIdTemplateSvgId = designImageId(imageIdTemplateSvg);
@@ -781,7 +884,7 @@
         ? manifestLayerConfig
         : imageIdTemplateConfig
           ? imageIdTemplateConfig
-        : productImageFallbackConfig(manifestLayerConfig, launch.image || match.image || "");
+          : unverifiedProductSourceConfig(requiredLayerConfig);
       launch.hasDesign = Boolean(launch.autoLoadProduct) && launch.autoLayer !== "blank" && Boolean(launch.image || launch.templateSvg);
       return match;
     } catch (error) {
@@ -875,8 +978,7 @@
       ) {
         return null;
       }
-      launch.layerMap = layerMap;
-      launch.shape = inferLaunchShape(
+      const nextShape = inferLaunchShape(
         layerMap.shape || layerMap.productShape || launch.shape,
         [
           layerMap.shape,
@@ -891,13 +993,19 @@
         ].join(" "),
         Boolean(launch.image || launch.templateSvg)
       );
+      const nextLayerConfig = layerMap.layerConfig
+        ? mergeLayerConfig(
+            nextShape,
+            launch.image,
+            launch.layerConfig,
+            layerMap.layerConfig
+          )
+        : launch.layerConfig;
+      if (layerMap.layerConfig && !hasSourceImageCoverage(nextShape, launch.layerConfig, nextLayerConfig)) return null;
+      launch.layerMap = layerMap;
+      launch.shape = nextShape;
       if (layerMap.layerConfig) {
-        launch.layerConfig = mergeLayerConfig(
-          launch.shape,
-          launch.image,
-          launch.layerConfig,
-          layerMap.layerConfig
-        );
+        launch.layerConfig = nextLayerConfig;
       }
       if (layerMap.templateSvg) launch.templateSvg = layerMap.templateSvg;
       launch.hasDesign = Boolean(launch.autoLoadProduct) && launch.autoLayer !== "blank" && Boolean(launch.image || launch.templateSvg);
@@ -917,14 +1025,6 @@
       if (!response.ok) throw new Error("Source SVG map request failed");
       const data = await response.json();
       const maps = Array.isArray(data.maps) ? data.maps : Array.isArray(data) ? data : [];
-      const validMap = (item) => item
-        && (
-          String(item.matchStatus || "matched").toLowerCase() === "matched"
-          || (
-            launch.allowCandidateSourceMap
-            && ["review", "candidate"].includes(String(item.matchStatus || "").toLowerCase())
-          )
-        );
       const launchImageKey = imageFileKey(launch.image);
       const handleCandidates = [
         launch.handle,
@@ -933,6 +1033,17 @@
         handleFromUrl(window.location.href),
         handleFromUrl(document.referrer)
       ].filter(Boolean);
+      const itemMatchesHandle = (item) => handleCandidates.some((candidate) => (
+        String(item.handle || "") === candidate || String(item.productHandle || "") === candidate
+      ));
+      const validMap = (item) => item
+        && (
+          String(item.matchStatus || "matched").toLowerCase() === "matched"
+          || (
+            launch.allowCandidateSourceMap
+            && ["review", "candidate"].includes(String(item.matchStatus || "").toLowerCase())
+          )
+        );
       const imageMatch = launchImageKey
         ? maps.find((item) => validMap(item) && imageFileKey(item.productImage) === launchImageKey)
         : null;
@@ -970,6 +1081,23 @@
         ].join(" "),
         Boolean(launch.image || launch.templateSvg)
       );
+      const sourceLayerConfig = match.layerConfig
+        ? mergeLayerConfig(
+            launch.shape,
+            launch.image,
+            launch.layerConfig,
+            match.layerConfig,
+            {
+              layoutSource: "svg-template",
+              layoutSvgUrl: match.templateSvg,
+              layoutSvg: match.layerConfig.layoutSvg || String(match.templateSvg).split("/").pop().replace(/\.svg$/i, "")
+            }
+          )
+        : null;
+      const sourceImageId = designImageId(launch.image || match.productImage || "");
+      const sourceSvgId = layerConfigSvgId(sourceLayerConfig || {}, match.templateSvg);
+      const sourceExactImageSvg = Boolean(sourceImageId && sourceSvgId && sourceImageId === sourceSvgId);
+      if (match.layerConfig && !hasSourceImageCoverage(launch.shape, launch.layerConfig, sourceLayerConfig) && !sourceExactImageSvg) return null;
       if (isProductImageObjectFallbackMap(match)) {
         const layoutSvgUrl = match.templateSvg || match.layerConfig?.layoutSvgUrl || "";
         launch.templateSvg = "";
@@ -977,8 +1105,7 @@
         launch.layerConfig = mergeLayerConfig(
           launch.shape,
           launch.image,
-          launch.layerConfig,
-          match.layerConfig,
+          sourceLayerConfig || launch.layerConfig,
           {
             layoutSource: "product-image-object-fallback",
             layoutSvgUrl,
@@ -993,17 +1120,7 @@
       }
       launch.templateSvg = match.templateSvg;
       if (match.layerConfig) {
-        launch.layerConfig = mergeLayerConfig(
-          launch.shape,
-          launch.image,
-          launch.layerConfig,
-          match.layerConfig,
-          {
-            layoutSource: "svg-template",
-            layoutSvgUrl: match.templateSvg,
-            layoutSvg: match.layerConfig.layoutSvg || String(match.templateSvg).split("/").pop().replace(/\.svg$/i, "")
-          }
-        );
+        launch.layerConfig = sourceLayerConfig;
       }
       if (launch.autoLoadProduct && launch.autoLayer === "png") launch.autoLayer = "svg";
       launch.hasDesign = Boolean(launch.autoLoadProduct) && launch.autoLayer !== "blank" && Boolean(launch.image || launch.templateSvg);
@@ -1135,6 +1252,7 @@
       gradientBar: root.querySelector("[data-tbd-gradient-bar]"),
       gradientStops: [...root.querySelectorAll("[data-tbd-gradient-stop]")],
       alignArtboards: [...root.querySelectorAll("[data-tbd-align-artboard]")],
+      gridToggles: [...root.querySelectorAll("[data-tbd-grid-toggle]")],
       stage: root.querySelector(".tbd__stage"),
       productHeadline: root.querySelector("[data-tbd-product-headline]"),
       productMeta: root.querySelector("[data-tbd-product-meta]"),
@@ -1158,11 +1276,17 @@
       selection: true
     });
     root.tbdCanvas = canvas;
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => canvas.requestRenderAll()).catch(() => {});
+    }
     [canvas.wrapperEl, canvas.lowerCanvasEl, canvas.upperCanvasEl].forEach((element) => {
       if (!element) return;
       element.style.touchAction = "none";
       element.style.webkitUserSelect = "none";
       element.style.userSelect = "none";
+    });
+    ["Text", "IText", "Textbox"].forEach((type) => {
+      if (fabric[type] && fabric[type].prototype) fabric[type].prototype.textBaseline = "alphabetic";
     });
     fabric.Object.prototype.touchCornerSize = Math.max(fabric.Object.prototype.touchCornerSize || 0, 34);
     fabric.Object.prototype.cornerSize = Math.max(fabric.Object.prototype.cornerSize || 0, 12);
@@ -1729,6 +1853,17 @@
         );
     }
 
+    function usesSourceVectorBackground(config = currentLayerConfig()) {
+      const backgroundUrls = Array.isArray(config.backgroundUrls) ? config.backgroundUrls : [];
+      const values = [
+        config.backgroundUrl,
+        config.backgroundSvgUrl,
+        ...backgroundUrls
+      ].filter(Boolean);
+      return values.includes(VECTOR_BACKGROUND_HREF)
+        || String(config.backgroundSource || "").toLowerCase() === "source-svg-vector-background";
+    }
+
     function productImageFallbackTextOpacity(value = 1, config = currentLayerConfig()) {
       return usesProductImageFallback(config) ? Math.min(value ?? 1, 0.01) : (value ?? 1);
     }
@@ -1984,8 +2119,13 @@
       root.classList.toggle("tbd--mobile-text-active", Boolean(isText));
       if (els.fontFamily && isText) {
         const family = String(obj.fontFamily || "");
-        els.fontFamily.value = family.includes("Impact")
-          ? "Impact, Arial Black, Arial, sans-serif"
+        const normalizedFamily = family.replace(/["']/g, "").trim();
+        const matchingOption = Array.from(els.fontFamily.options).find((option) => {
+          const optionFamily = String(option.value || "").split(",")[0].replace(/["']/g, "").trim();
+          return optionFamily && normalizedFamily.includes(optionFamily);
+        });
+        els.fontFamily.value = matchingOption
+          ? matchingOption.value
           : family.includes("Georgia")
             ? "Georgia, serif"
             : family.includes("Arial Black")
@@ -2274,6 +2414,41 @@
       updateSelectionControls();
     }
 
+    function primaryFontFamily(fontFamily) {
+      return String(fontFamily || "")
+        .split(",")[0]
+        .trim()
+        .replace(/^["']|["']$/g, "");
+    }
+
+    async function loadCanvasFont(fontFamily, sampleText = "Team Banner") {
+      if (!document.fonts || !fontFamily) return;
+      const family = primaryFontFamily(fontFamily);
+      if (!family) return;
+      const escapedFamily = family.replace(/\\/g, "\\\\").replace(/"/g, "\\\"");
+      const descriptor = `48px "${escapedFamily}"`;
+      try {
+        if (!document.fonts.check(descriptor, sampleText)) {
+          await document.fonts.load(descriptor, sampleText);
+        }
+        await document.fonts.ready;
+      } catch (error) {
+        // Keep editing usable with the browser fallback if a custom font fails.
+      }
+    }
+
+    async function applyFontFamilySelection(fontFamily) {
+      const obj = selectedObject();
+      if (!obj || obj.type !== "i-text") return setStatus("Select a text layer first.");
+      if (isLayerLocked(obj)) return setStatus(`${layerLabel(obj)} is locked. Unlock it to edit text.`);
+      await loadCanvasFont(fontFamily, obj.text || "Team Banner");
+      obj.set({ fontFamily });
+      obj.setCoords();
+      canvas.renderAll();
+      saveHistory();
+      updateSelectionControls();
+    }
+
     function toggleTextStyle(style) {
       const obj = selectedObject();
       if (!obj || obj.type !== "i-text") return setStatus("Select a text layer first.");
@@ -2412,7 +2587,7 @@
         top: point.top,
         originX: "center",
         fill: (els.fill && els.fill.value) || "#d71920",
-        fontFamily: "Arial Black, Arial, sans-serif",
+        fontFamily: "\"American Captain\", Impact, \"Arial Black\", sans-serif",
         fontSize: isRectangularShape(ARTBOARD_SHAPE) ? 54 : 78,
         stroke: "#ffffff",
         strokeWidth: 5,
@@ -2783,8 +2958,44 @@
       return "rectangle";
     }
 
+    function hasConfirmedSourceTemplate(product) {
+      const config = product?.layerConfig || {};
+      return Boolean(product?.templateSvg)
+        && config.sourceEditable === true
+        && config.needsSourceSvg !== true
+        && config.objectLayerMode !== "needs-source-svg";
+    }
+
+    function generatedProductPreviewUrl(product) {
+      const layoutSvgId = product.layerConfig?.layoutSvg || "";
+      const explicitSvg = product.templateSvg
+        || product.layerConfig?.layoutSvgUrl
+        || (layoutSvgId ? `/svg-layer-templates/${String(layoutSvgId).replace(/\.svg$/i, "")}.svg` : "");
+      if (explicitSvg) return resolveSourceUrl(explicitSvg);
+      if (!hasConfirmedSourceTemplate(product)) return "";
+      return "";
+    }
+
+    function markTemplateImageBroken(template, image) {
+      if (!template || !template.fallbackImage || template.imageBroken) return false;
+      template.imageBroken = true;
+      if (image && image.src !== template.fallbackImage) {
+        image.src = template.fallbackImage;
+      }
+      if (selectedTemplate && selectedTemplate.key === template.key) {
+        selectedTemplate.imageBroken = true;
+      }
+      return true;
+    }
+
+    function templateDesignImage(template) {
+      if (!template) return "";
+      return template.imageBroken && template.fallbackImage ? template.fallbackImage : template.image;
+    }
+
     function normalizeTemplateProduct(product) {
       if (!product || !product.image) return null;
+      if (!hasConfirmedSourceTemplate(product)) return null;
       const title = product.title || product.handle || "Banner template";
       const handle = product.handle || titleSlug(title);
       const type = productTemplateType(product);
@@ -2794,6 +3005,8 @@
         handle,
         title,
         image: resolveSourceUrl(product.image),
+        fallbackImage: generatedProductPreviewUrl(product),
+        imageBroken: false,
         price: product.price || "",
         type,
         sport,
@@ -2820,7 +3033,14 @@
     function selectTemplate(template, options = {}) {
       selectedTemplate = template || null;
       if (els.templatePreviewImage) {
-        els.templatePreviewImage.src = selectedTemplate ? selectedTemplate.image : "";
+        els.templatePreviewImage.onerror = null;
+        if (selectedTemplate && selectedTemplate.fallbackImage && selectedTemplate.fallbackImage !== selectedTemplate.image) {
+          els.templatePreviewImage.onerror = () => {
+            els.templatePreviewImage.onerror = null;
+            markTemplateImageBroken(selectedTemplate, els.templatePreviewImage);
+          };
+        }
+        els.templatePreviewImage.src = selectedTemplate ? templateDesignImage(selectedTemplate) : "";
         els.templatePreviewImage.alt = selectedTemplate ? `${selectedTemplate.title} preview` : "Selected banner template preview";
       }
       if (els.templatePreviewTitle) els.templatePreviewTitle.textContent = selectedTemplate ? selectedTemplate.title : "Choose a template";
@@ -2872,10 +3092,16 @@
             card.dataset.tbdTemplateKey = template.key;
             card.setAttribute("aria-current", selectedTemplate && selectedTemplate.key === template.key ? "true" : "false");
             card.innerHTML = `
-              <img loading="lazy" alt="${escapeHtml(template.title)} preview" src="${template.image}">
+              <img loading="lazy" alt="${escapeHtml(template.title)} preview" src="${templateDesignImage(template)}">
               <strong>${escapeHtml(template.title)}</strong>
               <span>${templateSportLabel(template.sport)}</span>
             `;
+            const previewImage = card.querySelector("img");
+            if (previewImage && template.fallbackImage && template.fallbackImage !== template.image) {
+              previewImage.addEventListener("error", () => {
+                markTemplateImageBroken(template, previewImage);
+              }, { once: true });
+            }
             card.addEventListener("click", () => {
               selectTemplate(template, { scroll: false });
               setStatus(`${template.title} preview selected. Tap Design this to edit it.`);
@@ -2960,7 +3186,7 @@
       launch.headline = "";
       launch.tags = product.tags || "";
       launch.collections = [product.type, product.productCategory].filter(Boolean).join(" ");
-      launch.image = template.image || product.image || "";
+      launch.image = templateDesignImage(template) || product.image || "";
       launch.price = product.price || template.price || "";
       launch.sizeLabel = "";
       launch.shape = nextShape;
@@ -3569,6 +3795,27 @@
       };
     }
 
+    function minBackgroundCoverForShape(shape) {
+      return shape === "triangle" || shape === "homeplatepennant" ? 0.28 : 0.48;
+    }
+
+    function svgHasSourceVectorBackground(svgRoot) {
+      return Boolean(svgRoot.querySelector("g.model, g.mask, path, rect, polygon, polyline, circle, ellipse"));
+    }
+
+    function svgShouldUseVectorBackground(svgRoot, imageEntries, viewBox) {
+      if (!svgHasSourceVectorBackground(svgRoot)) return false;
+      const minCover = minBackgroundCoverForShape(ARTBOARD_SHAPE);
+      const explicitBackground = imageEntries.find((entry) => /background/.test(entry.className));
+      const lockedCoverBackground = imageEntries.find((entry) => /locked/.test(entry.className) && (entry.area / Math.max(1, viewBox.width * viewBox.height)) >= minCover);
+      const classBackground = explicitBackground || lockedCoverBackground;
+      if (classBackground) return false;
+      if (!imageEntries.length) return true;
+      const largestImage = imageEntries.slice().sort((a, b) => b.area - a.area)[0];
+      const coverRatio = (largestImage ? largestImage.area : 0) / Math.max(1, viewBox.width * viewBox.height);
+      return coverRatio < minCover;
+    }
+
     function svgPointToCanvas(point, viewBox, placement) {
       const scaleX = placement.scaleX || placement.scale || 1;
       const scaleY = placement.scaleY || placement.scale || 1;
@@ -3604,6 +3851,23 @@
         matrix,
         svgTranslateMatrix((naturalWidth || 1) / 2, (naturalHeight || 1) / 2)
       );
+      const axisAligned = Math.abs(matrix[1] || 0) < 0.000001 && Math.abs(matrix[2] || 0) < 0.000001;
+      if (axisAligned && ((matrix[0] || 0) < 0 || (matrix[3] || 0) < 0)) {
+        layer.set({
+          originX: "center",
+          originY: "center",
+          left: centerMatrix[4],
+          top: centerMatrix[5],
+          angle: 0,
+          scaleX: Math.abs(matrix[0] || 1),
+          scaleY: Math.abs(matrix[3] || 1),
+          skewX: 0,
+          skewY: 0,
+          flipX: (matrix[0] || 0) < 0,
+          flipY: (matrix[3] || 0) < 0
+        });
+        return;
+      }
       if (fabric.util && typeof fabric.util.qrDecompose === "function") {
         const decomposed = fabric.util.qrDecompose(centerMatrix);
         layer.set({
@@ -3734,7 +3998,7 @@
         return map;
       }, new Map());
       const background = imageEntries.find((entry) => entry.role === "template-background")
-        || imageEntries.find((entry) => /background|locked/.test(entry.className))
+        || imageEntries.find((entry) => /background/.test(entry.className))
         || imageEntries.slice().sort((a, b) => b.area - a.area)[0]
         || imageEntries[0];
       if (background) background.role = "template-background";
@@ -3819,6 +4083,29 @@
           role: "svg-layer"
         };
       });
+      if (svgShouldUseVectorBackground(svgRoot, imageEntries, viewBox)) {
+        imageEntries.push({
+          tag: "vector-background",
+          index: -1,
+          href: VECTOR_BACKGROUND_HREF,
+          className: "vector-background locked",
+          matrix: [1, 0, 0, 1, 0, 0],
+          x: viewBox.x,
+          y: viewBox.y,
+          width: viewBox.width,
+          height: viewBox.height,
+          box: {
+            left: viewBox.x,
+            top: viewBox.y,
+            width: viewBox.width,
+            height: viewBox.height,
+            centerX: viewBox.x + viewBox.width / 2,
+            centerY: viewBox.y + viewBox.height / 2
+          },
+          area: viewBox.width * viewBox.height,
+          role: "svg-layer"
+        });
+      }
       classifySvgTemplateImages(imageEntries, layerConfig);
 
       let playerTextIndex = 0;
@@ -3870,7 +4157,58 @@
       return image;
     }
 
+    function addSvgTemplateVectorBackgroundLayer(entry, box, options = {}) {
+      const locked = !Boolean(options && options.preserveSvgAssets);
+      const common = {
+        fill: "#ffffff",
+        stroke: "transparent",
+        strokeWidth: 0,
+        selectable: !locked,
+        evented: !locked,
+        data: {
+          name: "Background",
+          role: "template-background",
+          locked,
+          showInLayerList: true,
+          sourceUrl: entry.href || VECTOR_BACKGROUND_HREF,
+          source: "source-svg-vector-background"
+        }
+      };
+      let layer;
+      if (isHomePlateShape(ARTBOARD_SHAPE)) {
+        layer = new fabric.Polygon([
+          { x: box.left, y: box.top },
+          { x: box.left + box.width, y: box.top },
+          { x: box.left + box.width, y: box.top + box.height * 0.56 },
+          { x: box.left + box.width / 2, y: box.top + box.height },
+          { x: box.left, y: box.top + box.height * 0.56 }
+        ], common);
+      } else if (ARTBOARD_SHAPE === "triangle") {
+        layer = new fabric.Polygon([
+          { x: box.left, y: box.top },
+          { x: box.left + box.width, y: box.top },
+          { x: box.left + box.width / 2, y: box.top + box.height }
+        ], common);
+      } else {
+        layer = new fabric.Rect({
+          left: box.left,
+          top: box.top,
+          width: box.width,
+          height: box.height,
+          ...common
+        });
+      }
+      ensureLayerId(layer);
+      canvas.add(layer);
+      layer.sendToBack();
+      if (locked) setObjectLocked(layer, true);
+      return layer;
+    }
+
     async function addSvgTemplateImageLayer(entry, box, options, viewBox, placementContext) {
+      if (entry.tag === "vector-background") {
+        return addSvgTemplateVectorBackgroundLayer(entry, box, options);
+      }
       const role = entry.role || "svg-layer";
       const preserveSvgAssets = Boolean(options && options.preserveSvgAssets);
       const layerConfig = options && options.layerConfig ? options.layerConfig : {};
@@ -3934,9 +4272,11 @@
           : role === "template-clipart"
             ? "Clip art"
             : role === "template-player-icon"
-              ? "Accessory / Player icon"
+            ? "Accessory / Player icon"
               : "SVG image layer";
-      const coverBackground = role === "template-background" && !preserveSvgAssets;
+      const isBackgroundRole = role === "template-background";
+      const lockBackground = isBackgroundRole && !preserveSvgAssets;
+      const coverBackground = isBackgroundRole && !preserveSvgAssets;
       const placement = coverBackground ? fitImageToArtboard(naturalWidth, naturalHeight, backgroundFitMode()) : null;
       const layer = new fabric.Image(image, {
         left: placement ? placement.left : box.left,
@@ -3954,7 +4294,7 @@
           sourceUrl: finalSourceUrl,
           source: explicitAsset ? "generator-selected-asset" : finalSourceUrl === sourceUrl ? "svg-template-asset" : "svg-template-asset-fallback",
           showInLayerList: true,
-          locked: role === "template-background"
+          locked: lockBackground
         }
       });
       layer.set({
@@ -3971,7 +4311,7 @@
       }
       ensureLayerId(layer);
       canvas.add(layer);
-      if (role === "template-background") setObjectLocked(layer, true);
+      if (lockBackground) setObjectLocked(layer, true);
       return layer;
     }
 
@@ -4002,6 +4342,7 @@
     async function addSvgTemplateRecipeLayers(svgTemplate, options = generatorOptions()) {
       if (!svgTemplate || !svgTemplate.url) return false;
       try {
+        const initialObjects = new Set(canvas.getObjects());
         const response = await fetch(resolveSourceUrl(svgTemplate.url), { credentials: "omit" });
         if (!response.ok) throw new Error("SVG template failed to load.");
         const parsed = parseSvgTemplateLayers(await response.text(), options.layerConfig || {});
@@ -4033,6 +4374,19 @@
         parsed.textEntries.forEach((entry) => {
           addSvgTemplateTextLayer(entry, svgBoxToCanvas(entry.box, parsed.viewBox, placement), effectiveOptions, parsed.viewBox, placement);
         });
+        const loadedObjects = canvas.getObjects().filter((obj) => !initialObjects.has(obj));
+        const loadedBackgroundCount = loadedObjects.filter((obj) => obj.data && obj.data.role === "template-background").length;
+        const loadedPlayerIconCount = loadedObjects.filter((obj) => obj.data && obj.data.role === "template-player-icon").length;
+        const requiredPlayerIcons = isRectangularShape(ARTBOARD_SHAPE)
+          ? layerConfigCount(options.layerConfig || {}, "playerIconCount")
+          : 0;
+        const needsPlayerIcons = requiredPlayerIcons > 0 && parsed.imageEntries.some((entry) => entry.role === "template-player-icon");
+        if (!loadedBackgroundCount || (needsPlayerIcons && loadedPlayerIconCount < Math.min(requiredPlayerIcons, playerCount))) {
+          loadedObjects.forEach((obj) => canvas.remove(obj));
+          canvas.discardActiveObject();
+          canvas.renderAll();
+          return false;
+        }
         const background = canvas.getObjects().find((obj) => obj.data && obj.data.role === "template-background");
         if (background) background.sendToBack();
         return visibleLayerObjects().length > 0;
@@ -4601,8 +4955,9 @@
     }
 
     function checkoutUrlWithDesignAttributes(checkoutUrl, saved) {
+      if (!checkoutUrl) return "";
       try {
-        const url = new URL(checkoutUrl, SHOPIFY_STORE_ORIGIN);
+        const url = new URL(checkoutUrl, window.location.origin);
         const attributes = {
           "Design ID": saved && saved.id,
           "Design Preview": saved && saved.previewUrl,
@@ -4662,6 +5017,8 @@
     }
 
     function cartLineUrl(items = designCart) {
+      const configuredCheckout = currentCustomCheckoutUrl();
+      if (configuredCheckout) return configuredCheckout;
       const counts = items.reduce((map, item) => {
         const id = String(item.variantId || "").trim();
         if (!id) return map;
@@ -4678,7 +5035,11 @@
         return;
       }
       const checkoutUrl = cartLineUrl(designCart);
-      setStatus("Opening Shopify checkout...");
+      if (!checkoutUrl) {
+        setStatus("Checkout is not configured for this designer.");
+        return;
+      }
+      setStatus("Opening checkout...");
       window.location.assign(checkoutUrl);
     }
 
@@ -4709,7 +5070,7 @@
         els.cartSummary.textContent = count === 1 ? "1 item in cart" : `${count} items in cart`;
         els.cartSummary.hidden = count === 0;
       }
-      if (els.cartCheckout) els.cartCheckout.disabled = count === 0;
+      if (els.cartCheckout) els.cartCheckout.disabled = count === 0 || !cartLineUrl(designCart);
       if (!els.cartItems) return;
       els.cartItems.innerHTML = "";
       designCart.slice().reverse().forEach((item, reverseIndex) => {
@@ -5037,7 +5398,7 @@
         originX: config.originX || "center",
         originY: config.originY || "center",
         fill: config.fill || "#ffffff",
-        fontFamily: config.fontFamily || "Impact, Arial Black, Arial, sans-serif",
+        fontFamily: config.fontFamily || "\"American Captain\", Impact, \"Arial Black\", sans-serif",
         fontSize: config.fontSize,
         fontWeight: 900,
         stroke: config.stroke || "#6b6b6b",
@@ -5871,8 +6232,10 @@
       setStatus(`${name} loaded with exact product layout layers.`);
     }
 
-    function addOrUpdateTextFromPanel() {
+    async function addOrUpdateTextFromPanel() {
       const textValue = (els.textContent && els.textContent.value.trim()) || "Player";
+      const fontFamily = els.fontFamily ? els.fontFamily.value : "\"American Captain\", Impact, \"Arial Black\", sans-serif";
+      await loadCanvasFont(fontFamily, textValue);
       const obj = selectedObject();
       if (obj && obj.type === "i-text") {
         if (isLayerLocked(obj)) return setStatus(`${layerLabel(obj)} is locked. Unlock it to edit text.`);
@@ -5882,7 +6245,7 @@
           stroke: controlValue(els.strokes, "#000000"),
           strokeWidth: Number(controlValue(els.strokeWidths, 0.5)) || 0,
           fontSize: Number(controlValue(els.sizes, 40)) || 40,
-          fontFamily: els.fontFamily ? els.fontFamily.value : "Impact, Arial Black, Arial, sans-serif",
+          fontFamily,
           charSpacing: Number(controlValue(els.charSpacings, 0)) || 0,
           lineHeight: Math.max(0.6, Number(controlValue(els.lineHeights, 1)) || 1),
           opacity: 1
@@ -5900,7 +6263,7 @@
         originX: "center",
         originY: "center",
         fill: controlValue(els.fills, "#ffffff"),
-        fontFamily: els.fontFamily ? els.fontFamily.value : "Impact, Arial Black, Arial, sans-serif",
+        fontFamily,
         fontSize: Number(controlValue(els.sizes, 40)) || 40,
         fontWeight: 900,
         charSpacing: Number(controlValue(els.charSpacings, 0)) || 0,
@@ -7033,7 +7396,6 @@
       } else if (className.includes("background") || categoryRole === "template-background") {
         role = "template-background";
         label = "Background";
-        locked = true;
       } else if (categoryRole === "template-team-name") {
         label = "Team name";
       } else if (categoryRole === "template-clipart") {
@@ -7172,6 +7534,29 @@
 
       try {
         const layerConfig = currentLayerConfig();
+        if (requiresVerifiedProductSource(launch) && !hasVerifiedProductSource(launch)) {
+          throw new Error("Verified source SVG layers are required for this product. Product-image fallback is disabled.");
+        }
+        if (launch.image && ["png", "svg", "magic"].includes(launch.autoLayer) && usesSourceVectorBackground(layerConfig) && !requiresVerifiedProductSource(launch)) {
+          setStatus("Loading exact product background...");
+          try {
+            const image = await loadImage(canvasSafeImageUrl(launch.image, imageProxyEndpoint));
+            addExactProductBackground(image, {
+              sourceUrl: launch.image,
+              source: "product-image-vector-background-fallback"
+            });
+            canvas.discardActiveObject();
+            keepGuideOnTop();
+            canvas.renderAll();
+            saveHistory();
+            updateSelectionControls();
+            setStatus(`${name} loaded as exact full-background artwork.`);
+            return;
+          } catch (error) {
+            if (!launch.templateSvg) throw error;
+            setStatus("Product image unavailable. Loading product SVG layers...");
+          }
+        }
         const shouldUseMatchedSvg = !launch.layerMap
           && launch.templateSvg
           && (launch.sourceTemplateOnly || layerConfig.layoutSource === "svg-template")
@@ -7195,6 +7580,22 @@
               saveHistory();
               updateSelectionControls();
               setStatus(`${name} loaded from exact source SVG layers.`);
+              return;
+            }
+            if (launch.image && !requiresVerifiedProductSource(launch)) {
+              resetCanvas("#ffffff");
+              setStatus("Source SVG image assets unavailable. Loading exact product artwork...");
+              const image = await loadImage(canvasSafeImageUrl(launch.image, imageProxyEndpoint));
+              addExactProductBackground(image, {
+                sourceUrl: launch.image,
+                source: "product-image-source-svg-fallback"
+              });
+              canvas.discardActiveObject();
+              keepGuideOnTop();
+              canvas.renderAll();
+              saveHistory();
+              updateSelectionControls();
+              setStatus(`${name} loaded as exact full-background artwork.`);
               return;
             }
           }
@@ -7222,14 +7623,7 @@
         }
 
         if (launch.autoLoadProduct && launch.autoLayer === "png" && !launch.templateSvg && !launch.layerMap && !launch.sourceSvgMap) {
-          addExactProductBackground(image, { sourceUrl: launch.image, source: "product-image-fallback" });
-          canvas.discardActiveObject();
-          keepGuideOnTop();
-          canvas.renderAll();
-          saveHistory();
-          updateSelectionControls();
-          setStatus("No verified source SVG map yet. Product loaded as exact full-background artwork so assets are not guessed.");
-          return;
+          throw new Error("No verified source SVG map yet. Product-image fallback is disabled.");
         }
 
         if (launch.autoLayer !== "color") {
@@ -7246,7 +7640,7 @@
           angle: placement.angle || 0
         });
       } catch (error) {
-        if (launch.image) {
+        if (launch.image && !requiresVerifiedProductSource(launch)) {
           try {
             const image = await loadImage(canvasSafeImageUrl(launch.image, imageProxyEndpoint));
             addExactProductBackground(image, { sourceUrl: launch.image, source: "product-image-fallback" });
@@ -7351,6 +7745,12 @@
           togglePanel(button.dataset.tbdPanelToggle);
         });
       });
+      els.gridToggles.forEach((button) => {
+        button.addEventListener("click", () => {
+          setGridVisible(!root.classList.contains("tbd--grid-visible"));
+        });
+      });
+      els.stage?.addEventListener("scroll", syncGridPosition, { passive: true });
 
       els.team?.addEventListener("change", addTeamText);
       els.categorySelect?.addEventListener("change", (event) => {
@@ -7520,8 +7920,7 @@
       });
       els.mobileTextInput?.addEventListener("change", saveHistory);
       els.fontFamily?.addEventListener("change", (event) => {
-        const obj = selectedObject();
-        if (obj && obj.type === "i-text") applySelection({ fontFamily: event.target.value });
+        applyFontFamilySelection(event.target.value);
       });
       [...els.angles, ...els.angleValues].forEach((control) => {
         control.addEventListener("input", (event) => setSelectedAngle(event.target.value, { save: false, quiet: true }));
@@ -7577,6 +7976,29 @@
       updateStageScale();
     }
 
+    function setGridVisible(visible) {
+      root.classList.toggle("tbd--grid-visible", Boolean(visible));
+      if (visible) syncGridPosition();
+      els.gridToggles.forEach((button) => {
+        button.setAttribute("aria-pressed", visible ? "true" : "false");
+        button.setAttribute("aria-label", visible ? "Hide grid" : "Show grid");
+        button.dataset.tooltip = visible ? "Hide grid" : "Show grid";
+      });
+    }
+
+    function syncGridPosition() {
+      if (!els.stage) return;
+      const wrapper = canvas.wrapperEl || els.stage.querySelector(".canvas-container");
+      if (!wrapper) return;
+      const gridSize = parseFloat(window.getComputedStyle(root).getPropertyValue("--tbd-grid-size")) || 32;
+      const stageRect = els.stage.getBoundingClientRect();
+      const canvasRect = wrapper.getBoundingClientRect();
+      const offsetX = ((stageRect.left - canvasRect.left) % gridSize + gridSize) % gridSize;
+      const offsetY = ((stageRect.top - canvasRect.top) % gridSize + gridSize) % gridSize;
+      root.style.setProperty("--tbd-grid-offset-x", `${cleanNumber(offsetX)}px`);
+      root.style.setProperty("--tbd-grid-offset-y", `${cleanNumber(offsetY)}px`);
+    }
+
     function updateStageScale() {
       if (!els.stage) return;
       const isMobile = window.matchMedia("(max-width: 720px)").matches;
@@ -7599,6 +8021,7 @@
       root.style.setProperty("--tbd-canvas-display-width", `${Math.round(WIDTH * scale)}px`);
       root.style.setProperty("--tbd-canvas-display-height", `${Math.round(HEIGHT * scale)}px`);
       canvas.calcOffset();
+      syncGridPosition();
     }
 
     hydrateTooltips();
