@@ -2163,6 +2163,15 @@
       return obj.data.role || categoryLayerRole(obj.data.category) || (obj.type === "i-text" ? "text-layer" : "object-layer");
     }
 
+    function isDefaultYearPlaceholder(obj) {
+      return Boolean(
+        obj
+        && obj.type === "i-text"
+        && layerRole(obj) === "template-year-text"
+        && String(obj.text || "").trim().toLowerCase() === "year"
+      );
+    }
+
     function layerNumberSuffix(obj) {
       const text = String((obj && obj.data && obj.data.name) || "");
       const match = text.match(/\b(\d+)\b$/);
@@ -7919,6 +7928,23 @@
         }
       });
       els.textContent?.addEventListener("change", saveHistory);
+      const clearDefaultYearOnTap = (event) => {
+        const obj = selectedObject();
+        if (!isDefaultYearPlaceholder(obj)) return;
+        if (isLayerLocked(obj)) {
+          setStatus(`${layerLabel(obj)} is locked. Unlock it to edit text.`);
+          return;
+        }
+        event.target.value = "";
+        obj.set({ text: " " });
+        if (els.textContent && document.activeElement !== els.textContent) els.textContent.value = " ";
+        obj.setCoords();
+        canvas.requestRenderAll();
+        updateSelectionControls();
+        saveHistory();
+      };
+      els.mobileTextInput?.addEventListener("focus", clearDefaultYearOnTap);
+      els.mobileTextInput?.addEventListener("click", clearDefaultYearOnTap);
       els.mobileTextInput?.addEventListener("input", (event) => {
         const obj = selectedObject();
         if (!obj || obj.type !== "i-text") return;
