@@ -3341,10 +3341,13 @@ body {
   }
 
   .tbd__button--set {
+    bottom: 8px;
     font-size: 16px;
     height: 42px;
     margin-top: 8px;
     max-width: 118px;
+    position: sticky;
+    z-index: 3;
   }
 
   .tbd__button--wide {

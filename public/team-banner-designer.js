@@ -2490,6 +2490,18 @@
       return stops.filter((stop, index) => index === 0 || Math.abs(stop.offset - stops[index - 1].offset) > 0.001);
     }
 
+    function clearTextStyleFills(obj) {
+      if (!obj || !["i-text", "text", "textbox"].includes(obj.type) || !obj.styles) return;
+      Object.values(obj.styles).forEach((lineStyles) => {
+        if (!lineStyles || typeof lineStyles !== "object") return;
+        Object.values(lineStyles).forEach((style) => {
+          if (style && typeof style === "object" && Object.prototype.hasOwnProperty.call(style, "fill")) {
+            delete style.fill;
+          }
+        });
+      });
+    }
+
     function applyGradientToSelection(options = {}) {
       const obj = selectedObject();
       if (!obj) return setStatus("Select a text or shape layer first.");
@@ -2508,13 +2520,16 @@
         ? { x1: 0.5, y1: 0.5, r1: 0, x2: 0.5, y2: 0.5, r2: 0.72 }
         : { x1, y1, x2, y2 };
 
+      clearTextStyleFills(obj);
       obj.set("fill", new fabric.Gradient({
         type,
         gradientUnits: "percentage",
         coords,
         colorStops: gradientColorStops(start, end)
       }));
-      canvas.renderAll();
+      obj.dirty = true;
+      obj.setCoords();
+      canvas.requestRenderAll();
       if (!options.preview) saveHistory();
       if (!options.skipControls) updateSelectionControls();
       if (!options.quiet) setStatus("Gradient applied.");
