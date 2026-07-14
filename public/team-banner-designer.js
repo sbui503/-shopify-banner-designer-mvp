@@ -2100,11 +2100,11 @@
         els.selectedName.textContent = obj ? (obj.data && obj.data.name) || obj.type : "Nothing selected";
       }
       setControls(els.fills, colorValue(obj && obj.fill, "#ffffff"));
-      setControls(els.strokes, colorValue(obj && obj.stroke, "#000000"));
+      setControls(els.strokes, selectedStrokeColor(obj, "#000000"));
       setControls(els.opacities, obj ? Math.round((obj.opacity ?? 1) * 100) : 100);
       setControls(els.opacityValues, cleanNumber(obj ? (obj.opacity ?? 1) : 1));
       setControls(els.strokeWidths, cleanNumber(obj ? (obj.strokeWidth ?? 0.5) : 0.5));
-      setControls(els.strokeOpacities, cleanNumber(obj && obj.data ? (obj.data.strokeOpacity ?? 1) : 1));
+      setControls(els.strokeOpacities, cleanNumber(selectedStrokeOpacity(obj)));
       setControls(els.sizes, isText ? Math.round(obj.fontSize || 18) : 18);
       setControls(els.angles, cleanNumber(obj ? (obj.angle || 0) : 0));
       setControls(els.angleValues, cleanNumber(obj ? (obj.angle || 0) : 0));
@@ -2163,13 +2163,12 @@
       return obj.data.role || categoryLayerRole(obj.data.category) || (obj.type === "i-text" ? "text-layer" : "object-layer");
     }
 
-    function isDefaultYearPlaceholder(obj) {
-      return Boolean(
-        obj
-        && obj.type === "i-text"
-        && layerRole(obj) === "template-year-text"
-        && String(obj.text || "").trim().toLowerCase() === "year"
-      );
+    function isDefaultTemplatePlaceholder(obj) {
+      if (!obj || obj.type !== "i-text" || (obj.data && obj.data.placeholderCleared)) return false;
+      const role = layerRole(obj);
+      const text = String(obj.text || "").trim().toLowerCase();
+      return (role === "template-player-text" && text === "player")
+        || (role === "template-year-text" && text === "year");
     }
 
     function layerNumberSuffix(obj) {
@@ -2291,6 +2290,7 @@
             selectLayer();
           });
           row.addEventListener("keydown", (event) => {
+            if (event.target.closest(".tbd__lock")) return;
             if (event.key !== "Enter" && event.key !== " ") return;
             event.preventDefault();
             selectLayer();
@@ -2366,8 +2366,60 @@
       return control ? control.value : fallback;
     }
 
+    function normalizedHexColor(value, fallback = "#000000") {
+      const input = String(value || "").trim();
+      const shortHex = input.match(/^#([0-9a-f]{3})$/i);
+      if (shortHex) return `#${shortHex[1].split("").map((part) => `${part}${part}`).join("")}`.toLowerCase();
+      if (/^#[0-9a-f]{6}$/i.test(input)) return input.toLowerCase();
+      const rgb = input.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+      if (!rgb) return fallback;
+      return `#${rgb.slice(1, 4).map((part) => Math.max(0, Math.min(255, Number(part)))
+        .toString(16).padStart(2, "0")).join("")}`;
+    }
+
     function colorValue(value, fallback) {
-      return typeof value === "string" && value.charAt(0) === "#" ? value : fallback;
+      return normalizedHexColor(value, fallback);
+    }
+
+    function selectedStrokeColor(obj, fallback = "#000000") {
+      const stored = obj && obj.data && obj.data.strokeColor;
+      return normalizedHexColor(stored || (obj && obj.stroke), fallback);
+    }
+
+    function selectedStrokeOpacity(obj) {
+      const stored = obj && obj.data && Number(obj.data.strokeOpacity);
+      if (Number.isFinite(stored)) return Math.max(0, Math.min(1, stored));
+      const rgba = String(obj && obj.stroke || "").match(/^rgba\([^,]+,[^,]+,[^,]+,\s*([\d.]+)\s*\)$/i);
+      return rgba ? Math.max(0, Math.min(1, Number(rgba[1]) || 0)) : 1;
+    }
+
+    function strokeWithOpacity(color, opacity) {
+      const hex = normalizedHexColor(color, "#000000");
+      const alpha = Math.max(0, Math.min(1, Number(opacity)));
+      if (alpha >= 1) return hex;
+      const red = parseInt(hex.slice(1, 3), 16);
+      const green = parseInt(hex.slice(3, 5), 16);
+      const blue = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${red},${green},${blue},${cleanNumber(alpha)})`;
+    }
+
+    function applyStrokeSelection(updates = {}) {
+      const obj = selectedObject();
+      if (!obj) return setStatus("Select an item on the canvas first.");
+      if (isLayerLocked(obj)) return setStatus(`${layerLabel(obj)} is locked. Unlock it to edit.`);
+      const color = normalizedHexColor(updates.color, selectedStrokeColor(obj));
+      const opacity = updates.opacity === undefined
+        ? selectedStrokeOpacity(obj)
+        : Math.max(0, Math.min(1, Number(updates.opacity)));
+      obj.set({
+        stroke: strokeWithOpacity(color, opacity),
+        data: { ...(obj.data || {}), strokeColor: color, strokeOpacity: opacity }
+      });
+      obj.dirty = true;
+      obj.setCoords();
+      canvas.requestRenderAll();
+      saveHistory();
+      updateSelectionControls();
     }
 
     function applySelection(updates) {
@@ -6259,6 +6311,8 @@
     async function addOrUpdateTextFromPanel() {
       const textValue = (els.textContent && els.textContent.value.trim()) || "Player";
       const fontFamily = els.fontFamily ? els.fontFamily.value : "\"American Captain\", Impact, \"Arial Black\", sans-serif";
+      const strokeColor = normalizedHexColor(controlValue(els.strokes, "#000000"), "#000000");
+      const strokeOpacity = Math.max(0, Math.min(1, Number(controlValue(els.strokeOpacities, 1))));
       await loadCanvasFont(fontFamily, textValue);
       const obj = selectedObject();
       if (obj && obj.type === "i-text") {
@@ -6266,13 +6320,14 @@
         obj.set({
           text: textValue,
           fill: controlValue(els.fills, "#ffffff"),
-          stroke: controlValue(els.strokes, "#000000"),
+          stroke: strokeWithOpacity(strokeColor, strokeOpacity),
           strokeWidth: Number(controlValue(els.strokeWidths, 0.5)) || 0,
           fontSize: Number(controlValue(els.sizes, 40)) || 40,
           fontFamily,
           charSpacing: Number(controlValue(els.charSpacings, 0)) || 0,
           lineHeight: Math.max(0.6, Number(controlValue(els.lineHeights, 1)) || 1),
-          opacity: 1
+          opacity: 1,
+          data: { ...(obj.data || {}), strokeColor, strokeOpacity }
         });
         canvas.renderAll();
         saveHistory();
@@ -6292,12 +6347,12 @@
         fontWeight: 900,
         charSpacing: Number(controlValue(els.charSpacings, 0)) || 0,
         lineHeight: Math.max(0.6, Number(controlValue(els.lineHeights, 1)) || 1),
-        stroke: controlValue(els.strokes, "#000000"),
+        stroke: strokeWithOpacity(strokeColor, strokeOpacity),
         strokeWidth: Number(controlValue(els.strokeWidths, 0.5)) || 0,
         paintFirst: "stroke",
         shadow: "2px 2px 0 rgba(0,0,0,.42)",
         textAlign: "center",
-        data: { name: textValue, role: "custom-text-layer" }
+        data: { name: textValue, role: "custom-text-layer", strokeColor, strokeOpacity }
       });
       canvas.add(textLayer);
       keepObjectInArtboard(textLayer, 6);
@@ -7899,10 +7954,11 @@
         saveHistory();
       });
       els.fills.forEach((control) => control.addEventListener("input", (event) => applySelection({ fill: event.target.value })));
-      els.strokes.forEach((control) => control.addEventListener("input", (event) => applySelection({ stroke: event.target.value })));
+      els.strokes.forEach((control) => control.addEventListener("input", (event) => applyStrokeSelection({ color: event.target.value })));
       els.opacities.forEach((control) => control.addEventListener("input", (event) => applySelection({ opacity: Number(event.target.value) / 100 })));
       els.opacityValues.forEach((control) => control.addEventListener("input", (event) => applySelection({ opacity: Math.max(0, Math.min(1, Number(event.target.value))) })));
       els.strokeWidths.forEach((control) => control.addEventListener("input", (event) => applySelection({ strokeWidth: Number(event.target.value) || 0 })));
+      els.strokeOpacities.forEach((control) => control.addEventListener("input", (event) => applyStrokeSelection({ opacity: event.target.value })));
       els.charSpacings.forEach((control) => control.addEventListener("input", (event) => {
         const obj = selectedObject();
         if (obj && obj.type === "i-text") applyTextSelection({ charSpacing: Number(event.target.value) || 0 });
@@ -7928,23 +7984,26 @@
         }
       });
       els.textContent?.addEventListener("change", saveHistory);
-      const clearDefaultYearOnTap = (event) => {
+      const clearDefaultTemplateTextOnTap = (event) => {
         const obj = selectedObject();
-        if (!isDefaultYearPlaceholder(obj)) return;
+        if (!isDefaultTemplatePlaceholder(obj)) return;
         if (isLayerLocked(obj)) {
           setStatus(`${layerLabel(obj)} is locked. Unlock it to edit text.`);
           return;
         }
         event.target.value = "";
-        obj.set({ text: " " });
+        obj.set({
+          text: " ",
+          data: { ...(obj.data || {}), placeholderCleared: true }
+        });
         if (els.textContent && document.activeElement !== els.textContent) els.textContent.value = " ";
         obj.setCoords();
         canvas.requestRenderAll();
         updateSelectionControls();
         saveHistory();
       };
-      els.mobileTextInput?.addEventListener("focus", clearDefaultYearOnTap);
-      els.mobileTextInput?.addEventListener("click", clearDefaultYearOnTap);
+      els.mobileTextInput?.addEventListener("focus", clearDefaultTemplateTextOnTap);
+      els.mobileTextInput?.addEventListener("click", clearDefaultTemplateTextOnTap);
       els.mobileTextInput?.addEventListener("input", (event) => {
         const obj = selectedObject();
         if (!obj || obj.type !== "i-text") return;
