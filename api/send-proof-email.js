@@ -1,6 +1,7 @@
 const MAX_BODY_BYTES = 10 * 1024 * 1024;
 const DEFAULT_TO = "info@tsbanners.com";
 const DEFAULT_FROM = "Team Sport Banners <orders@teamsportbanners.com>";
+const DEFAULT_ADMIN_ORIGIN = "https://admin-teamsportbanners.vercel.app";
 
 function readBody(request) {
   return new Promise((resolve, reject) => {
@@ -39,11 +40,19 @@ function parsePngAttachment(value) {
   };
 }
 
+function adminLookupUrl(designId) {
+  const origin = String(process.env.ADMIN_APP_ORIGIN || DEFAULT_ADMIN_ORIGIN).replace(/\/+$/, "");
+  return `${origin}/fulfillment.html?designId=${encodeURIComponent(designId)}`;
+}
+
 function proofEmailHtml(payload) {
   const rows = [
     ["Design ID", payload.designId],
+    ["Admin Fulfillment Lookup", payload.adminLookupUrl],
     ["Proof URL", payload.previewUrl],
     ["Editable Design URL", payload.jsonUrl],
+    ["Layered SVG URL", payload.sourceSvgUrl],
+    ["Design Manifest URL", payload.manifestUrl],
     ["Product", payload.productTitle],
     ["Product Handle", payload.productHandle],
     ["Team Name", payload.teamName],
@@ -118,7 +127,7 @@ export default async function handler(request, response) {
         from: process.env.PROOF_EMAIL_FROM || DEFAULT_FROM,
         to: [process.env.PROOF_EMAIL_TO || DEFAULT_TO],
         subject: subjectParts.join(" - "),
-        html: proofEmailHtml({ ...payload, designId }),
+        html: proofEmailHtml({ ...payload, designId, adminLookupUrl: adminLookupUrl(designId) }),
         attachments
       })
     });

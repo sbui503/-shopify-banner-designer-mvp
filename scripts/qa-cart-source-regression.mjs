@@ -59,6 +59,7 @@ function fail(message, detail = {}) {
 const indexHtml = read(path.join(PUBLIC_DIR, "index.html"));
 const designerJs = read(path.join(PUBLIC_DIR, "team-banner-designer.js"));
 const designsApi = read(path.join(ROOT, "api", "designs.js"));
+const proofEmailApi = read(path.join(ROOT, "api", "send-proof-email.js"));
 const sourceMap = readJson(path.join(PUBLIC_DIR, "team-banner-source-svg-map.json"));
 
 [
@@ -112,6 +113,15 @@ if (!designerJs.includes("Design ID: ${escapeHtml(item.designId || item.id)}")) 
   "designTextLayers(objects)"
 ].forEach((needle) => {
   if (!designsApi.includes(needle)) fail(`Missing fulfillment source storage contract: ${needle}`);
+});
+
+[
+  '"Admin Fulfillment Lookup"',
+  '"Layered SVG URL"',
+  '"Design Manifest URL"',
+  "adminLookupUrl(designId)"
+].forEach((needle) => {
+  if (!proofEmailApi.includes(needle)) fail(`Missing proof email fulfillment link: ${needle}`);
 });
 
 if (!designerJs.includes("(preserveSvgAssets && entry.href)")) {
@@ -203,6 +213,7 @@ console.log(JSON.stringify({
   directCheckoutDisabled: true,
   shopifyCheckoutRedirect: true,
   fulfillmentSourceStorage: true,
+  resendFulfillmentLinks: true,
   exactSvgHrefPreserved: true,
   loggersBackgroundRegression: true,
   sourceRoleSummaryRegression: true
