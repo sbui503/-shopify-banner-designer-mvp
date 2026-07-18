@@ -20,6 +20,7 @@
     "svg:normalize-layers": "node scripts/normalize-source-svg-layer-configs.mjs",
     "svg:strict-native-policy": "node scripts/enforce-strict-native-source-policy.mjs --apply",
     "qa:cart-source": "node scripts/qa-cart-source-regression.mjs",
+    "qa:mobile-text": "node scripts/qa-mobile-text-regression.mjs",
     "assets:sync-design-tool": "node scripts/sync-design-tool-assets.mjs",
     "svg:promote-root-exact": "node scripts/promote-root-design-db-exact-matches.mjs --apply"
   },

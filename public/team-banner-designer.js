@@ -1359,6 +1359,7 @@
     };
     let guide = null;
     let teamText = null;
+    let mobileTextTarget = null;
     let history = [];
     let historyIndex = -1;
     let isRestoring = false;
@@ -1961,6 +1962,23 @@
       return obj && obj !== guide ? obj : null;
     }
 
+    function editableMobileTextObject() {
+      const obj = selectedObject();
+      if (obj && obj.type === "i-text") {
+        mobileTextTarget = obj;
+        return obj;
+      }
+      if (
+        document.activeElement === els.mobileTextInput
+        && mobileTextTarget
+        && mobileTextTarget.type === "i-text"
+        && canvas.getObjects().includes(mobileTextTarget)
+      ) {
+        return mobileTextTarget;
+      }
+      return null;
+    }
+
     function setToolMode(mode) {
       activeTool = mode === "move" ? "move" : "select";
       canvas.isDrawingMode = false;
@@ -2094,8 +2112,11 @@
     }
 
     function updateSelectionControls() {
-      const obj = selectedObject();
+      const selected = selectedObject();
+      const obj = selected || editableMobileTextObject();
       const isText = obj && obj.type === "i-text";
+      if (selected && !isText) mobileTextTarget = null;
+      if (!selected && document.activeElement !== els.mobileTextInput) mobileTextTarget = null;
       if (els.selectedName) {
         els.selectedName.textContent = obj ? (obj.data && obj.data.name) || obj.type : "Nothing selected";
       }
@@ -7984,8 +8005,12 @@
         }
       });
       els.textContent?.addEventListener("change", saveHistory);
-      const clearDefaultTemplateTextOnTap = (event) => {
+      els.mobileTextInput?.addEventListener("focus", () => {
         const obj = selectedObject();
+        if (obj && obj.type === "i-text") mobileTextTarget = obj;
+      });
+      const clearDefaultTemplateTextOnTap = (event) => {
+        const obj = editableMobileTextObject();
         if (!isDefaultTemplatePlaceholder(obj)) return;
         if (isLayerLocked(obj)) {
           setStatus(`${layerLabel(obj)} is locked. Unlock it to edit text.`);
@@ -8005,7 +8030,7 @@
       els.mobileTextInput?.addEventListener("focus", clearDefaultTemplateTextOnTap);
       els.mobileTextInput?.addEventListener("click", clearDefaultTemplateTextOnTap);
       els.mobileTextInput?.addEventListener("input", (event) => {
-        const obj = selectedObject();
+        const obj = editableMobileTextObject();
         if (!obj || obj.type !== "i-text") return;
         if (isLayerLocked(obj)) {
           setStatus(`${layerLabel(obj)} is locked. Unlock it to edit text.`);
@@ -8019,6 +8044,10 @@
         updateSelectionControls();
       });
       els.mobileTextInput?.addEventListener("change", saveHistory);
+      els.mobileTextInput?.addEventListener("blur", () => {
+        if (!selectedObject()) mobileTextTarget = null;
+        updateSelectionControls();
+      });
       els.fontFamily?.addEventListener("change", (event) => {
         applyFontFamilySelection(event.target.value);
       });
