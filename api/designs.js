@@ -1,4 +1,6 @@
 import { list, put } from "@vercel/blob";
+import { designSvgUrl, fulfillmentLookupUrl } from "../lib/fulfillment-url.js";
+import { inlineSvgImages } from "../lib/inline-svg-images.js";
 
 const MAX_BODY_BYTES = 8 * 1024 * 1024;
 
@@ -78,27 +80,35 @@ async function readStoredDesign(request, id) {
     limit: 20
   });
   const blobs = Array.isArray(result.blobs) ? result.blobs : [];
+  const sourceSvg = blobs.find((blob) => /\.svg$/i.test(blob.pathname));
   const manifestBlob = blobs.find((blob) => /(?:^|[.-])manifest(?:-[a-z0-9]+)?\.json$/i.test(blob.pathname));
   if (manifestBlob) {
     const manifestResponse = await fetch(manifestBlob.url, { cache: "no-store" });
     if (manifestResponse.ok) {
       const manifest = await manifestResponse.json();
-      return { ...manifest, id, manifestUrl: manifest.manifestUrl || manifestBlob.url };
+      return {
+        ...manifest,
+        id,
+        lookupUrl: fulfillmentLookupUrl(id),
+        sourceSvgUrl: sourceSvg ? designSvgUrl(requestOrigin(request), id) : "",
+        sourceSvgBlobUrl: sourceSvg?.url || manifest.sourceSvgBlobUrl || manifest.sourceSvgUrl || "",
+        manifestUrl: manifest.manifestUrl || manifestBlob.url
+      };
     }
   }
 
   const preview = blobs.find((blob) => /\.png$/i.test(blob.pathname));
   const editableJson = blobs.find((blob) => /\.json$/i.test(blob.pathname) && blob !== manifestBlob);
-  const sourceSvg = blobs.find((blob) => /\.svg$/i.test(blob.pathname));
   if (!preview && !editableJson && !sourceSvg) return null;
 
   return {
     id,
     previewUrl: preview?.url || "",
     jsonUrl: editableJson?.url || "",
-    sourceSvgUrl: sourceSvg?.url || "",
+    sourceSvgUrl: sourceSvg ? designSvgUrl(requestOrigin(request), id) : "",
+    sourceSvgBlobUrl: sourceSvg?.url || "",
     manifestUrl: manifestBlob?.url || "",
-    lookupUrl: `${requestOrigin(request)}/fulfillment.html?designId=${encodeURIComponent(id)}`
+    lookupUrl: fulfillmentLookupUrl(id)
   };
 }
 
@@ -145,7 +155,10 @@ export default async function handler(request, response) {
     const payload = JSON.parse(body);
     const id = `design_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
     const png = parsePngDataUrl(payload.image);
-    const sourceSvg = parseSvg(payload.svg);
+    const rawSourceSvg = parseSvg(payload.svg);
+    const sourceSvg = rawSourceSvg
+      ? await inlineSvgImages(rawSourceSvg, { origin: requestOrigin(request) })
+      : "";
 
     if (!process.env.BLOB_READ_WRITE_TOKEN || !png) {
       response.status(200).json({
@@ -197,8 +210,9 @@ export default async function handler(request, response) {
       savedAt: cleanString(metadata.savedAt, 80) || new Date().toISOString(),
       previewUrl: imageBlob.url,
       jsonUrl: jsonBlob.url,
-      sourceSvgUrl: sourceSvgBlob?.url || "",
-      lookupUrl: `${requestOrigin(request)}/fulfillment.html?designId=${encodeURIComponent(id)}`,
+      sourceSvgUrl: sourceSvgBlob ? designSvgUrl(requestOrigin(request), id) : "",
+      sourceSvgBlobUrl: sourceSvgBlob?.url || "",
+      lookupUrl: fulfillmentLookupUrl(id),
       productTitle: cleanString(product.title, 240),
       productHandle: cleanString(product.handle, 240),
       teamName: cleanString(metadata.teamName, 240),

@@ -6,6 +6,9 @@
     "api/designs.js": {
       "maxDuration": 30
     },
+    "api/design-svg.js": {
+      "maxDuration": 30
+    },
     "api/send-proof-email.js": {
       "maxDuration": 30
     }
