@@ -1,0 +1,4 @@
+.next/
+.vercel/
+data/admin-data-snapshot.json
+node_modules/
