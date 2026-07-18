@@ -4940,7 +4940,25 @@
     function exportDesign(multiplier) {
       return withoutGuide(() => ({
         json: canvas.toJSON(["excludeFromExport", "data"]),
-        image: canvas.toDataURL({ format: "png", multiplier: multiplier || 1.25 })
+        svg: typeof canvas.toSVG === "function" ? canvas.toSVG() : "",
+        image: canvas.toDataURL({ format: "png", multiplier: multiplier || 1.25 }),
+        metadata: {
+          savedAt: new Date().toISOString(),
+          artboard: {
+            width: WIDTH,
+            height: HEIGHT,
+            shape: ARTBOARD_SHAPE,
+            backgroundColor: canvas.backgroundColor || "#ffffff"
+          },
+          product: {
+            title: launch.title || "",
+            handle: launch.handle || "",
+            headline: launch.headline || "",
+            sizeLabel: launch.sizeLabel || defaultSizeForShape(ARTBOARD_SHAPE),
+            price: launch.price || defaultPriceForShape(ARTBOARD_SHAPE)
+          },
+          teamName: (els.team && els.team.value) || ""
+        }
       }));
     }
 
@@ -5065,6 +5083,8 @@
           "TSB Design IDs": [...new Set(savedDesigns)].join(","),
           "Design Preview": saved && saved.previewUrl,
           "Editable Design": saved && saved.jsonUrl,
+          "Layered Source": saved && saved.sourceSvgUrl,
+          "Design Manifest": saved && saved.manifestUrl,
           "Source Product": launch.title || "",
           "Source Handle": launch.handle || ""
         };
@@ -5090,6 +5110,8 @@
         designId: saved && saved.id,
         previewUrl: saved && saved.previewUrl,
         jsonUrl: saved && saved.jsonUrl,
+        sourceSvgUrl: saved && saved.sourceSvgUrl,
+        manifestUrl: saved && saved.manifestUrl,
         proofImage: saved && !saved.previewUrl ? saved.proofImage : "",
         productTitle: launch.title || "",
         productHandle: launch.handle || "",
@@ -5221,6 +5243,8 @@
           designId: saved.id || "",
           previewUrl: saved.previewUrl || "",
           jsonUrl: saved.jsonUrl || "",
+          sourceSvgUrl: saved.sourceSvgUrl || "",
+          manifestUrl: saved.manifestUrl || "",
           proofImage: saved.previewUrl ? "" : (String(saved.proofImage || "").length < 180000 ? saved.proofImage : ""),
           variantId: String(variantId),
           shape: ARTBOARD_SHAPE,

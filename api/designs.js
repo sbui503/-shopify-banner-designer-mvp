@@ -27,6 +27,40 @@ function parsePngDataUrl(value) {
   return match ? Buffer.from(match[1], "base64") : null;
 }
 
+function parseSvg(value) {
+  const svg = String(value || "").trim();
+  return /<svg(?:\s|>)/i.test(svg) ? svg : "";
+}
+
+function cleanString(value, maxLength = 500) {
+  return String(value || "").trim().slice(0, maxLength);
+}
+
+function cleanNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : undefined;
+}
+
+function designObjects(value) {
+  if (Array.isArray(value?.objects)) return value.objects;
+  if (Array.isArray(value?.canvas?.objects)) return value.canvas.objects;
+  return [];
+}
+
+function designTextLayers(objects) {
+  return objects
+    .map((object, index) => ({ object, index }))
+    .filter(({ object }) => cleanString(object?.text || object?.value))
+    .slice(0, 250)
+    .map(({ object, index }) => ({
+      id: cleanString(object.id, 100) || `text-layer-${index + 1}`,
+      name: cleanString(object.name || object.sourceName, 160) || `Text layer ${index + 1}`,
+      role: cleanString(object.role || object.data?.role, 100),
+      type: cleanString(object.type, 100),
+      text: cleanString(object.text || object.value, 1000)
+    }));
+}
+
 function safeDesignId(value) {
   const clean = String(value || "").trim();
   return /^design_[0-9]+_[a-z0-9]+$/i.test(clean) ? clean : "";
@@ -111,6 +145,7 @@ export default async function handler(request, response) {
     const payload = JSON.parse(body);
     const id = `design_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
     const png = parsePngDataUrl(payload.image);
+    const sourceSvg = parseSvg(payload.svg);
 
     if (!process.env.BLOB_READ_WRITE_TOKEN || !png) {
       response.status(200).json({
@@ -121,7 +156,7 @@ export default async function handler(request, response) {
       return;
     }
 
-    const [imageBlob, jsonBlob] = await Promise.all([
+    const [imageBlob, jsonBlob, sourceSvgBlob] = await Promise.all([
       put(`team-banner-designs/${id}.png`, png, {
         access: "public",
         contentType: "image/png"
@@ -129,13 +164,62 @@ export default async function handler(request, response) {
       put(`team-banner-designs/${id}.json`, JSON.stringify(payload.json || {}, null, 2), {
         access: "public",
         contentType: "application/json"
-      })
+      }),
+      sourceSvg
+        ? put(`team-banner-designs/${id}.svg`, sourceSvg, {
+          access: "public",
+          contentType: "image/svg+xml"
+        })
+        : Promise.resolve(null)
     ]);
 
-    response.status(200).json({
+    const objects = designObjects(payload.json);
+    const textLayers = designTextLayers(objects);
+    const metadata = payload.metadata && typeof payload.metadata === "object" ? payload.metadata : {};
+    const rawProduct = metadata.product && typeof metadata.product === "object" ? metadata.product : {};
+    const rawArtboard = metadata.artboard && typeof metadata.artboard === "object" ? metadata.artboard : {};
+    const product = {
+      title: cleanString(rawProduct.title, 240),
+      handle: cleanString(rawProduct.handle, 240),
+      headline: cleanString(rawProduct.headline, 240),
+      sizeLabel: cleanString(rawProduct.sizeLabel, 120),
+      price: cleanString(rawProduct.price, 80)
+    };
+    const artboard = {
+      width: cleanNumber(rawArtboard.width),
+      height: cleanNumber(rawArtboard.height),
+      shape: cleanString(rawArtboard.shape, 80),
+      backgroundColor: cleanString(rawArtboard.backgroundColor, 80)
+    };
+    const manifest = {
+      version: 1,
       id,
+      savedAt: cleanString(metadata.savedAt, 80) || new Date().toISOString(),
       previewUrl: imageBlob.url,
-      jsonUrl: jsonBlob.url
+      jsonUrl: jsonBlob.url,
+      sourceSvgUrl: sourceSvgBlob?.url || "",
+      lookupUrl: `${requestOrigin(request)}/fulfillment.html?designId=${encodeURIComponent(id)}`,
+      productTitle: cleanString(product.title, 240),
+      productHandle: cleanString(product.handle, 240),
+      teamName: cleanString(metadata.teamName, 240),
+      product,
+      artboard,
+      layers: textLayers,
+      sourceSvgStats: {
+        objectCount: objects.length,
+        imageCount: objects.filter((object) => cleanString(object?.type).toLowerCase() === "image").length,
+        textCount: textLayers.length,
+        layered: Boolean(sourceSvgBlob && objects.length > 1)
+      }
+    };
+    const manifestBlob = await put(`team-banner-designs/${id}.manifest.json`, JSON.stringify(manifest, null, 2), {
+      access: "public",
+      contentType: "application/json"
+    });
+
+    response.status(200).json({
+      ...manifest,
+      manifestUrl: manifestBlob.url
     });
   } catch (error) {
     response.status(400).json({ error: error.message || "Invalid design payload" });

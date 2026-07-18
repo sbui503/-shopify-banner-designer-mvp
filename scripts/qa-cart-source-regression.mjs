@@ -58,6 +58,7 @@ function fail(message, detail = {}) {
 
 const indexHtml = read(path.join(PUBLIC_DIR, "index.html"));
 const designerJs = read(path.join(PUBLIC_DIR, "team-banner-designer.js"));
+const designsApi = read(path.join(ROOT, "api", "designs.js"));
 const sourceMap = readJson(path.join(PUBLIC_DIR, "team-banner-source-svg-map.json"));
 
 [
@@ -79,6 +80,9 @@ const sourceMap = readJson(path.join(PUBLIC_DIR, "team-banner-source-svg-map.jso
   'JSON.stringify({ "Design ID": currentDesignId })',
   'url.searchParams.set("properties", lineProperties)',
   '"TSB Design IDs"',
+  '"Layered Source"',
+  '"Design Manifest"',
+  "canvas.toSVG()",
   "svgRoleFromSourceSummary"
 ].forEach((needle) => {
   if (!designerJs.includes(needle)) fail(`Missing cart runtime function: ${needle}`);
@@ -99,6 +103,16 @@ if (!/window\.location\.assign\(checkoutUrlWithDesignAttributes\(checkoutUrl, la
 if (!designerJs.includes("Design ID: ${escapeHtml(item.designId || item.id)}")) {
   fail("Tool cart does not visibly label the saved Design ID");
 }
+
+[
+  "parseSvg(payload.svg)",
+  "team-banner-designs/${id}.svg",
+  "team-banner-designs/${id}.manifest.json",
+  "sourceSvgStats",
+  "designTextLayers(objects)"
+].forEach((needle) => {
+  if (!designsApi.includes(needle)) fail(`Missing fulfillment source storage contract: ${needle}`);
+});
 
 if (!designerJs.includes("(preserveSvgAssets && entry.href)")) {
   fail("Exact source SVG loads do not preserve per-entry image hrefs first");
@@ -188,6 +202,7 @@ console.log(JSON.stringify({
   cartUi: true,
   directCheckoutDisabled: true,
   shopifyCheckoutRedirect: true,
+  fulfillmentSourceStorage: true,
   exactSvgHrefPreserved: true,
   loggersBackgroundRegression: true,
   sourceRoleSummaryRegression: true
