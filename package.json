@@ -7,7 +7,8 @@
     "node": "20.x"
   },
   "scripts": {
-    "dev": "vercel dev",
+    "dev": "serve public",
+    "build": "node -e \"console.log('Static assets ready')\"",
     "start": "node --version",
     "qa:graphic": "node scripts/qa-product-graphic-accuracy.mjs",
     "qa:graphic:strict": "node scripts/qa-product-graphic-accuracy.mjs --strict",
@@ -25,9 +26,11 @@
     "svg:promote-root-exact": "node scripts/promote-root-design-db-exact-matches.mjs --apply"
   },
   "dependencies": {
-    "@vercel/blob": "^0.27.3"
+    "@vercel/blob": "2.6.1",
+    "undici": "6.27.0"
   },
   "devDependencies": {
+    "serve": "14.2.4",
     "vercel": "^54.4.1"
   },
   "main": "index.js",
