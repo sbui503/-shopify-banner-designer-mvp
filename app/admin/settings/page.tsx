@@ -15,7 +15,7 @@ export default async function SettingsPage() {
     ["Team Banner API key", shopifyCredentialStatus.configured],
     ["Vercel Blob storage", data.system.blobConfigured],
     ["Proof email service", data.system.proofEmailConfigured],
-    ["Preview-only deploy mode", true],
+    ["Protected admin login", true],
     ["Require SVG source before production", true],
     ["Cart preview proof enabled", true]
   ] as const;
@@ -65,7 +65,7 @@ export default async function SettingsPage() {
                 {item}
               </div>
             ))}
-            <Button variant="outline" className="w-full">Download settings audit</Button>
+            <Button variant="outline" className="w-full" disabled>Settings audit download not connected</Button>
           </CardContent>
         </Card>
       </div>

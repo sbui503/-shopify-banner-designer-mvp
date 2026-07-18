@@ -5,15 +5,31 @@ import { getAdminData } from "@/lib/admin-data";
 
 export default async function AnalyticsPage() {
   const data = await getAdminData();
+  const hasLiveAnalytics = data.analytics.mostUsedTemplates.length > 0
+    || data.analytics.bestSellingBannerTypes.length > 0
+    || data.analytics.funnel.length > 0;
 
   return (
     <>
       <PageHeader
         title="Analytics"
-        description="Template usage, banner sales mix, conversion funnel, and design completion rate."
+        description="Live template usage, banner sales mix, conversion funnel, and design completion rate."
         badge="Performance"
       />
 
+      {!hasLiveAnalytics ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Live Analytics Not Connected</CardTitle>
+            <CardDescription>No sample or fabricated performance metrics are displayed.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-lg border border-dashed bg-slate-50 p-6 text-sm text-muted-foreground">
+              Connect a Shopify reporting feed before using this page for product, revenue, or conversion decisions.
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
       <div className="grid gap-4 xl:grid-cols-3">
         <Card>
           <CardHeader>
@@ -69,6 +85,7 @@ export default async function AnalyticsPage() {
           </CardContent>
         </Card>
       </div>
+      )}
     </>
   );
 }

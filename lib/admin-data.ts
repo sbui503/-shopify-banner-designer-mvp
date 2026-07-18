@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { formatCurrency, titleCase } from "@/lib/utils";
+import { titleCase } from "@/lib/utils";
 
 type JsonRecord = Record<string, unknown>;
 
@@ -148,7 +148,6 @@ const PRODUCT_MANIFEST_FILE = path.join(PROJECT_ROOT, "public", "team-banner-pro
 const ASSET_MANIFEST_FILE = path.join(PROJECT_ROOT, "public", "team-banner-assets.shopify.json");
 const TEMPLATE_MAP_FILE = path.join(PROJECT_ROOT, "public", "design-tool", "template-map.json");
 const SVG_TEMPLATE_FILE = path.join(PROJECT_ROOT, "public", "svg-layer-templates.json");
-const SOURCE_MAP_FILE = path.join(PROJECT_ROOT, "public", "team-banner-source-svg-map.json");
 const ASSET_BACKUP_FILE = path.join(PROJECT_ROOT, "public", "team-banner-asset-backups.json");
 const ADMIN_DATA_SNAPSHOT_FILE = path.join(PROJECT_ROOT, "data", "admin-data-snapshot.json");
 const CUSTOMER_TOOL_ORIGIN = process.env.CUSTOMER_TOOL_ORIGIN || "https://teamsportbanners.vercel.app";
@@ -232,15 +231,6 @@ function previewUrl(value: unknown) {
   return url;
 }
 
-function topCounts(values: string[], limit = 6) {
-  const counts = new Map<string, number>();
-  values.forEach((value) => counts.set(value, (counts.get(value) || 0) + 1));
-  return [...counts.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, limit)
-    .map(([name, count]) => ({ name, count }));
-}
-
 function lookupKeys(value: unknown) {
   const raw = cleanText(value);
   if (!raw) return [];
@@ -270,6 +260,27 @@ function layerRoleValue(config: JsonRecord, role: string) {
   if (role === "clipArt") return cleanText(config.clipartUrl || config.clipartSvgUrl);
   if (role === "accessory") return cleanText(config.accessoryUrl || config.accessorySvgUrl);
   return "";
+}
+
+function hasVerifiedEditableSource(product: JsonRecord, config: JsonRecord) {
+  const layoutSvgUrl = cleanText(config.layoutSvgUrl || product.templateSvg);
+  return config.fullyEditable === true
+    && config.sourceEditable === true
+    && config.needsSourceSvg !== true
+    && cleanText(config.layoutSource) === "svg-template"
+    && cleanText(config.objectLayerMode) === "source-svg"
+    && Boolean(layoutSvgUrl);
+}
+
+function productSourceStatus(product: JsonRecord) {
+  const config = (product.layerConfig && typeof product.layerConfig === "object" ? product.layerConfig : {}) as JsonRecord;
+  if (hasVerifiedEditableSource(product, config)) return "Exact source SVG";
+  return cleanText(config.layoutSvgUrl || product.templateSvg) ? "Mapped SVG" : "Needs SVG";
+}
+
+function hasEditableTemplateSource(template: JsonRecord) {
+  const sourceUrl = cleanText(template.url || template.sourceUrl);
+  return Boolean(template.nativeEditableSvg || template.requiredObjects || /\.svg(?:$|[?#])/i.test(sourceUrl));
 }
 
 function layerRoleExpected(product: JsonRecord, config: JsonRecord, role: string) {
@@ -347,6 +358,21 @@ function buildProductLayerCoverage(rawProducts: JsonRecord[], assetBackups: Json
     };
     bucket.productCount += 1;
 
+    if (hasVerifiedEditableSource(product, config)) {
+      LAYER_ROLES.forEach((role) => {
+        const roleBucket = bucket.roles[role];
+        if (layerRoleExpected(product, config, role)) {
+          roleBucket.expected += 1;
+          roleBucket.ok += 1;
+        } else {
+          roleBucket.notRequired += 1;
+        }
+      });
+      bucket.readyCount += 1;
+      byBannerType.set(bannerType, bucket);
+      return;
+    }
+
     let readyRoles = 0;
     LAYER_ROLES.forEach((role) => {
       const expected = layerRoleExpected(product, config, role);
@@ -418,12 +444,11 @@ function buildProductLayerCoverage(rawProducts: JsonRecord[], assetBackups: Json
 }
 
 export async function getLiveAdminData(): Promise<AdminData> {
-  const [productManifest, assetManifest, templateManifest, svgTemplateManifest, sourceMap, assetBackupManifest] = await Promise.all([
+  const [productManifest, assetManifest, templateManifest, svgTemplateManifest, assetBackupManifest] = await Promise.all([
     readCustomerJson<JsonRecord>("/team-banner-products.json", PRODUCT_MANIFEST_FILE, {}),
     readCustomerJson<JsonRecord>("/team-banner-assets.shopify.json", ASSET_MANIFEST_FILE, {}),
     readCustomerJson<JsonRecord>("/design-tool/template-map.json", TEMPLATE_MAP_FILE, {}),
     readCustomerJson<JsonRecord>("/svg-layer-templates.json", SVG_TEMPLATE_FILE, {}),
-    readCustomerJson<JsonRecord>("/team-banner-source-svg-map.json", SOURCE_MAP_FILE, {}),
     readCustomerJson<JsonRecord>("/team-banner-asset-backups.json", ASSET_BACKUP_FILE, {})
   ]);
 
@@ -438,7 +463,6 @@ export async function getLiveAdminData(): Promise<AdminData> {
   const products: AdminProduct[] = rawProducts.slice(0, 180).map((product) => {
     const sport = normalizeSport(product.tags || product.productCategory || product.title);
     const bannerType = inferProductBannerType(product);
-    const templateSvg = cleanText(product.templateSvg);
     return {
       title: cleanText(product.title, "Untitled product"),
       handle: cleanText(product.handle),
@@ -446,7 +470,7 @@ export async function getLiveAdminData(): Promise<AdminData> {
       bannerType,
       price: cleanText(product.price, "$0.00"),
       status: cleanText(product.status, "active"),
-      sourceStatus: templateSvg ? "Mapped SVG" : "Needs SVG",
+      sourceStatus: productSourceStatus(product),
       image: previewUrl(product.image)
     };
   });
@@ -481,7 +505,7 @@ export async function getLiveAdminData(): Promise<AdminData> {
       playerCount: Number(template.playerCount || template.imageCount || 0),
       sourceUrl: cleanText(template.url || template.sourceUrl),
       status: cleanText(template.validationStatus || template.usage_status || "active"),
-      editable: Boolean(template.nativeEditableSvg || template.requiredObjects),
+      editable: hasEditableTemplateSource(template),
       photoFrame: Boolean(template.premiumPhotoFrame || template.largePhotoFrame || cleanText(template.title).toLowerCase().includes("photo"))
     }));
 
@@ -500,7 +524,7 @@ export async function getLiveAdminData(): Promise<AdminData> {
       photoFrameCount: 0
     };
     current.count += 1;
-    if (template.nativeEditableSvg || template.requiredObjects) current.editableCount += 1;
+    if (hasEditableTemplateSource(template)) current.editableCount += 1;
     if (template.premiumPhotoFrame || template.largePhotoFrame || cleanText(template.title).toLowerCase().includes("photo")) {
       current.photoFrameCount += 1;
     }
@@ -517,19 +541,18 @@ export async function getLiveAdminData(): Promise<AdminData> {
   const sports = [...new Set([...productSports, ...assets.map((asset) => asset.sport), ...templates.map((template) => template.sport)])].sort();
   const bannerTypes = [...new Set([...productBannerTypes, ...templates.map((template) => template.bannerType)])].sort();
 
-  const mappedProducts = rawProducts.filter((product) => cleanText(product.templateSvg)).length;
-  const sourceMapCount = Object.keys(sourceMap).length;
+  const mappedProducts = rawProducts.filter((product) => productSourceStatus(product) !== "Needs SVG").length;
   const missingSourceProducts = rawProducts.length - mappedProducts;
   const syncRows = products.slice(0, 18).map((product) => ({
     product: product.title,
     handle: product.handle,
     template: product.sourceStatus,
-    status: product.sourceStatus === "Mapped SVG" ? "Synced" : "Needs review",
-    issue: product.sourceStatus === "Mapped SVG" ? "None" : "Missing editable source"
+    status: product.sourceStatus !== "Needs SVG" ? "Synced" : "Needs review",
+    issue: product.sourceStatus !== "Needs SVG" ? "None" : "Missing editable source"
   }));
 
   const failedSyncRows = products
-    .filter((product) => product.sourceStatus !== "Mapped SVG")
+    .filter((product) => product.sourceStatus === "Needs SVG")
     .slice(0, 8)
     .map((product) => ({
       product: product.title,
@@ -537,57 +560,19 @@ export async function getLiveAdminData(): Promise<AdminData> {
       action: "Generate or attach native editable SVG"
     }));
 
-  const orderSeed = [
-    ["#TSB-1048", "Duy Nguyen", 3, "Needs proof review", "Layered SVG saved", "Ready"],
-    ["#TSB-1049", "Doan Tran", 1, "Proof sent", "Source verified", "Ready"],
-    ["#TSB-1050", "Baseball Booster Club", 7, "Pending customer email", "PNG proof ready", "Ready"],
-    ["#TSB-1051", "Irvine Track", 10, "In fulfillment", "Layered SVG saved", "Ready"],
-    ["#TSB-1052", "Angels Volleyball", 2, "Needs QA", "Photo frame source ready", "Needs check"]
-  ] as const;
-
-  const orders = orderSeed.map(([order, customer, items, proofStatus, designStatus, cartPreviewStatus], index) => ({
-    order,
-    customer,
-    items,
-    proofStatus,
-    designStatus,
-    cartPreviewStatus,
-    total: formatCurrency(79 * Number(items) + index * 12)
-  }));
-
-  const templateCounts = topCounts(templates.map((template) => template.title.split(" - ")[0] || template.title), 5);
-  const bannerTypeCounts = topCounts(productBannerTypes, 5);
-
-  const analytics = {
-    mostUsedTemplates: templateCounts.map((item) => ({
-      ...item,
-      rate: Math.round((item.count / Math.max(templates.length, 1)) * 100)
-    })),
-    bestSellingBannerTypes: bannerTypeCounts.map((item, index) => ({
-      ...item,
-      revenue: formatCurrency(item.count * (index === 0 ? 69 : 29))
-    })),
-    funnel: [
-      { step: "Product page views", count: 1240, rate: 100 },
-      { step: "Customize design", count: 824, rate: 66 },
-      { step: "Saved to cart", count: 517, rate: 42 },
-      { step: "Checkout started", count: 386, rate: 31 },
-      { step: "Order completed", count: 294, rate: 24 }
-    ]
+  const orders: AdminData["orders"] = [];
+  const analytics: AdminData["analytics"] = {
+    mostUsedTemplates: [],
+    bestSellingBannerTypes: [],
+    funnel: []
   };
-
-  const users = [
-    { name: "Si Bui", email: "si@tsbanners.com", role: "Owner", status: "Active", lastActive: "Today" },
-    { name: "Duy Nguyen", email: "duy@tsbanners.com", role: "Fulfillment", status: "Active", lastActive: "Today" },
-    { name: "Chi Doan", email: "doan@tsbanners.com", role: "QA Reporter", status: "Active", lastActive: "Yesterday" },
-    { name: "Design Team", email: "design@tsbanners.com", role: "Designer", status: "Invite pending", lastActive: "Pending" }
-  ];
+  const users: AdminData["users"] = [];
 
   const activity = [
-    { label: "Cart preview optimized", detail: "Removed duplicate current design preview block", time: "Today", status: "QA passed" },
-    { label: "Photo frame templates added", detail: "Track, volleyball, basketball, baseball, football layouts", time: "This week", status: "Active" },
-    { label: "Fulfillment lookup added", detail: "Order number to design source lookup workflow", time: "This week", status: "Preview" },
-    { label: "SVG source audit", detail: `${sourceMapCount} source rows indexed`, time: "Recent", status: missingSourceProducts ? "Review" : "Clean" }
+    { label: "Customer catalog synced", detail: `${rawProducts.length.toLocaleString()} products loaded from the live customer tool`, time: "Current deployment", status: "Synced" },
+    { label: "Exact source SVG audit", detail: `${productLayerCoverage.readyCount.toLocaleString()} products verified as fully editable source SVG`, time: "Current deployment", status: missingSourceProducts ? "Review" : "Verified" },
+    { label: "Asset catalog synced", detail: `${rawAssets.length.toLocaleString()} customer-tool assets indexed`, time: "Current deployment", status: "Synced" },
+    { label: "Template catalog synced", detail: `${templates.length.toLocaleString()} editable SVG templates indexed`, time: "Current deployment", status: "Synced" }
   ];
 
   return {
@@ -596,9 +581,9 @@ export async function getLiveAdminData(): Promise<AdminData> {
       activeTemplates: templates.filter((template) => template.editable).length,
       pendingProofs: orders.filter((order) => /pending|needs/i.test(order.proofStatus)).length,
       shopifySyncStatus: missingSourceProducts ? "Needs review" : "Healthy",
-      revenue: formatCurrency(orders.reduce((sum, order) => sum + Number(order.total.replace(/[^0-9]/g, "")), 0)),
-      averageOrder: formatCurrency(143),
-      designCompletionRate: "42%"
+      revenue: "Not connected",
+      averageOrder: "Not connected",
+      designCompletionRate: "Not connected"
     },
     products,
     assets,

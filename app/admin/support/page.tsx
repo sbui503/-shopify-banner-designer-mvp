@@ -132,7 +132,7 @@ const workflowSections = [
       "Chỉ chỉnh font, size, line height, letter spacing, xoay và canh lề sau khi chữ đã đúng.",
       "Nếu khó chọn chữ, mở Layers và chọn đúng layer chữ."
     ],
-    qa: "Team text stays visible when the mobile field receives focus, Player text remains editable, and color controls affect the selected text."
+    qa: "Team and Player text stay visible when the mobile field receives focus. Player text is selected for replacement, the new name persists, and color controls affect the selected text."
   },
   {
     icon: Ruler,
@@ -368,7 +368,7 @@ const qaChecks = [
   "Clip art/accessories load from backed-up asset source.",
   "Text is selectable and editable.",
   "Mobile text field is usable.",
-  "Team text stays visible after tapping the mobile field; Player text still edits normally.",
+  "Team and Player text stay visible after tapping the mobile field; Player text is selected for replacement and the new name persists.",
   "Text and outline colors update selected text.",
   "Properties opens from the bottom toolbar.",
   "Ruler opens top/left canvas rulers and draggable guides.",

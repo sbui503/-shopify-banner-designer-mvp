@@ -51,6 +51,18 @@ async function readManifest(id: string) {
   return { ...data, manifestUrl: data.manifestUrl || manifest.url };
 }
 
+async function readCustomerDesign(id: string) {
+  const customerOrigin = String(process.env.CUSTOMER_TOOL_ORIGIN || "https://teamsportbanners.vercel.app").replace(/\/+$/, "");
+  const response = await fetch(`${customerOrigin}/api/designs?id=${encodeURIComponent(id)}`, {
+    cache: "no-store",
+    signal: AbortSignal.timeout(15000)
+  });
+  const data = await response.json().catch(() => ({}));
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error(data.error || `Customer design lookup failed (${response.status}).`);
+  return data;
+}
+
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,
@@ -60,12 +72,10 @@ export async function OPTIONS() {
 
 export async function GET(request: NextRequest) {
   try {
-    if (!process.env.BLOB_READ_WRITE_TOKEN) {
-      return NextResponse.json({ error: "BLOB_READ_WRITE_TOKEN is required for design lookup." }, { status: 503, headers: corsHeaders() });
-    }
     const id = safeDesignId(request.nextUrl.searchParams.get("id") || request.nextUrl.searchParams.get("designId"));
     if (!id) return NextResponse.json({ error: "Missing design id." }, { status: 400, headers: corsHeaders() });
-    const manifest = await readManifest(id);
+    const localManifest = process.env.BLOB_READ_WRITE_TOKEN ? await readManifest(id) : null;
+    const manifest = localManifest || await readCustomerDesign(id);
     if (!manifest) return NextResponse.json({ error: "Design manifest not found." }, { status: 404, headers: corsHeaders() });
     return NextResponse.json(manifest, { headers: corsHeaders() });
   } catch (error) {

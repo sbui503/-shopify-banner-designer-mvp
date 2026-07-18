@@ -22,16 +22,16 @@ export default async function LayoutsPage() {
     <>
       <PageHeader
         title="Banner Layouts"
-        description="Validate true product-layer readiness: owned background, team logo, team name, text, clip art, accessory, and no external tile fallback."
-        badge="No-Tile QA"
+        description="Validate the same exact-source SVG and editable-layer fields used by the live customer tool."
+        badge="Live Source QA"
       />
 
       <div className="grid gap-4 lg:grid-cols-4">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>True Editable No-Tile Coverage</CardTitle>
+            <CardTitle>True Editable Source Coverage</CardTitle>
             <CardDescription>
-              Products are ready only when every required customer layer resolves to owned source/object assets.
+              Verified products report fullyEditable, sourceEditable, source-svg object layers, and a mapped local layout SVG.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -39,11 +39,11 @@ export default async function LayoutsPage() {
               <div>
                 <div className="text-3xl font-black">{coverage.readyRate}%</div>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {coverage.readyCount.toLocaleString()} of {coverage.productCount.toLocaleString()} products ready
+                  {coverage.readyCount.toLocaleString()} of {coverage.productCount.toLocaleString()} products verified
                 </p>
               </div>
               <Badge variant={coverage.readyRate >= 80 ? "success" : "warning"}>
-                {coverage.readyRate >= 80 ? "80% target met" : "Below 80% target"}
+                {coverage.readyRate === 100 ? "All sources verified" : coverage.readyRate >= 80 ? "80% target met" : "Below 80% target"}
               </Badge>
             </div>
             <div className="mt-4">
@@ -52,7 +52,7 @@ export default async function LayoutsPage() {
             <div className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
               <div>
                 <div className="font-semibold">{coverage.notReadyCount.toLocaleString()}</div>
-                <div className="text-muted-foreground">Need asset work</div>
+                <div className="text-muted-foreground">Need source review</div>
               </div>
               <div>
                 <div className="font-semibold">{coverage.target80Remaining.toLocaleString()}</div>
@@ -76,14 +76,14 @@ export default async function LayoutsPage() {
               <div className="flex items-end justify-between gap-3">
                 <div className="text-2xl font-black">{shape.readyRate}%</div>
                 <Badge variant={shape.readyRate >= 80 ? "success" : "warning"}>
-                  {shape.readyRate >= 80 ? "Ready" : "Build assets"}
+                  {shape.readyRate === 100 ? "Verified" : shape.readyRate >= 80 ? "Ready" : "Review sources"}
                 </Badge>
               </div>
               <div className="mt-3">
                 <ProgressBar value={shape.readyRate} />
               </div>
               <p className="mt-3 text-sm text-muted-foreground">
-                Weakest: {ROLE_LABELS[shape.weakestRole] || shape.weakestRole} ({shape.weakestRoleRate}%)
+                Lowest role coverage: {ROLE_LABELS[shape.weakestRole] || shape.weakestRole} ({shape.weakestRoleRate}%)
               </p>
             </CardContent>
           </Card>
@@ -96,7 +96,7 @@ export default async function LayoutsPage() {
             <Card key={shape.bannerType}>
               <CardHeader>
                 <CardTitle>{shape.bannerType}</CardTitle>
-                <CardDescription>{shape.readyCount.toLocaleString()} no-tile ready</CardDescription>
+                <CardDescription>{shape.readyCount.toLocaleString()} exact-source verified</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-black">{shape.readyRate}%</div>
@@ -104,7 +104,7 @@ export default async function LayoutsPage() {
                   <ProgressBar value={shape.readyRate} />
                 </div>
                 <p className="mt-3 text-sm text-muted-foreground">
-                  {shape.notReadyCount.toLocaleString()} need work. Add {shape.target80Remaining.toLocaleString()} to hit 80%.
+                  {shape.notReadyCount.toLocaleString()} need source review. Add {shape.target80Remaining.toLocaleString()} to hit 80%.
                 </p>
               </CardContent>
             </Card>
@@ -114,9 +114,9 @@ export default async function LayoutsPage() {
 
       <Card className="mt-6">
         <CardHeader>
-          <CardTitle>80-90% True Editable Checklist</CardTitle>
+          <CardTitle>Exact Source Coverage Checklist</CardTitle>
           <CardDescription>
-            Prioritize the weakest unresolved roles first. These are the layers most likely to fall back to tile/image behavior.
+            Canonical readiness comes from the deployed customer product manifest; role columns identify any remaining source gaps.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -126,7 +126,7 @@ export default async function LayoutsPage() {
                 <TableHead>Banner Type</TableHead>
                 <TableHead>Products</TableHead>
                 <TableHead>Ready</TableHead>
-                <TableHead>No-Tile Rate</TableHead>
+                <TableHead>Source Rate</TableHead>
                 <TableHead>To 80%</TableHead>
                 <TableHead>To 90%</TableHead>
                 <TableHead>Weakest Layer</TableHead>
@@ -152,7 +152,7 @@ export default async function LayoutsPage() {
                   </TableCell>
                   <TableCell>
                     <Badge variant={shape.readyRate >= 80 ? "success" : "warning"}>
-                      {shape.readyRate >= 90 ? "90% ready" : shape.readyRate >= 80 ? "80% ready" : "Needs asset packs"}
+                      {shape.readyRate === 100 ? "Verified" : shape.readyRate >= 90 ? "90% ready" : shape.readyRate >= 80 ? "80% ready" : "Needs source review"}
                     </Badge>
                   </TableCell>
                 </TableRow>

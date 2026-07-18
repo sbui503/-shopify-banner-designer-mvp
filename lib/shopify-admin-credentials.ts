@@ -4,7 +4,7 @@ import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:
 const SHOPIFY_API_VERSION = "2025-10";
 const SETTINGS_PREFIX = "team-banner-admin/settings/shopify-admin-token/";
 
-export type ShopifyCredentialSource = "admin-storage" | "environment" | "missing";
+export type ShopifyCredentialSource = "admin-storage" | "client-credentials" | "environment" | "missing";
 
 export type ShopifyCredentialStatus = {
   configured: boolean;
@@ -13,6 +13,7 @@ export type ShopifyCredentialStatus = {
   updatedAt: string | null;
   storageConfigured: boolean;
   requiresAdminKey: boolean;
+  appCredentialsConfigured: boolean;
 };
 
 type SavedCredential = {
@@ -29,6 +30,8 @@ type EncryptedCredentialBlob = {
   updatedAt: string;
   storeDomain: string;
 };
+
+let clientCredentialTokenCache: { token: string; storeDomain: string; expiresAt: number } | null = null;
 
 export function normalizeStoreDomain(value: unknown) {
   const clean = String(value || "tsbanners.myshopify.com")
@@ -48,6 +51,7 @@ export function validateAdminSettingsKey(value: unknown) {
 export async function getShopifyCredentialStatus(): Promise<ShopifyCredentialStatus> {
   const storageConfigured = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
   const envConfigured = Boolean(process.env.SHOPIFY_ADMIN_ACCESS_TOKEN);
+  const clientCredentialsConfigured = Boolean(shopifyClientId() && shopifyClientSecret());
   const envDomain = normalizeStoreDomain(process.env.SHOPIFY_STORE_DOMAIN);
 
   const saved = await readSavedShopifyCredential().catch(() => null);
@@ -58,7 +62,8 @@ export async function getShopifyCredentialStatus(): Promise<ShopifyCredentialSta
       storeDomain: saved.storeDomain,
       updatedAt: saved.updatedAt,
       storageConfigured,
-      requiresAdminKey: Boolean(process.env.ADMIN_SETTINGS_KEY)
+      requiresAdminKey: Boolean(process.env.ADMIN_SETTINGS_KEY),
+      appCredentialsConfigured: clientCredentialsConfigured
     };
   }
 
@@ -68,7 +73,8 @@ export async function getShopifyCredentialStatus(): Promise<ShopifyCredentialSta
     storeDomain: envDomain,
     updatedAt: null,
     storageConfigured,
-    requiresAdminKey: Boolean(process.env.ADMIN_SETTINGS_KEY)
+    requiresAdminKey: Boolean(process.env.ADMIN_SETTINGS_KEY),
+    appCredentialsConfigured: clientCredentialsConfigured
   };
 }
 
@@ -77,12 +83,66 @@ export async function getShopifyAdminCredential(): Promise<SavedCredential | nul
   if (saved) return saved;
 
   const token = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN;
-  if (!token) return null;
-  return {
-    token,
-    storeDomain: normalizeStoreDomain(process.env.SHOPIFY_STORE_DOMAIN),
-    updatedAt: ""
+  if (token) {
+    return {
+      token,
+      storeDomain: normalizeStoreDomain(process.env.SHOPIFY_STORE_DOMAIN),
+      updatedAt: ""
+    };
+  }
+
+  return getClientCredentialToken();
+}
+
+async function getClientCredentialToken(): Promise<SavedCredential | null> {
+  const clientId = shopifyClientId();
+  const clientSecret = shopifyClientSecret();
+  if (!clientId || !clientSecret) return null;
+
+  const storeDomain = normalizeStoreDomain(process.env.SHOPIFY_STORE_DOMAIN);
+  if (clientCredentialTokenCache
+    && clientCredentialTokenCache.storeDomain === storeDomain
+    && clientCredentialTokenCache.expiresAt > Date.now() + 5 * 60 * 1000) {
+    return {
+      token: clientCredentialTokenCache.token,
+      storeDomain,
+      updatedAt: ""
+    };
+  }
+
+  const response = await fetch(`https://${storeDomain}/admin/oauth/access_token`, {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({
+      grant_type: "client_credentials",
+      client_id: clientId,
+      client_secret: clientSecret
+    })
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || !result.access_token) {
+    throw new Error(result.error_description || result.error || `Shopify app token request failed with HTTP ${response.status}.`);
+  }
+
+  const accessToken = normalizeAdminToken(result.access_token);
+  const expiresIn = Math.max(300, Number(result.expires_in) || 86400);
+  clientCredentialTokenCache = {
+    token: accessToken,
+    storeDomain,
+    expiresAt: Date.now() + expiresIn * 1000
   };
+  return { token: accessToken, storeDomain, updatedAt: "" };
+}
+
+function shopifyClientId() {
+  return String(process.env.SHOPIFY_API_KEY || process.env.SHOPIFY_CLIENT_ID || "").trim();
+}
+
+function shopifyClientSecret() {
+  return String(process.env.SHOPIFY_API_SECRET || process.env.SHOPIFY_CLIENT_SECRET || "").trim();
 }
 
 export async function saveShopifyAdminCredential(input: { token: string; storeDomain?: string }) {

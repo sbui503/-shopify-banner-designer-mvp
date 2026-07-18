@@ -56,7 +56,8 @@ export function ShopifyCredentialForm({ initialStatus }: ShopifyCredentialFormPr
         storeDomain: result.storeDomain,
         updatedAt: result.updatedAt,
         storageConfigured: initialStatus.storageConfigured,
-        requiresAdminKey: initialStatus.requiresAdminKey
+        requiresAdminKey: initialStatus.requiresAdminKey,
+        appCredentialsConfigured: initialStatus.appCredentialsConfigured
       });
       setToken("");
       setMessage(`Connected to ${result.validation?.shopName || result.validation?.myshopifyDomain || result.storeDomain}.`);
@@ -112,6 +113,18 @@ export function ShopifyCredentialForm({ initialStatus }: ShopifyCredentialFormPr
             Set ADMIN_SETTINGS_KEY in Vercel to require an admin passcode before saving production credentials.
           </div>
         )}
+
+        {!status.configured && status.appCredentialsConfigured && status.storageConfigured ? (
+          <div className="flex flex-col gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-semibold text-slate-950">Shopify app is ready to connect</p>
+              <p className="mt-1 text-sm text-slate-600">Authorize read-only order access and save the encrypted fulfillment token.</p>
+            </div>
+            <Button asChild>
+              <a href="/api/shopify/oauth/start">Connect Shopify</a>
+            </Button>
+          </div>
+        ) : null}
 
         <form className="space-y-3" onSubmit={handleSubmit}>
           <label className="block space-y-1.5 text-sm font-semibold text-slate-800">

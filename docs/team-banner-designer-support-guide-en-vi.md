@@ -184,7 +184,7 @@ Tap the word. Type the new word. Pick a color. Move it where it looks nice.
 
 Support note:
 
-On mobile, the text field should be easy to use and color options should be available near the text editing area. Team text must stay visible when the field receives focus, and Player text must continue editing normally.
+On mobile, the text field should be easy to use and color options should be available near the text editing area. Team and Player text must stay visible when the field receives focus. Player text should be selected for replacement, and the new name must persist.
 
 ### Tiếng Việt
 
@@ -607,7 +607,7 @@ Before support says the product is ready:
 - Clip art loads.
 - Text is editable.
 - Mobile text field works.
-- Team text stays visible when the mobile field is tapped; Player text still edits normally.
+- Team and Player text stay visible when the mobile field is tapped; Player text is selected for replacement and the new name persists.
 - Top color controls change selected text color.
 - Properties panel opens from bottom.
 - Ruler button opens canvas rulers and guides.

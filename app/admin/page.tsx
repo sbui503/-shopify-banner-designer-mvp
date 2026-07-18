@@ -16,7 +16,11 @@ export default async function DashboardPage() {
   const data = await getAdminData();
   const shopifyCredentialStatus = await getShopifyCredentialStatus();
   const apiKeyStatusLabel = shopifyCredentialStatus.configured
-    ? shopifyCredentialStatus.source === "admin-storage" ? "Saved in dashboard" : "Configured in Vercel"
+    ? shopifyCredentialStatus.source === "admin-storage"
+      ? "Saved in dashboard"
+      : shopifyCredentialStatus.source === "client-credentials"
+        ? "Shopify app connected"
+        : "Configured in Vercel"
     : "Missing";
 
   return (
@@ -24,11 +28,11 @@ export default async function DashboardPage() {
       <PageHeader
         title="Dashboard"
         description="Operational overview for product templates, customer proof packages, Shopify sync, and fulfillment readiness."
-        badge="Admin Preview"
+        badge="Live Source"
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Total orders" value={data.metrics.totalOrders} detail="Preview queue sample" icon={ShoppingCart} tone="blue" />
+        <StatCard label="Total orders" value={data.metrics.totalOrders} detail="No live order feed connected" icon={ShoppingCart} tone="blue" />
         <StatCard
           label="Active templates"
           value={formatNumber(data.metrics.activeTemplates)}
@@ -36,8 +40,8 @@ export default async function DashboardPage() {
           icon={Shapes}
           tone="green"
         />
-        <StatCard label="Pending proofs" value={data.metrics.pendingProofs} detail="Needs fulfillment/customer review" icon={ClipboardCheck} tone="amber" />
-        <StatCard label="Revenue summary" value={data.metrics.revenue} detail={`${data.metrics.averageOrder} average order`} icon={DollarSign} tone="green" />
+        <StatCard label="Pending proofs" value={data.metrics.pendingProofs} detail="Available after live order sync" icon={ClipboardCheck} tone="amber" />
+        <StatCard label="Revenue summary" value={data.metrics.revenue} detail="Connect Shopify reporting" icon={DollarSign} tone="green" />
       </div>
 
       <Card className="mt-6 border-blue-200 bg-blue-50/40">
@@ -88,7 +92,7 @@ export default async function DashboardPage() {
                 <Badge variant={data.metrics.shopifySyncStatus === "Healthy" ? "success" : "warning"}>{data.metrics.shopifySyncStatus}</Badge>
               </div>
               <p className="text-sm text-muted-foreground">
-                Product mappings are read-only in preview. Use Shopify Sync to inspect failed rows before production import.
+                The snapshot is read-only in admin. The deployed customer manifest remains the source for product mappings.
               </p>
             </div>
           </CardContent>
@@ -97,18 +101,24 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle>Conversion Funnel</CardTitle>
-            <CardDescription>Design completion snapshot for the admin workflow.</CardDescription>
+            <CardDescription>Live customer-flow analytics after a reporting feed is connected.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {data.analytics.funnel.map((step) => (
-              <div key={step.step} className="space-y-2">
-                <div className="flex items-center justify-between gap-3 text-sm">
-                  <span className="font-semibold">{step.step}</span>
-                  <span className="text-muted-foreground">{step.rate}%</span>
-                </div>
-                <ProgressBar value={step.rate} />
+            {data.analytics.funnel.length === 0 ? (
+              <div className="rounded-lg border border-dashed bg-slate-50 p-6 text-sm text-muted-foreground">
+                No live conversion feed is connected. Sample funnel data is not shown.
               </div>
-            ))}
+            ) : (
+              data.analytics.funnel.map((step) => (
+                <div key={step.step} className="space-y-2">
+                  <div className="flex items-center justify-between gap-3 text-sm">
+                    <span className="font-semibold">{step.step}</span>
+                    <span className="text-muted-foreground">{step.rate}%</span>
+                  </div>
+                  <ProgressBar value={step.rate} />
+                </div>
+              ))
+            )}
           </CardContent>
         </Card>
       </div>
@@ -128,7 +138,7 @@ export default async function DashboardPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <p className="font-semibold">{item.label}</p>
-                    <Badge variant={item.status === "QA passed" ? "success" : "secondary"}>{item.status}</Badge>
+                    <Badge variant={/verified|synced|healthy/i.test(item.status) ? "success" : "secondary"}>{item.status}</Badge>
                   </div>
                   <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
                   <p className="mt-1 text-xs font-semibold text-muted-foreground">{item.time}</p>
@@ -141,21 +151,27 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle>Revenue / Order Summary</CardTitle>
-            <CardDescription>Preview metrics for fulfillment planning.</CardDescription>
+            <CardDescription>Live Shopify order totals after reporting is connected.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            {data.orders.slice(0, 4).map((order) => (
-              <div key={order.order} className="flex items-center justify-between gap-4 rounded-lg border p-3">
-                <div>
-                  <p className="font-semibold">{order.order}</p>
-                  <p className="text-sm text-muted-foreground">{order.customer}</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-black">{order.total}</p>
-                  <p className="text-xs text-muted-foreground">{order.items} item(s)</p>
-                </div>
+            {data.orders.length === 0 ? (
+              <div className="rounded-lg border border-dashed bg-slate-50 p-6 text-sm text-muted-foreground">
+                No live orders are connected. Sample customers and revenue are not shown.
               </div>
-            ))}
+            ) : (
+              data.orders.slice(0, 4).map((order) => (
+                <div key={order.order} className="flex items-center justify-between gap-4 rounded-lg border p-3">
+                  <div>
+                    <p className="font-semibold">{order.order}</p>
+                    <p className="text-sm text-muted-foreground">{order.customer}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-black">{order.total}</p>
+                    <p className="text-xs text-muted-foreground">{order.items} item(s)</p>
+                  </div>
+                </div>
+              ))
+            )}
           </CardContent>
         </Card>
       </div>

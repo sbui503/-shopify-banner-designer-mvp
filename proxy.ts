@@ -24,11 +24,16 @@ export function proxy(request: NextRequest) {
       : secure(NextResponse.next());
   }
 
-  if (!authenticated && pathname.startsWith("/api/admin")) {
+  const isProtectedApi = pathname.startsWith("/api/admin")
+    || pathname === "/api/designs"
+    || pathname === "/api/fulfillment-lookup"
+    || pathname === "/api/send-proof-email";
+  if (!authenticated && isProtectedApi) {
     return secure(NextResponse.json({ error: "Authentication required." }, { status: 401 }));
   }
 
-  if (!authenticated && pathname.startsWith("/admin")) {
+  const isProtectedPage = pathname.startsWith("/admin") || pathname === "/fulfillment.html";
+  if (!authenticated && isProtectedPage) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", `${pathname}${request.nextUrl.search}`);
     return secure(NextResponse.redirect(loginUrl));
@@ -38,5 +43,13 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/login", "/admin/:path*", "/api/admin/:path*"]
+  matcher: [
+    "/login",
+    "/admin/:path*",
+    "/fulfillment.html",
+    "/api/admin/:path*",
+    "/api/designs",
+    "/api/fulfillment-lookup",
+    "/api/send-proof-email"
+  ]
 };
