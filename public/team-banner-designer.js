@@ -2184,12 +2184,13 @@
       return obj.data.role || categoryLayerRole(obj.data.category) || (obj.type === "i-text" ? "text-layer" : "object-layer");
     }
 
-    function isDefaultTemplatePlaceholder(obj) {
-      if (!obj || obj.type !== "i-text" || (obj.data && obj.data.placeholderCleared)) return false;
+    function defaultTemplatePlaceholderRole(obj) {
+      if (!obj || obj.type !== "i-text" || (obj.data && obj.data.placeholderCleared)) return "";
       const role = layerRole(obj);
       const text = String(obj.text || "").trim().toLowerCase();
-      return (role === "template-player-text" && text === "player")
-        || (role === "template-year-text" && text === "year");
+      if (role === "template-player-text" && text === "player") return role;
+      if (role === "template-year-text" && text === "year") return role;
+      return "";
     }
 
     function layerNumberSuffix(obj) {
@@ -5051,12 +5052,17 @@
       return cartVariantId;
     }
 
-    function checkoutUrlWithDesignAttributes(checkoutUrl, saved) {
+    function checkoutUrlWithDesignAttributes(checkoutUrl, saved, items = designCart) {
       if (!checkoutUrl) return "";
       try {
         const url = new URL(checkoutUrl, window.location.origin);
+        const savedDesigns = (Array.isArray(items) ? items : [])
+          .map((item) => String(item && (item.designId || item.id) || "").trim())
+          .filter(Boolean);
+        const currentDesignId = String(saved && (saved.designId || saved.id) || savedDesigns[savedDesigns.length - 1] || "").trim();
         const attributes = {
-          "Design ID": saved && saved.id,
+          "Design ID": currentDesignId,
+          "TSB Design IDs": [...new Set(savedDesigns)].join(","),
           "Design Preview": saved && saved.previewUrl,
           "Editable Design": saved && saved.jsonUrl,
           "Source Product": launch.title || "",
@@ -5137,7 +5143,8 @@
         return;
       }
       setStatus("Opening checkout...");
-      window.location.assign(checkoutUrl);
+      const latestDesign = designCart[designCart.length - 1] || null;
+      window.location.assign(checkoutUrlWithDesignAttributes(checkoutUrl, latestDesign, designCart));
     }
 
     function setCartPanelOpen(open = true) {
@@ -5219,7 +5226,7 @@
         designCart = [...designCart, item].slice(-30);
         persistDesignCart();
         renderDesignCart();
-        const checkoutUrl = checkoutUrlWithDesignAttributes(cartLineUrl(designCart), saved);
+        const checkoutUrl = checkoutUrlWithDesignAttributes(cartLineUrl(designCart), item, designCart);
         setStatus("Sending proof email...");
         await sendProofEmail(saved, checkoutUrl);
         setCartPanelOpen(true);
@@ -5504,6 +5511,7 @@
         shadow: config.shadow || "2px 2px 0 rgba(0,0,0,.45)",
         opacity: config.opacity ?? 1,
         textAlign: config.textAlign || "center",
+        padding: config.padding ?? (config.role === "template-player-text" ? 12 : 0),
         data: { ...(config.data || {}), name: config.name, role: config.role || "template-text-layer", showInLayerList: true }
       });
       ensureLayerId(textLayer);
@@ -7999,7 +8007,11 @@
             setStatus(`${layerLabel(obj)} is locked. Unlock it to edit text.`);
             return;
           }
-          obj.set({ text: event.target.value || " " });
+          const updates = { text: event.target.value || " " };
+          if (defaultTemplatePlaceholderRole(obj)) {
+            updates.data = { ...(obj.data || {}), placeholderCleared: true };
+          }
+          obj.set(updates);
           canvas.renderAll();
           updateSelectionControls();
         }
@@ -8009,13 +8021,19 @@
         const obj = selectedObject();
         if (obj && obj.type === "i-text") mobileTextTarget = obj;
       });
-      const clearDefaultTemplateTextOnTap = (event) => {
+      const prepareDefaultTemplateTextOnTap = (event) => {
         const obj = editableMobileTextObject();
-        if (!isDefaultTemplatePlaceholder(obj)) return;
+        const placeholderRole = defaultTemplatePlaceholderRole(obj);
+        if (!placeholderRole) return;
         if (isLayerLocked(obj)) {
           setStatus(`${layerLabel(obj)} is locked. Unlock it to edit text.`);
           return;
         }
+        if (placeholderRole === "template-player-text") {
+          event.target.select();
+          return;
+        }
+        if (placeholderRole !== "template-year-text") return;
         event.target.value = "";
         obj.set({
           text: " ",
@@ -8027,8 +8045,8 @@
         updateSelectionControls();
         saveHistory();
       };
-      els.mobileTextInput?.addEventListener("focus", clearDefaultTemplateTextOnTap);
-      els.mobileTextInput?.addEventListener("click", clearDefaultTemplateTextOnTap);
+      els.mobileTextInput?.addEventListener("focus", prepareDefaultTemplateTextOnTap);
+      els.mobileTextInput?.addEventListener("click", prepareDefaultTemplateTextOnTap);
       els.mobileTextInput?.addEventListener("input", (event) => {
         const obj = editableMobileTextObject();
         if (!obj || obj.type !== "i-text") return;
@@ -8037,7 +8055,11 @@
           return;
         }
         const nextText = event.target.value || " ";
-        obj.set({ text: nextText });
+        const updates = { text: nextText };
+        if (defaultTemplatePlaceholderRole(obj)) {
+          updates.data = { ...(obj.data || {}), placeholderCleared: true };
+        }
+        obj.set(updates);
         if (els.textContent && document.activeElement !== els.textContent) els.textContent.value = nextText;
         obj.setCoords();
         canvas.renderAll();

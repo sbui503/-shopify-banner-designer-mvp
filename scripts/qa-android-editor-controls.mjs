@@ -13,9 +13,15 @@ assert.match(mobileBar, /data-tbd-redo/, "mobile arrange bar must expose Redo");
 assert.doesNotMatch(mobileBar, /data-tbd-rotate/, "mobile Undo/Redo must not rotate the selection");
 
 assert.match(designer, /role === "template-player-text" && text === "player"/,
-  "Player placeholders must clear on first edit");
+  "Player placeholders must be identified for safe replacement");
 assert.match(designer, /role === "template-year-text" && text === "year"/,
   "Year placeholders must clear on first edit");
+assert.match(designer, /placeholderRole === "template-player-text"[\s\S]*event\.target\.select\(\);[\s\S]*return;/,
+  "Player text must remain visible when the Android keyboard field receives focus");
+assert.match(designer, /placeholderRole !== "template-year-text"\) return;/,
+  "the destructive clear path must be limited to Year text");
+assert.match(designer, /config\.role === "template-player-text" \? 12 : 0/,
+  "small Player labels must have a larger mobile tap target");
 assert.match(designer, /placeholderCleared: true/,
   "custom Player or Year text must not be cleared again");
 assert.match(designer, /event\.target\.closest\("\.tbd__lock"\)/,

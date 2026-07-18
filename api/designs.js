@@ -1,4 +1,4 @@
-import { put } from "@vercel/blob";
+import { list, put } from "@vercel/blob";
 
 const MAX_BODY_BYTES = 8 * 1024 * 1024;
 
@@ -27,13 +27,77 @@ function parsePngDataUrl(value) {
   return match ? Buffer.from(match[1], "base64") : null;
 }
 
+function safeDesignId(value) {
+  const clean = String(value || "").trim();
+  return /^design_[0-9]+_[a-z0-9]+$/i.test(clean) ? clean : "";
+}
+
+function requestOrigin(request) {
+  const host = String(request.headers["x-forwarded-host"] || request.headers.host || "teamsportbanners.vercel.app").split(",")[0].trim();
+  const protocol = String(request.headers["x-forwarded-proto"] || "https").split(",")[0].trim();
+  return `${protocol}://${host}`;
+}
+
+async function readStoredDesign(request, id) {
+  const result = await list({
+    prefix: `team-banner-designs/${id}`,
+    limit: 20
+  });
+  const blobs = Array.isArray(result.blobs) ? result.blobs : [];
+  const manifestBlob = blobs.find((blob) => /(?:^|[.-])manifest(?:-[a-z0-9]+)?\.json$/i.test(blob.pathname));
+  if (manifestBlob) {
+    const manifestResponse = await fetch(manifestBlob.url, { cache: "no-store" });
+    if (manifestResponse.ok) {
+      const manifest = await manifestResponse.json();
+      return { ...manifest, id, manifestUrl: manifest.manifestUrl || manifestBlob.url };
+    }
+  }
+
+  const preview = blobs.find((blob) => /\.png$/i.test(blob.pathname));
+  const editableJson = blobs.find((blob) => /\.json$/i.test(blob.pathname) && blob !== manifestBlob);
+  const sourceSvg = blobs.find((blob) => /\.svg$/i.test(blob.pathname));
+  if (!preview && !editableJson && !sourceSvg) return null;
+
+  return {
+    id,
+    previewUrl: preview?.url || "",
+    jsonUrl: editableJson?.url || "",
+    sourceSvgUrl: sourceSvg?.url || "",
+    manifestUrl: manifestBlob?.url || "",
+    lookupUrl: `${requestOrigin(request)}/fulfillment.html?designId=${encodeURIComponent(id)}`
+  };
+}
+
 export default async function handler(request, response) {
   response.setHeader("Access-Control-Allow-Origin", "*");
-  response.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   response.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   if (request.method === "OPTIONS") {
     response.status(204).end();
+    return;
+  }
+
+  if (request.method === "GET") {
+    const id = safeDesignId(request.query?.id || request.query?.designId);
+    if (!id) {
+      response.status(400).json({ error: "Missing design id." });
+      return;
+    }
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      response.status(503).json({ error: "Design storage is not configured." });
+      return;
+    }
+    try {
+      const design = await readStoredDesign(request, id);
+      if (!design) {
+        response.status(404).json({ error: "Design not found." });
+        return;
+      }
+      response.status(200).json(design);
+    } catch (error) {
+      response.status(400).json({ error: error.message || "Design lookup failed" });
+    }
     return;
   }
 

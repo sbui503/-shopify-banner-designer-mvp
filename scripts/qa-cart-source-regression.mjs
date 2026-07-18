@@ -75,6 +75,8 @@ const sourceMap = readJson(path.join(PUBLIC_DIR, "team-banner-source-svg-map.jso
   "renderDesignCart",
   "redirectToShopifyCheckout",
   "cartLineUrl",
+  "checkoutUrlWithDesignAttributes",
+  '"TSB Design IDs"',
   "svgRoleFromSourceSummary"
 ].forEach((needle) => {
   if (!designerJs.includes(needle)) fail(`Missing cart runtime function: ${needle}`);
@@ -86,6 +88,10 @@ if (indexHtml.includes("data-tbd-checkout-frame") || designerJs.includes("openCh
 
 if (/saveOrAddToCart\(\)\s*{[\s\S]{0,250}saveAndOpenCustomCheckout/.test(designerJs)) {
   fail("Add to Cart still calls immediate checkout flow");
+}
+
+if (!/window\.location\.assign\(checkoutUrlWithDesignAttributes\(checkoutUrl, latestDesign, designCart\)\)/.test(designerJs)) {
+  fail("Shopify checkout redirect drops saved Design IDs");
 }
 
 if (!designerJs.includes("(preserveSvgAssets && entry.href)")) {
