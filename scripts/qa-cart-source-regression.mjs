@@ -76,6 +76,8 @@ const sourceMap = readJson(path.join(PUBLIC_DIR, "team-banner-source-svg-map.jso
   "redirectToShopifyCheckout",
   "cartLineUrl",
   "checkoutUrlWithDesignAttributes",
+  'JSON.stringify({ "Design ID": currentDesignId })',
+  'url.searchParams.set("properties", lineProperties)',
   '"TSB Design IDs"',
   "svgRoleFromSourceSummary"
 ].forEach((needle) => {
@@ -92,6 +94,10 @@ if (/saveOrAddToCart\(\)\s*{[\s\S]{0,250}saveAndOpenCustomCheckout/.test(designe
 
 if (!/window\.location\.assign\(checkoutUrlWithDesignAttributes\(checkoutUrl, latestDesign, designCart\)\)/.test(designerJs)) {
   fail("Shopify checkout redirect drops saved Design IDs");
+}
+
+if (!designerJs.includes("Design ID: ${escapeHtml(item.designId || item.id)}")) {
+  fail("Tool cart does not visibly label the saved Design ID");
 }
 
 if (!designerJs.includes("(preserveSvgAssets && entry.href)")) {

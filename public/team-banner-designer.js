@@ -5071,6 +5071,13 @@
         Object.entries(attributes).forEach(([key, value]) => {
           if (value) url.searchParams.set(`attributes[${key}]`, value);
         });
+        if (currentDesignId) {
+          const lineProperties = btoa(JSON.stringify({ "Design ID": currentDesignId }))
+            .replace(/\+/g, "-")
+            .replace(/\//g, "_")
+            .replace(/=+$/g, "");
+          url.searchParams.set("properties", lineProperties);
+        }
         return url.href;
       } catch (error) {
         return checkoutUrl;
@@ -5188,7 +5195,7 @@
           <div class="tbd__cart-copy">
             <span class="tbd__cart-item-number">Item ${itemNumber}</span>
             <strong>${escapeHtml(item.title || "Custom banner design")}</strong>
-            <span>${escapeHtml(item.shapeLabel || item.shape || "Banner")} · ${escapeHtml(item.designId || item.id)}</span>
+            <span>${escapeHtml(item.shapeLabel || item.shape || "Banner")} · Design ID: ${escapeHtml(item.designId || item.id)}</span>
           </div>
           <button class="tbd__cart-remove" type="button" aria-label="Remove saved design">Remove</button>
         `;
