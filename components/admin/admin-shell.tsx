@@ -3,7 +3,7 @@
 import Link from "next/link";
 import NextImage from "next/image";
 import { usePathname } from "next/navigation";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   BarChart3,
   BookOpenText,
@@ -88,8 +88,42 @@ function AdminActions() {
   );
 }
 
-export function AdminShell({ children }: { children: ReactNode }) {
+export function AdminShell({ children, buildVersion }: { children: ReactNode; buildVersion: string }) {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    async function checkCurrentDeployment() {
+      try {
+        const response = await fetch("/api/admin/version", { cache: "no-store" });
+        if (!response.ok) return;
+        const data = await response.json();
+        const currentVersion = String(data.version || "");
+        if (!active || !currentVersion || currentVersion === buildVersion) return;
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set("_adminBuild", currentVersion);
+        window.location.replace(currentUrl.toString());
+      } catch {
+        // A temporary network failure should not interrupt active fulfillment work.
+      }
+    }
+
+    const handleVisible = () => {
+      if (!document.hidden) void checkCurrentDeployment();
+    };
+    const interval = window.setInterval(() => void checkCurrentDeployment(), 60_000);
+    window.addEventListener("focus", checkCurrentDeployment);
+    document.addEventListener("visibilitychange", handleVisible);
+    void checkCurrentDeployment();
+
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+      window.removeEventListener("focus", checkCurrentDeployment);
+      document.removeEventListener("visibilitychange", handleVisible);
+    };
+  }, [buildVersion]);
 
   return (
     <div className="min-h-screen">
