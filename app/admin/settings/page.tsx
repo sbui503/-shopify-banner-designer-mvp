@@ -12,7 +12,7 @@ export default async function SettingsPage() {
   const data = await getAdminData();
   const shopifyCredentialStatus = await getShopifyCredentialStatus();
   const settings = [
-    ["Team Banner API key", shopifyCredentialStatus.configured],
+    ["Shopify Admin API", shopifyCredentialStatus.configured],
     ["Vercel Blob storage", data.system.blobConfigured],
     ["Proof email service", data.system.proofEmailConfigured],
     ["Protected admin login", true],
@@ -24,7 +24,7 @@ export default async function SettingsPage() {
     <>
       <PageHeader
         title="Settings"
-        description="Configure the Team Banner API key, platform safety, proof delivery, source-file rules, and production promotion controls."
+        description="Connect Shopify, review platform safety, proof delivery, source-file rules, and production promotion controls."
         badge="QA First"
       />
 

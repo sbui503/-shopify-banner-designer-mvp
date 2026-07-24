@@ -1,7 +1,7 @@
 import { list, put } from "@vercel/blob";
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
 
-const SHOPIFY_API_VERSION = "2025-10";
+const SHOPIFY_API_VERSION = "2026-07";
 const SETTINGS_PREFIX = "team-banner-admin/settings/shopify-admin-token/";
 
 export type ShopifyCredentialSource = "admin-storage" | "client-credentials" | "environment" | "missing";

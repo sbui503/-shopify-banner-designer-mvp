@@ -2,7 +2,7 @@
 
 import NextImage from "next/image";
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { ExternalLink, Search } from "lucide-react";
+import { ExternalLink, RefreshCw, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -67,6 +67,11 @@ type OrderLookup = {
   designs?: OrderDesign[];
 };
 
+type RecentDesignResponse = {
+  designs?: DesignManifest[];
+  count?: number;
+};
+
 function textValue(layer: DesignLayer) {
   return String(layer.text || layer.value || "").trim();
 }
@@ -98,6 +103,23 @@ async function fetchOrderLookup(order: string) {
   return data as OrderLookup;
 }
 
+async function fetchRecentDesigns() {
+  const response = await fetch("/api/designs?recent=50", { cache: "no-store" });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || "Recent design lookup failed.");
+  return data as RecentDesignResponse;
+}
+
+function designProductTitle(design: DesignManifest) {
+  return design.productTitle || String(design.product?.title || "").trim() || "Customer design";
+}
+
+function savedTime(value: string | undefined) {
+  if (!value) return "Time unavailable";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+}
+
 type FulfillmentLookupClientProps = {
   initialDesignId?: string;
   initialOrderNumber?: string;
@@ -116,6 +138,9 @@ export function FulfillmentLookupClient({
     ? "Loading fulfillment data..."
     : "Enter a Design ID to load the exact customer design.");
   const [busy, setBusy] = useState(hasInitialLookup);
+  const [recentDesigns, setRecentDesigns] = useState<DesignManifest[]>([]);
+  const [recentStatus, setRecentStatus] = useState("Loading recent customer designs...");
+  const [recentBusy, setRecentBusy] = useState(true);
 
   const textLayers = useMemo(() => {
     const layers = [
@@ -162,6 +187,44 @@ export function FulfillmentLookupClient({
     setOrderLookup(data);
     setManifest(null);
     setStatus(`Loaded ${data.order?.name || order}.`);
+  }, []);
+
+  const loadRecentDesigns = useCallback(async () => {
+    setRecentBusy(true);
+    setRecentStatus("Loading recent customer designs...");
+    try {
+      const data = await fetchRecentDesigns();
+      const designs = Array.isArray(data.designs) ? data.designs : [];
+      setRecentDesigns(designs);
+      setRecentStatus(designs.length ? `${designs.length} most recent saved designs.` : "No saved customer designs found.");
+    } catch (error) {
+      setRecentDesigns([]);
+      setRecentStatus(error instanceof Error ? error.message : "Recent design lookup failed.");
+    } finally {
+      setRecentBusy(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetchRecentDesigns()
+      .then((data) => {
+        if (cancelled) return;
+        const designs = Array.isArray(data.designs) ? data.designs : [];
+        setRecentDesigns(designs);
+        setRecentStatus(designs.length ? `${designs.length} most recent saved designs.` : "No saved customer designs found.");
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        setRecentDesigns([]);
+        setRecentStatus(error instanceof Error ? error.message : "Recent design lookup failed.");
+      })
+      .finally(() => {
+        if (!cancelled) setRecentBusy(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -342,6 +405,91 @@ export function FulfillmentLookupClient({
             </div>
           </div>
         ) : null}
+
+        <div className="border-t pt-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h3 className="text-lg font-black text-slate-950">Recent Customer Designs</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Every newly saved customer design appears here, even when an older Shopify order is missing its Design ID.
+              </p>
+            </div>
+            <Button variant="outline" size="sm" type="button" disabled={recentBusy} onClick={() => void loadRecentDesigns()}>
+              <RefreshCw className={`h-4 w-4 ${recentBusy ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
+          </div>
+
+          <p className="mt-3 text-sm font-semibold text-muted-foreground">{recentStatus}</p>
+
+          {recentDesigns.length ? (
+            <div className="mt-4 divide-y rounded-lg border">
+              {recentDesigns.map((design) => (
+                <div key={design.id} className="grid gap-3 p-3 sm:grid-cols-[112px_minmax(0,1fr)_auto] sm:items-center">
+                  <div className="relative h-20 w-28 overflow-hidden rounded-md border bg-slate-100">
+                    {design.previewUrl ? (
+                      <NextImage
+                        src={design.previewUrl}
+                        alt={`Customer proof ${design.id || ""}`}
+                        fill
+                        sizes="112px"
+                        className="object-contain"
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center px-2 text-center text-xs font-semibold text-muted-foreground">
+                        No proof
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="min-w-0">
+                    <p className="truncate font-black text-slate-950">{designProductTitle(design)}</p>
+                    <p className="mt-1 break-all text-xs font-semibold text-slate-600">{design.id}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{savedTime(design.savedAt)}</p>
+                    {design.teamName ? <p className="mt-1 truncate text-sm font-semibold">Team: {design.teamName}</p> : null}
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 sm:max-w-44 sm:justify-end">
+                    <Button variant="outline" size="sm" type="button" onClick={() => {
+                      const id = String(design.id || "");
+                      if (!id) return;
+                      setDesignId(id);
+                      void lookupDesign(id, {
+                        id,
+                        previewUrl: design.previewUrl,
+                        jsonUrl: design.jsonUrl,
+                        sourceSvgUrl: design.sourceSvgUrl,
+                        manifestUrl: design.manifestUrl,
+                        productTitle: designProductTitle(design)
+                      }).catch((error) => {
+                        setStatus(error instanceof Error ? error.message : "Design lookup failed.");
+                      });
+                    }}>
+                      Load
+                    </Button>
+                    {design.sourceSvgUrl ? (
+                      <Button asChild variant="outline" size="sm">
+                        <a href={design.sourceSvgUrl} target="_blank" rel="noreferrer">
+                          <ExternalLink className="h-4 w-4" />
+                          SVG
+                        </a>
+                      </Button>
+                    ) : null}
+                    {design.jsonUrl ? (
+                      <Button asChild variant="outline" size="sm">
+                        <a href={design.jsonUrl} target="_blank" rel="noreferrer">
+                          <ExternalLink className="h-4 w-4" />
+                          JSON
+                        </a>
+                      </Button>
+                    ) : null}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </div>
       </CardContent>
     </Card>
   );

@@ -42,7 +42,7 @@ export default async function ShopifySyncPage() {
         <Card>
           <CardHeader>
             <CardTitle>Connection</CardTitle>
-            <CardDescription>Team Banner API key is required for live order lookup.</CardDescription>
+            <CardDescription>Shopify Admin API access is required for live order lookup.</CardDescription>
           </CardHeader>
           <CardContent className="flex items-center justify-between gap-3">
             <span className="text-sm font-semibold">Shopify Admin API</span>

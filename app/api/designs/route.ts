@@ -63,6 +63,22 @@ async function readCustomerDesign(id: string) {
   return data;
 }
 
+async function readCustomerRecentDesigns(limit: number) {
+  const customerOrigin = String(process.env.CUSTOMER_TOOL_ORIGIN || "https://teamsportbanners.vercel.app").replace(/\/+$/, "");
+  const adminKey = String(process.env.TEAM_BANNER_API_KEY || "").trim();
+  if (!adminKey) throw new Error("TEAM_BANNER_API_KEY is not configured.");
+  const response = await fetch(`${customerOrigin}/api/designs?recent=${encodeURIComponent(limit)}`, {
+    cache: "no-store",
+    headers: {
+      "X-TSB-Admin-Key": adminKey
+    },
+    signal: AbortSignal.timeout(15000)
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || `Recent customer design lookup failed (${response.status}).`);
+  return data;
+}
+
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,
@@ -72,6 +88,18 @@ export async function OPTIONS() {
 
 export async function GET(request: NextRequest) {
   try {
+    const recent = Number.parseInt(request.nextUrl.searchParams.get("recent") || "", 10);
+    if (Number.isFinite(recent) && recent > 0) {
+      const limit = Math.min(Math.max(recent, 1), 100);
+      const result = await readCustomerRecentDesigns(limit);
+      return NextResponse.json(result, {
+        headers: {
+          ...corsHeaders(),
+          "Cache-Control": "private, no-store, max-age=0"
+        }
+      });
+    }
+
     const id = safeDesignId(request.nextUrl.searchParams.get("id") || request.nextUrl.searchParams.get("designId"));
     if (!id) return NextResponse.json({ error: "Missing design id." }, { status: 400, headers: corsHeaders() });
     const localManifest = process.env.BLOB_READ_WRITE_TOKEN ? await readManifest(id) : null;

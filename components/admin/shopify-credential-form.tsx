@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
-import { CheckCircle2, KeyRound, Loader2, ShieldAlert } from "lucide-react";
+import { CheckCircle2, KeyRound, Link2, Loader2, ShieldAlert } from "lucide-react";
 import type { ShopifyCredentialStatus } from "@/lib/shopify-admin-credentials";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -75,10 +75,10 @@ export function ShopifyCredentialForm({ initialStatus }: ShopifyCredentialFormPr
           <div>
             <CardTitle className="flex items-center gap-2">
               <KeyRound className="h-5 w-5 text-blue-700" />
-              Team Banner API Key
+              Shopify Admin API
             </CardTitle>
             <CardDescription>
-              Add or rotate the Shopify Admin API key used by Team Banner order lookup and fulfillment. The key is validated, encrypted, and never shown again.
+              Connect Shopify automatically for live orders and fulfillment. Manual token entry remains available as a fallback.
             </CardDescription>
           </div>
           <Badge variant={status.configured ? "success" : "warning"}>{statusLabel}</Badge>
@@ -114,17 +114,39 @@ export function ShopifyCredentialForm({ initialStatus }: ShopifyCredentialFormPr
           </div>
         )}
 
-        {!status.configured && status.appCredentialsConfigured && status.storageConfigured ? (
+        {!status.configured ? (
           <div className="flex flex-col gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="font-semibold text-slate-950">Shopify app is ready to connect</p>
-              <p className="mt-1 text-sm text-slate-600">Authorize read-only order access and save the encrypted fulfillment token.</p>
+              <p className="font-semibold text-slate-950">Automatic Shopify connection</p>
+              <p className="mt-1 text-sm text-slate-600">
+                {status.appCredentialsConfigured
+                  ? "Authorize read-only order access. Shopify returns the connection directly to this protected admin."
+                  : "The store owner must first grant app-development access and configure the Shopify app credentials in Vercel."}
+              </p>
             </div>
-            <Button asChild>
-              <a href="/api/shopify/oauth/start">Connect Shopify</a>
-            </Button>
+            {status.appCredentialsConfigured ? (
+              <Button asChild>
+                <a href="/api/shopify/oauth/start">
+                  <Link2 className="h-4 w-4" />
+                  Connect Shopify
+                </a>
+              </Button>
+            ) : (
+              <Button disabled>
+                <Link2 className="h-4 w-4" />
+                Connect Shopify
+              </Button>
+            )}
           </div>
-        ) : null}
+        ) : (
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+            <div>
+              <p className="font-semibold text-emerald-900">Shopify is connected</p>
+              <p className="mt-1 text-sm text-emerald-800">Live order lookup is enabled for {status.storeDomain}.</p>
+            </div>
+            <CheckCircle2 className="h-5 w-5 text-emerald-700" />
+          </div>
+        )}
 
         <form className="space-y-3" onSubmit={handleSubmit}>
           <label className="block space-y-1.5 text-sm font-semibold text-slate-800">
@@ -138,11 +160,11 @@ export function ShopifyCredentialForm({ initialStatus }: ShopifyCredentialFormPr
           </label>
 
           <label className="block space-y-1.5 text-sm font-semibold text-slate-800">
-            <span>API key / Admin access token</span>
+            <span>Manual Admin API access token</span>
             <Input
               value={token}
               onChange={(event) => setToken(event.target.value)}
-              placeholder="Paste Shopify Admin API key or token"
+              placeholder="Paste a Shopify Admin API token"
               type="password"
               autoComplete="new-password"
               required
