@@ -5092,7 +5092,10 @@
           if (value) url.searchParams.set(`attributes[${key}]`, value);
         });
         if (currentDesignId) {
-          const lineProperties = btoa(JSON.stringify({ "Design ID": currentDesignId }))
+          const currentItem = [...(Array.isArray(items) ? items : [])]
+            .reverse()
+            .find((item) => String(item && (item.designId || item.id) || "").trim() === currentDesignId);
+          const lineProperties = btoa(JSON.stringify(shopifyLineProperties(currentItem || saved)))
             .replace(/\+/g, "-")
             .replace(/\//g, "_")
             .replace(/=+$/g, "");
@@ -5102,6 +5105,19 @@
       } catch (error) {
         return checkoutUrl;
       }
+    }
+
+    function shopifyLineProperties(item) {
+      return Object.fromEntries(Object.entries({
+        "Design ID": item && (item.designId || item.id),
+        "Design Preview": item && item.previewUrl,
+        "Editable Design": item && item.jsonUrl,
+        "Layered Source": item && item.sourceSvgUrl,
+        "Design Manifest": item && item.manifestUrl,
+        "Source Product": item && (item.title || item.productTitle) || launch.title || "",
+        "Source Handle": item && (item.handle || item.productHandle) || launch.handle || "",
+        "Team Name": item && item.teamName
+      }).filter(([, value]) => String(value || "").trim()));
     }
 
     async function sendProofEmail(saved, checkoutUrl) {
@@ -5149,8 +5165,6 @@
     }
 
     function cartLineUrl(items = designCart) {
-      const configuredCheckout = currentCustomCheckoutUrl();
-      if (configuredCheckout) return configuredCheckout;
       const counts = items.reduce((map, item) => {
         const id = String(item.variantId || "").trim();
         if (!id) return map;
@@ -5159,6 +5173,38 @@
       }, new Map());
       const lines = [...counts.entries()].map(([id, quantity]) => `${encodeURIComponent(id)}:${quantity}`).join(",");
       return `${SHOPIFY_STORE_ORIGIN}/cart/${lines || `${DEFAULT_CUSTOM_DESIGN_VARIANT_ID}:1`}?return_to=/checkout`;
+    }
+
+    function submitDesignCartToShopify(items = designCart) {
+      const validItems = (Array.isArray(items) ? items : []).filter((item) => String(item && item.variantId || "").trim());
+      if (!validItems.length) return false;
+
+      const form = document.createElement("form");
+      form.method = "post";
+      form.action = `${SHOPIFY_STORE_ORIGIN}/cart/add`;
+      form.target = "_top";
+      form.hidden = true;
+
+      const append = (name, value) => {
+        if (!String(value || "").trim()) return;
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = name;
+        input.value = String(value);
+        form.appendChild(input);
+      };
+
+      validItems.forEach((item, index) => {
+        append(`items[${index}][id]`, item.variantId);
+        append(`items[${index}][quantity]`, "1");
+        Object.entries(shopifyLineProperties(item)).forEach(([key, value]) => {
+          append(`items[${index}][properties][${key}]`, value);
+        });
+      });
+      append("return_to", "/checkout");
+      document.body.appendChild(form);
+      form.submit();
+      return true;
     }
 
     function redirectToShopifyCheckout() {
@@ -5172,8 +5218,10 @@
         return;
       }
       setStatus("Opening checkout...");
-      const latestDesign = designCart[designCart.length - 1] || null;
-      window.location.assign(checkoutUrlWithDesignAttributes(checkoutUrl, latestDesign, designCart));
+      if (!submitDesignCartToShopify(designCart)) {
+        const latestDesign = designCart[designCart.length - 1] || null;
+        window.location.assign(checkoutUrlWithDesignAttributes(checkoutUrl, latestDesign, designCart));
+      }
     }
 
     function setCartPanelOpen(open = true) {
@@ -5236,8 +5284,8 @@
 
       try {
         const saved = await saveDesign();
-        const variantId = currentCustomDesignVariantId() || currentCartVariantId();
-        if (!variantId) throw new Error("No custom design variant selected");
+        const variantId = currentCartVariantId() || currentCustomDesignVariantId();
+        if (!variantId) throw new Error("No product variant selected");
         const item = {
           id: `cart_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
           designId: saved.id || "",

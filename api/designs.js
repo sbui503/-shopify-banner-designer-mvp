@@ -1,8 +1,10 @@
 import { list, put } from "@vercel/blob";
+import { timingSafeEqual } from "node:crypto";
 import { designSvgUrl, fulfillmentLookupUrl } from "../lib/fulfillment-url.js";
 import { inlineSvgImages } from "../lib/inline-svg-images.js";
 
 const MAX_BODY_BYTES = 8 * 1024 * 1024;
+const MAX_RECENT_DESIGNS = 100;
 
 function readBody(request) {
   return new Promise((resolve, reject) => {
@@ -68,6 +70,25 @@ function safeDesignId(value) {
   return /^design_[0-9]+_[a-z0-9]+$/i.test(clean) ? clean : "";
 }
 
+function safeEqual(left, right) {
+  const leftBuffer = Buffer.from(String(left || ""), "utf8");
+  const rightBuffer = Buffer.from(String(right || ""), "utf8");
+  return leftBuffer.length === rightBuffer.length
+    && leftBuffer.length > 0
+    && timingSafeEqual(leftBuffer, rightBuffer);
+}
+
+function requestAdminKey(request) {
+  const authorization = String(request.headers.authorization || "");
+  const bearer = authorization.match(/^Bearer\s+(.+)$/i)?.[1] || "";
+  return String(request.headers["x-tsb-admin-key"] || bearer).trim();
+}
+
+function canListDesigns(request) {
+  const configured = String(process.env.TEAM_BANNER_API_KEY || "").trim();
+  return Boolean(configured) && safeEqual(requestAdminKey(request), configured);
+}
+
 function requestOrigin(request) {
   const host = String(request.headers["x-forwarded-host"] || request.headers.host || "teamsportbanners.vercel.app").split(",")[0].trim();
   const protocol = String(request.headers["x-forwarded-proto"] || "https").split(",")[0].trim();
@@ -112,10 +133,71 @@ async function readStoredDesign(request, id) {
   };
 }
 
+function designIdFromManifestPath(pathname) {
+  return safeDesignId(String(pathname || "").match(/(design_[0-9]+_[a-z0-9]+)\.manifest\.json$/i)?.[1]);
+}
+
+function designIdFromBlobPath(pathname) {
+  return safeDesignId(String(pathname || "").match(/(design_[0-9]+_[a-z0-9]+)(?:[./]|$)/i)?.[1]);
+}
+
+async function readRecentDesigns(request, limit) {
+  const allBlobs = [];
+  let cursor;
+
+  do {
+    const result = await list({
+      prefix: "team-banner-designs/",
+      cursor,
+      limit: 1000
+    });
+    allBlobs.push(...(result.blobs || []));
+    cursor = result.hasMore ? result.cursor : undefined;
+  } while (cursor);
+
+  const groups = new Map();
+  allBlobs.forEach((blob) => {
+    const id = designIdFromBlobPath(blob.pathname);
+    if (!id) return;
+    const group = groups.get(id) || { id, blobs: [], uploadedAt: blob.uploadedAt };
+    group.blobs.push(blob);
+    if (new Date(blob.uploadedAt).getTime() > new Date(group.uploadedAt).getTime()) group.uploadedAt = blob.uploadedAt;
+    groups.set(id, group);
+  });
+
+  const selected = [...groups.values()]
+    .sort((left, right) => new Date(right.uploadedAt).getTime() - new Date(left.uploadedAt).getTime())
+    .slice(0, limit);
+
+  return (await Promise.all(selected.map(async (group) => {
+    const manifestBlob = group.blobs.find((blob) => /\.manifest\.json$/i.test(blob.pathname));
+    const previewBlob = group.blobs.find((blob) => /\.png$/i.test(blob.pathname));
+    const jsonBlob = group.blobs.find((blob) => /\.json$/i.test(blob.pathname) && blob !== manifestBlob);
+    const svgBlob = group.blobs.find((blob) => /\.svg$/i.test(blob.pathname));
+    let manifest = {};
+    if (manifestBlob) {
+      const manifestResponse = await fetch(manifestBlob.url, { cache: "no-store" });
+      if (manifestResponse.ok) manifest = await manifestResponse.json();
+    }
+    const id = safeDesignId(manifest.id) || group.id || designIdFromManifestPath(manifestBlob?.pathname);
+    return {
+      ...manifest,
+      id,
+      savedAt: manifest.savedAt || group.uploadedAt,
+      previewUrl: manifest.previewUrl || previewBlob?.url || "",
+      jsonUrl: manifest.jsonUrl || jsonBlob?.url || "",
+      sourceSvgUrl: svgBlob ? designSvgUrl(requestOrigin(request), id) : (manifest.sourceSvgUrl || ""),
+      sourceSvgBlobUrl: svgBlob?.url || manifest.sourceSvgBlobUrl || "",
+      manifestUrl: manifest.manifestUrl || manifestBlob?.url || "",
+      lookupUrl: fulfillmentLookupUrl(id)
+    };
+  }))).filter(Boolean);
+}
+
 export default async function handler(request, response) {
   response.setHeader("Access-Control-Allow-Origin", "*");
   response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-TSB-Admin-Key");
 
   if (request.method === "OPTIONS") {
     response.status(204).end();
@@ -123,6 +205,31 @@ export default async function handler(request, response) {
   }
 
   if (request.method === "GET") {
+    const recent = Number.parseInt(String(request.query?.recent || ""), 10);
+    if (Number.isFinite(recent) && recent > 0) {
+      if (!process.env.TEAM_BANNER_API_KEY) {
+        response.status(503).json({ error: "Protected design feed is not configured." });
+        return;
+      }
+      if (!canListDesigns(request)) {
+        response.status(401).json({ error: "Authentication required." });
+        return;
+      }
+      if (!process.env.BLOB_READ_WRITE_TOKEN) {
+        response.status(503).json({ error: "Design storage is not configured." });
+        return;
+      }
+      try {
+        const limit = Math.min(Math.max(recent, 1), MAX_RECENT_DESIGNS);
+        const designs = await readRecentDesigns(request, limit);
+        response.setHeader("Cache-Control", "private, no-store, max-age=0");
+        response.status(200).json({ designs, count: designs.length });
+      } catch (error) {
+        response.status(400).json({ error: error.message || "Recent design lookup failed" });
+      }
+      return;
+    }
+
     const id = safeDesignId(request.query?.id || request.query?.designId);
     if (!id) {
       response.status(400).json({ error: "Missing design id." });
