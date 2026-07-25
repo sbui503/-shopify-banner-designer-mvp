@@ -1974,6 +1974,25 @@
       return obj && obj !== guide ? obj : null;
     }
 
+    function isTextEntryElement(element) {
+      if (!element) return false;
+      const tagName = String(element.tagName || "").toLowerCase();
+      if (tagName === "input" || tagName === "textarea" || tagName === "select") return true;
+      if (element.isContentEditable) return true;
+      return typeof element.closest === "function"
+        && Boolean(element.closest('[contenteditable="true"], [contenteditable=""], [role="textbox"]'));
+    }
+
+    function isTextEditingKeyboardEvent(event) {
+      const active = selectedObject();
+      return Boolean(
+        event.isComposing
+        || isTextEntryElement(event.target)
+        || isTextEntryElement(document.activeElement)
+        || (active && active.type === "i-text" && active.isEditing)
+      );
+    }
+
     function editableMobileTextObject() {
       const obj = selectedObject();
       if (obj && obj.type === "i-text") {
@@ -8247,7 +8266,6 @@
           return;
         }
         if (placeholderRole === "template-player-text") {
-          event.target.select();
           return;
         }
         if (placeholderRole !== "template-year-text") return;
@@ -8317,6 +8335,7 @@
       canvas.on("object:added", keepGuideOnTop);
       canvas.on("object:removed", updateSelectionControls);
       document.addEventListener("keydown", (event) => {
+        if (event.defaultPrevented || isTextEditingKeyboardEvent(event)) return;
         if (!root.contains(document.activeElement) && document.activeElement !== document.body) return;
         if ((event.key === "Backspace" || event.key === "Delete") && selectedObject()) {
           event.preventDefault();

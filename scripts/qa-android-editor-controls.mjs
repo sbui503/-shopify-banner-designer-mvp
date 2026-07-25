@@ -16,8 +16,10 @@ assert.match(designer, /role === "template-player-text" && text === "player"/,
   "Player placeholders must be identified for safe replacement");
 assert.match(designer, /role === "template-year-text" && text === "year"/,
   "Year placeholders must clear on first edit");
-assert.match(designer, /placeholderRole === "template-player-text"[\s\S]*event\.target\.select\(\);[\s\S]*return;/,
-  "Player text must remain visible when the Android keyboard field receives focus");
+assert.match(designer, /placeholderRole === "template-player-text"\) \{\s*return;/,
+  "Player text must remain visible with a normal Android keyboard caret");
+assert.doesNotMatch(designer, /placeholderRole === "template-player-text"[\s\S]{0,160}event\.target\.select\(\)/,
+  "Android Backspace must not clear a fully selected Player placeholder");
 assert.match(designer, /placeholderRole !== "template-year-text"\) return;/,
   "the destructive clear path must be limited to Year text");
 assert.match(designer, /config\.role === "template-player-text" \? 12 : 0/,
@@ -30,5 +32,7 @@ assert.match(designer, /strokeOpacities\.forEach\(\(control\) => control\.addEve
   "stroke opacity controls must update the selected object");
 assert.match(designer, /stroke: strokeWithOpacity\(color, opacity\)/,
   "stroke opacity must be serialized into the Fabric stroke");
+assert.match(designer, /event\.defaultPrevented \|\| isTextEditingKeyboardEvent\(event\)/,
+  "Android text keyboard events must not reach canvas Delete shortcuts");
 
 console.log("Android editor control regression checks passed.");

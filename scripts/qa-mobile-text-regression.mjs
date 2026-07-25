@@ -9,8 +9,10 @@ assert.match(designer, /document\.activeElement === els\.mobileTextInput[\s\S]*c
   "the retained text object must only be reused while the mobile field is focused and the object still exists");
 assert.match(designer, /role === "template-player-text" && text === "player"/,
   "Player placeholders must be identified without clearing their canvas text");
-assert.match(designer, /placeholderRole === "template-player-text"[\s\S]*event\.target\.select\(\);[\s\S]*return;/,
-  "tapping a default Player field must select its text for replacement instead of blanking it");
+assert.match(designer, /placeholderRole === "template-player-text"\) \{\s*return;/,
+  "tapping a default Player field must preserve the browser caret for single-character edits");
+assert.doesNotMatch(designer, /placeholderRole === "template-player-text"[\s\S]{0,160}event\.target\.select\(\)/,
+  "Player text must not be fully selected before Backspace");
 assert.match(designer, /placeholderRole !== "template-year-text"\) return;/,
   "only Year placeholders may use the clear-on-focus behavior");
 assert.match(designer, /config\.role === "template-player-text" \? 12 : 0/,
@@ -21,5 +23,9 @@ assert.doesNotMatch(designer, /template-team-name[^\n]*placeholder|team-text[^\n
   "team text must never be handled as a disposable placeholder");
 assert.match(designer, /const obj = editableMobileTextObject\(\);[\s\S]*const nextText = event\.target\.value \|\| " ";[\s\S]*obj\.set\(updates\)/,
   "mobile input must update the retained text object after the keyboard takes focus");
+assert.match(designer, /function isTextEditingKeyboardEvent\(event\)[\s\S]*isTextEntryElement\(event\.target\)[\s\S]*isTextEntryElement\(document\.activeElement\)/,
+  "canvas shortcuts must recognize both the event target and focused Player, Team, or Team Mom input");
+assert.match(designer, /document\.addEventListener\("keydown", \(event\) => \{\s*if \(event\.defaultPrevented \|\| isTextEditingKeyboardEvent\(event\)\) return;/,
+  "Backspace and Delete must remain native text-editing keys while a text field has focus");
 
 console.log("Mobile text regression checks passed.");
