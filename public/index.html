@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Bebas+Neue&family=Graduate&family=Inter:wght@400;500;600;700;800;900&family=Luckiest+Guy&display=swap">
     <link rel="stylesheet" href="team-banner-designer.css?v=20260714-gradient-visible-render">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js" defer></script>
-    <script src="team-banner-designer.js?v=20260717-checkout-design-id" defer></script>
+    <script src="design-resume.js?v=20260725-resumable-png" defer></script>
+    <script src="team-banner-designer.js?v=20260725-resumable-png" defer></script>
   </head>
   <body>
     <main
@@ -72,7 +73,7 @@
         <div class="tbd__tool-group">
           <button class="tbd__icon-button" data-tbd-clear type="button" aria-label="New design" data-tooltip="New design"><svg class="tbd__icon"><use href="#tbd-i-new"></use></svg></button>
           <button class="tbd__icon-button" data-tbd-project-upload-trigger type="button" aria-label="Open editable design" data-tooltip="Open editable design"><svg class="tbd__icon"><use href="#tbd-i-folder"></use></svg></button>
-          <button class="tbd__icon-button" data-tbd-download type="button" aria-label="Save editable design" data-tooltip="Save editable design"><svg class="tbd__icon"><use href="#tbd-i-save"></use></svg></button>
+          <button class="tbd__icon-button" data-tbd-download type="button" aria-label="Save design" data-tooltip="Save design"><svg class="tbd__icon"><use href="#tbd-i-save"></use></svg></button>
           <button class="tbd__icon-button" data-tbd-undo type="button" aria-label="Undo" data-tooltip="Undo"><svg class="tbd__icon"><use href="#tbd-i-undo"></use></svg></button>
           <button class="tbd__icon-button" data-tbd-redo type="button" aria-label="Redo" data-tooltip="Redo"><svg class="tbd__icon"><use href="#tbd-i-redo"></use></svg></button>
           <button class="tbd__icon-button" data-tbd-rotate="-15" type="button" aria-label="Rotate left" data-tooltip="Rotate left"><svg class="tbd__icon"><use href="#tbd-i-rotate-left"></use></svg></button>
@@ -132,7 +133,7 @@
       <div class="tbd__mobile-editbar" aria-label="Mobile edit controls">
         <button class="tbd__mobile-icon" data-tbd-clear type="button" aria-label="New design" data-tooltip="New design"><svg class="tbd__icon"><use href="#tbd-i-new"></use></svg></button>
         <button class="tbd__mobile-icon" data-tbd-project-upload-trigger type="button" aria-label="Open editable design" data-tooltip="Open editable design"><svg class="tbd__icon"><use href="#tbd-i-folder"></use></svg></button>
-        <button class="tbd__mobile-icon" data-tbd-download type="button" aria-label="Save editable design" data-tooltip="Save editable design"><svg class="tbd__icon"><use href="#tbd-i-save"></use></svg></button>
+        <button class="tbd__mobile-icon" data-tbd-download type="button" aria-label="Save design" data-tooltip="Save design"><svg class="tbd__icon"><use href="#tbd-i-save"></use></svg></button>
         <button class="tbd__mobile-icon" data-tbd-undo type="button" aria-label="Undo" data-tooltip="Undo"><svg class="tbd__icon"><use href="#tbd-i-undo"></use></svg></button>
         <button class="tbd__mobile-icon" data-tbd-redo type="button" aria-label="Redo" data-tooltip="Redo"><svg class="tbd__icon"><use href="#tbd-i-redo"></use></svg></button>
         <button class="tbd__mobile-icon tbd__mobile-icon--text" data-tbd-panel-toggle="text" type="button" aria-label="Text panel" data-tooltip="Text panel">T</button>
@@ -629,7 +630,8 @@
             <button class="tbd__button" data-tbd-selected-to-layers type="button">Selected PNG</button>
             <button class="tbd__button" data-tbd-duplicate type="button">Duplicate selected</button>
             <button class="tbd__button tbd__button--danger" data-tbd-delete type="button">Delete selected</button>
-            <button class="tbd__button tbd__button--primary" data-tbd-download type="button">Save editable file</button>
+            <button class="tbd__button tbd__button--primary" data-tbd-download type="button">Save design PNG</button>
+            <button class="tbd__button" data-tbd-download-project type="button">Download editable backup</button>
             <button class="tbd__button" data-tbd-download-proof type="button">Download proof PNG</button>
             <button class="tbd__button tbd__button--primary" data-tbd-add-cart type="button">Save test design</button>
             <div class="tbd__preview">

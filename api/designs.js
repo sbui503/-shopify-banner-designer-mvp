@@ -103,6 +103,8 @@ async function readStoredDesign(request, id) {
   const blobs = Array.isArray(result.blobs) ? result.blobs : [];
   const sourceSvg = blobs.find((blob) => /\.svg$/i.test(blob.pathname));
   const manifestBlob = blobs.find((blob) => /(?:^|[.-])manifest(?:-[a-z0-9]+)?\.json$/i.test(blob.pathname));
+  const preview = blobs.find((blob) => /\.png$/i.test(blob.pathname));
+  const editableJson = blobs.find((blob) => /\.json$/i.test(blob.pathname) && blob !== manifestBlob);
   if (manifestBlob) {
     const manifestResponse = await fetch(manifestBlob.url, { cache: "no-store" });
     if (manifestResponse.ok) {
@@ -110,6 +112,8 @@ async function readStoredDesign(request, id) {
       return {
         ...manifest,
         id,
+        previewUrl: preview?.url || manifest.previewUrl || "",
+        jsonUrl: editableJson?.url || manifest.jsonUrl || "",
         lookupUrl: fulfillmentLookupUrl(id),
         sourceSvgUrl: sourceSvg ? designSvgUrl(requestOrigin(request), id) : "",
         sourceSvgBlobUrl: sourceSvg?.url || manifest.sourceSvgBlobUrl || manifest.sourceSvgUrl || "",
@@ -118,8 +122,6 @@ async function readStoredDesign(request, id) {
     }
   }
 
-  const preview = blobs.find((blob) => /\.png$/i.test(blob.pathname));
-  const editableJson = blobs.find((blob) => /\.json$/i.test(blob.pathname) && blob !== manifestBlob);
   if (!preview && !editableJson && !sourceSvg) return null;
 
   return {
@@ -245,6 +247,16 @@ export default async function handler(request, response) {
         response.status(404).json({ error: "Design not found." });
         return;
       }
+      const includeEditable = String(request.query?.include || "").toLowerCase() === "editable";
+      if (includeEditable && design.jsonUrl) {
+        const editableResponse = await fetch(design.jsonUrl, { cache: "no-store" });
+        if (!editableResponse.ok) {
+          response.status(502).json({ error: "Editable design source is unavailable." });
+          return;
+        }
+        design.editableJson = await editableResponse.json();
+      }
+      response.setHeader("Cache-Control", "private, no-store, max-age=0");
       response.status(200).json(design);
     } catch (error) {
       response.status(400).json({ error: error.message || "Design lookup failed" });
@@ -323,6 +335,7 @@ export default async function handler(request, response) {
       productTitle: cleanString(product.title, 240),
       productHandle: cleanString(product.handle, 240),
       teamName: cleanString(metadata.teamName, 240),
+      parentDesignId: safeDesignId(metadata.parentDesignId),
       product,
       artboard,
       layers: textLayers,

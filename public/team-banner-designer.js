@@ -20,6 +20,17 @@
     homeplatepennant: "43537293443278"
   };
   const VECTOR_BACKGROUND_HREF = "__source_svg_vector_background__";
+  const designResume = window.TeamBannerDesignResume || {
+    normalizeDesignId(value) {
+      return String(value || "").match(/design_[0-9]+_[a-z0-9]+/i)?.[0] || "";
+    },
+    async designIdFromPngFile(file) {
+      return this.normalizeDesignId(file && file.name);
+    },
+    async pngBlobWithDesignId(dataUrl) {
+      return fetch(dataUrl).then((response) => response.blob());
+    }
+  };
   let WIDTH = BANNER_WIDTH;
   let HEIGHT = BANNER_HEIGHT;
   let ARTBOARD_SHAPE = "rectangle";
@@ -1368,6 +1379,7 @@
     let gradientStopOffsets = { start: 0, end: 1 };
     let projectRestoreToken = 0;
     let projectWasOpened = false;
+    let activeDesignId = "";
     let layerUidCounter = 0;
     let assetDragState = null;
     let suppressAssetClick = false;
@@ -4957,7 +4969,8 @@
             sizeLabel: launch.sizeLabel || defaultSizeForShape(ARTBOARD_SHAPE),
             price: launch.price || defaultPriceForShape(ARTBOARD_SHAPE)
           },
-          teamName: (els.team && els.team.value) || ""
+          teamName: (els.team && els.team.value) || "",
+          parentDesignId: activeDesignId
         }
       }));
     }
@@ -4969,6 +4982,7 @@
       return withoutGuide(() => ({
         app: "team-banner-designer",
         version: 1,
+        designId: activeDesignId,
         savedAt: new Date().toISOString(),
         artboard: {
           width: WIDTH,
@@ -4994,14 +5008,15 @@
       return JSON.stringify(project);
     }
 
-    function projectFileName() {
+    function projectFileName(designId) {
       const stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, "");
       const title = String(launch.handle || launch.title || "team-banner")
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "")
         .slice(0, 40) || "team-banner";
-      return `${title}-${stamp}.tsbd`;
+      const id = designResume.normalizeDesignId(designId || activeDesignId);
+      return `${title}-${id ? `${id}-` : ""}${stamp}.tsbd`;
     }
 
     async function projectBlobFromText(text) {
@@ -5016,7 +5031,10 @@
       const link = document.createElement("a");
       link.download = filename;
       link.href = url;
+      link.style.display = "none";
+      document.body.appendChild(link);
       link.click();
+      link.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 1000);
       return blob.size;
     }
@@ -5038,14 +5056,27 @@
       const saveUrl = root.dataset.saveUrl;
       const design = exportDesign(1);
       const localId = `design_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const project = {
+        app: "team-banner-designer",
+        version: 1,
+        designId: localId,
+        savedAt: design.metadata.savedAt,
+        artboard: design.metadata.artboard,
+        product: design.metadata.product,
+        teamName: design.metadata.teamName,
+        canvas: design.json
+      };
       try {
-        window.localStorage.setItem(`team-banner-design:${localId}`, JSON.stringify(design.json));
+        window.localStorage.setItem(`team-banner-design:${localId}`, JSON.stringify(project));
       } catch (error) {
         // Local storage is a convenience for the MVP. The API save below is the source of truth when configured.
       }
 
       if (els.preview) els.preview.src = design.image;
-      if (!saveUrl) return { id: localId, previewUrl: "", jsonUrl: "", proofImage: design.image };
+      if (!saveUrl) {
+        activeDesignId = localId;
+        return { id: localId, previewUrl: "", jsonUrl: "", proofImage: design.image };
+      }
 
       const response = await fetch(saveUrl, {
         method: "POST",
@@ -5054,7 +5085,42 @@
       });
       if (!response.ok) throw new Error("Design save failed");
       const saved = await response.json();
-      return { ...saved, proofImage: design.image };
+      const savedId = designResume.normalizeDesignId(saved.id) || localId;
+      activeDesignId = savedId;
+      try {
+        window.localStorage.setItem(`team-banner-design:${savedId}`, JSON.stringify({
+          ...project,
+          designId: savedId
+        }));
+      } catch (error) {
+        // The permanent API copy remains the source of truth if local storage is full.
+      }
+      return { ...saved, id: savedId, proofImage: design.image };
+    }
+
+    function proofFileName(designId) {
+      const id = designResume.normalizeDesignId(designId);
+      return `team-sport-banner-${id || "proof"}.png`;
+    }
+
+    async function saveResumableDesign() {
+      setStatus("Saving editable design...");
+      try {
+        const saved = await saveDesign();
+        const designId = designResume.normalizeDesignId(saved && saved.id);
+        if (!designId) throw new Error("The saved design did not receive a Design ID.");
+        const proofBlob = await designResume.pngBlobWithDesignId(saved.proofImage, designId);
+        const filename = proofFileName(designId);
+        downloadBlobFile(filename, proofBlob);
+        if (els.savedMeta) {
+          els.savedMeta.textContent = `Design ID: ${designId}. Upload this PNG later to continue editing every saved layer.`;
+        }
+        setStatus(`Design ${designId} saved. Upload this PNG later to continue editing.`);
+        return saved;
+      } catch (error) {
+        setStatus(error.message || "Could not save this design.");
+        return null;
+      }
     }
 
     function currentCartVariantId() {
@@ -5319,16 +5385,8 @@
       await addCurrentDesignToToolCart();
     }
 
-    function downloadProof() {
-      try {
-        const link = document.createElement("a");
-        link.download = "team-banner-proof.png";
-        link.href = exportDesign(1).image;
-        link.click();
-        setStatus("Proof downloaded.");
-      } catch (error) {
-        setStatus("Could not export. Check that the selected asset allows image export.");
-      }
+    async function downloadProof() {
+      await saveResumableDesign();
     }
 
     function cloneCanvasObject(obj) {
@@ -5400,6 +5458,7 @@
       canvas.backgroundColor = canvasBackgroundColor((els.bgColor && els.bgColor.value) || "#ffffff");
       canvas.clipPath = makeClipPath();
       teamText = null;
+      activeDesignId = "";
       isRestoring = false;
       drawGuide();
       activeCategory = defaultCategoryForShape(ARTBOARD_SHAPE);
@@ -5443,6 +5502,7 @@
       canvas.setHeight(HEIGHT);
       activeCategory = defaultCategoryForShape(ARTBOARD_SHAPE);
       assetPage = 1;
+      activeDesignId = "";
       resetCanvas("#ffffff");
       syncProductInfo();
       renderCategories();
@@ -6844,6 +6904,75 @@
       }
     }
 
+    function savedProjectFromLocalStorage(designId) {
+      try {
+        const project = JSON.parse(window.localStorage.getItem(`team-banner-design:${designId}`) || "null");
+        const canvasJson = project && (project.canvas || project.json || project);
+        return canvasJson && Array.isArray(canvasJson.objects) ? project : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function designLookupUrl(designId) {
+      const saveUrl = root.dataset.saveUrl;
+      if (!saveUrl) return "";
+      const url = new URL(saveUrl, window.location.href);
+      url.searchParams.set("id", designId);
+      url.searchParams.set("include", "editable");
+      return url.href;
+    }
+
+    async function fetchSavedProject(designId) {
+      const lookupUrl = designLookupUrl(designId);
+      if (!lookupUrl) return null;
+      const response = await fetch(lookupUrl, {
+        credentials: "omit",
+        cache: "no-store"
+      });
+      if (!response.ok) {
+        if (response.status === 404) return null;
+        throw new Error("The saved design service is unavailable.");
+      }
+      const saved = await response.json();
+      let canvasJson = saved.editableJson;
+      if (!canvasJson && saved.jsonUrl) {
+        const jsonResponse = await fetch(saved.jsonUrl, { credentials: "omit", cache: "no-store" });
+        if (!jsonResponse.ok) throw new Error("The editable layers could not be downloaded.");
+        canvasJson = await jsonResponse.json();
+      }
+      if (!canvasJson || !Array.isArray(canvasJson.objects)) return null;
+      return {
+        app: "team-banner-designer",
+        version: 1,
+        designId,
+        savedAt: saved.savedAt,
+        artboard: saved.artboard,
+        product: saved.product,
+        teamName: saved.teamName,
+        canvas: canvasJson
+      };
+    }
+
+    async function resumeDesignFromPng(file) {
+      const designId = await designResume.designIdFromPngFile(file);
+      if (!designId) return false;
+
+      setStatus(`Opening saved design ${designId}...`);
+      let project = savedProjectFromLocalStorage(designId);
+      if (!project) project = await fetchSavedProject(designId);
+      if (!project) {
+        throw new Error(`Design ${designId} was not found. Upload its editable backup or contact support.`);
+      }
+      await restoreProject(JSON.stringify(project), `Design ${designId}`);
+      activeDesignId = designId;
+      if (els.savedMeta) {
+        els.savedMeta.textContent = `Design ID: ${designId}. Editable layers restored from the saved design.`;
+      }
+      setStatus(`Design ${designId} opened with editable layers.`);
+      return true;
+    }
+
     async function handleUpload(event) {
       const files = Array.from(event.target.files || []);
       event.target.value = "";
@@ -6852,7 +6981,14 @@
           await importProjectFile(file);
           continue;
         }
-        if (!file.type.startsWith("image/")) continue;
+        const fileName = String(file.name || "").toLowerCase();
+        if (!file.type.startsWith("image/") && !/\.(?:png|jpe?g|webp|gif)$/i.test(fileName)) continue;
+        try {
+          if (await resumeDesignFromPng(file)) continue;
+        } catch (error) {
+          setStatus(error.message || "Could not open the saved design.");
+          continue;
+        }
         const reader = new FileReader();
         reader.onload = () => addAsset({ name: file.name, category: "Upload", url: reader.result });
         reader.readAsDataURL(file);
@@ -6918,6 +7054,7 @@
       WIDTH = MVP_5X3_ONLY ? BANNER_WIDTH : Number(project.artboard && project.artboard.width) || size.width;
       HEIGHT = MVP_5X3_ONLY ? BANNER_HEIGHT : Number(project.artboard && project.artboard.height) || size.height;
       projectWasOpened = true;
+      activeDesignId = designResume.normalizeDesignId(project.designId);
       projectRestoreToken += 1;
       launch.headline = (project.product && project.product.headline) || launch.headline || "";
       launch.sizeLabel = (project.product && project.product.sizeLabel) || launch.sizeLabel || "";
@@ -7851,7 +7988,8 @@
         root.querySelectorAll(selector).forEach((element) => element.addEventListener("click", handler));
       };
       onAll("[data-tbd-add-text]", addOrUpdateTextFromPanel);
-      onAll("[data-tbd-download]", downloadProjectFile);
+      onAll("[data-tbd-download]", saveResumableDesign);
+      onAll("[data-tbd-download-project]", downloadProjectFile);
       onAll("[data-tbd-download-proof]", downloadProof);
       onAll("[data-tbd-add-cart]", saveOrAddToCart);
       onAll("[data-tbd-duplicate]", duplicateSelected);
