@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { listStoredDesignManifests, safeDesignId } from "@/lib/admin-design-storage";
 import { getShopifyAdminCredential } from "@/lib/shopify-admin-credentials";
 
 export const maxDuration = 30;
@@ -103,6 +104,22 @@ export async function GET(request: NextRequest) {
         designIdsFromValue(`${attr.key} ${attr.value}`).forEach((id) => designIds.add(id));
       });
       designs.push(...designsFromAttributes(edge.node?.customAttributes || [], edge.node?.name || ""));
+    });
+    const normalizedOrderName = String(node.name || "").replace(/^#/, "").trim().toLowerCase();
+    const recoveredDesigns = await listStoredDesignManifests(250).catch(() => []);
+    recoveredDesigns.forEach((design) => {
+      const recoveryOrder = String(design.orderNumber || "").replace(/^#/, "").trim().toLowerCase();
+      const id = safeDesignId(design.id);
+      if (!id || !recoveryOrder || recoveryOrder !== normalizedOrderName) return;
+      designIds.add(id);
+      designs.push({
+        id,
+        previewUrl: design.previewUrl || "",
+        jsonUrl: design.jsonUrl || "",
+        sourceSvgUrl: design.sourceSvgUrl || "",
+        manifestUrl: design.manifestUrl || "",
+        productTitle: design.productTitle || ""
+      });
     });
 
     const designsById = new Map<string, (typeof designs)[number]>();

@@ -1,16 +1,17 @@
-import { list, put } from "@vercel/blob";
+import { put } from "@vercel/blob";
 import { NextRequest, NextResponse } from "next/server";
+import {
+  listStoredDesignManifests,
+  readStoredDesignManifest,
+  safeDesignId,
+  type StoredDesignManifest
+} from "@/lib/admin-design-storage";
 
 export const maxDuration = 30;
 
 function parsePngDataUrl(value: unknown) {
   const match = /^data:image\/png;base64,(.+)$/i.exec(String(value || ""));
   return match ? Buffer.from(match[1], "base64") : null;
-}
-
-function safeDesignId(value: unknown) {
-  const clean = String(value || "").trim();
-  return /^design_[0-9]+_[a-z0-9]+$/i.test(clean) ? clean : "";
 }
 
 function lookupUrlForRequest(request: NextRequest, id: string) {
@@ -36,19 +37,6 @@ function svgStats(svg: string) {
     textCount,
     layered: objectCount > 1 || textCount > 0
   };
-}
-
-async function readManifest(id: string) {
-  const result = await list({
-    prefix: `team-banner-designs/${id}/manifest`,
-    limit: 1
-  });
-  const manifest = result.blobs?.[0];
-  if (!manifest) return null;
-  const manifestResponse = await fetch(manifest.url, { cache: "no-store" });
-  if (!manifestResponse.ok) return null;
-  const data = await manifestResponse.json();
-  return { ...data, manifestUrl: data.manifestUrl || manifest.url };
 }
 
 async function readCustomerDesign(id: string) {
@@ -79,6 +67,47 @@ async function readCustomerRecentDesigns(limit: number) {
   return data;
 }
 
+function designSavedAt(design: StoredDesignManifest) {
+  const savedAt = new Date(design.savedAt || "").getTime();
+  return Number.isFinite(savedAt) ? savedAt : 0;
+}
+
+async function readMergedRecentDesigns(limit: number) {
+  const [storedResult, customerResult] = await Promise.allSettled([
+    listStoredDesignManifests(limit),
+    readCustomerRecentDesigns(limit)
+  ]);
+  const stored = storedResult.status === "fulfilled" ? storedResult.value : [];
+  const customer = customerResult.status === "fulfilled" && Array.isArray(customerResult.value?.designs)
+    ? customerResult.value.designs as StoredDesignManifest[]
+    : [];
+  const designsById = new Map<string, StoredDesignManifest>();
+
+  [...customer, ...stored].forEach((design) => {
+    const id = safeDesignId(design.id);
+    if (!id) return;
+    const existing = designsById.get(id);
+    designsById.set(id, {
+      ...existing,
+      ...design,
+      id,
+      previewUrl: design.previewUrl || existing?.previewUrl || "",
+      jsonUrl: design.jsonUrl || existing?.jsonUrl || "",
+      sourceSvgUrl: design.sourceSvgUrl || existing?.sourceSvgUrl || "",
+      manifestUrl: design.manifestUrl || existing?.manifestUrl || ""
+    });
+  });
+
+  const designs = [...designsById.values()]
+    .sort((left, right) => designSavedAt(right) - designSavedAt(left))
+    .slice(0, limit);
+  const warnings = [
+    storedResult.status === "rejected" ? "Admin design storage could not be read." : "",
+    customerResult.status === "rejected" ? "Live customer designs could not be read." : ""
+  ].filter(Boolean);
+  return { designs, count: designs.length, warnings };
+}
+
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,
@@ -91,7 +120,7 @@ export async function GET(request: NextRequest) {
     const recent = Number.parseInt(request.nextUrl.searchParams.get("recent") || "", 10);
     if (Number.isFinite(recent) && recent > 0) {
       const limit = Math.min(Math.max(recent, 1), 100);
-      const result = await readCustomerRecentDesigns(limit);
+      const result = await readMergedRecentDesigns(limit);
       return NextResponse.json(result, {
         headers: {
           ...corsHeaders(),
@@ -102,7 +131,7 @@ export async function GET(request: NextRequest) {
 
     const id = safeDesignId(request.nextUrl.searchParams.get("id") || request.nextUrl.searchParams.get("designId"));
     if (!id) return NextResponse.json({ error: "Missing design id." }, { status: 400, headers: corsHeaders() });
-    const localManifest = process.env.BLOB_READ_WRITE_TOKEN ? await readManifest(id) : null;
+    const localManifest = await readStoredDesignManifest(id);
     const manifest = localManifest || await readCustomerDesign(id);
     if (!manifest) return NextResponse.json({ error: "Design manifest not found." }, { status: 404, headers: corsHeaders() });
     return NextResponse.json(manifest, { headers: corsHeaders() });

@@ -1,11 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import NextImage from "next/image";
 import { useCallback, useEffect, useState } from "react";
-import { ExternalLink, Link2, RefreshCw } from "lucide-react";
+import { ChevronDown, ChevronUp, ExternalLink, FileImage, Link2, Mail, RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+type ShopifyAttribute = {
+  key?: string;
+  value?: string;
+};
 
 type ShopifyOrder = {
   id: string;
@@ -24,11 +30,21 @@ type ShopifyOrder = {
     productTitle: string;
     savedAt: string;
     secondsBeforeOrder: number;
+    matchReason?: string;
   } | null;
+  note?: string;
+  customer?: {
+    name?: string;
+    email?: string;
+  };
+  customAttributes?: ShopifyAttribute[];
   lineItems: Array<{
     id: string;
     name: string;
     quantity: number;
+    sku?: string;
+    variantTitle?: string;
+    customAttributes?: ShopifyAttribute[];
   }>;
 };
 
@@ -78,11 +94,105 @@ function formatMatchTiming(secondsBeforeOrder: number) {
     : `Saved ${minutes} min after checkout`;
 }
 
+function customFieldCount(order: ShopifyOrder) {
+  return (order.customAttributes || []).length
+    + order.lineItems.reduce((count, item) => count + (item.customAttributes || []).length, 0)
+    + (order.note ? 1 : 0);
+}
+
+function fieldLabel(value: string | undefined) {
+  const clean = String(value || "")
+    .replace(/^_+/, "")
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return clean || "Custom field";
+}
+
+function nestedHttpUrl(value: unknown): string {
+  if (typeof value === "string") {
+    try {
+      const url = new URL(value.trim().replace(/&amp;/g, "&"));
+      if (/^https?:$/.test(url.protocol)) return url.toString();
+    } catch {
+      return "";
+    }
+  }
+  if (Array.isArray(value)) {
+    return value.map(nestedHttpUrl).find(Boolean) || "";
+  }
+  if (value && typeof value === "object") {
+    return Object.values(value as Record<string, unknown>).map(nestedHttpUrl).find(Boolean) || "";
+  }
+  return "";
+}
+
+function httpUrl(value: string | undefined) {
+  const raw = String(value || "").trim();
+  const direct = nestedHttpUrl(raw);
+  if (direct) return direct;
+  try {
+    const parsed = nestedHttpUrl(JSON.parse(raw));
+    if (parsed) return parsed;
+  } catch {}
+  const match = raw.match(/https?:\/\/[^\s"'<>\\]+/i);
+  return match ? nestedHttpUrl(match[0]) : "";
+}
+
+function isImageField(attribute: ShopifyAttribute, url: string) {
+  return /\.(?:png|jpe?g|webp|gif)(?:$|[?#])/i.test(url)
+    || /(?:image|photo|logo|proof|artwork)/i.test(String(attribute.key || ""));
+}
+
+function CustomField({ attribute }: { attribute: ShopifyAttribute }) {
+  const value = String(attribute.value || "").trim();
+  const url = httpUrl(value);
+  const showImage = Boolean(url && isImageField(attribute, url));
+
+  return (
+    <div className="grid gap-2 border-t py-3 first:border-t-0 sm:grid-cols-[180px_minmax(0,1fr)]">
+      <dt className="text-xs font-black uppercase text-slate-500">{fieldLabel(attribute.key)}</dt>
+      <dd className="min-w-0">
+        {showImage ? (
+          <div className="mb-2 flex items-start gap-3">
+            <div className="relative h-24 w-32 shrink-0 overflow-hidden rounded-md border bg-slate-100">
+              <NextImage
+                src={url}
+                alt={fieldLabel(attribute.key)}
+                fill
+                sizes="128px"
+                className="object-contain"
+                unoptimized
+              />
+            </div>
+            <Button asChild variant="outline" size="sm">
+              <a href={url} target="_blank" rel="noreferrer">
+                <FileImage className="h-4 w-4" />
+                Open uploaded file
+              </a>
+            </Button>
+          </div>
+        ) : url ? (
+          <a className="inline-flex items-center gap-1 break-all text-sm font-bold text-primary underline" href={url} target="_blank" rel="noreferrer">
+            <ExternalLink className="h-4 w-4 shrink-0" />
+            {value}
+          </a>
+        ) : (
+          <p className="break-words text-sm font-semibold text-slate-900">{value || "Not provided"}</p>
+        )}
+      </dd>
+    </div>
+  );
+}
+
 export function ShopifyOrdersClient() {
   const [orders, setOrders] = useState<ShopifyOrder[]>([]);
   const [status, setStatus] = useState("Loading Shopify orders...");
   const [busy, setBusy] = useState(true);
   const [requiresConnection, setRequiresConnection] = useState(false);
+  const [expandedOrderId, setExpandedOrderId] = useState("");
+  const [emailStatuses, setEmailStatuses] = useState<Record<string, string>>({});
+  const [emailBusyOrderId, setEmailBusyOrderId] = useState("");
 
   const loadOrders = useCallback(async () => {
     setBusy(true);
@@ -100,6 +210,38 @@ export function ShopifyOrdersClient() {
       setBusy(false);
     }
   }, []);
+
+  async function sendOrderToFulfillment(order: ShopifyOrder) {
+    setEmailBusyOrderId(order.id);
+    setEmailStatuses((current) => ({ ...current, [order.id]: "Sending order details..." }));
+    try {
+      const response = await fetch("/api/admin/shopify/order-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: order.id })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (response.status === 409 && result.alreadySent) {
+        setEmailStatuses((current) => ({
+          ...current,
+          [order.id]: `Already sent to ${result.to || "fulfillment"}${result.sentAt ? ` on ${formatDate(result.sentAt)}` : ""}.`
+        }));
+        return;
+      }
+      if (!response.ok) throw new Error(result.error || "Fulfillment email failed.");
+      setEmailStatuses((current) => ({
+        ...current,
+        [order.id]: `Sent to ${result.to || "info@tsbanners.com"}.`
+      }));
+    } catch (error) {
+      setEmailStatuses((current) => ({
+        ...current,
+        [order.id]: error instanceof Error ? error.message : "Fulfillment email failed."
+      }));
+    } finally {
+      setEmailBusyOrderId("");
+    }
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -154,58 +296,141 @@ export function ShopifyOrdersClient() {
         {orders.length ? (
           <div className="mt-4 divide-y rounded-lg border">
             {orders.map((order) => (
-              <article key={order.id} className="grid gap-3 p-4 lg:grid-cols-[120px_minmax(0,1fr)_minmax(180px,auto)_140px] lg:items-center">
-                <div>
-                  <p className="text-lg font-black text-slate-950">{order.name}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">{formatDate(order.createdAt)}</p>
-                  {order.adminUrl ? (
-                    <Button asChild variant="ghost" size="sm" className="mt-2 px-0">
-                      <a href={order.adminUrl} target="_blank" rel="noreferrer">
-                        <ExternalLink className="h-4 w-4" />
-                        Open in Shopify
-                      </a>
-                    </Button>
-                  ) : null}
-                </div>
-
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-slate-950">
-                    {order.lineItems.map((item) => `${item.quantity}x ${item.name}`).join(", ") || "No line items"}
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {order.designIds.length ? order.designIds.map((id) => (
-                    <Button key={id} asChild variant="outline" size="sm">
-                      <Link href={`/admin/orders?designId=${encodeURIComponent(id)}`}>{id}</Link>
-                    </Button>
-                  )) : order.likelyDesign ? (
-                    <div className="min-w-0 space-y-2">
-                      <Badge variant="warning">Likely saved design</Badge>
-                      <Button asChild variant="outline" size="sm">
-                        <Link href={`/admin/orders?designId=${encodeURIComponent(order.likelyDesign.id)}`}>
-                          Open recovered design
-                        </Link>
+              <article key={order.id} className="p-4">
+                <div className="grid gap-3 lg:grid-cols-[120px_minmax(0,1fr)_minmax(180px,auto)_160px] lg:items-center">
+                  <div>
+                    <p className="text-lg font-black text-slate-950">{order.name}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{formatDate(order.createdAt)}</p>
+                    {order.adminUrl ? (
+                      <Button asChild variant="ghost" size="sm" className="mt-2 px-0">
+                        <a href={order.adminUrl} target="_blank" rel="noreferrer">
+                          <ExternalLink className="h-4 w-4" />
+                          Open in Shopify
+                        </a>
                       </Button>
-                      <p className="break-all text-xs font-semibold text-slate-700">{order.likelyDesign.id}</p>
-                      <p className="text-xs text-muted-foreground">
-                        Product and time match. {formatMatchTiming(order.likelyDesign.secondsBeforeOrder)}. Verify before print.
-                      </p>
-                    </div>
-                  ) : (
-                    <Badge variant="warning">No Design ID</Badge>
-                  )}
+                    ) : null}
+                  </div>
+
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-slate-950">
+                      {order.lineItems.map((item) => `${item.quantity}x ${item.name}`).join(", ") || "No line items"}
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      type="button"
+                      className="mt-2"
+                      aria-expanded={expandedOrderId === order.id}
+                      onClick={() => setExpandedOrderId((current) => current === order.id ? "" : order.id)}
+                    >
+                      {expandedOrderId === order.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      View custom order ({customFieldCount(order)})
+                    </Button>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    {order.designIds.length ? order.designIds.map((id) => (
+                      <Button key={id} asChild variant="outline" size="sm">
+                        <Link href={`/admin/orders?designId=${encodeURIComponent(id)}`}>{id}</Link>
+                      </Button>
+                    )) : order.likelyDesign ? (
+                      <div className="min-w-0 space-y-2">
+                        <Badge variant="warning">Likely saved design</Badge>
+                        <Button asChild variant="outline" size="sm">
+                          <Link href={`/admin/orders?designId=${encodeURIComponent(order.likelyDesign.id)}`}>
+                            Open recovered design
+                          </Link>
+                        </Button>
+                        <p className="break-all text-xs font-semibold text-slate-700">{order.likelyDesign.id}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {order.likelyDesign.matchReason || "Product and time match"}. {formatMatchTiming(order.likelyDesign.secondsBeforeOrder)}. Verify before print.
+                        </p>
+                      </div>
+                    ) : (
+                      <Badge variant="warning">No Design ID</Badge>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+                    <Badge variant={/paid/i.test(order.financialStatus) ? "success" : "secondary"}>
+                      {order.financialStatus || "Unknown"}
+                    </Badge>
+                    <Badge variant={/fulfilled/i.test(order.fulfillmentStatus) ? "success" : "secondary"}>
+                      {order.fulfillmentStatus || "Unfulfilled"}
+                    </Badge>
+                    <span className="font-black">{formatMoney(order)}</span>
+                  </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 lg:justify-end">
-                  <Badge variant={/paid/i.test(order.financialStatus) ? "success" : "secondary"}>
-                    {order.financialStatus || "Unknown"}
-                  </Badge>
-                  <Badge variant={/fulfilled/i.test(order.fulfillmentStatus) ? "success" : "secondary"}>
-                    {order.fulfillmentStatus || "Unfulfilled"}
-                  </Badge>
-                  <span className="font-black">{formatMoney(order)}</span>
-                </div>
+                {expandedOrderId === order.id ? (
+                  <div className="mt-4 border-t pt-4">
+                    <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <h3 className="font-black text-slate-950">Custom order information</h3>
+                        {emailStatuses[order.id] ? (
+                          <p className="mt-1 text-sm font-semibold text-muted-foreground">{emailStatuses[order.id]}</p>
+                        ) : null}
+                      </div>
+                      <Button
+                        type="button"
+                        size="sm"
+                        disabled={emailBusyOrderId === order.id}
+                        onClick={() => void sendOrderToFulfillment(order)}
+                      >
+                        <Mail className="h-4 w-4" />
+                        Send to fulfillment
+                      </Button>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div>
+                        <p className="text-xs font-black uppercase text-slate-500">Customer</p>
+                        <p className="mt-1 text-sm font-bold">{order.customer?.name || "Not provided"}</p>
+                        {order.customer?.email ? <p className="break-all text-sm text-muted-foreground">{order.customer.email}</p> : null}
+                      </div>
+                      {order.note ? (
+                        <div>
+                          <p className="text-xs font-black uppercase text-slate-500">Order note</p>
+                          <p className="mt-1 whitespace-pre-wrap break-words text-sm font-semibold">{order.note}</p>
+                        </div>
+                      ) : null}
+                    </div>
+
+                    {(order.customAttributes || []).length ? (
+                      <dl className="mt-4 border-y">
+                        {(order.customAttributes || []).map((attribute, index) => (
+                          <CustomField key={`${attribute.key}-${index}`} attribute={attribute} />
+                        ))}
+                      </dl>
+                    ) : null}
+
+                    <div className="mt-4 divide-y border-y">
+                      {order.lineItems.map((item) => (
+                        <section key={item.id} className="py-4">
+                          <div className="flex flex-wrap items-start justify-between gap-2">
+                            <div>
+                              <h4 className="font-black text-slate-950">{item.quantity}x {item.name}</h4>
+                              <p className="mt-1 text-xs text-muted-foreground">
+                                {[item.variantTitle, item.sku ? `SKU ${item.sku}` : ""].filter(Boolean).join(" · ") || "Custom product"}
+                              </p>
+                            </div>
+                            <Badge variant={(item.customAttributes || []).length ? "success" : "secondary"}>
+                              {(item.customAttributes || []).length} custom fields
+                            </Badge>
+                          </div>
+                          {(item.customAttributes || []).length ? (
+                            <dl className="mt-3">
+                              {(item.customAttributes || []).map((attribute, index) => (
+                                <CustomField key={`${attribute.key}-${index}`} attribute={attribute} />
+                              ))}
+                            </dl>
+                          ) : (
+                            <p className="mt-3 text-sm font-semibold text-muted-foreground">No custom order information was attached to this item.</p>
+                          )}
+                        </section>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
               </article>
             ))}
           </div>

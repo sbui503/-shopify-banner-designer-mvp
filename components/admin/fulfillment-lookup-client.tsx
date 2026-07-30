@@ -2,7 +2,11 @@
 
 import NextImage from "next/image";
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { ExternalLink, RefreshCw, Search } from "lucide-react";
+import { ExternalLink, Layers3, RefreshCw, Search } from "lucide-react";
+import {
+  DesignRecoveryUpload,
+  type RecoveredDesignManifest
+} from "@/components/admin/design-recovery-upload";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,8 +34,13 @@ type DesignManifest = {
   sourceSvgUrl?: string;
   manifestUrl?: string;
   lookupUrl?: string;
+  designerUrl?: string;
   teamName?: string;
   productTitle?: string;
+  orderNumber?: string;
+  parentDesignId?: string;
+  adminUploaded?: boolean;
+  proofOnly?: boolean;
   layers?: DesignLayer[];
   sourceSvgStats?: {
     objectCount?: number;
@@ -87,6 +96,20 @@ function externalLinks(manifest: DesignManifest) {
     ["Open editable JSON", manifest.jsonUrl],
     ["Open fulfillment page", manifest.lookupUrl || (manifest.id ? `/fulfillment.html?designId=${encodeURIComponent(manifest.id)}` : "")]
   ].filter((entry): entry is [string, string] => Boolean(entry[1]));
+}
+
+function layerVerificationUrl(manifest: DesignManifest) {
+  if (manifest.designerUrl) return manifest.designerUrl;
+  if (!manifest.sourceSvgUrl) return "";
+  const url = new URL("https://teamsportbanners.vercel.app/");
+  url.searchParams.set("templateSvg", manifest.sourceSvgUrl);
+  if (manifest.previewUrl) url.searchParams.set("productImage", manifest.previewUrl);
+  url.searchParams.set("productTitle", designProductTitle(manifest));
+  url.searchParams.set("autoLoadProduct", "1");
+  url.searchParams.set("autoLayer", "svg");
+  url.searchParams.set("panel", "layers");
+  url.hash = "team-banner-designer-section";
+  return url.toString();
 }
 
 async function fetchDesignManifest(id: string) {
@@ -278,6 +301,14 @@ export function FulfillmentLookupClient({
     }
   }
 
+  function onRecoveredDesign(saved: RecoveredDesignManifest) {
+    setManifest(saved as DesignManifest);
+    setDesignId(saved.id);
+    setOrderLookup(null);
+    setStatus(`Saved and loaded ${saved.id}.`);
+    void loadRecentDesigns();
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -305,6 +336,8 @@ export function FulfillmentLookupClient({
         </form>
 
         <p className="text-sm font-semibold text-muted-foreground">{status}</p>
+
+        <DesignRecoveryUpload orderNumber={orderNumber} onSaved={onRecoveredDesign} />
 
         {orderLookup ? (
           <div className="rounded-lg border bg-slate-50 p-4">
@@ -364,6 +397,16 @@ export function FulfillmentLookupClient({
                 )}
               </div>
               <div className="flex flex-wrap gap-2">
+                {layerVerificationUrl(manifest) ? (
+                  <Button asChild size="sm">
+                    <a href={layerVerificationUrl(manifest)} target="_blank" rel="noreferrer">
+                      <Layers3 className="h-4 w-4" />
+                      Verify layers in design tool
+                    </a>
+                  </Button>
+                ) : (
+                  <Badge variant="warning">PNG proof only: upload SVG to verify layers</Badge>
+                )}
                 {externalLinks(manifest).map(([label, href]) => (
                   <Button key={label} asChild variant="outline" size="sm">
                     <a href={href} target="_blank" rel="noreferrer">
@@ -381,12 +424,15 @@ export function FulfillmentLookupClient({
                 <p className="mt-1 break-all text-sm font-black">{manifest.id}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Badge variant={manifest.previewUrl ? "success" : "warning"}>
-                    {manifest.previewUrl ? "Print proof saved" : "Print proof missing"}
+                  {manifest.previewUrl ? "Print proof saved" : "Print proof missing"}
                   </Badge>
+                  {manifest.adminUploaded ? <Badge variant="secondary">Admin recovery</Badge> : null}
                   {manifest.sourceSvgUrl ? <Badge variant="success">Source SVG saved</Badge> : null}
                   {manifest.sourceSvgStats ? <Badge variant="secondary">{manifest.sourceSvgStats.objectCount || 0} objects</Badge> : null}
                   {manifest.sourceSvgStats ? <Badge variant="secondary">{manifest.sourceSvgStats.textCount || 0} text layers</Badge> : null}
                 </div>
+                {manifest.orderNumber ? <p className="mt-3 text-sm font-bold">Linked order: {manifest.orderNumber}</p> : null}
+                {manifest.parentDesignId ? <p className="mt-1 break-all text-xs font-semibold text-muted-foreground">Original Design ID: {manifest.parentDesignId}</p> : null}
               </div>
 
               <div className="rounded-lg border bg-white p-4">
@@ -470,9 +516,9 @@ export function FulfillmentLookupClient({
                     </Button>
                     {design.sourceSvgUrl ? (
                       <Button asChild variant="outline" size="sm">
-                        <a href={design.sourceSvgUrl} target="_blank" rel="noreferrer">
-                          <ExternalLink className="h-4 w-4" />
-                          SVG
+                        <a href={layerVerificationUrl(design)} target="_blank" rel="noreferrer">
+                          <Layers3 className="h-4 w-4" />
+                          Verify layers
                         </a>
                       </Button>
                     ) : null}

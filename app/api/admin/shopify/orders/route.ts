@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { listStoredDesignManifests, safeDesignId } from "@/lib/admin-design-storage";
 import { getShopifyAdminCredential } from "@/lib/shopify-admin-credentials";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +16,7 @@ type RecentDesign = {
   id?: string;
   savedAt?: string;
   productTitle?: string;
+  orderNumber?: string;
 };
 
 function designIdsFromAttributes(attributes: ShopifyAttribute[]) {
@@ -32,25 +34,48 @@ function normalizedTitle(value: string) {
 }
 
 async function readRecentDesigns(): Promise<RecentDesign[]> {
+  const storedPromise = listStoredDesignManifests(100).catch(() => []);
   const apiKey = String(process.env.TEAM_BANNER_API_KEY || "").trim();
-  if (!apiKey) return [];
+  if (!apiKey) return storedPromise;
 
   const origin = String(process.env.CUSTOMER_TOOL_ORIGIN || "https://teamsportbanners.vercel.app").replace(/\/+$/, "");
-  const response = await fetch(`${origin}/api/designs?recent=100`, {
+  const customerPromise = fetch(`${origin}/api/designs?recent=100`, {
     cache: "no-store",
     headers: { "X-TSB-Admin-Key": apiKey }
+  }).then(async (response) => {
+    if (!response.ok) return [];
+    const result = await response.json().catch(() => ({}));
+    return Array.isArray(result.designs) ? result.designs as RecentDesign[] : [];
+  }).catch(() => []);
+  const [stored, customer] = await Promise.all([storedPromise, customerPromise]);
+  const designsById = new Map<string, RecentDesign>();
+  [...customer, ...stored].forEach((design) => {
+    const id = safeDesignId(design.id);
+    if (id) designsById.set(id, { ...design, id });
   });
-  if (!response.ok) return [];
-
-  const result = await response.json().catch(() => ({}));
-  return Array.isArray(result.designs) ? result.designs : [];
+  return [...designsById.values()];
 }
 
 function likelyDesignMatch(input: {
+  orderName: string;
   createdAt: string;
   lineItems: Array<{ name: string }>;
   designs: RecentDesign[];
 }) {
+  const normalizedOrder = input.orderName.replace(/^#/, "").trim().toLowerCase();
+  const exactOrderDesigns = input.designs.filter((design) => {
+    return String(design.orderNumber || "").replace(/^#/, "").trim().toLowerCase() === normalizedOrder;
+  });
+  if (exactOrderDesigns.length === 1 && exactOrderDesigns[0].id) {
+    return {
+      id: exactOrderDesigns[0].id,
+      productTitle: exactOrderDesigns[0].productTitle || "",
+      savedAt: exactOrderDesigns[0].savedAt || "",
+      secondsBeforeOrder: 0,
+      matchReason: "Admin recovery linked to this order"
+    };
+  }
+
   const orderTime = new Date(input.createdAt).getTime();
   if (!Number.isFinite(orderTime)) return null;
 
@@ -76,7 +101,8 @@ function likelyDesignMatch(input: {
     id: candidates[0].id,
     productTitle: candidates[0].productTitle,
     savedAt: candidates[0].savedAt,
-    secondsBeforeOrder: candidates[0].secondsBeforeOrder
+    secondsBeforeOrder: candidates[0].secondsBeforeOrder,
+    matchReason: "Product title and save time match"
   };
 }
 
@@ -109,9 +135,15 @@ export async function GET() {
                 id
                 name
                 createdAt
+                email
+                note
                 displayFinancialStatus
                 displayFulfillmentStatus
                 customAttributes { key value }
+                customer {
+                  displayName
+                  email
+                }
                 currentTotalPriceSet {
                   shopMoney { amount currencyCode }
                 }
@@ -121,6 +153,8 @@ export async function GET() {
                       id
                       name
                       quantity
+                      sku
+                      variantTitle
                       customAttributes { key value }
                     }
                   }
@@ -146,9 +180,15 @@ export async function GET() {
         id: string;
         name: string;
         createdAt: string;
+        email?: string;
+        note?: string;
         displayFinancialStatus?: string;
         displayFulfillmentStatus?: string;
         customAttributes?: ShopifyAttribute[];
+        customer?: {
+          displayName?: string;
+          email?: string;
+        } | null;
         currentTotalPriceSet?: { shopMoney?: { amount?: string; currencyCode?: string } };
         lineItems?: {
           edges?: Array<{
@@ -156,6 +196,8 @@ export async function GET() {
               id: string;
               name: string;
               quantity: number;
+              sku?: string;
+              variantTitle?: string;
               customAttributes?: ShopifyAttribute[];
             };
           }>;
@@ -169,6 +211,14 @@ export async function GET() {
         ...lineItems.flatMap((line) => line.customAttributes || [])
       ];
       const designIds = designIdsFromAttributes(attributes);
+      const normalizedOrderName = node.name.replace(/^#/, "").trim().toLowerCase();
+      recentDesigns.forEach((design) => {
+        const recoveryOrder = String(design.orderNumber || "").replace(/^#/, "").trim().toLowerCase();
+        const id = safeDesignId(design.id);
+        if (id && recoveryOrder && recoveryOrder === normalizedOrderName && !designIds.includes(id)) {
+          designIds.push(id);
+        }
+      });
       const orderId = node.id.split("/").pop() || "";
       return {
         id: node.id,
@@ -178,8 +228,15 @@ export async function GET() {
         financialStatus: node.displayFinancialStatus || "",
         fulfillmentStatus: node.displayFulfillmentStatus || "",
         total: node.currentTotalPriceSet?.shopMoney || {},
+        note: node.note || "",
+        customer: {
+          name: node.customer?.displayName || "",
+          email: node.customer?.email || node.email || ""
+        },
+        customAttributes: node.customAttributes || [],
         designIds,
         likelyDesign: designIds.length ? null : likelyDesignMatch({
+          orderName: node.name,
           createdAt: node.createdAt,
           lineItems,
           designs: recentDesigns
@@ -188,6 +245,8 @@ export async function GET() {
           id: line.id,
           name: line.name,
           quantity: line.quantity,
+          sku: line.sku || "",
+          variantTitle: line.variantTitle || "",
           customAttributes: line.customAttributes || []
         }))
       };
