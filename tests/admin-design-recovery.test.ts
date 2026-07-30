@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { buildLayerVerificationUrl } from "../lib/design-verification-url";
 import { designIdFromPngBytes, normalizeDesignId } from "../lib/png-design-id";
 
 const ONE_PIXEL_PNG = Buffer.from(
@@ -35,4 +36,19 @@ test("reads the embedded Design ID from a resumable PNG", () => {
 
 test("does not identify an ordinary PNG as a saved design", () => {
   assert.equal(designIdFromPngBytes(ONE_PIXEL_PNG), "");
+});
+
+test("opens layered verification from the SVG source without a PNG fallback", () => {
+  const sourceSvgUrl = "https://example.test/design.svg";
+  const url = new URL(buildLayerVerificationUrl({
+    sourceSvgUrl,
+    productTitle: "Layer QA",
+    designId: "design_1770000000000_ab12cd34"
+  }));
+
+  assert.equal(url.searchParams.get("templateSvg"), sourceSvgUrl);
+  assert.equal(url.searchParams.get("productTitle"), "Layer QA");
+  assert.equal(url.searchParams.get("autoLayer"), "svg");
+  assert.equal(url.searchParams.has("productImage"), false);
+  assert.equal(url.hash, "#team-banner-designer-section");
 });

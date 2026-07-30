@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { buildLayerVerificationUrl } from "@/lib/design-verification-url";
 
 type DesignLayer = {
   id?: string;
@@ -99,17 +100,11 @@ function externalLinks(manifest: DesignManifest) {
 }
 
 function layerVerificationUrl(manifest: DesignManifest) {
-  if (manifest.designerUrl) return manifest.designerUrl;
-  if (!manifest.sourceSvgUrl) return "";
-  const url = new URL("https://teamsportbanners.vercel.app/");
-  url.searchParams.set("templateSvg", manifest.sourceSvgUrl);
-  if (manifest.previewUrl) url.searchParams.set("productImage", manifest.previewUrl);
-  url.searchParams.set("productTitle", designProductTitle(manifest));
-  url.searchParams.set("autoLoadProduct", "1");
-  url.searchParams.set("autoLayer", "svg");
-  url.searchParams.set("panel", "layers");
-  url.hash = "team-banner-designer-section";
-  return url.toString();
+  return buildLayerVerificationUrl({
+    sourceSvgUrl: manifest.sourceSvgUrl,
+    productTitle: designProductTitle(manifest),
+    designId: manifest.id
+  });
 }
 
 async function fetchDesignManifest(id: string) {

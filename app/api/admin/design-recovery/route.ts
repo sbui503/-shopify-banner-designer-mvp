@@ -1,6 +1,7 @@
 import { list, put, type ListBlobResultBlob } from "@vercel/blob";
 import { NextRequest, NextResponse } from "next/server";
 import { safeDesignId } from "@/lib/admin-design-storage";
+import { buildLayerVerificationUrl } from "@/lib/design-verification-url";
 
 export const maxDuration = 30;
 export const runtime = "nodejs";
@@ -77,18 +78,11 @@ function svgStats(svg: string) {
   };
 }
 
-function customerDesignerUrl(input: { proofUrl: string; sourceSvgUrl: string; productTitle: string; designId: string }) {
-  if (!input.sourceSvgUrl) return "";
-  const origin = String(process.env.CUSTOMER_TOOL_ORIGIN || "https://teamsportbanners.vercel.app").replace(/\/+$/, "");
-  const url = new URL(origin);
-  url.searchParams.set("templateSvg", input.sourceSvgUrl);
-  url.searchParams.set("productImage", input.proofUrl);
-  url.searchParams.set("productTitle", input.productTitle || `Recovered design ${input.designId}`);
-  url.searchParams.set("autoLoadProduct", "1");
-  url.searchParams.set("autoLayer", "svg");
-  url.searchParams.set("panel", "layers");
-  url.hash = "team-banner-designer-section";
-  return url.toString();
+function customerDesignerUrl(input: { sourceSvgUrl: string; productTitle: string; designId: string }) {
+  return buildLayerVerificationUrl({
+    ...input,
+    origin: process.env.CUSTOMER_TOOL_ORIGIN
+  });
 }
 
 export async function POST(request: NextRequest) {
@@ -137,7 +131,6 @@ export async function POST(request: NextRequest) {
     const stats = svgStats(sourceSvg);
     const lookupUrl = `${request.nextUrl.origin}/admin/orders?designId=${encodeURIComponent(designId)}`;
     const designerUrl = customerDesignerUrl({
-      proofUrl: proofBlob.url,
       sourceSvgUrl: sourceBlob?.url || "",
       productTitle,
       designId
