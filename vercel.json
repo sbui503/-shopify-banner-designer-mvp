@@ -11,6 +11,9 @@
     },
     "api/send-proof-email.js": {
       "maxDuration": 30
+    },
+    "api/admin-email-relay.js": {
+      "maxDuration": 30
     }
   },
   "headers": [

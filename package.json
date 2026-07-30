@@ -25,6 +25,7 @@
     "qa:mobile-text": "node scripts/qa-mobile-text-regression.mjs",
     "qa:layered-svg": "node --test tests/inline-svg-images.test.mjs",
     "qa:design-resume": "node --test tests/design-resume.test.mjs",
+    "qa:email-relay": "node --test tests/admin-email-relay.test.mjs",
     "assets:sync-design-tool": "node scripts/sync-design-tool-assets.mjs",
     "svg:promote-root-exact": "node scripts/promote-root-design-db-exact-matches.mjs --apply"
   },
