@@ -135,15 +135,10 @@ export async function GET() {
                 id
                 name
                 createdAt
-                email
                 note
                 displayFinancialStatus
                 displayFulfillmentStatus
                 customAttributes { key value }
-                customer {
-                  displayName
-                  email
-                }
                 currentTotalPriceSet {
                   shopMoney { amount currencyCode }
                 }
@@ -180,15 +175,10 @@ export async function GET() {
         id: string;
         name: string;
         createdAt: string;
-        email?: string;
         note?: string;
         displayFinancialStatus?: string;
         displayFulfillmentStatus?: string;
         customAttributes?: ShopifyAttribute[];
-        customer?: {
-          displayName?: string;
-          email?: string;
-        } | null;
         currentTotalPriceSet?: { shopMoney?: { amount?: string; currencyCode?: string } };
         lineItems?: {
           edges?: Array<{
@@ -229,10 +219,7 @@ export async function GET() {
         fulfillmentStatus: node.displayFulfillmentStatus || "",
         total: node.currentTotalPriceSet?.shopMoney || {},
         note: node.note || "",
-        customer: {
-          name: node.customer?.displayName || "",
-          email: node.customer?.email || node.email || ""
-        },
+        customer: { name: "", email: "" },
         customAttributes: node.customAttributes || [],
         designIds,
         likelyDesign: designIds.length ? null : likelyDesignMatch({

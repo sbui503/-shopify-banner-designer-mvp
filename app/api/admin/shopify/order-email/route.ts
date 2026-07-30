@@ -240,10 +240,8 @@ export async function POST(request: NextRequest) {
             id
             name
             createdAt
-            email
             note
             customAttributes { key value }
-            customer { displayName email }
             lineItems(first: 50) {
               edges {
                 node {
