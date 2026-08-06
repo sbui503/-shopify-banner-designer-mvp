@@ -7,6 +7,22 @@ type LayerVerificationUrlInput = {
   origin?: string;
 };
 
+type AdminDesignSvgUrlInput = {
+  designId?: string;
+  sourceSvgUrl?: string;
+  download?: boolean;
+};
+
+export function buildAdminDesignSvgUrl(input: AdminDesignSvgUrlInput) {
+  const designId = String(input.designId || "").trim();
+  const sourceSvgUrl = String(input.sourceSvgUrl || "").trim();
+  if (!sourceSvgUrl || !/^design_[0-9]+_[a-z0-9]+$/i.test(designId)) return "";
+
+  const params = new URLSearchParams({ id: designId });
+  if (input.download) params.set("download", "1");
+  return `/api/admin/design-svg?${params.toString()}`;
+}
+
 export function buildLayerVerificationUrl(input: LayerVerificationUrlInput) {
   const sourceSvgUrl = String(input.sourceSvgUrl || "").trim();
   if (!sourceSvgUrl) return "";

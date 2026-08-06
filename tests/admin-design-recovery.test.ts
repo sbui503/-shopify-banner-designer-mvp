@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildLayerVerificationUrl } from "../lib/design-verification-url";
+import { buildAdminDesignSvgUrl, buildLayerVerificationUrl } from "../lib/design-verification-url";
 import { designIdFromPngBytes, normalizeDesignId } from "../lib/png-design-id";
 
 const ONE_PIXEL_PNG = Buffer.from(
@@ -51,4 +51,21 @@ test("opens layered verification from the SVG source without a PNG fallback", ()
   assert.equal(url.searchParams.get("autoLayer"), "svg");
   assert.equal(url.searchParams.has("productImage"), false);
   assert.equal(url.hash, "#team-banner-designer-section");
+});
+
+test("builds protected SVG preview and Illustrator download URLs", () => {
+  const input = {
+    designId: "design_1770000000000_ab12cd34",
+    sourceSvgUrl: "https://example.test/source.svg"
+  };
+
+  assert.equal(
+    buildAdminDesignSvgUrl(input),
+    "/api/admin/design-svg?id=design_1770000000000_ab12cd34"
+  );
+  assert.equal(
+    buildAdminDesignSvgUrl({ ...input, download: true }),
+    "/api/admin/design-svg?id=design_1770000000000_ab12cd34&download=1"
+  );
+  assert.equal(buildAdminDesignSvgUrl({ designId: input.designId }), "");
 });

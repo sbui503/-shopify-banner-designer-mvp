@@ -1,16 +1,12 @@
 import { NextResponse } from "next/server";
 import { listStoredDesignManifests, safeDesignId } from "@/lib/admin-design-storage";
 import { getShopifyAdminCredential } from "@/lib/shopify-admin-credentials";
+import { normalizeShopifyAttributes, type ShopifyCustomAttribute } from "@/lib/shopify-custom-order";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 const SHOPIFY_API_VERSION = "2026-07";
-
-type ShopifyAttribute = {
-  key?: string;
-  value?: string;
-};
 
 type RecentDesign = {
   id?: string;
@@ -19,7 +15,7 @@ type RecentDesign = {
   orderNumber?: string;
 };
 
-function designIdsFromAttributes(attributes: ShopifyAttribute[]) {
+function designIdsFromAttributes(attributes: ShopifyCustomAttribute[]) {
   const ids = new Set<string>();
   attributes.forEach((attribute) => {
     for (const match of String(`${attribute.key || ""} ${attribute.value || ""}`).matchAll(/design_[0-9]+_[a-z0-9]+/gi)) {
@@ -178,7 +174,7 @@ export async function GET() {
         note?: string;
         displayFinancialStatus?: string;
         displayFulfillmentStatus?: string;
-        customAttributes?: ShopifyAttribute[];
+        customAttributes?: ShopifyCustomAttribute[];
         currentTotalPriceSet?: { shopMoney?: { amount?: string; currencyCode?: string } };
         lineItems?: {
           edges?: Array<{
@@ -188,16 +184,20 @@ export async function GET() {
               quantity: number;
               sku?: string;
               variantTitle?: string;
-              customAttributes?: ShopifyAttribute[];
+              customAttributes?: ShopifyCustomAttribute[];
             };
           }>;
         };
       };
     }) => {
       const node = edge.node;
-      const lineItems = (node.lineItems?.edges || []).map((line) => line.node);
+      const orderAttributes = normalizeShopifyAttributes(node.customAttributes || []);
+      const lineItems = (node.lineItems?.edges || []).map((line) => ({
+        ...line.node,
+        customAttributes: normalizeShopifyAttributes(line.node.customAttributes || [])
+      }));
       const attributes = [
-        ...(node.customAttributes || []),
+        ...orderAttributes,
         ...lineItems.flatMap((line) => line.customAttributes || [])
       ];
       const designIds = designIdsFromAttributes(attributes);
@@ -220,7 +220,7 @@ export async function GET() {
         total: node.currentTotalPriceSet?.shopMoney || {},
         note: node.note || "",
         customer: { name: "", email: "" },
-        customAttributes: node.customAttributes || [],
+        customAttributes: orderAttributes,
         designIds,
         likelyDesign: designIds.length ? null : likelyDesignMatch({
           orderName: node.name,

@@ -7,11 +7,13 @@ import { ChevronDown, ChevronUp, ExternalLink, FileImage, Link2, Mail, RefreshCw
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  customOrderSummary,
+  normalizeShopifyAttributes,
+  type ShopifyCustomAttribute
+} from "@/lib/shopify-custom-order";
 
-type ShopifyAttribute = {
-  key?: string;
-  value?: string;
-};
+type ShopifyAttribute = ShopifyCustomAttribute;
 
 type ShopifyOrder = {
   id: string;
@@ -95,12 +97,12 @@ function formatMatchTiming(secondsBeforeOrder: number) {
 }
 
 function customFieldCount(order: ShopifyOrder) {
-  return (order.customAttributes || []).length
-    + order.lineItems.reduce((count, item) => count + (item.customAttributes || []).length, 0)
+  return normalizeShopifyAttributes(order.customAttributes || []).length
+    + order.lineItems.reduce((count, item) => count + normalizeShopifyAttributes(item.customAttributes || []).length, 0)
     + (order.note ? 1 : 0);
 }
 
-function fieldLabel(value: string | undefined) {
+function fieldLabel(value: string | null | undefined) {
   const clean = String(value || "")
     .replace(/^_+/, "")
     .replace(/[_-]+/g, " ")
@@ -181,6 +183,38 @@ function CustomField({ attribute }: { attribute: ShopifyAttribute }) {
           <p className="break-words text-sm font-semibold text-slate-900">{value || "Not provided"}</p>
         )}
       </dd>
+    </div>
+  );
+}
+
+function CustomOrderCoverage({ attributes }: { attributes: ShopifyAttribute[] }) {
+  const summary = customOrderSummary(attributes);
+  if (!summary.fieldCount) return null;
+  const namesComplete = summary.expectedPlayers > 0
+    ? summary.playerNameCount >= summary.expectedPlayers
+    : summary.playerNameCount > 0;
+  const detail = [summary.teamName ? `Team: ${summary.teamName}` : "", summary.sport, summary.bannerType, summary.svgLayout]
+    .filter(Boolean)
+    .join(" / ");
+
+  return (
+    <div className="mt-3 border-y bg-slate-50 py-3">
+      <p className="text-xs font-black uppercase text-slate-500">Fulfillment check</p>
+      {detail ? <p className="mt-1 break-words text-sm font-bold text-slate-950">{detail}</p> : null}
+      <div className="mt-2 flex flex-wrap gap-2">
+        <Badge variant={summary.teamName ? "success" : "warning"}>
+          {summary.teamName ? "Team name present" : "Team name missing"}
+        </Badge>
+        <Badge variant={namesComplete ? "success" : "warning"}>
+          {summary.playerNameCount}{summary.expectedPlayers ? `/${summary.expectedPlayers}` : ""} player names
+        </Badge>
+        <Badge variant={summary.teamLogo ? "success" : "warning"}>
+          {summary.teamLogo ? "Team logo uploaded" : "Team logo missing"}
+        </Badge>
+        <Badge variant={summary.playerPhotoCount ? "success" : "secondary"}>
+          {summary.playerPhotoCount} player photos
+        </Badge>
+      </div>
     </div>
   );
 }
@@ -395,9 +429,9 @@ export function ShopifyOrdersClient() {
                       ) : null}
                     </div>
 
-                    {(order.customAttributes || []).length ? (
+                    {normalizeShopifyAttributes(order.customAttributes || []).length ? (
                       <dl className="mt-4 border-y">
-                        {(order.customAttributes || []).map((attribute, index) => (
+                        {normalizeShopifyAttributes(order.customAttributes || []).map((attribute, index) => (
                           <CustomField key={`${attribute.key}-${index}`} attribute={attribute} />
                         ))}
                       </dl>
@@ -413,16 +447,19 @@ export function ShopifyOrdersClient() {
                                 {[item.variantTitle, item.sku ? `SKU ${item.sku}` : ""].filter(Boolean).join(" · ") || "Custom product"}
                               </p>
                             </div>
-                            <Badge variant={(item.customAttributes || []).length ? "success" : "secondary"}>
-                              {(item.customAttributes || []).length} custom fields
+                            <Badge variant={normalizeShopifyAttributes(item.customAttributes || []).length ? "success" : "secondary"}>
+                              {normalizeShopifyAttributes(item.customAttributes || []).length} custom fields
                             </Badge>
                           </div>
-                          {(item.customAttributes || []).length ? (
-                            <dl className="mt-3">
-                              {(item.customAttributes || []).map((attribute, index) => (
+                          {normalizeShopifyAttributes(item.customAttributes || []).length ? (
+                            <>
+                              <CustomOrderCoverage attributes={item.customAttributes || []} />
+                              <dl className="mt-3">
+                              {normalizeShopifyAttributes(item.customAttributes || []).map((attribute, index) => (
                                 <CustomField key={`${attribute.key}-${index}`} attribute={attribute} />
                               ))}
-                            </dl>
+                              </dl>
+                            </>
                           ) : (
                             <p className="mt-3 text-sm font-semibold text-muted-foreground">No custom order information was attached to this item.</p>
                           )}

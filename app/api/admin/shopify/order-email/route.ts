@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { list, put } from "@vercel/blob";
 import { NextRequest, NextResponse } from "next/server";
 import { getShopifyAdminCredential } from "@/lib/shopify-admin-credentials";
+import { normalizeShopifyAttributes, type ShopifyCustomAttribute } from "@/lib/shopify-custom-order";
 
 export const maxDuration = 30;
 export const runtime = "nodejs";
@@ -12,18 +13,13 @@ const DEFAULT_FROM = "Team Sport Banners <orders@teamsportbanners.com>";
 const DEFAULT_FALLBACK_FROM = "Team Sport Banners <onboarding@resend.dev>";
 const EMAIL_LOG_PREFIX = "team-banner-admin/email-log/shopify-orders/";
 
-type ShopifyAttribute = {
-  key?: string;
-  value?: string;
-};
-
 type ShopifyOrder = {
   id: string;
   name: string;
   createdAt?: string;
   email?: string;
   note?: string;
-  customAttributes?: ShopifyAttribute[];
+  customAttributes?: ShopifyCustomAttribute[];
   customer?: {
     displayName?: string;
     email?: string;
@@ -36,7 +32,7 @@ type ShopifyOrder = {
         quantity?: number;
         sku?: string;
         variantTitle?: string;
-        customAttributes?: ShopifyAttribute[];
+        customAttributes?: ShopifyCustomAttribute[];
       };
     }>;
   };
@@ -88,13 +84,13 @@ function httpUrl(value: unknown) {
   return match ? nestedHttpUrl(match[0]) : "";
 }
 
-function isImageAttribute(attribute: ShopifyAttribute, url: string) {
+function isImageAttribute(attribute: ShopifyCustomAttribute, url: string) {
   return /\.(?:png|jpe?g|webp|gif)(?:$|[?#])/i.test(url)
     || /(?:image|photo|logo|proof|artwork)/i.test(String(attribute.key || ""));
 }
 
-function attributeRows(attributes: ShopifyAttribute[]) {
-  return attributes
+function attributeRows(attributes: ShopifyCustomAttribute[]) {
+  return normalizeShopifyAttributes(attributes)
     .filter((attribute) => String(attribute.value || "").trim())
     .map((attribute) => {
       const label = escapeHtml(fieldLabel(attribute.key));

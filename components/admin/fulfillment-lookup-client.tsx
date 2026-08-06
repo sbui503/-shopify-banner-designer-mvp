@@ -2,7 +2,7 @@
 
 import NextImage from "next/image";
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { ExternalLink, Layers3, RefreshCw, Search } from "lucide-react";
+import { Download, ExternalLink, Eye, Layers3, RefreshCw, Search } from "lucide-react";
 import {
   DesignRecoveryUpload,
   type RecoveredDesignManifest
@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { buildLayerVerificationUrl } from "@/lib/design-verification-url";
+import { buildAdminDesignSvgUrl, buildLayerVerificationUrl } from "@/lib/design-verification-url";
 
 type DesignLayer = {
   id?: string;
@@ -93,10 +93,17 @@ function layerLabel(layer: DesignLayer, index: number) {
 function externalLinks(manifest: DesignManifest) {
   return [
     ["Open print proof", manifest.previewUrl],
-    ["Open layered SVG", manifest.sourceSvgUrl],
     ["Open editable JSON", manifest.jsonUrl],
     ["Open fulfillment page", manifest.lookupUrl || (manifest.id ? `/fulfillment.html?designId=${encodeURIComponent(manifest.id)}` : "")]
   ].filter((entry): entry is [string, string] => Boolean(entry[1]));
+}
+
+function layeredSvgFileUrl(manifest: DesignManifest, download = false) {
+  return buildAdminDesignSvgUrl({
+    designId: manifest.id,
+    sourceSvgUrl: manifest.sourceSvgUrl,
+    download
+  });
 }
 
 function layerVerificationUrl(manifest: DesignManifest) {
@@ -402,6 +409,22 @@ export function FulfillmentLookupClient({
                 ) : (
                   <Badge variant="warning">PNG proof only: upload SVG to verify layers</Badge>
                 )}
+                {layeredSvgFileUrl(manifest) ? (
+                  <Button asChild variant="outline" size="sm">
+                    <a href={layeredSvgFileUrl(manifest)} target="_blank" rel="noreferrer">
+                      <Eye className="h-4 w-4" />
+                      Preview layered SVG
+                    </a>
+                  </Button>
+                ) : null}
+                {layeredSvgFileUrl(manifest, true) ? (
+                  <Button asChild variant="outline" size="sm">
+                    <a href={layeredSvgFileUrl(manifest, true)} download={`${manifest.id || "team-banner-design"}.svg`}>
+                      <Download className="h-4 w-4" />
+                      Download SVG for Illustrator
+                    </a>
+                  </Button>
+                ) : null}
                 {externalLinks(manifest).map(([label, href]) => (
                   <Button key={label} asChild variant="outline" size="sm">
                     <a href={href} target="_blank" rel="noreferrer">
@@ -522,6 +545,14 @@ export function FulfillmentLookupClient({
                         <a href={design.jsonUrl} target="_blank" rel="noreferrer">
                           <ExternalLink className="h-4 w-4" />
                           JSON
+                        </a>
+                      </Button>
+                    ) : null}
+                    {layeredSvgFileUrl(design, true) ? (
+                      <Button asChild variant="outline" size="sm">
+                        <a href={layeredSvgFileUrl(design, true)} download={`${design.id || "team-banner-design"}.svg`}>
+                          <Download className="h-4 w-4" />
+                          SVG
                         </a>
                       </Button>
                     ) : null}
