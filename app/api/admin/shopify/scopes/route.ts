@@ -42,6 +42,7 @@ export async function GET() {
       scopes,
       canReadOrders: scopes.includes("read_orders"),
       canReadCustomers: scopes.includes("read_customers"),
+      canReadDraftOrders: scopes.includes("read_draft_orders") || scopes.includes("write_draft_orders"),
       canWriteDraftOrders: scopes.includes("write_draft_orders")
     }, {
       headers: { "Cache-Control": "private, no-store, max-age=0" }

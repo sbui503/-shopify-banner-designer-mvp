@@ -87,7 +87,7 @@ function formatMoney(order: ShopifyOrder) {
   }
 }
 
-function formatDate(value: string) {
+export function formatDate(value: string) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
 }
@@ -132,7 +132,7 @@ function nestedHttpUrl(value: unknown): string {
   return "";
 }
 
-function httpUrl(value: string | undefined) {
+export function httpUrl(value: string | undefined) {
   const raw = String(value || "").trim();
   const direct = nestedHttpUrl(raw);
   if (direct) return direct;
@@ -149,7 +149,7 @@ function isImageField(attribute: ShopifyAttribute, url: string) {
     || /(?:image|photo|logo|proof|artwork)/i.test(String(attribute.key || ""));
 }
 
-function CustomField({ attribute }: { attribute: ShopifyAttribute }) {
+export function CustomField({ attribute }: { attribute: ShopifyAttribute }) {
   const value = String(attribute.value || "").trim();
   const url = httpUrl(value);
   const showImage = Boolean(url && isImageField(attribute, url));
@@ -190,7 +190,7 @@ function CustomField({ attribute }: { attribute: ShopifyAttribute }) {
   );
 }
 
-function CustomOrderCoverage({ attributes }: { attributes: ShopifyAttribute[] }) {
+export function CustomOrderCoverage({ attributes }: { attributes: ShopifyAttribute[] }) {
   const summary = customOrderSummary(attributes);
   if (!summary.fieldCount) return null;
   const namesComplete = summary.expectedPlayers > 0
@@ -558,7 +558,7 @@ export function ShopifyOrdersClient() {
                               </dl>
                             </>
                           ) : (
-                            <p className="mt-3 text-sm font-semibold text-muted-foreground">No custom order information was attached to this item.</p>
+                            <p className="mt-3 text-sm font-semibold text-muted-foreground">No custom order information was saved on this Shopify item. Shopify cannot recover fields that were never stored; check the original form email or ask the customer to resubmit.</p>
                           )}
                         </section>
                       ))}

@@ -1,5 +1,6 @@
 import { PageHeader } from "@/components/admin/page-header";
 import { FulfillmentLookupClient } from "@/components/admin/fulfillment-lookup-client";
+import { ShopifyDraftOrdersClient } from "@/components/admin/shopify-draft-orders-client";
 import { ShopifyOrdersClient } from "@/components/admin/shopify-orders-client";
 
 type OrdersPageProps = {
@@ -29,6 +30,7 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
 
       <div className="grid gap-4">
         <ShopifyOrdersClient />
+        <ShopifyDraftOrdersClient />
         <FulfillmentLookupClient
           initialDesignId={initialDesignId}
           initialOrderNumber={initialOrderNumber}
