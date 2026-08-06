@@ -36,6 +36,8 @@
     "qa:cart-source": "node scripts/qa-cart-source-regression.mjs",
     "qa:admin-recovery": "tsx --test tests/admin-design-recovery.test.ts",
     "qa:shopify-order": "tsx --test tests/shopify-custom-order.test.ts",
+    "qa:shopify-order-lookup": "tsx --test tests/shopify-order-lookup.test.ts",
+    "qa:shopify-fulfillment-test": "tsx --test tests/shopify-fulfillment-test.test.ts",
     "assets:sync-design-tool": "node scripts/sync-design-tool-assets.mjs",
     "svg:promote-root-exact": "node scripts/promote-root-design-db-exact-matches.mjs --apply",
     "assets:generate-text-logo-fallbacks": "node scripts/generate-team-banner-text-logo-fallbacks.mjs",

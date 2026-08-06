@@ -1,8 +1,13 @@
 import { createHash } from "node:crypto";
 import { list, put } from "@vercel/blob";
 import { NextRequest, NextResponse } from "next/server";
+import { safeDesignId } from "@/lib/admin-design-storage";
 import { getShopifyAdminCredential } from "@/lib/shopify-admin-credentials";
 import { normalizeShopifyAttributes, type ShopifyCustomAttribute } from "@/lib/shopify-custom-order";
+import {
+  buildFulfillmentTestOrder,
+  type FulfillmentTestManifest
+} from "@/lib/shopify-fulfillment-test";
 
 export const maxDuration = 30;
 export const runtime = "nodejs";
@@ -109,7 +114,7 @@ function attributeRows(attributes: ShopifyCustomAttribute[]) {
     .join("");
 }
 
-function orderEmailHtml(order: ShopifyOrder, adminUrl: string) {
+function orderEmailHtml(order: ShopifyOrder, adminUrl: string, testOnly = false) {
   const customerName = order.customer?.displayName || "";
   const customerEmail = order.customer?.email || order.email || "";
   const orderRows = attributeRows(order.customAttributes || []);
@@ -124,8 +129,9 @@ function orderEmailHtml(order: ShopifyOrder, adminUrl: string) {
   }).join("");
 
   return `<!doctype html><html><body style="font-family:Arial,sans-serif;color:#222;line-height:1.45;">
-    <h2 style="margin-bottom:8px;">Shopify custom order ${escapeHtml(order.name)}</h2>
-    <p><a href="${escapeHtml(adminUrl)}">Open order in Shopify Admin</a></p>
+    ${testOnly ? `<div style="padding:14px 16px;border:2px solid #b45309;background:#fffbeb;color:#7c2d12;font-weight:700;">TEST ONLY - DO NOT PRINT OR FULFILL</div>` : ""}
+    <h2 style="margin-bottom:8px;">${testOnly ? "Test custom order" : "Shopify custom order"} ${escapeHtml(order.name)}</h2>
+    <p><a href="${escapeHtml(adminUrl)}">${testOnly ? "Open saved design in TSBanner Admin" : "Open order in Shopify Admin"}</a></p>
     <table cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:900px;">
       <tr><th align="left" style="width:190px;padding:8px 12px;border:1px solid #ddd;background:#f7f7f7;">Customer</th><td style="padding:8px 12px;border:1px solid #ddd;">${escapeHtml(customerName || "Not provided")}</td></tr>
       <tr><th align="left" style="padding:8px 12px;border:1px solid #ddd;background:#f7f7f7;">Customer email</th><td style="padding:8px 12px;border:1px solid #ddd;">${escapeHtml(customerEmail || "Not provided")}</td></tr>
@@ -202,15 +208,40 @@ async function sendThroughCustomerRelay(body: Record<string, unknown>) {
   };
 }
 
+async function readFulfillmentTestManifest(designId: string) {
+  const origin = String(process.env.CUSTOMER_TOOL_ORIGIN || "https://teamsportbanners.vercel.app").replace(/\/+$/, "");
+  const response = await fetch(`${origin}/api/designs?id=${encodeURIComponent(designId)}`, {
+    cache: "no-store",
+    signal: AbortSignal.timeout(15000)
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(result.error || `Saved design lookup failed (${response.status}).`);
+  }
+  if (safeDesignId(result.id) !== designId || !result.previewUrl || !result.jsonUrl || !result.sourceSvgUrl) {
+    throw new Error("The saved design is missing its proof, editable JSON, or layered SVG source.");
+  }
+  return result as FulfillmentTestManifest;
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const payload = await request.json() as { orderId?: string };
+    const payload = await request.json() as { orderId?: string; testDesignId?: string; confirmTest?: boolean };
     const orderId = String(payload.orderId || "").trim();
-    if (!/^gid:\/\/shopify\/Order\/[0-9]+$/.test(orderId)) {
+    const testDesignId = safeDesignId(payload.testDesignId);
+    const testOnly = Boolean(testDesignId);
+    if (payload.testDesignId && !testDesignId) {
+      return NextResponse.json({ error: "A valid saved Design ID is required for the test email." }, { status: 400 });
+    }
+    if (testOnly && payload.confirmTest !== true) {
+      return NextResponse.json({ error: "Confirm the fulfillment test email before sending." }, { status: 400 });
+    }
+    if (!testOnly && !/^gid:\/\/shopify\/Order\/[0-9]+$/.test(orderId)) {
       return NextResponse.json({ error: "A valid Shopify order ID is required." }, { status: 400 });
     }
 
-    const previous = await existingLog(orderId);
+    const logId = testOnly ? `test:${testDesignId}` : orderId;
+    const previous = await existingLog(logId);
     if (previous) {
       return NextResponse.json({
         alreadySent: true,
@@ -219,60 +250,71 @@ export async function POST(request: NextRequest) {
       }, { status: 409 });
     }
 
-    const credential = await getShopifyAdminCredential();
-    if (!credential?.token) {
-      return NextResponse.json({ error: "Shopify is not connected." }, { status: 503 });
-    }
-    const shopifyResponse = await fetch(`https://${credential.storeDomain}/admin/api/${SHOPIFY_API_VERSION}/graphql.json`, {
-      method: "POST",
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Access-Token": credential.token
-      },
-      body: JSON.stringify({
-        query: `query TSBannerFulfillmentOrder($id: ID!) {
-          order(id: $id) {
-            id
-            name
-            createdAt
-            note
-            customAttributes { key value }
-            lineItems(first: 50) {
-              edges {
-                node {
-                  id
-                  name
-                  quantity
-                  sku
-                  variantTitle
-                  customAttributes { key value }
+    let order: ShopifyOrder;
+    let adminUrl: string;
+    if (testOnly) {
+      const manifest = await readFulfillmentTestManifest(testDesignId);
+      order = buildFulfillmentTestOrder(manifest);
+      adminUrl = `${request.nextUrl.origin}/admin/orders?designId=${encodeURIComponent(testDesignId)}`;
+    } else {
+      const credential = await getShopifyAdminCredential();
+      if (!credential?.token) {
+        return NextResponse.json({ error: "Shopify is not connected." }, { status: 503 });
+      }
+      const shopifyResponse = await fetch(`https://${credential.storeDomain}/admin/api/${SHOPIFY_API_VERSION}/graphql.json`, {
+        method: "POST",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Access-Token": credential.token
+        },
+        body: JSON.stringify({
+          query: `query TSBannerFulfillmentOrder($id: ID!) {
+            order(id: $id) {
+              id
+              name
+              createdAt
+              note
+              customAttributes { key value }
+              lineItems(first: 50) {
+                edges {
+                  node {
+                    id
+                    name
+                    quantity
+                    sku
+                    variantTitle
+                    customAttributes { key value }
+                  }
                 }
               }
             }
-          }
-        }`,
-        variables: { id: orderId }
-      })
-    });
-    const shopifyResult = await shopifyResponse.json().catch(() => ({}));
-    const order = shopifyResult.data?.order as ShopifyOrder | null;
-    if (!shopifyResponse.ok || shopifyResult.errors || !order) {
-      const detail = Array.isArray(shopifyResult.errors)
-        ? shopifyResult.errors.map((error: { message?: string }) => error.message).filter(Boolean).join("; ")
-        : "";
-      throw new Error(detail || "The Shopify order could not be loaded.");
+          }`,
+          variables: { id: orderId }
+        })
+      });
+      const shopifyResult = await shopifyResponse.json().catch(() => ({}));
+      const loadedOrder = shopifyResult.data?.order as ShopifyOrder | null;
+      if (!shopifyResponse.ok || shopifyResult.errors || !loadedOrder) {
+        const detail = Array.isArray(shopifyResult.errors)
+          ? shopifyResult.errors.map((error: { message?: string }) => error.message).filter(Boolean).join("; ")
+          : "";
+        throw new Error(detail || "The Shopify order could not be loaded.");
+      }
+      order = loadedOrder;
+      const numericId = order.id.split("/").pop() || "";
+      adminUrl = `https://${credential.storeDomain}/admin/orders/${numericId}`;
     }
 
-    const numericId = order.id.split("/").pop() || "";
-    const adminUrl = `https://${credential.storeDomain}/admin/orders/${numericId}`;
-    const to = String(process.env.PROOF_EMAIL_TO || DEFAULT_TO).trim();
+    const to = testOnly ? DEFAULT_TO : String(process.env.PROOF_EMAIL_TO || DEFAULT_TO).trim();
     const sentAt = new Date().toISOString();
     const emailPayload = {
       from: process.env.PROOF_EMAIL_FROM || DEFAULT_FROM,
       to: [to],
-      subject: `Fulfillment: Shopify custom order ${order.name}`,
-      html: orderEmailHtml(order, adminUrl)
+      subject: testOnly
+        ? `[TEST - DO NOT PRINT] Fulfillment custom order ${testDesignId}`
+        : `Fulfillment: Shopify custom order ${order.name}`,
+      html: orderEmailHtml(order, adminUrl, testOnly)
     };
     const localResendKey = String(process.env.RESEND_API_KEY || "").trim();
     const emailResult = localResendKey
@@ -287,10 +329,12 @@ export async function POST(request: NextRequest) {
 
     if (process.env.BLOB_READ_WRITE_TOKEN) {
       const deliveredTo = String((emailResult.result as { to?: string }).to || to);
-      await put(logPath(order.id), JSON.stringify({
+      await put(logPath(logId), JSON.stringify({
         version: 1,
         orderId: order.id,
         orderName: order.name,
+        testOnly,
+        designId: testDesignId || "",
         sentAt,
         to: deliveredTo,
         resendId: (emailResult.result as { id?: string }).id || ""
@@ -304,6 +348,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       sent: true,
+      testOnly,
+      designId: testDesignId || "",
       sentAt,
       to: String((emailResult.result as { to?: string }).to || to),
       id: (emailResult.result as { id?: string }).id || ""

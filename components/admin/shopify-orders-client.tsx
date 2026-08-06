@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import NextImage from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { ChevronDown, ChevronUp, ExternalLink, FileImage, Link2, Mail, RefreshCw } from "lucide-react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
+import { ChevronDown, ChevronUp, ExternalLink, FileImage, Link2, Mail, RefreshCw, Search, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   customOrderSummary,
   normalizeShopifyAttributes,
@@ -60,8 +61,10 @@ type ShopifyOrdersError = Error & {
   requiresConnection?: boolean;
 };
 
-async function fetchShopifyOrders() {
-  const response = await fetch("/api/admin/shopify/orders", { cache: "no-store" });
+async function fetchShopifyOrders(lookup = "") {
+  const params = new URLSearchParams();
+  if (lookup.trim()) params.set("lookup", lookup.trim());
+  const response = await fetch(`/api/admin/shopify/orders${params.size ? `?${params.toString()}` : ""}`, { cache: "no-store" });
   const data = (await response.json().catch(() => ({}))) as OrdersResponse;
   if (!response.ok) {
     const error = new Error(data.error || "Shopify order lookup failed.") as ShopifyOrdersError;
@@ -224,18 +227,27 @@ export function ShopifyOrdersClient() {
   const [status, setStatus] = useState("Loading Shopify orders...");
   const [busy, setBusy] = useState(true);
   const [requiresConnection, setRequiresConnection] = useState(false);
+  const [lookupInput, setLookupInput] = useState("");
+  const [activeLookup, setActiveLookup] = useState("");
   const [expandedOrderId, setExpandedOrderId] = useState("");
   const [emailStatuses, setEmailStatuses] = useState<Record<string, string>>({});
   const [emailBusyOrderId, setEmailBusyOrderId] = useState("");
+  const [testDesignId, setTestDesignId] = useState("");
+  const [testEmailStatus, setTestEmailStatus] = useState("");
+  const [testEmailBusy, setTestEmailBusy] = useState(false);
 
-  const loadOrders = useCallback(async () => {
+  const loadOrders = useCallback(async (lookup = "") => {
+    const cleanLookup = lookup.trim();
     setBusy(true);
-    setStatus("Loading Shopify orders...");
+    setStatus(cleanLookup ? `Looking up ${cleanLookup}...` : "Loading Shopify orders...");
     try {
-      const nextOrders = await fetchShopifyOrders();
+      const nextOrders = await fetchShopifyOrders(cleanLookup);
       setOrders(nextOrders);
+      setActiveLookup(cleanLookup);
       setRequiresConnection(false);
-      setStatus(nextOrders.length ? `${nextOrders.length} newest Shopify orders.` : "No Shopify orders found.");
+      setStatus(cleanLookup
+        ? (nextOrders.length ? `Found ${nextOrders.length} order for ${cleanLookup}.` : `No Shopify order found for ${cleanLookup}.`)
+        : (nextOrders.length ? `${nextOrders.length} newest Shopify orders.` : "No Shopify orders found."));
     } catch (error) {
       setOrders([]);
       setRequiresConnection(Boolean((error as ShopifyOrdersError).requiresConnection));
@@ -244,6 +256,16 @@ export function ShopifyOrdersClient() {
       setBusy(false);
     }
   }, []);
+
+  function onLookupSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const lookup = lookupInput.trim();
+    if (!lookup) {
+      setStatus("Enter an order number or Shopify order ID.");
+      return;
+    }
+    void loadOrders(lookup);
+  }
 
   async function sendOrderToFulfillment(order: ShopifyOrder) {
     setEmailBusyOrderId(order.id);
@@ -274,6 +296,36 @@ export function ShopifyOrdersClient() {
       }));
     } finally {
       setEmailBusyOrderId("");
+    }
+  }
+
+  async function sendFulfillmentTest(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const designId = testDesignId.trim();
+    if (!/^design_[0-9]+_[a-z0-9]+$/i.test(designId)) {
+      setTestEmailStatus("Enter a valid saved Design ID.");
+      return;
+    }
+
+    setTestEmailBusy(true);
+    setTestEmailStatus("Sending labeled test order to fulfillment...");
+    try {
+      const response = await fetch("/api/admin/shopify/order-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ testDesignId: designId, confirmTest: true })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (response.status === 409 && result.alreadySent) {
+        setTestEmailStatus(`Test already sent to ${result.to || "info@tsbanners.com"}${result.sentAt ? ` on ${formatDate(result.sentAt)}` : ""}.`);
+        return;
+      }
+      if (!response.ok) throw new Error(result.error || "Fulfillment test email failed.");
+      setTestEmailStatus(`TEST order ${designId} sent to ${result.to || "info@tsbanners.com"}.`);
+    } catch (error) {
+      setTestEmailStatus(error instanceof Error ? error.message : "Fulfillment test email failed.");
+    } finally {
+      setTestEmailBusy(false);
     }
   }
 
@@ -317,7 +369,7 @@ export function ShopifyOrdersClient() {
                 </Link>
               </Button>
             ) : null}
-            <Button variant="outline" size="sm" type="button" disabled={busy} onClick={() => void loadOrders()}>
+            <Button variant="outline" size="sm" type="button" disabled={busy} onClick={() => void loadOrders(activeLookup)}>
               <RefreshCw className={`h-4 w-4 ${busy ? "animate-spin" : ""}`} />
               Refresh
             </Button>
@@ -326,6 +378,51 @@ export function ShopifyOrdersClient() {
       </CardHeader>
       <CardContent>
         <p className="text-sm font-semibold text-muted-foreground">{status}</p>
+
+        <form className="mt-4 grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto_auto]" onSubmit={onLookupSubmit}>
+          <Input
+            value={lookupInput}
+            onChange={(event) => setLookupInput(event.target.value)}
+            placeholder="Order number #1450 or Shopify order ID"
+            aria-label="Shopify order number or ID"
+            autoComplete="off"
+          />
+          <Button type="submit" disabled={busy}>
+            <Search className="h-4 w-4" />
+            Find order
+          </Button>
+          {activeLookup ? (
+            <Button variant="outline" type="button" disabled={busy} onClick={() => {
+              setLookupInput("");
+              void loadOrders("");
+            }}>
+              <X className="h-4 w-4" />
+              Clear
+            </Button>
+          ) : null}
+        </form>
+
+        <div className="mt-4 border-t pt-4">
+          <p className="text-xs font-black uppercase text-slate-500">Fulfillment email QA</p>
+          <form className="mt-2 grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]" onSubmit={sendFulfillmentTest}>
+            <Input
+              value={testDesignId}
+              onChange={(event) => setTestDesignId(event.target.value)}
+              placeholder="Saved Design ID: design_..."
+              aria-label="Saved Design ID for fulfillment test email"
+              autoComplete="off"
+            />
+            <Button
+              variant="outline"
+              type="submit"
+              disabled={testEmailBusy || !/^design_[0-9]+_[a-z0-9]+$/i.test(testDesignId.trim())}
+            >
+              <Mail className="h-4 w-4" />
+              Send TEST email
+            </Button>
+          </form>
+          {testEmailStatus ? <p className="mt-2 text-sm font-semibold text-muted-foreground">{testEmailStatus}</p> : null}
+        </div>
 
         {orders.length ? (
           <div className="mt-4 divide-y rounded-lg border">

@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { listStoredDesignManifests, safeDesignId } from "@/lib/admin-design-storage";
 import { getShopifyAdminCredential } from "@/lib/shopify-admin-credentials";
 import { normalizeShopifyAttributes, type ShopifyCustomAttribute } from "@/lib/shopify-custom-order";
+import { parseShopifyOrderLookup, type ShopifyOrderLookup } from "@/lib/shopify-order-lookup";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -14,6 +15,62 @@ type RecentDesign = {
   productTitle?: string;
   orderNumber?: string;
 };
+
+const ORDER_FRAGMENT = `fragment TSBannerOrderFields on Order {
+  id
+  name
+  createdAt
+  note
+  displayFinancialStatus
+  displayFulfillmentStatus
+  customAttributes { key value }
+  currentTotalPriceSet {
+    shopMoney { amount currencyCode }
+  }
+  lineItems(first: 50) {
+    edges {
+      node {
+        id
+        name
+        quantity
+        sku
+        variantTitle
+        customAttributes { key value }
+      }
+    }
+  }
+}`;
+
+function ordersQuery(lookup: ShopifyOrderLookup | null) {
+  if (lookup?.kind === "id") {
+    return {
+      query: `query ExactTeamBannerOrder($id: ID!) {
+        order(id: $id) { ...TSBannerOrderFields }
+      }
+      ${ORDER_FRAGMENT}`,
+      variables: { id: lookup.gid }
+    };
+  }
+  if (lookup?.kind === "name") {
+    return {
+      query: `query ExactTeamBannerOrderByName($query: String!) {
+        orders(first: 10, query: $query, sortKey: CREATED_AT, reverse: true) {
+          edges { node { ...TSBannerOrderFields } }
+        }
+      }
+      ${ORDER_FRAGMENT}`,
+      variables: { query: lookup.query }
+    };
+  }
+  return {
+    query: `query RecentTeamBannerOrders {
+      orders(first: 30, sortKey: CREATED_AT, reverse: true) {
+        edges { node { ...TSBannerOrderFields } }
+      }
+    }
+    ${ORDER_FRAGMENT}`
+  };
+}
 
 function designIdsFromAttributes(attributes: ShopifyCustomAttribute[]) {
   const ids = new Set<string>();
@@ -102,7 +159,14 @@ function likelyDesignMatch(input: {
   };
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const lookupValue = request.nextUrl.searchParams.get("lookup") || "";
+  const lookup = parseShopifyOrderLookup(lookupValue);
+  if (lookupValue && !lookup) {
+    return NextResponse.json({
+      error: "Enter an order number such as #1450, a numeric Shopify order ID, a Shopify order GID, or an admin order URL."
+    }, { status: 400 });
+  }
   const credential = await getShopifyAdminCredential().catch(() => null);
   if (!credential?.token) {
     return NextResponse.json({
@@ -123,38 +187,7 @@ export async function GET() {
         "Content-Type": "application/json",
         "X-Shopify-Access-Token": credential.token
       },
-      body: JSON.stringify({
-        query: `query RecentTeamBannerOrders {
-          orders(first: 30, sortKey: CREATED_AT, reverse: true) {
-            edges {
-              node {
-                id
-                name
-                createdAt
-                note
-                displayFinancialStatus
-                displayFulfillmentStatus
-                customAttributes { key value }
-                currentTotalPriceSet {
-                  shopMoney { amount currencyCode }
-                }
-                lineItems(first: 50) {
-                  edges {
-                    node {
-                      id
-                      name
-                      quantity
-                      sku
-                      variantTitle
-                      customAttributes { key value }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }`
-      })
+      body: JSON.stringify(ordersQuery(lookup))
     });
 
     const result = await response.json().catch(() => ({}));
@@ -166,7 +199,10 @@ export async function GET() {
     }
 
     const recentDesigns = await recentDesignsPromise;
-    const orders = (result.data?.orders?.edges || []).map((edge: {
+    const orderEdges = lookup?.kind === "id"
+      ? (result.data?.order ? [{ node: result.data.order }] : [])
+      : (result.data?.orders?.edges || []);
+    const orders = orderEdges.map((edge: {
       node: {
         id: string;
         name: string;
@@ -239,7 +275,11 @@ export async function GET() {
       };
     });
 
-    return NextResponse.json({ orders, count: orders.length }, {
+    return NextResponse.json({
+      orders,
+      count: orders.length,
+      lookup: lookup ? { display: lookup.display, matched: orders.length } : null
+    }, {
       headers: { "Cache-Control": "private, no-store, max-age=0" }
     });
   } catch (error) {
