@@ -298,6 +298,7 @@
       || sourceMapMode === "candidate";
     const width = Number(get("artboardWidth") || get("width"));
     const height = Number(get("artboardHeight") || get("height"));
+    const savedDesignId = designResume.normalizeDesignId(get("designId"));
 
     return {
       title,
@@ -338,7 +339,7 @@
       allowCandidateSourceMap,
       layerMapsUrl: get("layerMapsUrl") || get("layerMapUrl"),
       layerConfig: parseLayerConfigTags(tags, shape, productImage),
-      hasDesign: autoLoadProduct && autoLayer !== "blank" && Boolean(productImage || templateSvg || get("productHandle") || get("handle"))
+      hasDesign: Boolean(savedDesignId) || (autoLoadProduct && autoLayer !== "blank" && Boolean(productImage || templateSvg || get("productHandle") || get("handle")))
     };
   }
 
@@ -3480,6 +3481,7 @@
 
     function selectedGeneratorSvgTemplate(options = generatorOptions()) {
       const selected = els.generatorSvg && els.generatorSvg.value;
+      if (selected === "__generated__") return null;
       if (selected) {
         const exact = svgTemplates.find((template) => template.url === selected || template.name === selected);
         if (exact) return exact;
@@ -3517,7 +3519,10 @@
     function renderGeneratorSvgOptions() {
       if (!els.generatorSvg) return;
       const previous = els.generatorSvg.value;
-      els.generatorSvg.innerHTML = `<option value="">Auto SVG layout</option>`;
+      els.generatorSvg.innerHTML = `
+        <option value="">Auto SVG layout</option>
+        <option value="__generated__">Generated editable layout</option>
+      `;
       svgTemplates.forEach((template) => {
         const option = document.createElement("option");
         option.value = template.url || template.name;
