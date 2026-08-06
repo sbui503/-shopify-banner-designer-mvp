@@ -22,6 +22,13 @@ test("normalizes a Design ID from a proof filename", () => {
   );
 });
 
+test("normalizes a Design ID from a fulfillment SVG URL", () => {
+  assert.equal(
+    normalizeDesignId("https://teamsportbanners.vercel.app/api/design-svg?id=design_1784857439033_pqj3a1nk"),
+    "design_1784857439033_pqj3a1nk"
+  );
+});
+
 test("embeds and reads a Design ID inside PNG metadata", () => {
   const id = "design_1770000000000_ab12cd34";
   const tagged = addDesignIdToPngBytes(ONE_PIXEL_PNG, id);

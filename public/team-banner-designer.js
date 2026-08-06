@@ -7876,6 +7876,26 @@
       resetCanvas("#ffffff");
 
       try {
+        const savedDesignId = designResume.normalizeDesignId(launch.templateSvg);
+        if (savedDesignId) {
+          try {
+            setStatus(`Opening saved design ${savedDesignId}...`);
+            const savedProject = await fetchSavedProject(savedDesignId);
+            if (savedProject) {
+              await restoreProject(JSON.stringify(savedProject), name);
+              activeDesignId = savedDesignId;
+              if (els.savedMeta) {
+                els.savedMeta.textContent = `Design ID: ${savedDesignId}. Editable layers restored from the saved design.`;
+              }
+              setStatus(`${name} loaded from the exact saved editable design (${visibleLayerObjects().length} layers).`);
+              return;
+            }
+          } catch (error) {
+            console.warn("Could not restore the saved editable design; using its layered SVG source.", error);
+            resetCanvas("#ffffff");
+          }
+        }
+
         const layerConfig = currentLayerConfig();
         if (requiresVerifiedProductSource(launch) && !hasVerifiedProductSource(launch)) {
           throw new Error("Verified source SVG layers are required for this product. Product-image fallback is disabled.");
