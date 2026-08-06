@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/admin/page-header";
+import { CustomOrderBackupsClient } from "@/components/admin/custom-order-backups-client";
 import { FulfillmentLookupClient } from "@/components/admin/fulfillment-lookup-client";
 import { ShopifyDraftOrdersClient } from "@/components/admin/shopify-draft-orders-client";
 import { ShopifyOrdersClient } from "@/components/admin/shopify-orders-client";
@@ -8,6 +9,7 @@ type OrdersPageProps = {
     designId?: string | string[];
     order?: string | string[];
     orderNumber?: string | string[];
+    submissionId?: string | string[];
   }>;
 };
 
@@ -19,6 +21,7 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
   const params = await searchParams;
   const initialDesignId = firstParam(params.designId).trim();
   const initialOrderNumber = firstParam(params.order || params.orderNumber).trim();
+  const initialSubmissionId = firstParam(params.submissionId).trim();
 
   return (
     <>
@@ -29,6 +32,7 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
       />
 
       <div className="grid gap-4">
+        <CustomOrderBackupsClient initialLookup={initialSubmissionId} />
         <ShopifyOrdersClient />
         <ShopifyDraftOrdersClient />
         <FulfillmentLookupClient

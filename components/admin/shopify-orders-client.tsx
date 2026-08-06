@@ -268,6 +268,13 @@ export function ShopifyOrdersClient() {
   }
 
   async function sendOrderToFulfillment(order: ShopifyOrder) {
+    if (customFieldCount(order) === 0) {
+      setEmailStatuses((current) => ({
+        ...current,
+        [order.id]: "Blocked: this Shopify order has no saved custom order information."
+      }));
+      return;
+    }
     setEmailBusyOrderId(order.id);
     setEmailStatuses((current) => ({ ...current, [order.id]: "Sending order details..." }));
     try {
@@ -505,11 +512,11 @@ export function ShopifyOrdersClient() {
                       <Button
                         type="button"
                         size="sm"
-                        disabled={emailBusyOrderId === order.id}
+                        disabled={emailBusyOrderId === order.id || customFieldCount(order) === 0}
                         onClick={() => void sendOrderToFulfillment(order)}
                       >
                         <Mail className="h-4 w-4" />
-                        Send to fulfillment
+                        {customFieldCount(order) === 0 ? "Order info missing" : "Send to fulfillment"}
                       </Button>
                     </div>
                     <div className="grid gap-3 sm:grid-cols-2">

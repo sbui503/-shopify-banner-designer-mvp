@@ -43,6 +43,13 @@ type ShopifyOrder = {
   };
 };
 
+function hasCustomOrderInformation(order: ShopifyOrder) {
+  if (normalizeShopifyAttributes(order.customAttributes || []).length) return true;
+  return (order.lineItems?.edges || []).some((edge) => (
+    normalizeShopifyAttributes(edge.node.customAttributes || []).length > 0
+  ));
+}
+
 function escapeHtml(value: unknown) {
   return String(value || "")
     .replace(/&/g, "&amp;")
@@ -302,6 +309,11 @@ export async function POST(request: NextRequest) {
         throw new Error(detail || "The Shopify order could not be loaded.");
       }
       order = loadedOrder;
+      if (!hasCustomOrderInformation(order)) {
+        return NextResponse.json({
+          error: "Fulfillment blocked: this Shopify order has no saved custom order information."
+        }, { status: 422 });
+      }
       const numericId = order.id.split("/").pop() || "";
       adminUrl = `https://${credential.storeDomain}/admin/orders/${numericId}`;
     }
