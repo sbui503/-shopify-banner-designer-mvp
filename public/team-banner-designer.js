@@ -7876,7 +7876,12 @@
       resetCanvas("#ffffff");
 
       try {
-        const savedDesignId = designResume.normalizeDesignId(launch.templateSvg);
+        const requestParams = new URLSearchParams(window.location.search);
+        const savedDesignId = designResume.normalizeDesignId(
+          requestParams.get("designId")
+          || requestParams.get("templateSvg")
+          || launch.templateSvg
+        );
         if (savedDesignId) {
           try {
             setStatus(`Opening saved design ${savedDesignId}...`);

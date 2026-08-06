@@ -27,6 +27,10 @@ test("normalizes a Design ID from a fulfillment SVG URL", () => {
     normalizeDesignId("https://teamsportbanners.vercel.app/api/design-svg?id=design_1784857439033_pqj3a1nk"),
     "design_1784857439033_pqj3a1nk"
   );
+  assert.equal(
+    normalizeDesignId("?templateSvg=https%3A%2F%2Fteamsportbanners.vercel.app%2Fapi%2Fdesign-svg%3Fid%3Ddesign_1784857439033_pqj3a1nk"),
+    "design_1784857439033_pqj3a1nk"
+  );
 });
 
 test("embeds and reads a Design ID inside PNG metadata", () => {
