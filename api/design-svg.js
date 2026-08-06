@@ -1,5 +1,6 @@
 import { list } from "@vercel/blob";
 
+import { svgContentDisposition } from "../lib/design-svg-response.js";
 import { inlineSvgImages } from "../lib/inline-svg-images.js";
 
 function safeDesignId(value) {
@@ -49,7 +50,7 @@ export default async function handler(request, response) {
     const svg = await inlineSvgImages(await storedResponse.text(), { origin: requestOrigin(request) });
 
     response.setHeader("Content-Type", "image/svg+xml; charset=utf-8");
-    response.setHeader("Content-Disposition", `inline; filename="${id}.svg"`);
+    response.setHeader("Content-Disposition", svgContentDisposition(id, request.query?.download));
     response.setHeader("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; img-src data:");
     response.setHeader("Cache-Control", "public, max-age=300, s-maxage=300");
     response.setHeader("X-Content-Type-Options", "nosniff");
