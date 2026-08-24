@@ -10,6 +10,7 @@ type LayerVerificationUrlInput = {
 type AdminDesignSvgUrlInput = {
   designId?: string;
   sourceSvgUrl?: string;
+  sourceSvgDownloadUrl?: string;
   download?: boolean;
 };
 
@@ -17,6 +18,9 @@ export function buildAdminDesignSvgUrl(input: AdminDesignSvgUrlInput) {
   const designId = String(input.designId || "").trim();
   const sourceSvgUrl = String(input.sourceSvgUrl || "").trim();
   if (!sourceSvgUrl || !/^design_[0-9]+_[a-z0-9]+$/i.test(designId)) return "";
+
+  const directDownloadUrl = String(input.sourceSvgDownloadUrl || "").trim();
+  if (directDownloadUrl) return input.download ? directDownloadUrl : sourceSvgUrl;
 
   const params = new URLSearchParams({ id: designId });
   if (input.download) params.set("download", "1");

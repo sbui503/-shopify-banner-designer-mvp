@@ -94,6 +94,8 @@ async function readMergedRecentDesigns(limit: number) {
       previewUrl: design.previewUrl || existing?.previewUrl || "",
       jsonUrl: design.jsonUrl || existing?.jsonUrl || "",
       sourceSvgUrl: design.sourceSvgUrl || existing?.sourceSvgUrl || "",
+      sourceSvgDownloadUrl: design.sourceSvgDownloadUrl || existing?.sourceSvgDownloadUrl || "",
+      printSourceUrl: design.printSourceUrl || existing?.printSourceUrl || "",
       manifestUrl: design.manifestUrl || existing?.manifestUrl || ""
     });
   });

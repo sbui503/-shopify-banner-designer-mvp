@@ -33,7 +33,11 @@ type DesignManifest = {
   previewUrl?: string;
   jsonUrl?: string;
   sourceSvgUrl?: string;
+  sourceSvgDownloadUrl?: string;
+  printSourceUrl?: string;
   manifestUrl?: string;
+  backupManifestUrl?: string;
+  backupStatus?: string;
   lookupUrl?: string;
   designerUrl?: string;
   teamName?: string;
@@ -64,6 +68,7 @@ type OrderDesign = {
   previewUrl?: string;
   jsonUrl?: string;
   sourceSvgUrl?: string;
+  sourceSvgDownloadUrl?: string;
   manifestUrl?: string;
   productTitle?: string;
 };
@@ -94,6 +99,7 @@ function externalLinks(manifest: DesignManifest) {
   return [
     ["Open print proof", manifest.previewUrl],
     ["Open editable JSON", manifest.jsonUrl],
+    ["Open backup manifest", manifest.backupManifestUrl],
     ["Open fulfillment page", manifest.lookupUrl || (manifest.id ? `/fulfillment.html?designId=${encodeURIComponent(manifest.id)}` : "")]
   ].filter((entry): entry is [string, string] => Boolean(entry[1]));
 }
@@ -102,6 +108,7 @@ function layeredSvgFileUrl(manifest: DesignManifest, download = false) {
   return buildAdminDesignSvgUrl({
     designId: manifest.id,
     sourceSvgUrl: manifest.sourceSvgUrl,
+    sourceSvgDownloadUrl: manifest.sourceSvgDownloadUrl || manifest.printSourceUrl,
     download
   });
 }
@@ -446,6 +453,7 @@ export function FulfillmentLookupClient({
                   </Badge>
                   {manifest.adminUploaded ? <Badge variant="secondary">Admin recovery</Badge> : null}
                   {manifest.sourceSvgUrl ? <Badge variant="success">Source SVG saved</Badge> : null}
+                  {manifest.backupStatus === "complete" ? <Badge variant="success">Backup complete</Badge> : null}
                   {manifest.sourceSvgStats ? <Badge variant="secondary">{manifest.sourceSvgStats.objectCount || 0} objects</Badge> : null}
                   {manifest.sourceSvgStats ? <Badge variant="secondary">{manifest.sourceSvgStats.textCount || 0} text layers</Badge> : null}
                 </div>
@@ -524,6 +532,7 @@ export function FulfillmentLookupClient({
                         previewUrl: design.previewUrl,
                         jsonUrl: design.jsonUrl,
                         sourceSvgUrl: design.sourceSvgUrl,
+                        sourceSvgDownloadUrl: design.sourceSvgDownloadUrl || design.printSourceUrl,
                         manifestUrl: design.manifestUrl,
                         productTitle: designProductTitle(design)
                       }).catch((error) => {

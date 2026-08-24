@@ -69,3 +69,14 @@ test("builds protected SVG preview and Illustrator download URLs", () => {
   );
   assert.equal(buildAdminDesignSvgUrl({ designId: input.designId }), "");
 });
+
+test("uses direct Blob URLs for large self-contained SVG files", () => {
+  const input = {
+    designId: "design_1770000000000_ab12cd34",
+    sourceSvgUrl: "https://example.public.blob.vercel-storage.com/source.svg",
+    sourceSvgDownloadUrl: "https://example.public.blob.vercel-storage.com/source.svg?download=1"
+  };
+
+  assert.equal(buildAdminDesignSvgUrl(input), input.sourceSvgUrl);
+  assert.equal(buildAdminDesignSvgUrl({ ...input, download: true }), input.sourceSvgDownloadUrl);
+});

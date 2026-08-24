@@ -9,7 +9,12 @@ export type StoredDesignManifest = {
   previewUrl?: string;
   jsonUrl?: string;
   sourceSvgUrl?: string;
+  sourceSvgBlobUrl?: string;
+  sourceSvgDownloadUrl?: string;
+  printSourceUrl?: string;
   manifestUrl?: string;
+  backupManifestUrl?: string;
+  backupStatus?: string;
   lookupUrl?: string;
   designerUrl?: string;
   productTitle?: string;
