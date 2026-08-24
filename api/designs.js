@@ -57,17 +57,20 @@ function designObjects(value) {
   return [];
 }
 
-function designTextLayers(objects) {
+function designLayers(objects) {
   return objects
     .map((object, index) => ({ object, index }))
-    .filter(({ object }) => cleanString(object?.text || object?.value))
-    .slice(0, 250)
+    .slice(0, 500)
     .map(({ object, index }) => ({
-      id: cleanString(object.id, 100) || `text-layer-${index + 1}`,
-      name: cleanString(object.name || object.sourceName, 160) || `Text layer ${index + 1}`,
+      id: cleanString(object.id, 100) || `layer-${index + 1}`,
+      name: cleanString(object.name || object.sourceName || object.data?.name, 160) || `Artwork ${index + 1}`,
       role: cleanString(object.role || object.data?.role, 100),
       type: cleanString(object.type, 100),
-      text: cleanString(object.text || object.value, 1000)
+      text: cleanString(object.text || object.value, 1000),
+      data: {
+        name: cleanString(object.data?.name, 160),
+        role: cleanString(object.data?.role, 100)
+      }
     }));
 }
 
@@ -97,11 +100,16 @@ function normalizedMetadata(payload) {
 
 function cleanSourceStats(value, layers) {
   const stats = value && typeof value === "object" ? value : {};
+  const textLayerCount = layers.filter((layer) => cleanString(layer.text)).length;
   return {
     objectCount: Math.max(0, Number.parseInt(stats.objectCount, 10) || 0),
     imageCount: Math.max(0, Number.parseInt(stats.imageCount, 10) || 0),
-    textCount: Math.max(0, Number.parseInt(stats.textCount, 10) || layers.length),
-    layered: Boolean(stats.layered)
+    rasterImageCount: Math.max(0, Number.parseInt(stats.rasterImageCount, 10) || 0),
+    vectorObjectCount: Math.max(0, Number.parseInt(stats.vectorObjectCount, 10) || 0),
+    namedLayerCount: Math.max(0, Number.parseInt(stats.namedLayerCount, 10) || 0),
+    textCount: Math.max(0, Number.parseInt(stats.textCount, 10) || textLayerCount),
+    layered: Boolean(stats.layered),
+    illustratorLayered: Boolean(stats.illustratorLayered)
   };
 }
 
@@ -131,7 +139,7 @@ async function finalizeDirectDesign(request, payload) {
   }
 
   const metadata = normalizedMetadata(payload);
-  const layers = designTextLayers(Array.isArray(payload.layers) ? payload.layers : []);
+  const layers = designLayers(Array.isArray(payload.layers) ? payload.layers : []);
   const sourceSvgStats = cleanSourceStats(payload.sourceSvgStats, layers);
   const backupPrefix = `team-banner-design-backups/${id}`;
   const [backupProof, backupEditable, backupSource] = await Promise.all([

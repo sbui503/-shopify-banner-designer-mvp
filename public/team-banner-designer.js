@@ -27,6 +27,7 @@
     homeplatepennant: "43537293443278"
   };
   const VECTOR_BACKGROUND_HREF = "__source_svg_vector_background__";
+  const illustratorSvg = window.TeamBannerIllustratorSvg;
   const designResume = window.TeamBannerDesignResume || {
     normalizeDesignId(value) {
       return String(value || "").match(/design_[0-9]+_[a-z0-9]+/i)?.[0] || "";
@@ -5148,7 +5149,7 @@
       });
     }
 
-    async function selfContainedSvg(rawSvg) {
+    async function selfContainedSvg(rawSvg, layers) {
       const parser = new DOMParser();
       const documentNode = parser.parseFromString(String(rawSvg || ""), "image/svg+xml");
       if (documentNode.querySelector("parsererror") || !documentNode.documentElement?.matches("svg")) {
@@ -5182,6 +5183,11 @@
         image.setAttribute("href", dataUrl);
         image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", dataUrl);
       }
+      if (!illustratorSvg) throw new Error("The Illustrator layer exporter did not load.");
+      const layerResult = illustratorSvg.applyLayerMetadata(documentNode, layers);
+      if (!layerResult.layerCount || layerResult.layerCount !== layerResult.descriptors.length) {
+        throw new Error("Not every design object could be written as an Illustrator layer.");
+      }
       return new XMLSerializer().serializeToString(documentNode.documentElement);
     }
 
@@ -5212,7 +5218,7 @@
 
     function savedLayerSummary() {
       return canvas.getObjects()
-        .filter((object) => object !== guide)
+        .filter((object) => object !== guide && !object.excludeFromExport && !object.data?.excludeFromExport)
         .map((object, index) => ({
           id: object.data?.layerId || object.id || `layer-${index + 1}`,
           name: object.data?.name || object.name || object.sourceName || "",
@@ -5227,11 +5233,16 @@
     }
 
     function savedSourceStats(layers) {
+      const imageCount = layers.filter((layer) => String(layer.type).toLowerCase() === "image").length;
       return {
         objectCount: layers.length,
-        imageCount: layers.filter((layer) => String(layer.type).toLowerCase() === "image").length,
+        imageCount,
+        rasterImageCount: imageCount,
+        vectorObjectCount: layers.length - imageCount,
+        namedLayerCount: layers.length,
         textCount: layers.filter((layer) => String(layer.text || "").trim()).length,
-        layered: layers.length > 1
+        layered: layers.length > 1,
+        illustratorLayered: layers.length > 0
       };
     }
 
@@ -5325,12 +5336,12 @@
       setStatus("Uploading editable design layers...");
       await uploadDesignArtifact(reservation, "editable", editableBlob);
       setStatus("Preparing the high-quality layered SVG...");
-      const sourceSvg = await selfContainedSvg(source.svg);
+      const layers = savedLayerSummary();
+      const sourceSvg = await selfContainedSvg(source.svg, layers);
       const sourceBlob = new Blob([sourceSvg], { type: "image/svg+xml" });
       setStatus("Uploading high-quality print file...");
       await uploadDesignArtifact(reservation, "source", sourceBlob);
       setStatus("Verifying files and creating backup...");
-      const layers = savedLayerSummary();
       const saved = await designJsonRequest(saveUrl, {
         action: "finalize",
         id: localId,
