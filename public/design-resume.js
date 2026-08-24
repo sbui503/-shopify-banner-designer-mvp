@@ -115,8 +115,11 @@
     return "";
   }
 
-  async function pngBlobWithDesignId(dataUrl, designId) {
-    const bytes = addDesignIdToPngBytes(pngBytesFromDataUrl(dataUrl), designId);
+  async function pngBlobWithDesignId(source, designId) {
+    const sourceBytes = typeof source === "string"
+      ? pngBytesFromDataUrl(source)
+      : new Uint8Array(await source.arrayBuffer());
+    const bytes = addDesignIdToPngBytes(sourceBytes, designId);
     return new Blob([bytes], { type: "image/png" });
   }
 

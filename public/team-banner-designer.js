@@ -10,6 +10,13 @@
   const MVP_5X3_ONLY = false;
   const ASSETS_PER_PAGE = 48;
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
+  const MAX_CUSTOM_IMAGE_BYTES = 8 * 1024 * 1024;
+  const MAX_CUSTOM_UPLOAD_TOTAL_BYTES = 8 * 1024 * 1024;
+  const MAX_CUSTOM_IMAGE_DIMENSION = 3000;
+  const MAX_OPTIMIZED_IMAGE_BYTES = 4 * 1024 * 1024;
+  const MAX_PROOF_BYTES = 2 * 1024 * 1024;
+  const MAX_PROOF_DIMENSION = 1600;
+  const MIN_PROOF_DIMENSION = 720;
   const DEFAULT_IMAGE_PROXY_URL = "https://files-mentioned-by-the-user-shopify.vercel.app/api/image-proxy";
   const SHOPIFY_STORE_ORIGIN = "https://teamsportbanners.com";
   const DEFAULT_CUSTOM_DESIGN_VARIANT_ID = "43534427029710";
@@ -27,8 +34,8 @@
     async designIdFromPngFile(file) {
       return this.normalizeDesignId(file && file.name);
     },
-    async pngBlobWithDesignId(dataUrl) {
-      return fetch(dataUrl).then((response) => response.blob());
+    async pngBlobWithDesignId(source) {
+      return typeof source === "string" ? fetch(source).then((response) => response.blob()) : source;
     }
   };
   let WIDTH = BANNER_WIDTH;
@@ -1349,6 +1356,7 @@
     const proofEmailTo = launch.proofEmailTo || root.dataset.proofEmailTo || root.dataset.emailProofTo || "info@tsbanners.com";
     const imageProxyEndpoint = launch.imageProxyUrl || root.dataset.imageProxyUrl || defaultImageProxyEndpoint();
     let assets = FALLBACK_ASSETS;
+    let customerUploadBytes = 0;
     let activeCategory = defaultCategoryForShape(ARTBOARD_SHAPE);
     let assetPage = 1;
     let searchTerm = "";
@@ -1904,8 +1912,21 @@
         sourceAssetName: asset.name || "",
         sourceAssetCategory: asset.category || "",
         sourceAssetUrl: asset.url,
-        sourceAssetSvgUrl: asset.svgUrl || ""
+        sourceAssetSvgUrl: asset.svgUrl || "",
+        uploadBytes: Math.max(0, Number(asset.uploadBytes) || 0)
       };
+    }
+
+    function recordedCustomerUploadBytes() {
+      const sources = new Set();
+      const bytes = canvas.getObjects().reduce((total, object) => {
+        const uploadBytes = Math.max(0, Number(object.data?.uploadBytes) || 0);
+        const source = String(object.data?.sourceAssetUrl || object.data?.sourceUrl || "");
+        if (!uploadBytes || (source && sources.has(source))) return total;
+        if (source) sources.add(source);
+        return total + uploadBytes;
+      }, 0);
+      return Math.max(customerUploadBytes, bytes);
     }
 
     function roleMatchesCategory(role, category) {
@@ -2806,7 +2827,14 @@
           }
           img.set({
             crossOrigin: "anonymous",
-            data: { name: item.name, category: item.category, sourceUrl: item.url, role: categoryLayerRole(item.category) }
+            data: {
+              name: item.name,
+              category: item.category,
+              sourceUrl: item.url,
+              sourceAssetUrl: item.url,
+              uploadBytes: Math.max(0, Number(item.uploadBytes) || 0),
+              role: categoryLayerRole(item.category)
+            }
           });
 
           if (isBackground(item)) {
@@ -5076,19 +5104,209 @@
       }
     }
 
+    function canvasElementBlob(element, type = "image/png", quality) {
+      return new Promise((resolve, reject) => {
+        element.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error("The proof image could not be prepared."));
+        }, type, quality);
+      });
+    }
+
+    function scaledCanvasElement(source, ratio) {
+      const target = document.createElement("canvas");
+      target.width = Math.max(1, Math.round(source.width * ratio));
+      target.height = Math.max(1, Math.round(source.height * ratio));
+      const context = target.getContext("2d");
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = "high";
+      context.drawImage(source, 0, 0, target.width, target.height);
+      return target;
+    }
+
+    async function exportProofPngBlob() {
+      const multiplier = Math.min(1, MAX_PROOF_DIMENSION / Math.max(WIDTH, HEIGHT));
+      let proofCanvas = withoutGuide(() => canvas.toCanvasElement(multiplier));
+      let proofBlob = await canvasElementBlob(proofCanvas);
+      while (proofBlob.size > MAX_PROOF_BYTES && Math.max(proofCanvas.width, proofCanvas.height) > MIN_PROOF_DIMENSION) {
+        const currentDimension = Math.max(proofCanvas.width, proofCanvas.height);
+        const minimumRatio = MIN_PROOF_DIMENSION / currentDimension;
+        const targetRatio = Math.sqrt(MAX_PROOF_BYTES / proofBlob.size) * 0.92;
+        const ratio = Math.max(minimumRatio, Math.min(0.88, targetRatio));
+        proofCanvas = scaledCanvasElement(proofCanvas, ratio);
+        proofBlob = await canvasElementBlob(proofCanvas);
+      }
+      return proofBlob;
+    }
+
+    function blobToDataUrl(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(new Error("An image layer could not be prepared."));
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    async function selfContainedSvg(rawSvg) {
+      const parser = new DOMParser();
+      const documentNode = parser.parseFromString(String(rawSvg || ""), "image/svg+xml");
+      if (documentNode.querySelector("parsererror") || !documentNode.documentElement?.matches("svg")) {
+        throw new Error("The layered SVG could not be created.");
+      }
+      const images = Array.from(documentNode.querySelectorAll("image"));
+      for (const image of images) {
+        const href = image.getAttribute("href")
+          || image.getAttributeNS("http://www.w3.org/1999/xlink", "href")
+          || "";
+        if (!href || /^(?:data:|#)/i.test(href)) continue;
+        const resolved = new URL(href, window.location.href).href;
+        const candidates = [...new Set([
+          resolved,
+          canvasSafeImageUrl(resolved, imageProxyEndpoint)
+        ].filter(Boolean))];
+        let imageBlob = null;
+        for (const candidate of candidates) {
+          try {
+            const response = await fetch(candidate, { credentials: "omit", cache: "force-cache" });
+            if (response.ok) {
+              imageBlob = await response.blob();
+              break;
+            }
+          } catch (error) {
+            // Try the same image through the configured proxy below.
+          }
+        }
+        if (!imageBlob) throw new Error("An image layer could not be embedded in the print SVG. Please retry.");
+        const dataUrl = await blobToDataUrl(imageBlob);
+        image.setAttribute("href", dataUrl);
+        image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", dataUrl);
+      }
+      return new XMLSerializer().serializeToString(documentNode.documentElement);
+    }
+
+    function exportSaveSource() {
+      return withoutGuide(() => ({
+        json: canvas.toJSON(["excludeFromExport", "data"]),
+        svg: typeof canvas.toSVG === "function" ? canvas.toSVG() : "",
+        metadata: {
+          savedAt: new Date().toISOString(),
+          artboard: {
+            width: WIDTH,
+            height: HEIGHT,
+            shape: ARTBOARD_SHAPE,
+            backgroundColor: canvas.backgroundColor || "#ffffff"
+          },
+          product: {
+            title: launch.title || "",
+            handle: launch.handle || "",
+            headline: launch.headline || "",
+            sizeLabel: launch.sizeLabel || defaultSizeForShape(ARTBOARD_SHAPE),
+            price: launch.price || defaultPriceForShape(ARTBOARD_SHAPE)
+          },
+          teamName: (els.team && els.team.value) || "",
+          parentDesignId: activeDesignId
+        }
+      }));
+    }
+
+    function savedLayerSummary() {
+      return canvas.getObjects()
+        .filter((object) => object !== guide)
+        .map((object, index) => ({
+          id: object.data?.layerId || object.id || `layer-${index + 1}`,
+          name: object.data?.name || object.name || object.sourceName || "",
+          role: object.data?.role || object.role || "",
+          type: object.type || "",
+          text: object.text || object.value || "",
+          data: {
+            role: object.data?.role || "",
+            name: object.data?.name || ""
+          }
+        }));
+    }
+
+    function savedSourceStats(layers) {
+      return {
+        objectCount: layers.length,
+        imageCount: layers.filter((layer) => String(layer.type).toLowerCase() === "image").length,
+        textCount: layers.filter((layer) => String(layer.text || "").trim()).length,
+        layered: layers.length > 1
+      };
+    }
+
+    async function designJsonRequest(url, payload) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || `Design save failed (${response.status}).`);
+      return result;
+    }
+
+    async function uploadDesignArtifact(reservation, kind, blob) {
+      const extensions = { proof: "png", editable: "json", source: "svg" };
+      const extension = extensions[kind];
+      if (!extension) throw new Error("Unknown design file type.");
+      const pathname = `team-banner-designs/${reservation.id}.${extension}`;
+      const tokenResult = await designJsonRequest(reservation.uploadUrl, {
+        type: "blob.generate-client-token",
+        payload: {
+          pathname,
+          clientPayload: JSON.stringify({
+            id: reservation.id,
+            uploadToken: reservation.uploadToken,
+            kind
+          }),
+          multipart: false
+        }
+      });
+      const clientToken = String(tokenResult.clientToken || "");
+      const storeId = clientToken.split("_")[3] || "";
+      if (!clientToken || !storeId) throw new Error("The secure design upload could not start.");
+
+      const response = await fetch(`https://vercel.com/api/blob/?pathname=${encodeURIComponent(pathname)}`, {
+        method: "PUT",
+        mode: "cors",
+        credentials: "omit",
+        headers: {
+          Authorization: `Bearer ${clientToken}`,
+          "x-api-blob-request-id": `${storeId}:${Date.now()}:${Math.random().toString(16).slice(2)}`,
+          "x-vercel-blob-store-id": storeId,
+          "x-api-blob-request-attempt": "0",
+          "x-api-version": "12",
+          "x-vercel-blob-access": "public",
+          "x-content-type": blob.type
+        },
+        body: blob
+      });
+      const saved = await response.json().catch(() => ({}));
+      if (!response.ok || !saved.url) throw new Error(saved.message || saved.error || `The ${kind} file could not be uploaded.`);
+      return saved;
+    }
+
     async function saveDesign() {
       const saveUrl = root.dataset.saveUrl;
-      const design = exportDesign(1);
-      const localId = `design_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const reservation = saveUrl
+        ? await designJsonRequest(saveUrl, { action: "reserve" })
+        : { id: `design_${Date.now()}_${Math.random().toString(36).slice(2, 10)}` };
+      const localId = designResume.normalizeDesignId(reservation.id);
+      if (!localId) throw new Error("The saved design did not receive a Design ID.");
+      setStatus("Preparing an optimized PNG proof...");
+      const source = exportSaveSource();
+      const proofBlob = await exportProofPngBlob();
+      const taggedProofBlob = await designResume.pngBlobWithDesignId(proofBlob, localId);
       const project = {
         app: "team-banner-designer",
         version: 1,
         designId: localId,
-        savedAt: design.metadata.savedAt,
-        artboard: design.metadata.artboard,
-        product: design.metadata.product,
-        teamName: design.metadata.teamName,
-        canvas: design.json
+        savedAt: source.metadata.savedAt,
+        artboard: source.metadata.artboard,
+        product: source.metadata.product,
+        teamName: source.metadata.teamName,
+        canvas: source.json
       };
       try {
         window.localStorage.setItem(`team-banner-design:${localId}`, JSON.stringify(project));
@@ -5096,19 +5314,36 @@
         // Local storage is a convenience for the MVP. The API save below is the source of truth when configured.
       }
 
-      if (els.preview) els.preview.src = design.image;
       if (!saveUrl) {
         activeDesignId = localId;
-        return { id: localId, previewUrl: "", jsonUrl: "", proofImage: design.image };
+        return { id: localId, previewUrl: "", jsonUrl: "", proofBlob: taggedProofBlob };
       }
 
-      const response = await fetch(saveUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(design)
+      setStatus("Uploading optimized PNG proof...");
+      await uploadDesignArtifact(reservation, "proof", taggedProofBlob);
+      const editableBlob = new Blob([JSON.stringify(source.json)], { type: "application/json" });
+      setStatus("Uploading editable design layers...");
+      await uploadDesignArtifact(reservation, "editable", editableBlob);
+      setStatus("Preparing the high-quality layered SVG...");
+      const sourceSvg = await selfContainedSvg(source.svg);
+      const sourceBlob = new Blob([sourceSvg], { type: "image/svg+xml" });
+      setStatus("Uploading high-quality print file...");
+      await uploadDesignArtifact(reservation, "source", sourceBlob);
+      setStatus("Verifying files and creating backup...");
+      const layers = savedLayerSummary();
+      const saved = await designJsonRequest(saveUrl, {
+        action: "finalize",
+        id: localId,
+        uploadToken: reservation.uploadToken,
+        metadata: source.metadata,
+        layers,
+        sourceSvgStats: savedSourceStats(layers),
+        artifactSizes: {
+          proof: taggedProofBlob.size,
+          editable: editableBlob.size,
+          source: sourceBlob.size
+        }
       });
-      if (!response.ok) throw new Error("Design save failed");
-      const saved = await response.json();
       const savedId = designResume.normalizeDesignId(saved.id) || localId;
       activeDesignId = savedId;
       try {
@@ -5119,7 +5354,8 @@
       } catch (error) {
         // The permanent API copy remains the source of truth if local storage is full.
       }
-      return { ...saved, id: savedId, proofImage: design.image };
+      if (els.preview && saved.previewUrl) els.preview.src = saved.previewUrl;
+      return { ...saved, id: savedId, proofBlob: taggedProofBlob };
     }
 
     function proofFileName(designId) {
@@ -5133,7 +5369,8 @@
         const saved = await saveDesign();
         const designId = designResume.normalizeDesignId(saved && saved.id);
         if (!designId) throw new Error("The saved design did not receive a Design ID.");
-        const proofBlob = await designResume.pngBlobWithDesignId(saved.proofImage, designId);
+        const proofBlob = saved.proofBlob
+          || await designResume.pngBlobWithDesignId(saved.proofImage, designId);
         const filename = proofFileName(designId);
         downloadBlobFile(filename, proofBlob);
         if (els.savedMeta) {
@@ -5174,7 +5411,9 @@
           "Design Preview": saved && saved.previewUrl,
           "Editable Design": saved && saved.jsonUrl,
           "Layered Source": saved && saved.sourceSvgUrl,
+          "HQ Print SVG": saved && (saved.sourceSvgDownloadUrl || saved.printSourceUrl),
           "Design Manifest": saved && saved.manifestUrl,
+          "Design Backup": saved && saved.backupManifestUrl,
           "Source Product": launch.title || "",
           "Source Handle": launch.handle || ""
         };
@@ -5203,7 +5442,9 @@
         "Design Preview": item && item.previewUrl,
         "Editable Design": item && item.jsonUrl,
         "Layered Source": item && item.sourceSvgUrl,
+        "HQ Print SVG": item && (item.sourceSvgDownloadUrl || item.printSourceUrl),
         "Design Manifest": item && item.manifestUrl,
+        "Design Backup": item && item.backupManifestUrl,
         "Source Product": item && (item.title || item.productTitle) || launch.title || "",
         "Source Handle": item && (item.handle || item.productHandle) || launch.handle || "",
         "Team Name": item && item.teamName
@@ -5217,7 +5458,9 @@
         previewUrl: saved && saved.previewUrl,
         jsonUrl: saved && saved.jsonUrl,
         sourceSvgUrl: saved && saved.sourceSvgUrl,
+        sourceSvgDownloadUrl: saved && (saved.sourceSvgDownloadUrl || saved.printSourceUrl),
         manifestUrl: saved && saved.manifestUrl,
+        backupManifestUrl: saved && saved.backupManifestUrl,
         proofImage: saved && !saved.previewUrl ? saved.proofImage : "",
         productTitle: launch.title || "",
         productHandle: launch.handle || "",
@@ -5382,7 +5625,9 @@
           previewUrl: saved.previewUrl || "",
           jsonUrl: saved.jsonUrl || "",
           sourceSvgUrl: saved.sourceSvgUrl || "",
+          sourceSvgDownloadUrl: saved.sourceSvgDownloadUrl || saved.printSourceUrl || "",
           manifestUrl: saved.manifestUrl || "",
+          backupManifestUrl: saved.backupManifestUrl || "",
           proofImage: saved.previewUrl ? "" : (String(saved.proofImage || "").length < 180000 ? saved.proofImage : ""),
           variantId: String(variantId),
           shape: ARTBOARD_SHAPE,
@@ -5401,7 +5646,7 @@
         setCartPanelOpen(true);
         setStatus(`Added design to cart. ${designCart.length} saved design${designCart.length === 1 ? "" : "s"} ready.`);
       } catch (error) {
-        setStatus("Could not save this design to cart. Try Save editable file, then try Add To Cart again.");
+        setStatus(error.message || "Could not save this design to cart. Please retry.");
       }
     }
 
@@ -5468,6 +5713,7 @@
       const selected = canvas.getActiveObjects().filter((obj) => obj !== guide && !isLayerLocked(obj));
       if (!selected.length) return setStatus("Select an item to delete.");
       selected.forEach((obj) => canvas.remove(obj));
+      customerUploadBytes = canvas.getObjects().reduce((total, object) => total + Math.max(0, Number(object.data?.uploadBytes) || 0), 0);
       canvas.discardActiveObject();
       if (selected.includes(teamText)) teamText = null;
       canvas.renderAll();
@@ -5479,6 +5725,7 @@
       if (!options.skipConfirm && !window.confirm("Clear this design?")) return;
       isRestoring = true;
       canvas.clear();
+      customerUploadBytes = 0;
       canvas.backgroundColor = canvasBackgroundColor((els.bgColor && els.bgColor.value) || "#ffffff");
       canvas.clipPath = makeClipPath();
       teamText = null;
@@ -6918,6 +7165,49 @@
       return name.endsWith(".tsbd") || name.endsWith(".json") || file.type === "application/json";
     }
 
+    function imageElementFromFile(file) {
+      return new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(file);
+        const image = new Image();
+        image.onload = () => {
+          URL.revokeObjectURL(url);
+          resolve(image);
+        };
+        image.onerror = () => {
+          URL.revokeObjectURL(url);
+          reject(new Error("The uploaded image could not be opened."));
+        };
+        image.src = url;
+      });
+    }
+
+    async function optimizedCustomerImage(file) {
+      if (file.size > MAX_CUSTOM_IMAGE_BYTES) {
+        throw new Error(`${file.name || "This image"} is larger than the 8 MB upload limit.`);
+      }
+      if (String(file.type || "").toLowerCase() === "image/svg+xml") return file;
+      const image = await imageElementFromFile(file);
+      const largestDimension = Math.max(image.naturalWidth, image.naturalHeight);
+      if (largestDimension <= MAX_CUSTOM_IMAGE_DIMENSION && file.size <= MAX_OPTIMIZED_IMAGE_BYTES) return file;
+
+      let ratio = Math.min(1, MAX_CUSTOM_IMAGE_DIMENSION / largestDimension);
+      const outputType = /jpe?g/i.test(file.type || file.name) ? "image/jpeg" : "image/png";
+      let outputBlob;
+      do {
+        const output = document.createElement("canvas");
+        output.width = Math.max(1, Math.round(image.naturalWidth * ratio));
+        output.height = Math.max(1, Math.round(image.naturalHeight * ratio));
+        const context = output.getContext("2d");
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = "high";
+        context.drawImage(image, 0, 0, output.width, output.height);
+        outputBlob = await canvasElementBlob(output, outputType, 0.86);
+        if (outputBlob.size <= MAX_OPTIMIZED_IMAGE_BYTES || Math.max(output.width, output.height) <= 1200) break;
+        ratio *= 0.8;
+      } while (ratio > 0.1);
+      return outputBlob;
+    }
+
     async function importProjectFile(file) {
       if (!file) return;
       try {
@@ -6943,7 +7233,6 @@
       if (!saveUrl) return "";
       const url = new URL(saveUrl, window.location.href);
       url.searchParams.set("id", designId);
-      url.searchParams.set("include", "editable");
       return url.href;
     }
 
@@ -7013,9 +7302,28 @@
           setStatus(error.message || "Could not open the saved design.");
           continue;
         }
+        let preparedFile;
+        try {
+          preparedFile = await optimizedCustomerImage(file);
+          const nextUploadBytes = recordedCustomerUploadBytes() + preparedFile.size;
+          if (nextUploadBytes > MAX_CUSTOM_UPLOAD_TOTAL_BYTES) {
+            throw new Error("Customer logos and photos must total 8 MB or less per design.");
+          }
+          customerUploadBytes = nextUploadBytes;
+          const usedMegabytes = (customerUploadBytes / (1024 * 1024)).toFixed(1);
+          setStatus(`${file.name || "Image"}${preparedFile !== file ? " optimized" : " added"}. ${usedMegabytes} MB of 8 MB used.`);
+        } catch (error) {
+          setStatus(error.message || "The uploaded image is too large.");
+          continue;
+        }
         const reader = new FileReader();
-        reader.onload = () => addAsset({ name: file.name, category: "Upload", url: reader.result });
-        reader.readAsDataURL(file);
+        reader.onload = () => addAsset({
+          name: file.name,
+          category: "Upload",
+          url: reader.result,
+          uploadBytes: preparedFile.size
+        });
+        reader.readAsDataURL(preparedFile);
       }
     }
 
@@ -7092,6 +7400,8 @@
       canvas.setWidth(WIDTH);
       canvas.setHeight(HEIGHT);
       await loadCanvasJson(canvasJson);
+      customerUploadBytes = 0;
+      customerUploadBytes = recordedCustomerUploadBytes();
       canvas.getObjects()
         .filter((obj) => obj.data && obj.data.role === "cut-guide")
         .forEach((obj) => canvas.remove(obj));

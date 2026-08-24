@@ -41,6 +41,14 @@ test("embeds and reads a Design ID inside PNG metadata", () => {
   assert.ok(tagged.byteLength > ONE_PIXEL_PNG.byteLength);
 });
 
+test("embeds a Design ID when the proof is already a PNG Blob", async () => {
+  const id = "design_1770000000000_cd34ef56";
+  const proof = new Blob([ONE_PIXEL_PNG], { type: "image/png" });
+  const tagged = await globalThis.TeamBannerDesignResume.pngBlobWithDesignId(proof, id);
+
+  assert.equal(designIdFromPngBytes(new Uint8Array(await tagged.arrayBuffer())), id);
+});
+
 test("reads embedded Design ID after the PNG is renamed", async () => {
   const id = "design_1770000000000_ef56gh78";
   const tagged = addDesignIdToPngBytes(ONE_PIXEL_PNG, id);

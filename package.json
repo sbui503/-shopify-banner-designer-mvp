@@ -26,6 +26,7 @@
     "qa:layered-svg": "node --test tests/inline-svg-images.test.mjs",
     "qa:svg-delivery": "node --test tests/design-svg-response.test.mjs",
     "qa:design-resume": "node --test tests/design-resume.test.mjs",
+    "qa:design-save": "node --test tests/design-upload-session.test.mjs tests/design-resume.test.mjs",
     "qa:generator-layout": "node --test tests/generator-layout.test.mjs",
     "qa:email-relay": "node --test tests/admin-email-relay.test.mjs",
     "assets:sync-design-tool": "node scripts/sync-design-tool-assets.mjs",

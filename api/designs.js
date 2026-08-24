@@ -1,5 +1,11 @@
-import { list, put } from "@vercel/blob";
+import { copy, list, put } from "@vercel/blob";
 import { timingSafeEqual } from "node:crypto";
+import {
+  createDesignId,
+  createDesignUploadToken,
+  designArtifact,
+  verifyDesignUploadToken
+} from "../lib/design-upload-session.js";
 import { designSvgUrl, fulfillmentLookupUrl } from "../lib/fulfillment-url.js";
 import { inlineSvgImages } from "../lib/inline-svg-images.js";
 
@@ -65,6 +71,142 @@ function designTextLayers(objects) {
     }));
 }
 
+function normalizedMetadata(payload) {
+  const metadata = payload?.metadata && typeof payload.metadata === "object" ? payload.metadata : {};
+  const rawProduct = metadata.product && typeof metadata.product === "object" ? metadata.product : {};
+  const rawArtboard = metadata.artboard && typeof metadata.artboard === "object" ? metadata.artboard : {};
+  return {
+    savedAt: cleanString(metadata.savedAt, 80) || new Date().toISOString(),
+    teamName: cleanString(metadata.teamName, 240),
+    parentDesignId: safeDesignId(metadata.parentDesignId),
+    product: {
+      title: cleanString(rawProduct.title, 240),
+      handle: cleanString(rawProduct.handle, 240),
+      headline: cleanString(rawProduct.headline, 240),
+      sizeLabel: cleanString(rawProduct.sizeLabel, 120),
+      price: cleanString(rawProduct.price, 80)
+    },
+    artboard: {
+      width: cleanNumber(rawArtboard.width),
+      height: cleanNumber(rawArtboard.height),
+      shape: cleanString(rawArtboard.shape, 80),
+      backgroundColor: cleanString(rawArtboard.backgroundColor, 80)
+    }
+  };
+}
+
+function cleanSourceStats(value, layers) {
+  const stats = value && typeof value === "object" ? value : {};
+  return {
+    objectCount: Math.max(0, Number.parseInt(stats.objectCount, 10) || 0),
+    imageCount: Math.max(0, Number.parseInt(stats.imageCount, 10) || 0),
+    textCount: Math.max(0, Number.parseInt(stats.textCount, 10) || layers.length),
+    layered: Boolean(stats.layered)
+  };
+}
+
+function blobDownloadUrl(blob) {
+  return blob?.downloadUrl || blob?.url || "";
+}
+
+async function finalizeDirectDesign(request, payload) {
+  const id = safeDesignId(payload.id);
+  if (!id || !verifyDesignUploadToken(id, payload.uploadToken)) {
+    throw new Error("Design save authorization expired. Please save again.");
+  }
+
+  const artifactPaths = {
+    proof: designArtifact(id, "proof")?.pathname,
+    editable: designArtifact(id, "editable")?.pathname,
+    source: designArtifact(id, "source")?.pathname
+  };
+  const result = await list({ prefix: `team-banner-designs/${id}.`, limit: 20 });
+  const blobs = Array.isArray(result.blobs) ? result.blobs : [];
+  const artifacts = Object.fromEntries(Object.entries(artifactPaths).map(([kind, pathname]) => [
+    kind,
+    blobs.find((blob) => blob.pathname === pathname)
+  ]));
+  if (!artifacts.proof || !artifacts.editable || !artifacts.source) {
+    throw new Error("One or more saved design files did not finish uploading. Please retry.");
+  }
+
+  const metadata = normalizedMetadata(payload);
+  const layers = designTextLayers(Array.isArray(payload.layers) ? payload.layers : []);
+  const sourceSvgStats = cleanSourceStats(payload.sourceSvgStats, layers);
+  const backupPrefix = `team-banner-design-backups/${id}`;
+  const [backupProof, backupEditable, backupSource] = await Promise.all([
+    copy(artifacts.proof.url, `${backupPrefix}/proof.png`, {
+      access: "public",
+      contentType: "image/png",
+      allowOverwrite: true
+    }),
+    copy(artifacts.editable.url, `${backupPrefix}/design.json`, {
+      access: "public",
+      contentType: "application/json",
+      allowOverwrite: true
+    }),
+    copy(artifacts.source.url, `${backupPrefix}/source.svg`, {
+      access: "public",
+      contentType: "image/svg+xml",
+      allowOverwrite: true
+    })
+  ]);
+
+  const manifest = {
+    version: 2,
+    savePipeline: "direct-artifact-upload",
+    id,
+    savedAt: metadata.savedAt,
+    previewUrl: artifacts.proof.url,
+    jsonUrl: artifacts.editable.url,
+    sourceSvgUrl: artifacts.source.url,
+    sourceSvgBlobUrl: artifacts.source.url,
+    sourceSvgDownloadUrl: blobDownloadUrl(artifacts.source),
+    printSourceUrl: blobDownloadUrl(artifacts.source),
+    lookupUrl: fulfillmentLookupUrl(id),
+    productTitle: metadata.product.title,
+    productHandle: metadata.product.handle,
+    teamName: metadata.teamName,
+    parentDesignId: metadata.parentDesignId,
+    product: metadata.product,
+    artboard: metadata.artboard,
+    layers,
+    sourceSvgStats,
+    artifactSizes: {
+      proof: artifacts.proof.size || cleanNumber(payload?.artifactSizes?.proof) || 0,
+      editable: artifacts.editable.size || cleanNumber(payload?.artifactSizes?.editable) || 0,
+      source: artifacts.source.size || cleanNumber(payload?.artifactSizes?.source) || 0
+    },
+    backupStatus: "complete",
+    backup: {
+      previewUrl: backupProof.url,
+      jsonUrl: backupEditable.url,
+      sourceSvgUrl: backupSource.url,
+      sourceSvgDownloadUrl: blobDownloadUrl(backupSource)
+    }
+  };
+  const backupManifestBlob = await put(`${backupPrefix}/manifest.json`, JSON.stringify(manifest, null, 2), {
+    access: "public",
+    contentType: "application/json",
+    addRandomSuffix: false,
+    allowOverwrite: true
+  });
+  manifest.backupManifestUrl = backupManifestBlob.url;
+  const manifestBlob = await put(`team-banner-designs/${id}.manifest.json`, JSON.stringify(manifest, null, 2), {
+    access: "public",
+    contentType: "application/json",
+    addRandomSuffix: false,
+    allowOverwrite: true
+  });
+
+  return {
+    ...manifest,
+    manifestUrl: manifestBlob.url,
+    uploadCompleted: true,
+    requestOrigin: requestOrigin(request)
+  };
+}
+
 function safeDesignId(value) {
   const clean = String(value || "").trim();
   return /^design_[0-9]+_[a-z0-9]+$/i.test(clean) ? clean : "";
@@ -115,8 +257,10 @@ async function readStoredDesign(request, id) {
         previewUrl: preview?.url || manifest.previewUrl || "",
         jsonUrl: editableJson?.url || manifest.jsonUrl || "",
         lookupUrl: fulfillmentLookupUrl(id),
-        sourceSvgUrl: sourceSvg ? designSvgUrl(requestOrigin(request), id) : "",
+        sourceSvgUrl: manifest.sourceSvgUrl || (sourceSvg ? designSvgUrl(requestOrigin(request), id) : ""),
         sourceSvgBlobUrl: sourceSvg?.url || manifest.sourceSvgBlobUrl || manifest.sourceSvgUrl || "",
+        sourceSvgDownloadUrl: manifest.sourceSvgDownloadUrl || blobDownloadUrl(sourceSvg),
+        printSourceUrl: manifest.printSourceUrl || manifest.sourceSvgDownloadUrl || blobDownloadUrl(sourceSvg),
         manifestUrl: manifest.manifestUrl || manifestBlob.url
       };
     }
@@ -130,6 +274,8 @@ async function readStoredDesign(request, id) {
     jsonUrl: editableJson?.url || "",
     sourceSvgUrl: sourceSvg ? designSvgUrl(requestOrigin(request), id) : "",
     sourceSvgBlobUrl: sourceSvg?.url || "",
+    sourceSvgDownloadUrl: blobDownloadUrl(sourceSvg),
+    printSourceUrl: blobDownloadUrl(sourceSvg),
     manifestUrl: manifestBlob?.url || "",
     lookupUrl: fulfillmentLookupUrl(id)
   };
@@ -188,8 +334,10 @@ async function readRecentDesigns(request, limit) {
       savedAt: manifest.savedAt || group.uploadedAt,
       previewUrl: manifest.previewUrl || previewBlob?.url || "",
       jsonUrl: manifest.jsonUrl || jsonBlob?.url || "",
-      sourceSvgUrl: svgBlob ? designSvgUrl(requestOrigin(request), id) : (manifest.sourceSvgUrl || ""),
+      sourceSvgUrl: manifest.sourceSvgUrl || (svgBlob ? designSvgUrl(requestOrigin(request), id) : ""),
       sourceSvgBlobUrl: svgBlob?.url || manifest.sourceSvgBlobUrl || "",
+      sourceSvgDownloadUrl: manifest.sourceSvgDownloadUrl || blobDownloadUrl(svgBlob),
+      printSourceUrl: manifest.printSourceUrl || manifest.sourceSvgDownloadUrl || blobDownloadUrl(svgBlob),
       manifestUrl: manifest.manifestUrl || manifestBlob?.url || "",
       lookupUrl: fulfillmentLookupUrl(id)
     };
@@ -272,7 +420,30 @@ export default async function handler(request, response) {
   try {
     const body = await readBody(request);
     const payload = JSON.parse(body);
-    const id = `design_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+    const action = cleanString(payload.action, 40).toLowerCase();
+    if (action === "reserve") {
+      if (!process.env.BLOB_READ_WRITE_TOKEN) {
+        response.status(503).json({ error: "Design storage is not configured." });
+        return;
+      }
+      const id = createDesignId();
+      response.status(200).json({
+        id,
+        uploadToken: createDesignUploadToken(id),
+        uploadUrl: `${requestOrigin(request)}/api/design-upload`
+      });
+      return;
+    }
+    if (action === "finalize") {
+      if (!process.env.BLOB_READ_WRITE_TOKEN) {
+        response.status(503).json({ error: "Design storage is not configured." });
+        return;
+      }
+      response.status(200).json(await finalizeDirectDesign(request, payload));
+      return;
+    }
+
+    const id = createDesignId();
     const png = parsePngDataUrl(payload.image);
     const rawSourceSvg = parseSvg(payload.svg);
     const sourceSvg = rawSourceSvg
@@ -331,6 +502,8 @@ export default async function handler(request, response) {
       jsonUrl: jsonBlob.url,
       sourceSvgUrl: sourceSvgBlob ? designSvgUrl(requestOrigin(request), id) : "",
       sourceSvgBlobUrl: sourceSvgBlob?.url || "",
+      sourceSvgDownloadUrl: blobDownloadUrl(sourceSvgBlob),
+      printSourceUrl: blobDownloadUrl(sourceSvgBlob),
       lookupUrl: fulfillmentLookupUrl(id),
       productTitle: cleanString(product.title, 240),
       productHandle: cleanString(product.handle, 240),
