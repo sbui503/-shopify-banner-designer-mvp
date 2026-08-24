@@ -27,8 +27,12 @@ export type StoredDesignManifest = {
   sourceSvgStats?: {
     objectCount?: number;
     imageCount?: number;
+    rasterImageCount?: number;
+    vectorObjectCount?: number;
+    namedLayerCount?: number;
     textCount?: number;
     layered?: boolean;
+    illustratorLayered?: boolean;
   };
   layers?: Array<Record<string, unknown>>;
   project?: Record<string, unknown> | null;

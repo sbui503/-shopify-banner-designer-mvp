@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { buildAdminDesignSvgUrl, buildLayerVerificationUrl } from "@/lib/design-verification-url";
+import { downloadIllustratorSvg } from "@/lib/illustrator-svg-download";
 
 type DesignLayer = {
   id?: string;
@@ -33,6 +34,7 @@ type DesignManifest = {
   previewUrl?: string;
   jsonUrl?: string;
   sourceSvgUrl?: string;
+  sourceSvgBlobUrl?: string;
   sourceSvgDownloadUrl?: string;
   printSourceUrl?: string;
   manifestUrl?: string;
@@ -50,8 +52,12 @@ type DesignManifest = {
   sourceSvgStats?: {
     objectCount?: number;
     imageCount?: number;
+    rasterImageCount?: number;
+    vectorObjectCount?: number;
+    namedLayerCount?: number;
     textCount?: number;
     layered?: boolean;
+    illustratorLayered?: boolean;
   };
   project?: {
     objects?: DesignLayer[];
@@ -173,6 +179,29 @@ export function FulfillmentLookupClient({
   const [recentDesigns, setRecentDesigns] = useState<DesignManifest[]>([]);
   const [recentStatus, setRecentStatus] = useState("Loading recent customer designs...");
   const [recentBusy, setRecentBusy] = useState(true);
+  const [downloadingSvgId, setDownloadingSvgId] = useState("");
+
+  const downloadForIllustrator = useCallback(async (design: DesignManifest) => {
+    const id = String(design.id || "").trim();
+    if (!id) return;
+    setDownloadingSvgId(id);
+    setStatus(`Preparing ${id} as named Illustrator layers...`);
+    try {
+      const result = await downloadIllustratorSvg({
+        id,
+        sourceSvgUrl: design.sourceSvgUrl,
+        sourceSvgBlobUrl: design.sourceSvgBlobUrl,
+        sourceSvgDownloadUrl: design.sourceSvgDownloadUrl || design.printSourceUrl,
+        jsonUrl: design.jsonUrl,
+        layers: design.layers
+      });
+      setStatus(`Downloaded ${id}: ${result.layerCount} named layers (${result.vectorLayerCount} vector/text, ${result.rasterLayerCount} embedded image).`);
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Illustrator SVG download failed.");
+    } finally {
+      setDownloadingSvgId("");
+    }
+  }, []);
 
   const textLayers = useMemo(() => {
     const layers = [
@@ -425,11 +454,15 @@ export function FulfillmentLookupClient({
                   </Button>
                 ) : null}
                 {layeredSvgFileUrl(manifest, true) ? (
-                  <Button asChild variant="outline" size="sm">
-                    <a href={layeredSvgFileUrl(manifest, true)} download={`${manifest.id || "team-banner-design"}.svg`}>
-                      <Download className="h-4 w-4" />
-                      Download SVG for Illustrator
-                    </a>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    disabled={downloadingSvgId === manifest.id}
+                    onClick={() => void downloadForIllustrator(manifest)}
+                  >
+                    <Download className="h-4 w-4" />
+                    {downloadingSvgId === manifest.id ? "Preparing layers..." : "Download editable SVG"}
                   </Button>
                 ) : null}
                 {externalLinks(manifest).map(([label, href]) => (
@@ -453,6 +486,7 @@ export function FulfillmentLookupClient({
                   </Badge>
                   {manifest.adminUploaded ? <Badge variant="secondary">Admin recovery</Badge> : null}
                   {manifest.sourceSvgUrl ? <Badge variant="success">Source SVG saved</Badge> : null}
+                  {manifest.sourceSvgStats?.illustratorLayered ? <Badge variant="success">Illustrator layers saved</Badge> : null}
                   {manifest.backupStatus === "complete" ? <Badge variant="success">Backup complete</Badge> : null}
                   {manifest.sourceSvgStats ? <Badge variant="secondary">{manifest.sourceSvgStats.objectCount || 0} objects</Badge> : null}
                   {manifest.sourceSvgStats ? <Badge variant="secondary">{manifest.sourceSvgStats.textCount || 0} text layers</Badge> : null}
@@ -558,11 +592,15 @@ export function FulfillmentLookupClient({
                       </Button>
                     ) : null}
                     {layeredSvgFileUrl(design, true) ? (
-                      <Button asChild variant="outline" size="sm">
-                        <a href={layeredSvgFileUrl(design, true)} download={`${design.id || "team-banner-design"}.svg`}>
-                          <Download className="h-4 w-4" />
-                          SVG
-                        </a>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        type="button"
+                        disabled={downloadingSvgId === design.id}
+                        onClick={() => void downloadForIllustrator(design)}
+                      >
+                        <Download className="h-4 w-4" />
+                        {downloadingSvgId === design.id ? "Preparing..." : "Editable SVG"}
                       </Button>
                     ) : null}
                   </div>

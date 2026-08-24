@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { buildAdminDesignSvgUrl, buildLayerVerificationUrl } from "../lib/design-verification-url";
+import { illustratorLayerDescriptors, projectLayerObjects } from "../lib/illustrator-svg-download";
 import { designIdFromPngBytes, normalizeDesignId } from "../lib/png-design-id";
 
 const ONE_PIXEL_PNG = Buffer.from(
@@ -79,4 +80,21 @@ test("uses direct Blob URLs for large self-contained SVG files", () => {
 
   assert.equal(buildAdminDesignSvgUrl(input), input.sourceSvgUrl);
   assert.equal(buildAdminDesignSvgUrl({ ...input, download: true }), input.sourceSvgDownloadUrl);
+});
+
+test("rebuilds named Illustrator layers from saved editable JSON", () => {
+  const layers = projectLayerObjects({
+    objects: [
+      { name: "Background", type: "image" },
+      { name: "Player", type: "i-text" },
+      { name: "Player", type: "path" }
+    ]
+  });
+  const descriptors = illustratorLayerDescriptors(layers);
+
+  assert.equal(descriptors.length, 3);
+  assert.equal(descriptors[0].kind, "embedded-raster");
+  assert.equal(descriptors[1].kind, "editable-vector");
+  assert.notEqual(descriptors[1].id, descriptors[2].id);
+  assert.match(descriptors[0].id, /^Layer_001_Background$/);
 });
