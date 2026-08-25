@@ -115,6 +115,14 @@
     return "";
   }
 
+  function editableUploadKind(file) {
+    const name = String(file && file.name || "").toLowerCase();
+    const type = String(file && file.type || "").toLowerCase();
+    if (name.endsWith(".png") || type === "image/png") return "saved-png";
+    if (name.endsWith(".tsbd") || name.endsWith(".json") || type === "application/json") return "project";
+    return "";
+  }
+
   async function pngBlobWithDesignId(source, designId) {
     const sourceBytes = typeof source === "string"
       ? pngBytesFromDataUrl(source)
@@ -136,6 +144,7 @@
     addDesignIdToPngBytes,
     designIdFromPngBytes,
     designIdFromPngFile,
+    editableUploadKind,
     normalizeDesignId,
     pngBlobWithDesignId
   };

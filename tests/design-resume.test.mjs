@@ -7,6 +7,7 @@ const {
   addDesignIdToPngBytes,
   designIdFromPngBytes,
   designIdFromPngFile,
+  editableUploadKind,
   normalizeDesignId
 } = globalThis.TeamBannerDesignResume;
 
@@ -60,4 +61,14 @@ test("reads embedded Design ID after the PNG is renamed", async () => {
 
 test("does not identify an ordinary PNG as a saved design", () => {
   assert.equal(designIdFromPngBytes(ONE_PIXEL_PNG), "");
+});
+
+test("routes saved PNGs through Design ID recovery instead of the JSON parser", () => {
+  assert.equal(
+    editableUploadKind({ name: "team-sport-banner-design_1770000000000_ab12cd34.png", type: "image/png" }),
+    "saved-png"
+  );
+  assert.equal(editableUploadKind({ name: "banner.tsbd", type: "application/octet-stream" }), "project");
+  assert.equal(editableUploadKind({ name: "banner.json", type: "application/json" }), "project");
+  assert.equal(editableUploadKind({ name: "logo.jpg", type: "image/jpeg" }), "");
 });

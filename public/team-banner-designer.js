@@ -35,6 +35,13 @@
     async designIdFromPngFile(file) {
       return this.normalizeDesignId(file && file.name);
     },
+    editableUploadKind(file) {
+      const name = String(file && file.name || "").toLowerCase();
+      const type = String(file && file.type || "").toLowerCase();
+      if (name.endsWith(".png") || type === "image/png") return "saved-png";
+      if (name.endsWith(".tsbd") || name.endsWith(".json") || type === "application/json") return "project";
+      return "";
+    },
     async pngBlobWithDesignId(source) {
       return typeof source === "string" ? fetch(source).then((response) => response.blob()) : source;
     }
@@ -7436,7 +7443,22 @@
     async function importProjectUpload(event) {
       const file = event.target.files && event.target.files[0];
       event.target.value = "";
-      await importProjectFile(file);
+      if (!file) return;
+      const uploadKind = designResume.editableUploadKind(file);
+      if (uploadKind === "saved-png") {
+        try {
+          if (await resumeDesignFromPng(file)) return;
+          throw new Error("That PNG is not a saved editable design. Choose the PNG downloaded by Save design.");
+        } catch (error) {
+          setStatus(error.message || "Could not open the saved design.");
+        }
+        return;
+      }
+      if (uploadKind === "project") {
+        await importProjectFile(file);
+        return;
+      }
+      setStatus("Choose a saved design PNG, TSBD, or JSON file.");
     }
 
     function loadImage(src) {
