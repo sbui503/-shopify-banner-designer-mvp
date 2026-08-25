@@ -2,11 +2,21 @@ import { PageHeader } from "@/components/admin/page-header";
 import { TemplateGeneratorAdminClient } from "@/components/admin/template-generator-admin-client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAdminData } from "@/lib/admin-data";
+import {
+  ADMIN_TEMPLATE_BANNER_TYPES,
+  ADMIN_TEMPLATE_SPORTS,
+  mergeAdminTemplates
+} from "@/lib/admin-template";
+import { listAdminTemplates } from "@/lib/admin-template-storage";
+
+export const dynamic = "force-dynamic";
 
 export default async function AdminTemplateGeneratorPage() {
   const data = await getAdminData();
-  const photoFrameTemplates = data.templates.filter((template) => template.photoFrame).length;
-  const editableTemplates = data.templates.filter((template) => template.editable).length;
+  const uploadedTemplates = await listAdminTemplates();
+  const templates = mergeAdminTemplates(data.templates, uploadedTemplates);
+  const photoFrameTemplates = templates.filter((template) => template.photoFrame).length;
+  const editableTemplates = templates.filter((template) => template.editable).length;
 
   return (
     <>
@@ -41,12 +51,16 @@ export default async function AdminTemplateGeneratorPage() {
             <CardDescription>JSON and CSV queue tools for QA and Shopify mapping.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-black">{data.system.templateCount}</div>
+            <div className="text-2xl font-black">{templates.length}</div>
           </CardContent>
         </Card>
       </div>
 
-      <TemplateGeneratorAdminClient templates={data.templates} sports={data.sports} bannerTypes={data.bannerTypes} />
+      <TemplateGeneratorAdminClient
+        templates={templates}
+        sports={[...ADMIN_TEMPLATE_SPORTS]}
+        bannerTypes={[...ADMIN_TEMPLATE_BANNER_TYPES]}
+      />
     </>
   );
 }

@@ -15,6 +15,7 @@ export type AdminAsset = {
 };
 
 export type AdminTemplate = {
+  id?: string;
   title: string;
   sport: string;
   bannerType: string;
@@ -23,6 +24,8 @@ export type AdminTemplate = {
   status: string;
   editable: boolean;
   photoFrame: boolean;
+  uploadedAt?: string;
+  originalName?: string;
 };
 
 export type AdminProduct = {

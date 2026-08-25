@@ -11,7 +11,8 @@ import {
   Ruler,
   ShoppingCart,
   Sparkles,
-  Type
+  Type,
+  Upload
 } from "lucide-react";
 import { PageHeader } from "@/components/admin/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -55,6 +56,7 @@ const trainingOrder = [
   "Edit text/color",
   "Align with ruler",
   "Use assets",
+  "Upload template",
   "Generate bulk",
   "Photo frame QA",
   "Save/cart/proof"
@@ -216,9 +218,40 @@ const workflowSections = [
     qa: "Object order is correct, no important text is hidden, and locked items stay fixed."
   },
   {
+    icon: Upload,
+    title: "7. Upload and verify a new design template",
+    viTitle: "7. Tải lên và kiểm tra mẫu thiết kế mới",
+    child: "Upload the layered SVG, then open it once to make sure every part can still be edited.",
+    childVi: "Tải file SVG có layer lên, rồi mở thử để chắc chắn từng phần vẫn chỉnh được.",
+    purpose: "Use this when staff adds a new production template to the shared admin library.",
+    steps: [
+      "Open Product Templates from the admin navigation.",
+      "In Upload New Template, enter the exact template title.",
+      "Choose the sport, banner type, player count, and Photo-frame option.",
+      "Choose one source: a layered SVG file up to 4 MB, or an owned Team Sport Banners/Vercel Blob SVG URL.",
+      "Click Upload template and wait for the success message with the detected SVG object count.",
+      "Search for the new title in Product Template Library and confirm the Admin upload badge appears.",
+      "Click Open to load the new template in the customer designer.",
+      "Open Layers and verify that text, vectors, logos, photos, and background remain separate editable objects.",
+      "Reload Product Templates and confirm the template remains in the library."
+    ],
+    viSteps: [
+      "Mở Product Templates trong menu admin.",
+      "Trong Upload New Template, nhập đúng tên mẫu.",
+      "Chọn môn thể thao, loại banner, số cầu thủ và tùy chọn Photo-frame.",
+      "Chọn một nguồn: file SVG có layer tối đa 4 MB, hoặc URL SVG thuộc Team Sport Banners/Vercel Blob.",
+      "Bấm Upload template và chờ thông báo thành công có số object SVG đã nhận.",
+      "Tìm tên mẫu mới trong Product Template Library và kiểm tra badge Admin upload.",
+      "Bấm Open để mở mẫu mới trong công cụ thiết kế của khách.",
+      "Mở Layers và kiểm tra chữ, vector, logo, ảnh và nền vẫn là các object chỉnh sửa riêng.",
+      "Tải lại trang Product Templates và xác nhận mẫu vẫn còn trong thư viện."
+    ],
+    qa: "Upload persists after reload, the source is an owned Blob SVG, the customer designer opens it, and Layers shows multiple editable objects instead of one flattened image."
+  },
+  {
     icon: Sparkles,
-    title: "7. Make designs in bulk",
-    viTitle: "7. Tạo thiết kế hàng loạt",
+    title: "8. Make designs in bulk",
+    viTitle: "8. Tạo thiết kế hàng loạt",
     child: "Type the team info once. The tool makes many poster choices for you.",
     childVi: "Nhập thông tin đội một lần. Công cụ tạo nhiều lựa chọn poster.",
     purpose: "Use for teams, leagues, rosters, or staff production work.",
@@ -250,8 +283,8 @@ const workflowSections = [
   },
   {
     icon: ImageIcon,
-    title: "8. Photo Frame workflow",
-    viTitle: "8. Quy trình Photo Frame",
+    title: "9. Photo Frame workflow",
+    viTitle: "9. Quy trình Photo Frame",
     child: "Put each player photo in a frame. Make sure every face is easy to see.",
     childVi: "Đặt ảnh từng cầu thủ vào khung. Nhớ kiểm tra mặt ai cũng thấy rõ.",
     purpose: "Use for player-photo banners and premium photo layouts.",
@@ -283,8 +316,8 @@ const workflowSections = [
   },
   {
     icon: ShoppingCart,
-    title: "9. Save, cart, proof, and fulfillment",
-    viTitle: "9. Lưu, cart, proof và fulfillment",
+    title: "10. Save, cart, proof, and fulfillment",
+    viTitle: "10. Lưu, cart, proof và fulfillment",
     child: "When the poster is done, save it and put it in the cart.",
     childVi: "Khi poster xong, lưu lại và cho vào giỏ hàng.",
     purpose: "Use after design approval or staff QA.",
@@ -373,6 +406,7 @@ const qaChecks = [
   "Properties opens from the bottom toolbar.",
   "Ruler opens top/left canvas rulers and draggable guides.",
   "Layers can select hard-to-click objects.",
+  "Admin template upload persists, uses an owned SVG source, and opens with multiple editable layers.",
   "Bulk generator previews one design and all layouts.",
   "Photo Frame guide/gallery appears and photos can be adjusted.",
   "Cart preview matches canvas.",
@@ -451,7 +485,7 @@ export default function AdminSupportGuidePage() {
     <>
       <PageHeader
         title="Support Guide"
-        description="Detailed bilingual playbook for staff training, customer support, bulk production, photo-frame QA, Canva-style ruler use, and controlled AI assistance."
+        description="Detailed bilingual playbook for staff training, template uploads, customer support, bulk production, photo-frame QA, Canva-style ruler use, and controlled AI assistance."
         badge="Training Playbook"
       />
 

@@ -1,8 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { ExternalLink } from "lucide-react";
 import type { AdminTemplate } from "@/lib/admin-data";
+import { buildAdminTemplateDesignerUrl } from "@/lib/admin-template";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -74,6 +77,7 @@ export function TemplatesClient({
               <TableHead>Players</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Source</TableHead>
+              <TableHead>Verify</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -82,6 +86,7 @@ export function TemplatesClient({
                 <TableCell>
                   <div className="font-semibold">{template.title}</div>
                   <div className="mt-1 flex flex-wrap gap-1">
+                    {template.uploadedAt ? <Badge variant="secondary">Admin upload</Badge> : null}
                     {template.photoFrame ? <Badge variant="success">Photo frame</Badge> : null}
                     {template.editable ? <Badge variant="secondary">Editable SVG</Badge> : <Badge variant="warning">Needs source</Badge>}
                   </div>
@@ -95,6 +100,16 @@ export function TemplatesClient({
                   </Badge>
                 </TableCell>
                 <TableCell className="max-w-[220px] truncate text-muted-foreground">{template.sourceUrl || "Not mapped"}</TableCell>
+                <TableCell>
+                  {template.sourceUrl ? (
+                    <Button asChild variant="outline" size="sm">
+                      <a href={buildAdminTemplateDesignerUrl(template)} target="_blank" rel="noreferrer">
+                        <ExternalLink className="h-4 w-4" />
+                        Open
+                      </a>
+                    </Button>
+                  ) : null}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

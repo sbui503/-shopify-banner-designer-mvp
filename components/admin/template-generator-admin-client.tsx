@@ -19,6 +19,7 @@ import {
   WandSparkles
 } from "lucide-react";
 import type { AdminTemplate } from "@/lib/admin-data";
+import { buildAdminTemplateDesignerUrl } from "@/lib/admin-template";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -85,16 +86,7 @@ function uniqueValues(values: Array<string | number>) {
 }
 
 function designerUrl(template: AdminTemplate) {
-  const params = new URLSearchParams({
-    templateSvg: template.sourceUrl,
-    productTitle: template.title,
-    productShape: template.bannerType,
-    productTags: `${template.sport},${template.bannerType},${template.playerCount}-player`,
-    autoLoadProduct: "1",
-    autoLayer: "svg",
-    panel: "templates"
-  });
-  return `/?${params.toString()}#team-banner-designer-section`;
+  return buildAdminTemplateDesignerUrl(template);
 }
 
 function downloadText(fileName: string, text: string, type = "application/json") {

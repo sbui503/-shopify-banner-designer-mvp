@@ -2,7 +2,7 @@
 
 English and Vietnamese customer-support guide for the Team Sport Banners design tool.
 
-Last updated: June 8, 2026
+Last updated: August 25, 2026
 
 ## Screenshot Index
 
@@ -638,3 +638,49 @@ Trước khi support nói sản phẩm đã sẵn sàng:
 - Add to cart chạy được.
 - Không thấy SVG bị lặp ô tile placeholder.
 - Asset đã restore không phụ thuộc nguồn SVG cũ bên ngoài.
+
+---
+
+## 13. Admin Template Upload Test
+
+### English
+
+1. Sign in to the admin panel and open **Product Templates**.
+2. Find **Upload New Template**.
+3. Enter the exact template title.
+4. Choose the sport, banner type, player count, and Photo-frame option.
+5. Choose one source: a layered SVG file up to 4 MB, or an owned Team Sport Banners/Vercel Blob SVG URL.
+6. Click **Upload template**.
+7. Wait for the success message showing the detected editable SVG object count.
+8. Search for the title in **Product Template Library** and confirm the **Admin upload** badge.
+9. Click **Open** and check the template in the customer designer.
+10. Open **Layers** and confirm text, vectors, logos, photos, and background are separate editable objects.
+11. Reload **Product Templates** and confirm the template remains in the library.
+
+Pass condition:
+
+- The template remains after reload.
+- Its source is an owned Vercel Blob SVG.
+- It opens in the customer designer.
+- Layers contains multiple editable objects, not one flattened image.
+
+### Tiếng Việt
+
+1. Đăng nhập admin và mở **Product Templates**.
+2. Tìm phần **Upload New Template**.
+3. Nhập đúng tên mẫu.
+4. Chọn môn thể thao, loại banner, số cầu thủ và tùy chọn Photo-frame.
+5. Chọn một nguồn: file SVG có layer tối đa 4 MB, hoặc URL SVG thuộc Team Sport Banners/Vercel Blob.
+6. Bấm **Upload template**.
+7. Chờ thông báo thành công hiển thị số object SVG chỉnh sửa được.
+8. Tìm tên mẫu trong **Product Template Library** và kiểm tra badge **Admin upload**.
+9. Bấm **Open** để kiểm tra mẫu trong công cụ thiết kế của khách.
+10. Mở **Layers** và xác nhận chữ, vector, logo, ảnh và nền là các object chỉnh sửa riêng.
+11. Tải lại **Product Templates** và xác nhận mẫu vẫn còn trong thư viện.
+
+Điều kiện đạt:
+
+- Mẫu vẫn còn sau khi tải lại trang.
+- Nguồn là SVG thuộc Vercel Blob của hệ thống.
+- Mẫu mở được trong công cụ thiết kế của khách.
+- Layers có nhiều object chỉnh sửa, không phải một hình phẳng.

@@ -1,14 +1,25 @@
 import { PageHeader } from "@/components/admin/page-header";
+import { TemplateUploadClient } from "@/components/admin/template-upload-client";
 import { TemplatesClient } from "@/components/admin/templates-client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAdminData } from "@/lib/admin-data";
+import {
+  ADMIN_TEMPLATE_BANNER_TYPES,
+  ADMIN_TEMPLATE_SPORTS,
+  mergeAdminTemplates
+} from "@/lib/admin-template";
+import { listAdminTemplates } from "@/lib/admin-template-storage";
+
+export const dynamic = "force-dynamic";
 
 export default async function TemplatesPage() {
   const data = await getAdminData();
+  const uploadedTemplates = await listAdminTemplates();
+  const templates = mergeAdminTemplates(data.templates, uploadedTemplates);
   const families = ["Hem & Grommet", "Pole Pocket", "Triangle", "Home Plate"].map((shape) => ({
     shape,
-    count: data.templates.filter((template) => template.bannerType === shape).length,
-    photoFrames: data.templates.filter((template) => template.bannerType === shape && template.photoFrame).length
+    count: templates.filter((template) => template.bannerType === shape).length,
+    photoFrames: templates.filter((template) => template.bannerType === shape && template.photoFrame).length
   }));
 
   return (
@@ -16,7 +27,7 @@ export default async function TemplatesPage() {
       <PageHeader
         title="Product Templates"
         description="Audit product template coverage across banner types, player-count layouts, and photo-frame generators."
-        badge={`${data.system.templateCount} templates`}
+        badge={`${templates.length} templates`}
       />
       <div className="mb-4 grid gap-4 lg:grid-cols-4">
         {families.map((family) => (
@@ -32,7 +43,14 @@ export default async function TemplatesPage() {
           </Card>
         ))}
       </div>
-      <TemplatesClient templates={data.templates} sports={data.sports} bannerTypes={data.bannerTypes} />
+      <div className="mb-5">
+        <TemplateUploadClient />
+      </div>
+      <TemplatesClient
+        templates={templates}
+        sports={[...ADMIN_TEMPLATE_SPORTS]}
+        bannerTypes={[...ADMIN_TEMPLATE_BANNER_TYPES]}
+      />
     </>
   );
 }
