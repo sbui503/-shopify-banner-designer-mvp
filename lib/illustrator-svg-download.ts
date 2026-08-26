@@ -1,4 +1,4 @@
-type DesignLayer = {
+export type DesignLayer = {
   id?: string;
   name?: string;
   sourceName?: string;
@@ -11,13 +11,25 @@ type DesignLayer = {
   };
 };
 
-type IllustratorDownloadInput = {
+export type IllustratorDownloadInput = {
   id: string;
   sourceSvgUrl?: string;
   sourceSvgBlobUrl?: string;
   sourceSvgDownloadUrl?: string;
   jsonUrl?: string;
   layers?: DesignLayer[];
+  project?: unknown;
+};
+
+export type IllustratorPreparedSvg = {
+  svg: string;
+  rawSvg: string;
+  sourceUrl: string;
+  project: unknown;
+  rawJson: string;
+  layerCount: number;
+  rasterLayerCount: number;
+  vectorLayerCount: number;
 };
 
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
@@ -84,7 +96,7 @@ export function illustratorLayerDescriptors(layers: DesignLayer[]) {
   });
 }
 
-function prepareIllustratorSvg(rawSvg: string, layers: DesignLayer[]) {
+export function prepareIllustratorSvg(rawSvg: string, layers: DesignLayer[]) {
   const documentNode = new DOMParser().parseFromString(rawSvg, "image/svg+xml");
   const root = documentNode.documentElement;
   if (documentNode.querySelector("parsererror") || root.localName !== "svg") {
@@ -137,7 +149,7 @@ async function fetchFirstSvg(urls: string[]) {
         lastError = `The layered SVG request failed (${response.status}).`;
         continue;
       }
-      return await response.text();
+      return { svg: await response.text(), url };
     } catch (error) {
       lastError = error instanceof Error ? error.message : lastError;
     }
@@ -145,7 +157,19 @@ async function fetchFirstSvg(urls: string[]) {
   throw new Error(lastError);
 }
 
-export async function downloadIllustratorSvg(input: IllustratorDownloadInput) {
+async function fetchProject(url: string | undefined) {
+  if (!url) return null;
+  try {
+    const response = await fetch(url, { cache: "no-store" });
+    if (!response.ok) return null;
+    const raw = await response.text();
+    return { value: JSON.parse(raw) as unknown, raw };
+  } catch {
+    return null;
+  }
+}
+
+export async function prepareIllustratorSvgDownload(input: IllustratorDownloadInput): Promise<IllustratorPreparedSvg> {
   const sourceUrls = [...new Set([
     input.sourceSvgBlobUrl,
     input.sourceSvgUrl,
@@ -153,17 +177,25 @@ export async function downloadIllustratorSvg(input: IllustratorDownloadInput) {
   ].filter((value): value is string => Boolean(value)))];
   if (!sourceUrls.length) throw new Error("No layered SVG is stored for this design.");
 
-  const [rawSvg, project] = await Promise.all([
+  const [source, storedProject] = await Promise.all([
     fetchFirstSvg(sourceUrls),
-    input.jsonUrl
-      ? fetch(input.jsonUrl, { cache: "no-store" })
-        .then((response) => response.ok ? response.json() : null)
-        .catch(() => null)
-      : Promise.resolve(null)
+    fetchProject(input.jsonUrl)
   ]);
+  const project = storedProject?.value ?? input.project ?? null;
   const projectLayers = projectLayerObjects(project);
-  const result = prepareIllustratorSvg(rawSvg, projectLayers.length ? projectLayers : (input.layers || []));
+  const result = prepareIllustratorSvg(source.svg, projectLayers.length ? projectLayers : (input.layers || []));
   if (!result.layerCount) throw new Error("The SVG does not contain separate artwork objects.");
+  return {
+    ...result,
+    rawSvg: source.svg,
+    sourceUrl: source.url,
+    project,
+    rawJson: storedProject?.raw || ""
+  };
+}
+
+export async function downloadIllustratorSvg(input: IllustratorDownloadInput) {
+  const result = await prepareIllustratorSvgDownload(input);
 
   const blob = new Blob([result.svg], { type: "image/svg+xml" });
   const url = URL.createObjectURL(blob);

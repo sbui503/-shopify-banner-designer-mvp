@@ -2,7 +2,7 @@
 
 import NextImage from "next/image";
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { Download, ExternalLink, Eye, Layers3, RefreshCw, Search } from "lucide-react";
+import { Download, ExternalLink, Eye, Layers3, Package as PackageIcon, RefreshCw, Search } from "lucide-react";
 import {
   DesignRecoveryUpload,
   type RecoveredDesignManifest
@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { buildAdminDesignSvgUrl, buildLayerVerificationUrl } from "@/lib/design-verification-url";
+import { downloadIllustratorPackage } from "@/lib/illustrator-package";
 import { downloadIllustratorSvg } from "@/lib/illustrator-svg-download";
 
 type DesignLayer = {
@@ -180,6 +181,37 @@ export function FulfillmentLookupClient({
   const [recentStatus, setRecentStatus] = useState("Loading recent customer designs...");
   const [recentBusy, setRecentBusy] = useState(true);
   const [downloadingSvgId, setDownloadingSvgId] = useState("");
+  const [downloadingPackageId, setDownloadingPackageId] = useState("");
+
+  const downloadProductionPackage = useCallback(async (design: DesignManifest) => {
+    const id = String(design.id || "").trim();
+    if (!id) return;
+    setDownloadingPackageId(id);
+    setStatus(`Building the Illustrator production package for ${id}...`);
+    try {
+      const result = await downloadIllustratorPackage({
+        id,
+        previewUrl: design.previewUrl,
+        jsonUrl: design.jsonUrl,
+        sourceSvgUrl: design.sourceSvgUrl,
+        sourceSvgBlobUrl: design.sourceSvgBlobUrl,
+        sourceSvgDownloadUrl: design.sourceSvgDownloadUrl || design.printSourceUrl,
+        printSourceUrl: design.printSourceUrl,
+        productTitle: designProductTitle(design),
+        savedAt: design.savedAt,
+        layers: design.layers,
+        project: design.project
+      });
+      setStatus(
+        `Downloaded ${result.fileName}: ${result.classification} artwork, ${result.layerCount} named layers, `
+        + `${result.textCount} live text objects, and ${result.imageCount} raster image objects.`
+      );
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Illustrator package download failed.");
+    } finally {
+      setDownloadingPackageId("");
+    }
+  }, []);
 
   const downloadForIllustrator = useCallback(async (design: DesignManifest) => {
     const id = String(design.id || "").trim();
@@ -435,8 +467,19 @@ export function FulfillmentLookupClient({
                 )}
               </div>
               <div className="flex flex-wrap gap-2">
+                {layeredSvgFileUrl(manifest, true) ? (
+                  <Button
+                    size="sm"
+                    type="button"
+                    disabled={downloadingPackageId === manifest.id}
+                    onClick={() => void downloadProductionPackage(manifest)}
+                  >
+                    <PackageIcon className="h-4 w-4" />
+                    {downloadingPackageId === manifest.id ? "Building package..." : "Download Illustrator package"}
+                  </Button>
+                ) : null}
                 {layerVerificationUrl(manifest) ? (
-                  <Button asChild size="sm">
+                  <Button asChild variant="outline" size="sm">
                     <a href={layerVerificationUrl(manifest)} target="_blank" rel="noreferrer">
                       <Layers3 className="h-4 w-4" />
                       Verify layers in design tool
@@ -462,7 +505,7 @@ export function FulfillmentLookupClient({
                     onClick={() => void downloadForIllustrator(manifest)}
                   >
                     <Download className="h-4 w-4" />
-                    {downloadingSvgId === manifest.id ? "Preparing layers..." : "Download editable SVG"}
+                    {downloadingSvgId === manifest.id ? "Preparing layers..." : "Download SVG only"}
                   </Button>
                 ) : null}
                 {externalLinks(manifest).map(([label, href]) => (
@@ -593,6 +636,17 @@ export function FulfillmentLookupClient({
                     ) : null}
                     {layeredSvgFileUrl(design, true) ? (
                       <Button
+                        size="sm"
+                        type="button"
+                        disabled={downloadingPackageId === design.id}
+                        onClick={() => void downloadProductionPackage(design)}
+                      >
+                        <PackageIcon className="h-4 w-4" />
+                        {downloadingPackageId === design.id ? "Building..." : "Illustrator package"}
+                      </Button>
+                    ) : null}
+                    {layeredSvgFileUrl(design, true) ? (
+                      <Button
                         variant="outline"
                         size="sm"
                         type="button"
@@ -600,7 +654,7 @@ export function FulfillmentLookupClient({
                         onClick={() => void downloadForIllustrator(design)}
                       >
                         <Download className="h-4 w-4" />
-                        {downloadingSvgId === design.id ? "Preparing..." : "Editable SVG"}
+                        {downloadingSvgId === design.id ? "Preparing..." : "SVG only"}
                       </Button>
                     ) : null}
                   </div>
