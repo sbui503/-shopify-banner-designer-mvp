@@ -13,7 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { buildAdminDesignSvgUrl, buildLayerVerificationUrl } from "@/lib/design-verification-url";
 import { downloadIllustratorPackage } from "@/lib/illustrator-package";
-import { downloadIllustratorSvg } from "@/lib/illustrator-svg-download";
+import { downloadLayeredSvg } from "@/lib/illustrator-svg-download";
 
 type DesignLayer = {
   id?: string;
@@ -207,19 +207,19 @@ export function FulfillmentLookupClient({
         + `${result.textCount} live text objects, and ${result.imageCount} raster image objects.`
       );
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Illustrator package download failed.");
+      setStatus(error instanceof Error ? error.message : "Backup package download failed.");
     } finally {
       setDownloadingPackageId("");
     }
   }, []);
 
-  const downloadForIllustrator = useCallback(async (design: DesignManifest) => {
+  const downloadEditableSvg = useCallback(async (design: DesignManifest) => {
     const id = String(design.id || "").trim();
     if (!id) return;
     setDownloadingSvgId(id);
-    setStatus(`Preparing ${id} as named Illustrator layers...`);
+    setStatus(`Preparing ${id} as a named-layer editable SVG...`);
     try {
-      const result = await downloadIllustratorSvg({
+      const result = await downloadLayeredSvg({
         id,
         sourceSvgUrl: design.sourceSvgUrl,
         sourceSvgBlobUrl: design.sourceSvgBlobUrl,
@@ -227,9 +227,9 @@ export function FulfillmentLookupClient({
         jsonUrl: design.jsonUrl,
         layers: design.layers
       });
-      setStatus(`Downloaded ${id}: ${result.layerCount} named layers (${result.vectorLayerCount} vector/text, ${result.rasterLayerCount} embedded image).`);
+      setStatus(`Downloaded ${id}: ${result.layerCount} named SVG layers (${result.vectorLayerCount} text/vector, ${result.rasterLayerCount} image).`);
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Illustrator SVG download failed.");
+      setStatus(error instanceof Error ? error.message : "Layered SVG download failed.");
     } finally {
       setDownloadingSvgId("");
     }
@@ -471,11 +471,23 @@ export function FulfillmentLookupClient({
                   <Button
                     size="sm"
                     type="button"
+                    disabled={downloadingSvgId === manifest.id}
+                    onClick={() => void downloadEditableSvg(manifest)}
+                  >
+                    <Download className="h-4 w-4" />
+                    {downloadingSvgId === manifest.id ? "Preparing layers..." : "Download layered SVG"}
+                  </Button>
+                ) : null}
+                {layeredSvgFileUrl(manifest, true) ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
                     disabled={downloadingPackageId === manifest.id}
                     onClick={() => void downloadProductionPackage(manifest)}
                   >
                     <PackageIcon className="h-4 w-4" />
-                    {downloadingPackageId === manifest.id ? "Building package..." : "Download Illustrator package"}
+                    {downloadingPackageId === manifest.id ? "Building package..." : "Download backup package"}
                   </Button>
                 ) : null}
                 {layerVerificationUrl(manifest) ? (
@@ -494,18 +506,6 @@ export function FulfillmentLookupClient({
                       <Eye className="h-4 w-4" />
                       Preview layered SVG
                     </a>
-                  </Button>
-                ) : null}
-                {layeredSvgFileUrl(manifest, true) ? (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    type="button"
-                    disabled={downloadingSvgId === manifest.id}
-                    onClick={() => void downloadForIllustrator(manifest)}
-                  >
-                    <Download className="h-4 w-4" />
-                    {downloadingSvgId === manifest.id ? "Preparing layers..." : "Download SVG only"}
                   </Button>
                 ) : null}
                 {externalLinks(manifest).map(([label, href]) => (
@@ -638,11 +638,11 @@ export function FulfillmentLookupClient({
                       <Button
                         size="sm"
                         type="button"
-                        disabled={downloadingPackageId === design.id}
-                        onClick={() => void downloadProductionPackage(design)}
+                        disabled={downloadingSvgId === design.id}
+                        onClick={() => void downloadEditableSvg(design)}
                       >
-                        <PackageIcon className="h-4 w-4" />
-                        {downloadingPackageId === design.id ? "Building..." : "Illustrator package"}
+                        <Download className="h-4 w-4" />
+                        {downloadingSvgId === design.id ? "Preparing..." : "Layered SVG"}
                       </Button>
                     ) : null}
                     {layeredSvgFileUrl(design, true) ? (
@@ -650,11 +650,11 @@ export function FulfillmentLookupClient({
                         variant="outline"
                         size="sm"
                         type="button"
-                        disabled={downloadingSvgId === design.id}
-                        onClick={() => void downloadForIllustrator(design)}
+                        disabled={downloadingPackageId === design.id}
+                        onClick={() => void downloadProductionPackage(design)}
                       >
-                        <Download className="h-4 w-4" />
-                        {downloadingSvgId === design.id ? "Preparing..." : "SVG only"}
+                        <PackageIcon className="h-4 w-4" />
+                        {downloadingPackageId === design.id ? "Building..." : "Backup package"}
                       </Button>
                     ) : null}
                   </div>

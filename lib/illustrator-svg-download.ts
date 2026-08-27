@@ -194,14 +194,18 @@ export async function prepareIllustratorSvgDownload(input: IllustratorDownloadIn
   };
 }
 
-export async function downloadIllustratorSvg(input: IllustratorDownloadInput) {
+export function layeredSvgFileName(id: string) {
+  return `${id || "team-banner-design"}-layered-editable.svg`;
+}
+
+export async function downloadLayeredSvg(input: IllustratorDownloadInput) {
   const result = await prepareIllustratorSvgDownload(input);
 
   const blob = new Blob([result.svg], { type: "image/svg+xml" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `${input.id || "team-banner-design"}-illustrator-layers.svg`;
+  link.download = layeredSvgFileName(input.id);
   link.style.display = "none";
   document.body.appendChild(link);
   link.click();
