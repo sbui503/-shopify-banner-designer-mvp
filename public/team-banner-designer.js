@@ -389,6 +389,14 @@
   let ownedAssetMapPromise = null;
   const ownedAssetUrlByPath = new Map();
 
+  function registerOwnedAssetMap(data) {
+    Object.entries(data && data.assets && typeof data.assets === "object" ? data.assets : {}).forEach(([key, record]) => {
+      const url = typeof record === "string" ? record : record && record.url;
+      if (key && url && isOwnedAssetUrl(url)) ownedAssetUrlByPath.set(key, url);
+    });
+    return ownedAssetUrlByPath;
+  }
+
   function sourceAssetPathKey(value) {
     let raw = htmlDecode(String(value || "").trim());
     if (!raw) return "";
@@ -457,10 +465,7 @@
           return response.json();
         })
         .then((data) => {
-          Object.entries(data && data.assets && typeof data.assets === "object" ? data.assets : {}).forEach(([key, record]) => {
-            const url = typeof record === "string" ? record : record && record.url;
-            if (key && url && isOwnedAssetUrl(url)) ownedAssetUrlByPath.set(key, url);
-          });
+          registerOwnedAssetMap(data);
           ownedAssetMapLoadedFor = resolvedManifestUrl;
           return ownedAssetUrlByPath;
         })
@@ -1015,12 +1020,14 @@
       );
       const tagLayerConfig = parseLayerConfigTags(launch.tags, launch.shape, launch.image);
       const productTagLayerConfig = parseLayerConfigTags(match.tags || launch.tags, launch.shape, launch.image || match.image);
-      const requiredLayerConfig = mergeLayerConfig(
-        launch.shape,
-        launch.image,
-        tagLayerConfig,
-        productTagLayerConfig
-      );
+      const requiredLayerConfig = match.ownedRuntime === true
+        ? mergeLayerConfig(launch.shape, launch.image, match.layerConfig)
+        : mergeLayerConfig(
+            launch.shape,
+            launch.image,
+            tagLayerConfig,
+            productTagLayerConfig
+          );
       const manifestLayerConfig = mergeLayerConfig(
         launch.shape,
         launch.image,
@@ -1191,6 +1198,7 @@
   }
 
   async function detectProductSourceSvgMap(root, launch) {
+    if (launch.product && launch.product.ownedRuntime === true && hasVerifiedProductSource(launch)) return null;
     const defaultMap = launch.allowCandidateSourceMap ? "/team-banner-source-svg-candidates.json" : "/team-banner-source-svg-map.json";
     const url = launch.sourceMapUrl || root.dataset.sourceMapUrl || (window.location.protocol === "file:" ? "" : resolveSourceUrl(defaultMap));
     if (!url) return null;
@@ -1334,8 +1342,11 @@
 
     const launch = readLaunchParams(root);
     const ownedAssetMapUrl = launch.ownedAssetMapUrl || root.dataset.ownedAssetMapUrl || DEFAULT_OWNED_ASSET_MAP_URL;
-    await ensureOwnedAssetMapLoaded(ownedAssetMapUrl);
+    const initialStatus = root.querySelector("[data-tbd-status]");
+    if (initialStatus && launch.hasDesign) initialStatus.textContent = "Loading exact owned product design...";
+    const ownedAssetMapLoad = ensureOwnedAssetMapLoaded(ownedAssetMapUrl);
     await detectProductFromManifest(root, launch);
+    await ownedAssetMapLoad;
     await detectProductSourceSvgMap(root, launch);
     await detectProductLayerMap(root, launch);
     await detectShapeFromTemplateSvg(launch);
@@ -1532,6 +1543,12 @@
     let templateSearchTerm = "";
     let templateSportFilter = "all";
     let templateTypeFilter = "all";
+    let assetManifestLoading = false;
+    let assetManifestLoaded = false;
+    let templateProductsLoading = false;
+    let templateProductsLoaded = false;
+    let svgTemplatesLoading = false;
+    let svgTemplatesLoaded = false;
     let generatedTemplateMeta = "";
     let generatorAssetSearchTerm = "";
     let generatorAllPreviewItems = [];
@@ -3447,32 +3464,39 @@
     }
 
     async function loadTemplateProducts() {
+      if (templateProductsLoaded || templateProductsLoading) return;
       if (!els.templateTrack) return;
-      const url = launch.productManifestUrl || root.dataset.productsUrl || (window.location.protocol === "file:" ? "" : resolveSourceUrl("/team-banner-products.json"));
-      if (!url) {
-        renderTemplates();
-        return;
-      }
+      templateProductsLoading = true;
       try {
-        const response = await fetch(url, { credentials: "omit" });
-        if (!response.ok) throw new Error("Template manifest request failed");
-        const data = await response.json();
-        const products = Array.isArray(data.products) ? data.products : Array.isArray(data) ? data : [];
-        const seen = new Set();
-        templateProducts = products
-          .filter((product) => !product.status || String(product.status).toLowerCase() === "active")
-          .map(normalizeTemplateProduct)
-          .filter(Boolean)
-          .filter((template) => {
-            if (seen.has(template.key)) return false;
-            seen.add(template.key);
-            return true;
-          });
-      } catch (error) {
-        templateProducts = [];
-        setStatus("Template list could not load. Use product Customize buttons or Assets.");
+        const url = launch.productManifestUrl || root.dataset.productsUrl || (window.location.protocol === "file:" ? "" : resolveSourceUrl("/team-banner-products.json"));
+        if (!url) {
+          renderTemplates();
+          return;
+        }
+        try {
+          const response = await fetch(url, { credentials: "omit" });
+          if (!response.ok) throw new Error("Template manifest request failed");
+          const data = await response.json();
+          const products = Array.isArray(data.products) ? data.products : Array.isArray(data) ? data : [];
+          const seen = new Set();
+          templateProducts = products
+            .filter((product) => !product.status || String(product.status).toLowerCase() === "active")
+            .map(normalizeTemplateProduct)
+            .filter(Boolean)
+            .filter((template) => {
+              if (seen.has(template.key)) return false;
+              seen.add(template.key);
+              return true;
+            });
+        } catch (error) {
+          templateProducts = [];
+          setStatus("Template list could not load. Use product Customize buttons or Assets.");
+        }
+        renderTemplates();
+      } finally {
+        templateProductsLoading = false;
+        templateProductsLoaded = true;
       }
-      renderTemplates();
     }
 
     function stopTemplateAutoScroll() {
@@ -5148,27 +5172,38 @@
     }
 
     async function loadAssetManifest() {
-      await ensureOwnedAssetMapLoaded(ownedAssetMapUrl);
-      const url = launch.assetManifestUrl || root.dataset.assetsUrl;
-      if (!url) {
-        assets = FALLBACK_ASSETS;
-        return;
-      }
+      if (assetManifestLoaded || assetManifestLoading) return;
+      assetManifestLoading = true;
       try {
-        const response = await fetch(url, { credentials: "omit" });
-        if (!response.ok) throw new Error("Asset manifest request failed");
-        const data = await response.json();
-        assets = (Array.isArray(data.assets) ? data.assets : data)
-          .map(normalizeAsset)
-          .filter((asset) => asset.url);
-        renderGeneratorOptionPanels();
-        setStatus(`${assets.length} assets loaded.`);
-      } catch (error) {
-        assets = FALLBACK_ASSETS;
-        activeCategory = defaultCategoryForShape(ARTBOARD_SHAPE);
-        assetPage = 1;
-        renderGeneratorOptionPanels();
-        setStatus("Using fallback assets. Check the manifest URL.");
+        await ensureOwnedAssetMapLoaded(ownedAssetMapUrl);
+        const url = launch.assetManifestUrl || root.dataset.assetsUrl;
+        if (!url) {
+          assets = FALLBACK_ASSETS;
+          return;
+        }
+        try {
+          const response = await fetch(url, { credentials: "omit" });
+          if (!response.ok) throw new Error("Asset manifest request failed");
+          const data = await response.json();
+          assets = (Array.isArray(data.assets) ? data.assets : data)
+            .map(normalizeAsset)
+            .filter((asset) => asset.url);
+          if (launch.initialAssetCategory) {
+            const categories = new Set(["All", ...assets.map((asset) => asset.category || "Other")]);
+            if (categories.has(launch.initialAssetCategory)) activeCategory = launch.initialAssetCategory;
+          }
+          renderGeneratorOptionPanels();
+          setStatus(`${assets.length} assets loaded.`);
+        } catch (error) {
+          assets = FALLBACK_ASSETS;
+          activeCategory = defaultCategoryForShape(ARTBOARD_SHAPE);
+          assetPage = 1;
+          renderGeneratorOptionPanels();
+          setStatus("Using fallback assets. Check the manifest URL.");
+        }
+      } finally {
+        assetManifestLoading = false;
+        assetManifestLoaded = true;
       }
     }
 
@@ -8380,20 +8415,27 @@
     }
 
     async function loadSvgTemplates() {
+      if (svgTemplatesLoaded || svgTemplatesLoading) return;
       const url = root.dataset.svgTemplatesUrl;
       if (!url || (!els.svgTemplates && !els.generatorSvg)) return;
+      svgTemplatesLoading = true;
       try {
-        const response = await fetch(url, { credentials: "omit" });
-        if (!response.ok) throw new Error("SVG template manifest failed.");
-        const data = await response.json();
-        svgTemplates = (Array.isArray(data.templates) ? data.templates : [])
-          .map(normalizeSvgTemplateEntry)
-          .filter((template) => template.url);
-        renderSvgTemplates();
-        renderGeneratorSvgOptions();
-      } catch (error) {
-        if (els.svgTemplates) els.svgTemplates.innerHTML = "";
-        renderGeneratorSvgOptions();
+        try {
+          const response = await fetch(url, { credentials: "omit" });
+          if (!response.ok) throw new Error("SVG template manifest failed.");
+          const data = await response.json();
+          svgTemplates = (Array.isArray(data.templates) ? data.templates : [])
+            .map(normalizeSvgTemplateEntry)
+            .filter((template) => template.url);
+          renderSvgTemplates();
+          renderGeneratorSvgOptions();
+        } catch (error) {
+          if (els.svgTemplates) els.svgTemplates.innerHTML = "";
+          renderGeneratorSvgOptions();
+        }
+      } finally {
+        svgTemplatesLoading = false;
+        svgTemplatesLoaded = true;
       }
     }
 
@@ -8938,6 +8980,17 @@
       root.querySelectorAll("[data-tbd-panel]").forEach((panel) => {
         panel.hidden = panel.dataset.tbdPanel !== next;
       });
+      if (next === "assets" && !assetManifestLoaded && !assetManifestLoading) {
+        setStatus("Loading owned asset library...");
+        loadAssetManifest().then(() => {
+          renderCategories();
+          renderAssets();
+        });
+      }
+      if (next === "templates") {
+        if (!templateProductsLoaded && !templateProductsLoading) loadTemplateProducts();
+        if (!svgTemplatesLoaded && !svgTemplatesLoading) loadSvgTemplates();
+      }
       syncTemplateAutoScroll();
       updateStageScale();
     }
@@ -8998,30 +9051,22 @@
     drawGuide();
     updateStageScale();
     window.addEventListener("resize", updateStageScale);
-    Promise.allSettled([loadAssetManifest(), loadSvgTemplates(), loadTemplateProducts()]).then(() => {
-      if (launch.initialAssetCategory) {
-        const categories = new Set(["All", ...assets.map((asset) => asset.category || "Other")]);
-        if (categories.has(launch.initialAssetCategory)) activeCategory = launch.initialAssetCategory;
-      }
-      if (launch.initialAssetSearch) {
-        searchTerm = launch.initialAssetSearch.trim().toLowerCase();
-        if (els.search) els.search.value = launch.initialAssetSearch;
-      }
-      renderCategories();
-      renderAssets();
-      if (launch.initialPanel) togglePanel(launch.initialPanel);
-      if (launch.hasDesign) {
-        if (!projectWasOpened) loadProductDesign().then(updateSelectionControls);
-      } else {
-        if (projectWasOpened) {
-          updateSelectionControls();
-          return;
-        }
-        saveHistory();
-        updateSelectionControls();
-        setStatus("Blank canvas ready. Use Assets, Upload, or Text to start.");
-      }
-    });
+    if (launch.initialAssetSearch) {
+      searchTerm = launch.initialAssetSearch.trim().toLowerCase();
+      if (els.search) els.search.value = launch.initialAssetSearch;
+    }
+    renderCategories();
+    renderAssets();
+    if (launch.initialPanel) togglePanel(launch.initialPanel);
+    if (launch.hasDesign) {
+      if (!projectWasOpened) loadProductDesign().then(updateSelectionControls);
+    } else if (projectWasOpened) {
+      updateSelectionControls();
+    } else {
+      saveHistory();
+      updateSelectionControls();
+      setStatus("Blank canvas ready. Use Assets, Upload, or Text to start.");
+    }
   }
 
   document.addEventListener("DOMContentLoaded", () => {

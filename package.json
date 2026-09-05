@@ -30,6 +30,7 @@
     "qa:design-save": "node --test tests/design-upload-session.test.mjs tests/design-resume.test.mjs",
     "qa:open-editable": "node --test tests/design-resume.test.mjs tests/open-editable-design.test.mjs",
     "qa:owned-assets": "node --test tests/owned-assets.test.mjs",
+    "build:runtime-catalogs": "node scripts/build-runtime-catalogs.mjs",
     "qa:generator-layout": "node --test tests/generator-layout.test.mjs",
     "qa:email-relay": "node --test tests/admin-email-relay.test.mjs",
     "assets:sync-design-tool": "node scripts/sync-design-tool-assets.mjs",

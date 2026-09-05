@@ -8,6 +8,10 @@ import imageProxyHandler, { isAllowedImageUrl, parseTargetUrl } from "../api/ima
 const ROOT = path.resolve(import.meta.dirname, "..");
 const ASSET_MANIFEST = JSON.parse(fs.readFileSync(path.join(ROOT, "public/team-banner-assets.owned.json"), "utf8"));
 const OWNED_MAP = JSON.parse(fs.readFileSync(path.join(ROOT, "public/team-banner-owned-asset-map.json"), "utf8"));
+const RUNTIME_PRODUCTS_PATH = path.join(ROOT, "public/team-banner-products.runtime.json");
+const RUNTIME_ASSETS_PATH = path.join(ROOT, "public/team-banner-assets.runtime.json");
+const RUNTIME_MAP_PATH = path.join(ROOT, "public/team-banner-owned-asset-map.runtime.json");
+const RUNTIME_TEMPLATES_PATH = path.join(ROOT, "public/svg-layer-templates.runtime.json");
 const TEMPLATE_DIR = path.join(ROOT, "public/svg-layer-templates");
 const LEGACY_HOST_PATTERN = /(?:lct-designs|svg-design)\.s3\.us-west-1\.amazonaws\.com|(?:www\.)?teambannersports\.com|sv\.lct\.vn/i;
 const IMAGE_HREF_PATTERN = /<image\b[^>]*?(?:href|xlink:href)=(?:"([^"]+)"|'([^']+)')/gi;
@@ -78,6 +82,27 @@ test("Alligators source layers map to exact owned backup files", () => {
     assert.equal(record.quality, "recovered-exact");
     assert.match(record.url, /^https:\/\/b4cuoooyldjrdeea\.public\.blob\.vercel-storage\.com\//);
   }
+});
+
+test("customer runtime catalogs are compact and contain owned sources only", () => {
+  const runtimeProducts = JSON.parse(fs.readFileSync(RUNTIME_PRODUCTS_PATH, "utf8"));
+  const runtimeAssets = JSON.parse(fs.readFileSync(RUNTIME_ASSETS_PATH, "utf8"));
+  const runtimeMap = JSON.parse(fs.readFileSync(RUNTIME_MAP_PATH, "utf8"));
+  const runtimeTemplates = JSON.parse(fs.readFileSync(RUNTIME_TEMPLATES_PATH, "utf8"));
+  const serialized = JSON.stringify({ runtimeProducts, runtimeAssets, runtimeMap, runtimeTemplates });
+
+  assert.equal(runtimeProducts.policy, "owned-sources-only");
+  assert.equal(runtimeProducts.products.length, 7535);
+  assert.equal(runtimeAssets.assets.length, 9488);
+  assert.equal(Object.keys(runtimeMap.assets).length, 19062);
+  assert.equal(runtimeTemplates.templates.length, 5866);
+  assert.equal(LEGACY_HOST_PATTERN.test(serialized), false);
+  assert.ok(Buffer.byteLength(serialized) < 18 * 1024 * 1024);
+
+  const allStar = runtimeProducts.products.find((product) => product.handle === "all-star-baseball-banner");
+  assert.equal(allStar.ownedRuntime, true);
+  assert.equal(allStar.templateSvg, "/svg-layer-templates/1641354165414.svg");
+  assert.equal(allStar.layerConfig.objectLayerMode, "source-svg");
 });
 
 test("image proxy rejects legacy and unrelated hosts", () => {

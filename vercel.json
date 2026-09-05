@@ -57,6 +57,19 @@
       ]
     },
     {
+      "source": "/(team-banner-assets|team-banner-products|team-banner-owned-asset-map|svg-layer-templates).runtime.json",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
       "source": "/owned-recreated-assets/(.*)",
       "headers": [
         {
