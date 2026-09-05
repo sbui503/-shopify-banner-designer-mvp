@@ -17,7 +17,16 @@
   const MAX_PROOF_BYTES = 2 * 1024 * 1024;
   const MAX_PROOF_DIMENSION = 1600;
   const MIN_PROOF_DIMENSION = 720;
-  const DEFAULT_IMAGE_PROXY_URL = "https://files-mentioned-by-the-user-shopify.vercel.app/api/image-proxy";
+  const DEFAULT_IMAGE_PROXY_URL = "https://teamsportbanners.vercel.app/api/image-proxy";
+  const DEFAULT_OWNED_ASSET_MAP_URL = "/team-banner-owned-asset-map.json?v=20260905-owned-assets";
+  const OWNED_BLOB_HOST = "b4cuoooyldjrdeea.public.blob.vercel-storage.com";
+  const LEGACY_ASSET_HOSTS = new Set([
+    "lct-designs.s3.us-west-1.amazonaws.com",
+    "svg-design.s3.us-west-1.amazonaws.com",
+    "teambannersports.com",
+    "www.teambannersports.com",
+    "sv.lct.vn"
+  ]);
   const SHOPIFY_STORE_ORIGIN = "https://teamsportbanners.com";
   const DEFAULT_CUSTOM_DESIGN_VARIANT_ID = "43534427029710";
   const DEFAULT_CUSTOM_DESIGN_PRODUCT_URL = `${SHOPIFY_STORE_ORIGIN}/products/custom-design-banner?variant=${DEFAULT_CUSTOM_DESIGN_VARIANT_ID}`;
@@ -302,7 +311,7 @@
     const shape = inferLaunchShape(explicitShape, shapeContext, true);
     const productImage = get("productImage") || get("image");
     const rawTemplateSvg = get("templateSvg") || get("svg") || get("u");
-    const templateSvg = localTemplateSvgUrl(rawTemplateSvg) || rawTemplateSvg;
+    const templateSvg = runtimeTemplateSvgUrl(rawTemplateSvg);
     const legacyProductButton = Boolean(productImage && (get("product_title") || get("product_id") || get("variant_id")));
     const sourceTemplateOnly = Boolean(templateSvg && !productImage && get("u"));
     const autoLayer = (get("autoLayer") || (legacyProductButton ? "png" : sourceTemplateOnly ? "svg" : "blank")).toLowerCase();
@@ -342,6 +351,7 @@
       materialLabel: get("materialLabel"),
       price: get("price"),
       assetManifestUrl: get("assetsUrl") || get("assetsManifestUrl"),
+      ownedAssetMapUrl: get("ownedAssetMapUrl") || get("ownedAssetsUrl") || get("assetSourceMapUrl"),
       productManifestUrl: get("productsUrl") || get("productManifestUrl") || get("productManifest"),
       imageProxyUrl: get("imageProxyUrl") || get("imageProxy"),
       proofEmailUrl: get("proofEmailUrl") || get("emailProofUrl") || get("proofEndpoint"),
@@ -375,9 +385,142 @@
     }
   }
 
+  let ownedAssetMapLoadedFor = "";
+  let ownedAssetMapPromise = null;
+  const ownedAssetUrlByPath = new Map();
+
+  function sourceAssetPathKey(value) {
+    let raw = htmlDecode(String(value || "").trim());
+    if (!raw) return "";
+    if (/^\/\//.test(raw)) raw = `https:${raw}`;
+    try {
+      const url = new URL(raw, window.location.href);
+      if (/\/api\/image-proxy$/i.test(url.pathname) && url.searchParams.get("url")) {
+        return sourceAssetPathKey(url.searchParams.get("url"));
+      }
+      return decodeURIComponent(url.pathname);
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function unwrapImageProxyUrl(value) {
+    let raw = String(value || "").trim();
+    if (/^\/\//.test(raw)) raw = `https:${raw}`;
+    try {
+      const url = new URL(raw, window.location.href);
+      if (/\/api\/image-proxy$/i.test(url.pathname) && url.searchParams.get("url")) {
+        return unwrapImageProxyUrl(url.searchParams.get("url"));
+      }
+      return url.href;
+    } catch (error) {
+      return raw;
+    }
+  }
+
+  function isLegacyAssetUrl(value) {
+    try {
+      const url = new URL(unwrapImageProxyUrl(value), window.location.href);
+      return LEGACY_ASSET_HOSTS.has(url.hostname.toLowerCase());
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function isOwnedAssetUrl(value) {
+    const raw = String(value || "").trim();
+    if (!raw) return false;
+    if (/^(?:data:|blob:|#)/i.test(raw)) return true;
+    try {
+      const url = new URL(raw, window.location.href);
+      if (url.protocol !== "https:" && url.protocol !== "http:") return false;
+      if (url.origin === window.location.origin) return true;
+      const host = url.hostname.toLowerCase();
+      return host === "cdn.shopify.com"
+        || host === "teamsportbanners.com"
+        || host === "www.teamsportbanners.com"
+        || host === "teamsportbanners.vercel.app"
+        || host === OWNED_BLOB_HOST;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async function ensureOwnedAssetMapLoaded(manifestUrl = DEFAULT_OWNED_ASSET_MAP_URL) {
+    const resolvedManifestUrl = resolveSourceUrl(manifestUrl || DEFAULT_OWNED_ASSET_MAP_URL);
+    if (!resolvedManifestUrl) return ownedAssetUrlByPath;
+    if (ownedAssetMapLoadedFor === resolvedManifestUrl) return ownedAssetUrlByPath;
+    if (!ownedAssetMapPromise) {
+      ownedAssetMapPromise = fetch(resolvedManifestUrl, { credentials: "omit" })
+        .then((response) => {
+          if (!response.ok) throw new Error("Owned asset map failed to load.");
+          return response.json();
+        })
+        .then((data) => {
+          Object.entries(data && data.assets && typeof data.assets === "object" ? data.assets : {}).forEach(([key, record]) => {
+            const url = typeof record === "string" ? record : record && record.url;
+            if (key && url && isOwnedAssetUrl(url)) ownedAssetUrlByPath.set(key, url);
+          });
+          ownedAssetMapLoadedFor = resolvedManifestUrl;
+          return ownedAssetUrlByPath;
+        })
+        .catch(() => {
+          ownedAssetMapLoadedFor = resolvedManifestUrl;
+          return ownedAssetUrlByPath;
+        })
+        .finally(() => {
+          ownedAssetMapPromise = null;
+        });
+    }
+    return ownedAssetMapPromise;
+  }
+
+  function resolveOwnedAssetUrlSync(value) {
+    const unwrapped = unwrapImageProxyUrl(value);
+    const mapped = ownedAssetUrlByPath.get(sourceAssetPathKey(unwrapped));
+    if (mapped && isOwnedAssetUrl(mapped)) return resolveSourceUrl(mapped);
+    if (isLegacyAssetUrl(unwrapped)) return "";
+    return isOwnedAssetUrl(unwrapped) ? resolveSourceUrl(unwrapped) : "";
+  }
+
+  function sanitizeSvgImageSources(svgText) {
+    const documentNode = new DOMParser().parseFromString(String(svgText || ""), "image/svg+xml");
+    if (documentNode.querySelector("parsererror") || !documentNode.documentElement?.matches("svg")) {
+      throw new Error("SVG source could not be parsed.");
+    }
+    Array.from(documentNode.querySelectorAll("image")).forEach((image) => {
+      const href = image.getAttribute("href")
+        || image.getAttributeNS("http://www.w3.org/1999/xlink", "href")
+        || "";
+      if (!href || /^(?:data:|blob:|#)/i.test(href)) return;
+      const ownedUrl = resolveOwnedAssetUrlSync(href);
+      if (!ownedUrl) throw new Error("SVG contains an unapproved external image source.");
+      image.setAttribute("href", ownedUrl);
+      image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", ownedUrl);
+    });
+    return new XMLSerializer()
+      .serializeToString(documentNode.documentElement)
+      .replace(/https?:\/\/(?:lct-designs|svg-design)\.s3\.us-west-1\.amazonaws\.com\/[^"'<>\s)]+/gi, "")
+      .replace(/https?:\/\/(?:www\.)?teambannersports\.com\/[^"'<>\s)]+/gi, "")
+      .replace(/https?:\/\/sv\.lct\.vn\/[^"'<>\s)]+/gi, "");
+  }
+
   function localTemplateSvgUrl(url) {
     const match = String(url || "").match(/admin-designs\/([0-9]{10,})\.svg(?:$|[?#])/i);
     return match ? `/svg-layer-templates/${match[1]}.svg` : "";
+  }
+
+  function runtimeTemplateSvgUrl(value) {
+    const local = localTemplateSvgUrl(value);
+    if (local) return local;
+    const resolved = resolveSourceUrl(value);
+    if (!resolved || !isOwnedAssetUrl(resolved)) return "";
+    try {
+      const url = new URL(resolved, window.location.href);
+      return /\.svg$/i.test(url.pathname) || /\/api\/design-svg$/i.test(url.pathname) ? resolved : "";
+    } catch (error) {
+      return "";
+    }
   }
 
   function absoluteShopifyUrl(value) {
@@ -418,7 +561,9 @@
 
   function canvasSafeImageUrl(url, proxyEndpoint) {
     if (!url) return "";
-    if (/^\/\//.test(url)) url = `https:${url}`;
+    const ownedUrl = resolveOwnedAssetUrlSync(url);
+    if (!ownedUrl) return "";
+    url = ownedUrl;
     if (/^(data|blob):/i.test(url)) return url;
     let resolved;
     try {
@@ -427,6 +572,9 @@
       return url;
     }
     if (window.location.protocol !== "file:" && resolved.origin === window.location.origin) {
+      return resolved.href;
+    }
+    if (["localhost", "127.0.0.1", "::1"].includes(window.location.hostname)) {
       return resolved.href;
     }
     if (!proxyEndpoint) return resolved.href;
@@ -879,7 +1027,7 @@
         requiredLayerConfig,
         match.layerConfig
       );
-      const manifestTemplateSvg = match.templateSvg || manifestLayerConfig.layoutSvgUrl || "";
+      const manifestTemplateSvg = runtimeTemplateSvgUrl(match.templateSvg || manifestLayerConfig.layoutSvgUrl || "");
       const explicitTemplateSvg = launch.templateSvg || "";
       const manifestHasCoverage = hasSourceImageCoverage(launch.shape, requiredLayerConfig, manifestLayerConfig);
       const manifestImageId = designImageId(launch.image || match.image || "");
@@ -1034,7 +1182,7 @@
       if (layerMap.layerConfig) {
         launch.layerConfig = nextLayerConfig;
       }
-      if (layerMap.templateSvg) launch.templateSvg = layerMap.templateSvg;
+      if (layerMap.templateSvg) launch.templateSvg = runtimeTemplateSvgUrl(layerMap.templateSvg);
       launch.hasDesign = Boolean(launch.autoLoadProduct) && launch.autoLayer !== "blank" && Boolean(launch.image || launch.templateSvg);
       return layerMap;
     } catch (error) {
@@ -1091,6 +1239,8 @@
       const match = imageMatch || handleMatch || titleMatch;
 
       if (!match || (!match.templateSvg && !isProductImageObjectFallbackMap(match))) return null;
+      const matchedTemplateSvg = runtimeTemplateSvgUrl(match.templateSvg);
+      if (match.templateSvg && !matchedTemplateSvg && !isProductImageObjectFallbackMap(match)) return null;
       launch.sourceSvgMap = match;
       launch.shape = inferLaunchShape(
         match.shape || match.productShape || launch.shape,
@@ -1116,17 +1266,17 @@
             match.layerConfig,
             {
               layoutSource: "svg-template",
-              layoutSvgUrl: match.templateSvg,
-              layoutSvg: match.layerConfig.layoutSvg || String(match.templateSvg).split("/").pop().replace(/\.svg$/i, "")
+              layoutSvgUrl: matchedTemplateSvg,
+              layoutSvg: match.layerConfig.layoutSvg || String(matchedTemplateSvg).split("/").pop().replace(/\.svg$/i, "")
             }
           )
         : null;
       const sourceImageId = designImageId(launch.image || match.productImage || "");
-      const sourceSvgId = layerConfigSvgId(sourceLayerConfig || {}, match.templateSvg);
+      const sourceSvgId = layerConfigSvgId(sourceLayerConfig || {}, matchedTemplateSvg);
       const sourceExactImageSvg = Boolean(sourceImageId && sourceSvgId && sourceImageId === sourceSvgId);
       if (match.layerConfig && !hasSourceImageCoverage(launch.shape, launch.layerConfig, sourceLayerConfig) && !sourceExactImageSvg) return null;
       if (isProductImageObjectFallbackMap(match)) {
-        const layoutSvgUrl = match.templateSvg || match.layerConfig?.layoutSvgUrl || "";
+        const layoutSvgUrl = matchedTemplateSvg || runtimeTemplateSvgUrl(match.layerConfig?.layoutSvgUrl || "");
         launch.templateSvg = "";
         launch.objectLayerFallback = true;
         launch.layerConfig = mergeLayerConfig(
@@ -1145,7 +1295,7 @@
         launch.hasDesign = Boolean(launch.autoLoadProduct) && launch.autoLayer !== "blank" && Boolean(launch.image || layoutSvgUrl);
         return match;
       }
-      launch.templateSvg = match.templateSvg;
+      launch.templateSvg = matchedTemplateSvg;
       if (match.layerConfig) {
         launch.layerConfig = sourceLayerConfig;
       }
@@ -1158,6 +1308,7 @@
   }
 
   async function detectShapeFromTemplateSvg(launch) {
+    launch.templateSvg = runtimeTemplateSvgUrl(launch.templateSvg);
     if (!launch.templateSvg) return "";
     try {
       const response = await fetch(resolveSourceUrl(launch.templateSvg), { credentials: "omit" });
@@ -1182,6 +1333,8 @@
     }
 
     const launch = readLaunchParams(root);
+    const ownedAssetMapUrl = launch.ownedAssetMapUrl || root.dataset.ownedAssetMapUrl || DEFAULT_OWNED_ASSET_MAP_URL;
+    await ensureOwnedAssetMapLoaded(ownedAssetMapUrl);
     await detectProductFromManifest(root, launch);
     await detectProductSourceSvgMap(root, launch);
     await detectProductLayerMap(root, launch);
@@ -1363,6 +1516,10 @@
     const proofEmailEndpoint = resolveSourceUrl(launch.proofEmailUrl || root.dataset.proofEmailUrl || root.dataset.emailProofUrl || "/api/send-proof-email");
     const proofEmailTo = launch.proofEmailTo || root.dataset.proofEmailTo || root.dataset.emailProofTo || "info@tsbanners.com";
     const imageProxyEndpoint = launch.imageProxyUrl || root.dataset.imageProxyUrl || defaultImageProxyEndpoint();
+    async function backedUpSvgText(svgText) {
+      await ensureOwnedAssetMapLoaded(ownedAssetMapUrl);
+      return sanitizeSvgImageSources(svgText);
+    }
     let assets = FALLBACK_ASSETS;
     let customerUploadBytes = 0;
     let activeCategory = defaultCategoryForShape(ARTBOARD_SHAPE);
@@ -1608,7 +1765,7 @@
         ...asset,
         name: asset.name || "Untitled asset",
         category: normalizeAssetCategory(asset),
-        url: asset.url
+        url: resolveOwnedAssetUrlSync(asset.url)
       };
     }
 
@@ -2823,10 +2980,15 @@
     function addAsset(asset, options = {}) {
       const item = normalizeAsset(asset);
       if (!item.url) return;
+      const sourceUrl = canvasSafeImageUrl(item.url, imageProxyEndpoint);
+      if (!sourceUrl) {
+        setStatus("That asset was blocked because it is not stored by Team Sport Banners.");
+        return;
+      }
       const restoreTokenAtRequest = projectRestoreToken;
       setStatus(`Loading ${item.name}...`);
       fabric.Image.fromURL(
-        canvasSafeImageUrl(item.url, imageProxyEndpoint),
+        sourceUrl,
         (img) => {
           if (restoreTokenAtRequest !== projectRestoreToken) return;
           if (!img) {
@@ -3133,13 +3295,7 @@
     }
 
     function generatedProductPreviewUrl(product) {
-      const layoutSvgId = product.layerConfig?.layoutSvg || "";
-      const explicitSvg = product.templateSvg
-        || product.layerConfig?.layoutSvgUrl
-        || (layoutSvgId ? `/svg-layer-templates/${String(layoutSvgId).replace(/\.svg$/i, "")}.svg` : "");
-      if (explicitSvg) return resolveSourceUrl(explicitSvg);
-      if (!hasConfirmedSourceTemplate(product)) return "";
-      return "";
+      return resolveOwnedAssetUrlSync(product && product.image);
     }
 
     function markTemplateImageBroken(template, image) {
@@ -3162,6 +3318,8 @@
     function normalizeTemplateProduct(product) {
       if (!product || !product.image) return null;
       if (!hasConfirmedSourceTemplate(product)) return null;
+      const productImage = resolveOwnedAssetUrlSync(product.image);
+      if (!productImage) return null;
       const title = product.title || product.handle || "Banner template";
       const handle = product.handle || titleSlug(title);
       const type = productTemplateType(product);
@@ -3170,7 +3328,7 @@
         key: `${handle}-${type}`,
         handle,
         title,
-        image: resolveSourceUrl(product.image),
+        image: productImage,
         fallbackImage: generatedProductPreviewUrl(product),
         imageBroken: false,
         price: product.price || "",
@@ -3364,7 +3522,7 @@
         parseLayerConfigTags(launch.tags, nextShape, launch.image),
         product.layerConfig
       );
-      const productTemplateSvg = product.templateSvg || productLayerConfig.layoutSvgUrl || "";
+      const productTemplateSvg = runtimeTemplateSvgUrl(product.templateSvg || productLayerConfig.layoutSvgUrl || "");
       const trustedProductSvg = isExactProductSvg(product, productLayerConfig, launch.image, productTemplateSvg);
       launch.templateSvg = trustedProductSvg ? productTemplateSvg : "";
       launch.layerMap = null;
@@ -3529,13 +3687,14 @@
     function normalizeSvgTemplateEntry(template, index = 0) {
       const rawName = template && template.name ? String(template.name) : "";
       const rawUrl = template && template.url ? String(template.url) : "";
+      const ownedUrl = runtimeTemplateSvgUrl(rawUrl);
       const type = bannerTypeValueForShape(template.type || template.shape || template.bannerType || "");
       const sport = String(template.sport || "").toLowerCase();
       return {
         ...template,
-        name: rawName || rawUrl.split("/").pop() || `svg-layout-${index + 1}`,
-        url: rawUrl,
-        sourceUrl: template.sourceUrl || template.remoteUrl || "",
+        name: rawName || ownedUrl.split("/").pop() || `svg-layout-${index + 1}`,
+        url: ownedUrl,
+        sourceUrl: "",
         title: template.title || template.label || "",
         type,
         sport: ["baseball", "softball", "soccer"].includes(sport) ? sport : "",
@@ -3711,7 +3870,7 @@
       launch.shape = ARTBOARD_SHAPE;
       launch.autoLayer = "generated";
       launch.autoLoadProduct = false;
-      launch.templateSvg = svgTemplate && svgTemplate.url ? svgTemplate.url : "";
+      launch.templateSvg = svgTemplate && svgTemplate.url ? runtimeTemplateSvgUrl(svgTemplate.url) : "";
       launch.layerMap = null;
       launch.layerConfig = generatedLayerConfig(options, svgTemplate);
       launch.hasDesign = false;
@@ -4321,6 +4480,7 @@
 
     async function loadCachedLayerImage(sourceUrl) {
       const resolvedUrl = canvasSafeImageUrl(sourceUrl, imageProxyEndpoint);
+      if (!resolvedUrl) throw new Error("Image source is not stored by Team Sport Banners.");
       if (imageElementCache.has(resolvedUrl)) return imageElementCache.get(resolvedUrl);
       const image = await loadImage(resolvedUrl);
       imageElementCache.set(resolvedUrl, image);
@@ -4515,7 +4675,7 @@
         const initialObjects = new Set(canvas.getObjects());
         const response = await fetch(resolveSourceUrl(svgTemplate.url), { credentials: "omit" });
         if (!response.ok) throw new Error("SVG template failed to load.");
-        const parsed = parseSvgTemplateLayers(await response.text(), options.layerConfig || {});
+        const parsed = parseSvgTemplateLayers(await backedUpSvgText(await response.text()), options.layerConfig || {});
         if (!parsed || !parsed.imageEntries.length) return false;
         const placement = svgTemplatePlacement(parsed.viewBox, {
           ...options,
@@ -4988,6 +5148,7 @@
     }
 
     async function loadAssetManifest() {
+      await ensureOwnedAssetMapLoaded(ownedAssetMapUrl);
       const url = launch.assetManifestUrl || root.dataset.assetsUrl;
       if (!url) {
         assets = FALLBACK_ASSETS;
@@ -4997,7 +5158,9 @@
         const response = await fetch(url, { credentials: "omit" });
         if (!response.ok) throw new Error("Asset manifest request failed");
         const data = await response.json();
-        assets = (Array.isArray(data.assets) ? data.assets : data).map(normalizeAsset);
+        assets = (Array.isArray(data.assets) ? data.assets : data)
+          .map(normalizeAsset)
+          .filter((asset) => asset.url);
         renderGeneratorOptionPanels();
         setStatus(`${assets.length} assets loaded.`);
       } catch (error) {
@@ -5168,10 +5331,11 @@
           || image.getAttributeNS("http://www.w3.org/1999/xlink", "href")
           || "";
         if (!href || /^(?:data:|#)/i.test(href)) continue;
-        const resolved = new URL(href, window.location.href).href;
+        const resolved = resolveOwnedAssetUrlSync(href);
+        if (!resolved) throw new Error("An image layer is not stored by Team Sport Banners.");
         const candidates = [...new Set([
-          resolved,
-          canvasSafeImageUrl(resolved, imageProxyEndpoint)
+          canvasSafeImageUrl(resolved, imageProxyEndpoint),
+          resolved
         ].filter(Boolean))];
         let imageBlob = null;
         for (const candidate of candidates) {
@@ -7380,9 +7544,41 @@
       return new Response(stream).text();
     }
 
-    function loadCanvasJson(json) {
+    function looksLikeStoredAssetUrl(value) {
+      return /^(?:https?:|\/\/|\/|data:|blob:)/i.test(String(value || "").trim());
+    }
+
+    function sanitizeStoredCanvasValue(value, key = "") {
+      if (Array.isArray(value)) {
+        return value
+          .map((item) => sanitizeStoredCanvasValue(item))
+          .filter((item) => item !== null && item !== undefined);
+      }
+      if (!value || typeof value !== "object") {
+        if (!looksLikeStoredAssetUrl(value)) return value;
+        if (!["src", "sourceUrl", "sourceAssetUrl", "backgroundUrl", "logoUrl", "clipartUrl", "accessoryUrl"].includes(key)) return value;
+        return resolveOwnedAssetUrlSync(value);
+      }
+
+      const next = {};
+      Object.entries(value).forEach(([childKey, childValue]) => {
+        const sanitized = sanitizeStoredCanvasValue(childValue, childKey);
+        if (sanitized !== null && sanitized !== undefined) next[childKey] = sanitized;
+      });
+      if (String(next.type || "").toLowerCase() === "image") {
+        if (!next.src || !resolveOwnedAssetUrlSync(next.src)) return null;
+        next.src = resolveOwnedAssetUrlSync(next.src);
+        next.crossOrigin = "anonymous";
+      }
+      if (Array.isArray(next.objects)) next.objects = next.objects.filter(Boolean);
+      return next;
+    }
+
+    async function loadCanvasJson(json) {
+      await ensureOwnedAssetMapLoaded(ownedAssetMapUrl);
+      const sanitizedJson = sanitizeStoredCanvasValue(json);
       return new Promise((resolve) => {
-        canvas.loadFromJSON(json, () => resolve());
+        canvas.loadFromJSON(sanitizedJson, () => resolve());
       });
     }
 
@@ -7463,6 +7659,10 @@
 
     function loadImage(src) {
       return new Promise((resolve, reject) => {
+        if (!src) {
+          reject(new Error("Image source is not stored by Team Sport Banners."));
+          return;
+        }
         const image = new Image();
         const timeout = window.setTimeout(() => {
           image.onload = null;
@@ -8117,9 +8317,15 @@
     }
 
     function importSvgLayers(svgText, name) {
-      const hints = extractSvgLayerHints(svgText);
+      let safeSvgText;
+      try {
+        safeSvgText = sanitizeSvgImageSources(svgText);
+      } catch (error) {
+        return Promise.reject(error);
+      }
+      const hints = extractSvgLayerHints(safeSvgText);
       return new Promise((resolve, reject) => {
-        fabric.loadSVGFromString(svgText, (objects, options) => {
+        fabric.loadSVGFromString(safeSvgText, (objects, options) => {
           if (!objects || !objects.length) {
             reject(new Error("No SVG layers were found."));
             return;
@@ -8250,8 +8456,8 @@
         }
 
         const layerConfig = currentLayerConfig();
-        if (requiresVerifiedProductSource(launch) && !hasVerifiedProductSource(launch)) {
-          throw new Error("Verified source SVG layers are required for this product. Product-image fallback is disabled.");
+        if (requiresVerifiedProductSource(launch) && !hasVerifiedProductSource(launch) && !launch.image) {
+          throw new Error("No owned product source is available.");
         }
         if (launch.image && ["png", "svg", "magic"].includes(launch.autoLayer) && usesSourceVectorBackground(layerConfig) && !requiresVerifiedProductSource(launch)) {
           setStatus("Loading exact product background...");
@@ -8298,7 +8504,7 @@
               setStatus(`${name} loaded from exact source SVG layers.`);
               return;
             }
-            if (launch.image && !requiresVerifiedProductSource(launch)) {
+            if (launch.image) {
               resetCanvas("#ffffff");
               setStatus("Source SVG image assets unavailable. Loading exact product artwork...");
               const image = await loadImage(canvasSafeImageUrl(launch.image, imageProxyEndpoint));
@@ -8356,7 +8562,7 @@
           angle: placement.angle || 0
         });
       } catch (error) {
-        if (launch.image && !requiresVerifiedProductSource(launch)) {
+        if (launch.image) {
           try {
             const image = await loadImage(canvasSafeImageUrl(launch.image, imageProxyEndpoint));
             addExactProductBackground(image, { sourceUrl: launch.image, source: "product-image-fallback" });
