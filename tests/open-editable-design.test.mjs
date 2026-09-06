@@ -14,3 +14,10 @@ test("Open editable design restores a saved PNG before trying the project parser
   assert.match(designerSource, /await resumeDesignFromPng\(file\)/);
   assert.match(designerSource, /if \(uploadKind === "project"\) \{\s*await importProjectFile\(file\)/);
 });
+
+test("admin-generated SVG text imports as editable Fabric text", () => {
+  assert.match(designerSource, /new fabric\.IText\(obj\.text \|\| "", textOptions\)/);
+  assert.match(designerSource, /dataName: element\.getAttribute\("data-name"\)/);
+  assert.match(designerSource, /dataRole: element\.getAttribute\("data-role"\)/);
+  assert.match(designerSource, /if \(savedDesignId\) \{\s*activeDesignId = savedDesignId;/);
+});

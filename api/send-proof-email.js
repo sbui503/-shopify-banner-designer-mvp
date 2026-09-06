@@ -46,6 +46,9 @@ function adminLookupUrl(designId) {
 }
 
 function proofEmailHtml(payload) {
+  const addOns = Array.isArray(payload.addOns)
+    ? payload.addOns.map((addon) => `${addon.title || addon.id}${addon.price ? ` ($${addon.price})` : ""}`).join(", ")
+    : payload.addOns;
   const rows = [
     ["Design ID", payload.designId],
     ["Admin Fulfillment Lookup", payload.adminLookupUrl],
@@ -58,6 +61,7 @@ function proofEmailHtml(payload) {
     ["Product", payload.productTitle],
     ["Product Handle", payload.productHandle],
     ["Team Name", payload.teamName],
+    ["Add-ons", addOns],
     ["Checkout URL", payload.checkoutUrl]
   ].filter(([, value]) => value);
 

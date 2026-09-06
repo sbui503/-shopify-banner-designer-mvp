@@ -8,11 +8,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Bebas+Neue&family=Graduate&family=Inter:wght@400;500;600;700;800;900&family=Luckiest+Guy&display=swap">
-    <link rel="stylesheet" href="team-banner-designer.css?v=20260714-gradient-visible-render">
+    <link rel="stylesheet" href="team-banner-designer.css?v=20260905-checkout-addons">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js" defer></script>
     <script src="design-resume.js?v=20260825-open-saved-png" defer></script>
     <script src="illustrator-svg.js?v=20260824-illustrator-layers" defer></script>
-    <script src="team-banner-designer.js?v=20260905-fast-owned-assets" defer></script>
+    <script src="team-banner-designer.js?v=20260905-custom-order-import" defer></script>
   </head>
   <body>
     <main
@@ -32,6 +32,8 @@
       data-custom-checkout-url="https://teamsportbanners.com/cart/43534427029710:1?return_to=/checkouts/cn/43534427029710"
       data-triangle-checkout-url="https://teamsportbanners.com/cart/43537293050062:1?return_to=/checkouts/cn/43537293050062"
       data-homeplate-checkout-url="https://teamsportbanners.com/cart/43537293443278:1?return_to=/checkouts/cn/43537293443278"
+      data-carry-bag-variant-id=""
+      data-bag-pole-kit-variant-id=""
     >
       <svg class="tbd__icon-sprite" aria-hidden="true" focusable="false">
         <symbol id="tbd-i-new" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M12 12v6"/><path d="M9 15h6"/></symbol>
@@ -446,6 +448,13 @@
           <div class="tbd__cart-summary" data-tbd-cart-summary>0 items in cart</div>
           <div class="tbd__cart-empty" data-tbd-cart-empty>No saved designs in this cart yet.</div>
           <div class="tbd__cart-items" data-tbd-cart-items></div>
+          <section class="tbd__cart-addons" data-tbd-cart-addons hidden>
+            <div class="tbd__cart-addons-head">
+              <strong>Optional accessories</strong>
+              <span>Add to this order</span>
+            </div>
+            <div class="tbd__cart-addon-options" data-tbd-cart-addon-options></div>
+          </section>
           <div class="tbd__cart-actions">
             <button class="tbd__button" data-tbd-cart-continue type="button">Continue designing</button>
             <button class="tbd__button tbd__button--primary" data-tbd-cart-checkout type="button">Checkout</button>

@@ -35,6 +35,22 @@
     triangle: "43537293050062",
     homeplatepennant: "43537293443278"
   };
+  const CHECKOUT_ADDON_DEFINITIONS = [
+    {
+      id: "carry-bag",
+      title: "Banner Carrying Bag",
+      priceCents: 999,
+      image: "/accessories/tsb-banner-carry-bag.jpg",
+      allowedShapes: ["rectangle", "polepocket"]
+    },
+    {
+      id: "bag-pole-kit",
+      title: "Bag & Pole Kit",
+      priceCents: 6999,
+      image: "/accessories/tsb-banner-pole-kit.jpg",
+      allowedShapes: ["polepocket"]
+    }
+  ];
   const VECTOR_BACKGROUND_HREF = "__source_svg_vector_background__";
   const illustratorSvg = window.TeamBannerIllustratorSvg;
   const designResume = window.TeamBannerDesignResume || {
@@ -338,6 +354,8 @@
       triangleCheckoutUrl: get("triangleCheckoutUrl") || get("triangleCartCheckoutUrl"),
       homeplateCheckoutVariantId: get("homeplateCheckoutVariantId") || get("homePlateCheckoutVariantId") || get("homeplateVariantId") || get("homePlateVariantId"),
       homeplateCheckoutUrl: get("homeplateCheckoutUrl") || get("homePlateCheckoutUrl") || get("homeplateCartCheckoutUrl") || get("homePlateCartCheckoutUrl"),
+      carryBagVariantId: get("carryBagVariantId") || get("bagVariantId"),
+      bagPoleKitVariantId: get("bagPoleKitVariantId") || get("poleKitVariantId"),
       image: productImage,
       templateSvg,
       legacyProductButton,
@@ -1457,7 +1475,9 @@
       cartEmpty: root.querySelector("[data-tbd-cart-empty]"),
       cartSummary: root.querySelector("[data-tbd-cart-summary]"),
       cartCheckout: root.querySelector("[data-tbd-cart-checkout]"),
-      cartContinue: root.querySelector("[data-tbd-cart-continue]")
+      cartContinue: root.querySelector("[data-tbd-cart-continue]"),
+      cartAddons: root.querySelector("[data-tbd-cart-addons]"),
+      cartAddonOptions: root.querySelector("[data-tbd-cart-addon-options]")
     };
 
     const canvas = new fabric.Canvas(canvasEl, {
@@ -1576,7 +1596,18 @@
     let suppressAssetClick = false;
     const imageElementCache = new Map();
     const designCartStorageKey = "team-banner-design-cart:v1";
+    const checkoutAddonStorageKey = "team-banner-checkout-addons:v1";
+    const checkoutAddons = CHECKOUT_ADDON_DEFINITIONS.map((definition) => {
+      const configuredVariantId = String(definition.id === "carry-bag"
+        ? (launch.carryBagVariantId || root.dataset.carryBagVariantId || "")
+        : (launch.bagPoleKitVariantId || root.dataset.bagPoleKitVariantId || "")).trim();
+      return {
+        ...definition,
+        variantId: /^[0-9]+$/.test(configuredVariantId) ? configuredVariantId : ""
+      };
+    });
     let designCart = loadDesignCart();
+    let selectedCheckoutAddonIds = new Set(loadCheckoutAddonSelection());
 
     canvas.setWidth(WIDTH);
     canvas.setHeight(HEIGHT);
@@ -5625,6 +5656,7 @@
         const attributes = {
           "Design ID": currentDesignId,
           "TSB Design IDs": [...new Set(savedDesigns)].join(","),
+          "Selected Add-ons": selectedCheckoutAddons(items).map((addon) => addon.title).join(", "),
           "Design Preview": saved && saved.previewUrl,
           "Editable Design": saved && saved.jsonUrl,
           "Layered Source": saved && saved.sourceSvgUrl,
@@ -5684,6 +5716,12 @@
         productUrl: launch.productUrl || "",
         productImage: launch.image || "",
         teamName: (els.team && els.team.value) || "",
+        addOns: selectedCheckoutAddons().map((addon) => ({
+          id: addon.id,
+          title: addon.title,
+          price: (addon.priceCents / 100).toFixed(2),
+          variantId: addon.variantId
+        })),
         checkoutUrl,
         to: proofEmailTo
       };
@@ -5714,11 +5752,77 @@
       }
     }
 
+    function loadCheckoutAddonSelection() {
+      try {
+        const parsed = JSON.parse(window.localStorage.getItem(checkoutAddonStorageKey) || "[]");
+        return Array.isArray(parsed)
+          ? parsed.filter((id) => CHECKOUT_ADDON_DEFINITIONS.some((addon) => addon.id === id))
+          : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function persistCheckoutAddonSelection() {
+      try {
+        window.localStorage.setItem(checkoutAddonStorageKey, JSON.stringify([...selectedCheckoutAddonIds]));
+      } catch (error) {
+        // The current checkout session still keeps the selected add-ons in memory.
+      }
+    }
+
+    function eligibleCheckoutAddons(items = designCart) {
+      const shapes = new Set((Array.isArray(items) ? items : []).map((item) => normalizeShape(item && item.shape, true)));
+      return checkoutAddons.filter((addon) => addon.allowedShapes.some((shape) => shapes.has(shape)));
+    }
+
+    function reconcileCheckoutAddonSelection(items = designCart) {
+      const eligibleIds = new Set(eligibleCheckoutAddons(items).map((addon) => addon.id));
+      let changed = false;
+      selectedCheckoutAddonIds.forEach((id) => {
+        if (eligibleIds.has(id)) return;
+        selectedCheckoutAddonIds.delete(id);
+        changed = true;
+      });
+      if (changed) persistCheckoutAddonSelection();
+    }
+
+    function selectedCheckoutAddons(items = designCart) {
+      reconcileCheckoutAddonSelection(items);
+      return eligibleCheckoutAddons(items).filter((addon) => selectedCheckoutAddonIds.has(addon.id) && addon.variantId);
+    }
+
+    function checkoutLineItems(items = designCart) {
+      const designs = Array.isArray(items) ? items : [];
+      const designLines = designs.map((item) => ({ ...item, lineType: "design", quantity: 1 }));
+      const addonLines = selectedCheckoutAddons(designs).map((addon) => ({
+        id: `addon_${addon.id}`,
+        lineType: "addon",
+        addonId: addon.id,
+        title: addon.title,
+        image: addon.image,
+        priceCents: addon.priceCents,
+        variantId: addon.variantId,
+        quantity: 1
+      }));
+      return [...designLines, ...addonLines];
+    }
+
+    function checkoutAddonLineProperties(addon, designs = designCart) {
+      const designIds = (Array.isArray(designs) ? designs : [])
+        .map((item) => String(item && (item.designId || item.id) || "").trim())
+        .filter(Boolean);
+      return Object.fromEntries(Object.entries({
+        "Add-on": addon && addon.title,
+        "For Design IDs": [...new Set(designIds)].join(",")
+      }).filter(([, value]) => String(value || "").trim()));
+    }
+
     function cartLineUrl(items = designCart) {
-      const counts = items.reduce((map, item) => {
+      const counts = checkoutLineItems(items).reduce((map, item) => {
         const id = String(item.variantId || "").trim();
         if (!id) return map;
-        map.set(id, (map.get(id) || 0) + 1);
+        map.set(id, (map.get(id) || 0) + Math.max(1, Number(item.quantity || 1)));
         return map;
       }, new Map());
       const lines = [...counts.entries()].map(([id, quantity]) => `${encodeURIComponent(id)}:${quantity}`).join(",");
@@ -5726,7 +5830,8 @@
     }
 
     function submitDesignCartToShopify(items = designCart) {
-      const validItems = (Array.isArray(items) ? items : []).filter((item) => String(item && item.variantId || "").trim());
+      const designs = Array.isArray(items) ? items : [];
+      const validItems = checkoutLineItems(designs).filter((item) => String(item && item.variantId || "").trim());
       if (!validItems.length) return false;
 
       const form = document.createElement("form");
@@ -5746,8 +5851,11 @@
 
       validItems.forEach((item, index) => {
         append(`items[${index}][id]`, item.variantId);
-        append(`items[${index}][quantity]`, "1");
-        Object.entries(shopifyLineProperties(item)).forEach(([key, value]) => {
+        append(`items[${index}][quantity]`, String(Math.max(1, Number(item.quantity || 1))));
+        const properties = item.lineType === "addon"
+          ? checkoutAddonLineProperties(item, designs)
+          : shopifyLineProperties(item);
+        Object.entries(properties).forEach(([key, value]) => {
           append(`items[${index}][properties][${key}]`, value);
         });
       });
@@ -5790,25 +5898,62 @@
       updateStageScale();
     }
 
+    function renderCheckoutAddons() {
+      reconcileCheckoutAddonSelection();
+      const eligibleAddons = eligibleCheckoutAddons().filter((addon) => addon.variantId);
+      if (els.cartAddons) els.cartAddons.hidden = eligibleAddons.length === 0;
+      if (!els.cartAddonOptions) return;
+      els.cartAddonOptions.innerHTML = "";
+
+      eligibleAddons.forEach((addon) => {
+        const configured = Boolean(addon.variantId);
+        const option = document.createElement("label");
+        option.className = `tbd__cart-addon${configured ? "" : " tbd__cart-addon--unavailable"}`;
+        option.innerHTML = `
+          <input type="checkbox" data-tbd-cart-addon="${escapeHtml(addon.id)}" aria-label="Add ${escapeHtml(addon.title)} to order"${selectedCheckoutAddonIds.has(addon.id) ? " checked" : ""}${configured ? "" : " disabled"}>
+          <span class="tbd__cart-addon-image"><img src="${escapeHtml(addon.image)}" alt="" loading="lazy"></span>
+          <span class="tbd__cart-addon-copy">
+            <strong>${escapeHtml(addon.title)}</strong>
+            <span>${configured ? "Add to this banner order" : "Shopify product setup required"}</span>
+          </span>
+          <strong class="tbd__cart-addon-price">$${(addon.priceCents / 100).toFixed(2)}</strong>
+        `;
+        const checkbox = option.querySelector("[data-tbd-cart-addon]");
+        checkbox?.addEventListener("change", () => {
+          if (checkbox.checked) selectedCheckoutAddonIds.add(addon.id);
+          else selectedCheckoutAddonIds.delete(addon.id);
+          persistCheckoutAddonSelection();
+          renderDesignCart();
+          setStatus(`${addon.title} ${checkbox.checked ? "added to" : "removed from"} this order.`);
+        });
+        els.cartAddonOptions.appendChild(option);
+      });
+    }
+
     function renderDesignCart() {
-      const count = designCart.length;
+      renderCheckoutAddons();
+      const designCount = designCart.length;
+      const addonCount = selectedCheckoutAddons().length;
+      const count = designCount + addonCount;
       if (els.cartCount) {
         els.cartCount.textContent = String(count);
         els.cartCount.hidden = count === 0;
       }
-      if (els.cartEmpty) els.cartEmpty.hidden = count > 0;
+      if (els.cartEmpty) els.cartEmpty.hidden = designCount > 0;
       if (els.cartSummary) {
-        els.cartSummary.textContent = count === 1 ? "1 item in cart" : `${count} items in cart`;
-        els.cartSummary.hidden = count === 0;
+        const designLabel = `${designCount} design${designCount === 1 ? "" : "s"}`;
+        const addonLabel = addonCount ? ` + ${addonCount} add-on${addonCount === 1 ? "" : "s"}` : "";
+        els.cartSummary.textContent = `${designLabel}${addonLabel}`;
+        els.cartSummary.hidden = designCount === 0;
       }
-      if (els.cartCheckout) els.cartCheckout.disabled = count === 0 || !cartLineUrl(designCart);
+      if (els.cartCheckout) els.cartCheckout.disabled = designCount === 0 || !cartLineUrl(designCart);
       if (!els.cartItems) return;
       els.cartItems.innerHTML = "";
       designCart.slice().reverse().forEach((item, reverseIndex) => {
         const row = document.createElement("article");
         row.className = "tbd__cart-item";
         row.dataset.cartItemId = item.id;
-        const itemNumber = count - reverseIndex;
+        const itemNumber = designCount - reverseIndex;
         const preview = item.previewUrl || item.proofImage || "";
         row.innerHTML = `
           <div class="tbd__cart-thumb">${preview ? `<img src="${preview}" alt="">` : "<span>Saved</span>"}</div>
@@ -8277,21 +8422,20 @@
     }
 
     function extractSvgLayerHints(svgText) {
-      const hints = [];
-      const elementPattern = /<(image|text)\b([^>]*?)(?:\/>|>([\s\S]*?)<\/\1>)/gi;
-      let match;
-      while ((match = elementPattern.exec(svgText))) {
-        const tag = match[1].toLowerCase();
-        const attrs = match[2] || "";
-        const content = match[3] || "";
-        const href = (attrs.match(/\b(?:xlink:href|href)=["']([^"']+)["']/i) || [])[1] || "";
-        const className = (attrs.match(/\bclass=["']([^"']+)["']/i) || [])[1] || "";
-        const text = tag === "text"
-          ? compactWhitespace(content.replace(/<[^>]+>/g, " "))
-          : "";
-        hints.push({ tag, href, className, text });
-      }
-      return hints;
+      const documentNode = new DOMParser().parseFromString(String(svgText || ""), "image/svg+xml");
+      const root = documentNode.documentElement;
+      if (documentNode.querySelector("parsererror") || !root?.matches("svg")) return [];
+      const drawableNames = new Set(["g", "path", "rect", "circle", "ellipse", "polygon", "polyline", "line", "text", "image"]);
+      return Array.from(root.children)
+        .filter((element) => drawableNames.has(element.localName))
+        .map((element) => ({
+          tag: element.localName,
+          href: element.getAttribute("href") || element.getAttributeNS("http://www.w3.org/1999/xlink", "href") || "",
+          className: element.getAttribute("class") || "",
+          dataName: element.getAttribute("data-name") || "",
+          dataRole: element.getAttribute("data-role") || "",
+          text: element.localName === "text" ? compactWhitespace(element.textContent || "") : ""
+        }));
     }
 
     function classifySvgHint(hint, obj, index, fallbackName) {
@@ -8300,12 +8444,15 @@
       const lowerText = text.toLowerCase();
       const className = String(hint.className || "").toLowerCase();
       const categoryRole = asset ? categoryLayerRole(asset.category) : "";
-      let role = categoryRole || "svg-layer";
-      let label = asset ? asset.name : `${fallbackName} layer ${index + 1}`;
+      let role = hint.dataRole || categoryRole || "svg-layer";
+      let label = hint.dataName || (asset ? asset.name : `${fallbackName} layer ${index + 1}`);
       let locked = false;
       let excludeFromLayerList = false;
 
-      if (hint.tag === "text" || obj.type === "i-text" || obj.type === "text") {
+      if ((hint.tag === "text" || obj.type === "i-text" || obj.type === "text") && hint.dataRole) {
+        role = hint.dataRole;
+        label = hint.dataName || text || label;
+      } else if (hint.tag === "text" || obj.type === "i-text" || obj.type === "text") {
         if (/^player$/i.test(text)) {
           role = "template-player-text";
           label = `Player text ${index + 1}`;
@@ -8319,15 +8466,15 @@
           role = "template-text-layer";
           label = text || label;
         }
-      } else if (className.includes("background") || categoryRole === "template-background") {
+      } else if (className.includes("background") || role === "template-background" || categoryRole === "template-background") {
         role = "template-background";
-        label = "Background";
-      } else if (categoryRole === "template-team-name") {
+        label = hint.dataName || "Background";
+      } else if (role === "template-team-name" || categoryRole === "template-team-name") {
         label = "Team name";
-      } else if (categoryRole === "template-clipart") {
+      } else if (role === "template-clipart" || categoryRole === "template-clipart") {
         label = "Clip art";
-      } else if (categoryRole === "template-player-icon") {
-        label = `Player icon ${index + 1}`;
+      } else if (/template-player-(?:icon|photo)/.test(role) || categoryRole === "template-player-icon") {
+        label = hint.dataName || `Player image ${index + 1}`;
       } else if (!hint.tag && obj.type === "path") {
         role = "svg-mask";
         label = "SVG mask";
@@ -8365,7 +8512,15 @@
             reject(new Error("No SVG layers were found."));
             return;
           }
-          const group = fabric.util.groupSVGElements(objects, options);
+          const editableObjects = objects.map((obj) => {
+            if (!obj || obj.type !== "text") return obj;
+            const textOptions = obj.toObject(["excludeFromExport", "data"]);
+            delete textOptions.type;
+            delete textOptions.version;
+            delete textOptions.text;
+            return new fabric.IText(obj.text || "", textOptions);
+          });
+          const group = fabric.util.groupSVGElements(editableObjects, options);
           group.set({ data: { name } });
           const maxWidth = WIDTH * (isRectangularShape(ARTBOARD_SHAPE) ? 0.94 : 0.72);
           if (group.width > maxWidth) group.scaleToWidth(maxWidth);
@@ -8566,6 +8721,12 @@
           const response = await fetch(resolveSourceUrl(launch.templateSvg), { credentials: "omit" });
           if (!response.ok) throw new Error("Product SVG failed to load.");
           await importSvgLayers(await response.text(), name);
+          if (savedDesignId) {
+            activeDesignId = savedDesignId;
+            if (els.savedMeta) {
+              els.savedMeta.textContent = `Design ID: ${savedDesignId}. Layered SVG source opened for editing.`;
+            }
+          }
           return;
         }
 
