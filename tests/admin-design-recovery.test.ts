@@ -49,6 +49,7 @@ test("opens layered verification from the SVG source without a PNG fallback", ()
 
   assert.equal(url.searchParams.get("templateSvg"), sourceSvgUrl);
   assert.equal(url.searchParams.get("productTitle"), "Layer QA");
+  assert.equal(url.searchParams.get("designId"), "design_1770000000000_ab12cd34");
   assert.equal(url.searchParams.get("autoLayer"), "svg");
   assert.equal(url.searchParams.has("productImage"), false);
   assert.equal(url.hash, "#team-banner-designer-section");

@@ -11,6 +11,7 @@ export type StoredDesignManifest = {
   sourceSvgUrl?: string;
   sourceSvgBlobUrl?: string;
   sourceSvgDownloadUrl?: string;
+  editorSvgUrl?: string;
   printSourceUrl?: string;
   manifestUrl?: string;
   backupManifestUrl?: string;
@@ -23,7 +24,14 @@ export type StoredDesignManifest = {
   orderNumber?: string;
   parentDesignId?: string;
   adminUploaded?: boolean;
+  adminGenerated?: boolean;
   proofOnly?: boolean;
+  generatedFrom?: string;
+  shopifyOrderId?: string;
+  shopifyLineItemId?: string;
+  embeddedUploadBytes?: number;
+  warnings?: string[];
+  orderForm?: Record<string, unknown>;
   sourceSvgStats?: {
     objectCount?: number;
     imageCount?: number;

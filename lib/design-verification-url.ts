@@ -5,6 +5,9 @@ type LayerVerificationUrlInput = {
   productTitle?: string;
   designId?: string;
   origin?: string;
+  shape?: string;
+  width?: number;
+  height?: number;
 };
 
 type AdminDesignSvgUrlInput = {
@@ -35,6 +38,12 @@ export function buildLayerVerificationUrl(input: LayerVerificationUrlInput) {
   const url = new URL(origin);
   url.searchParams.set("templateSvg", sourceSvgUrl);
   url.searchParams.set("productTitle", input.productTitle || `Recovered design ${input.designId || ""}`.trim());
+  if (/^design_[0-9]+_[a-z0-9]+$/i.test(String(input.designId || ""))) {
+    url.searchParams.set("designId", String(input.designId));
+  }
+  if (input.shape) url.searchParams.set("shape", input.shape);
+  if (Number.isFinite(input.width) && Number(input.width) > 0) url.searchParams.set("artboardWidth", String(input.width));
+  if (Number.isFinite(input.height) && Number(input.height) > 0) url.searchParams.set("artboardHeight", String(input.height));
   url.searchParams.set("autoLoadProduct", "1");
   url.searchParams.set("autoLayer", "svg");
   url.searchParams.set("panel", "layers");

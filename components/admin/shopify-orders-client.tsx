@@ -3,7 +3,7 @@
 import Link from "next/link";
 import NextImage from "next/image";
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import { ChevronDown, ChevronUp, ExternalLink, FileImage, Link2, Mail, RefreshCw, Search, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Download, ExternalLink, FileImage, FilePenLine, Link2, Mail, RefreshCw, Search, WandSparkles, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +15,16 @@ import {
 } from "@/lib/shopify-custom-order";
 
 type ShopifyAttribute = ShopifyCustomAttribute;
+
+type GeneratedDesign = {
+  id: string;
+  sourceSvgUrl?: string;
+  sourceSvgDownloadUrl?: string;
+  designerUrl?: string;
+  lookupUrl?: string;
+  warnings?: string[];
+  reused?: boolean;
+};
 
 type ShopifyOrder = {
   id: string;
@@ -47,7 +57,10 @@ type ShopifyOrder = {
     quantity: number;
     sku?: string;
     variantTitle?: string;
+    productHandle?: string;
+    productTitle?: string;
     customAttributes?: ShopifyAttribute[];
+    generatedDesign?: GeneratedDesign | null;
   }>;
 };
 
@@ -103,6 +116,19 @@ function customFieldCount(order: ShopifyOrder) {
   return normalizeShopifyAttributes(order.customAttributes || []).length
     + order.lineItems.reduce((count, item) => count + normalizeShopifyAttributes(item.customAttributes || []).length, 0)
     + (order.note ? 1 : 0);
+}
+
+function isCustomOrderLine(attributes: ShopifyAttribute[] = []) {
+  const summary = customOrderSummary(attributes);
+  return Boolean(
+    summary.teamName
+    || summary.teamLogo
+    || summary.sport
+    || summary.bannerType
+    || summary.expectedPlayers
+    || summary.playerNameCount
+    || summary.playerPhotoCount
+  );
 }
 
 function fieldLabel(value: string | null | undefined) {
@@ -235,6 +261,9 @@ export function ShopifyOrdersClient() {
   const [testDesignId, setTestDesignId] = useState("");
   const [testEmailStatus, setTestEmailStatus] = useState("");
   const [testEmailBusy, setTestEmailBusy] = useState(false);
+  const [generatedDesigns, setGeneratedDesigns] = useState<Record<string, GeneratedDesign>>({});
+  const [generationStatuses, setGenerationStatuses] = useState<Record<string, string>>({});
+  const [generationBusyLineId, setGenerationBusyLineId] = useState("");
 
   const loadOrders = useCallback(async (lookup = "") => {
     const cleanLookup = lookup.trim();
@@ -276,12 +305,25 @@ export function ShopifyOrdersClient() {
       return;
     }
     setEmailBusyOrderId(order.id);
-    setEmailStatuses((current) => ({ ...current, [order.id]: "Sending order details..." }));
+    setEmailStatuses((current) => ({ ...current, [order.id]: "Preparing production designs..." }));
     try {
+      const customLines = order.lineItems.filter((item) => isCustomOrderLine(item.customAttributes || []));
+      const productionDesignIds: string[] = [];
+      for (const item of customLines) {
+        const existing = generatedDesigns[item.id] || item.generatedDesign;
+        if (existing?.id) {
+          productionDesignIds.push(existing.id);
+          continue;
+        }
+        const generated = await requestCustomOrderDesign(order.id, item.id);
+        productionDesignIds.push(generated.id);
+        recordGeneratedDesign(order, item.id, generated);
+      }
+      setEmailStatuses((current) => ({ ...current, [order.id]: "Sending order details and production files..." }));
       const response = await fetch("/api/admin/shopify/order-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId: order.id })
+        body: JSON.stringify({ orderId: order.id, designIds: productionDesignIds })
       });
       const result = await response.json().catch(() => ({}));
       if (response.status === 409 && result.alreadySent) {
@@ -334,6 +376,51 @@ export function ShopifyOrdersClient() {
     } finally {
       setTestEmailBusy(false);
     }
+  }
+
+  async function generateCustomOrderDesign(order: ShopifyOrder, lineItemId: string) {
+    setGenerationBusyLineId(lineItemId);
+    setGenerationStatuses((current) => ({ ...current, [lineItemId]: "Generating editable layers and print SVG..." }));
+    try {
+      const result = await requestCustomOrderDesign(order.id, lineItemId);
+      recordGeneratedDesign(order, lineItemId, result);
+      setGenerationStatuses((current) => ({
+        ...current,
+        [lineItemId]: result.reused
+          ? `Existing Design ID ${result.id} loaded.`
+          : `Design ID ${result.id} created with layered SVG and backup.`
+      }));
+    } catch (error) {
+      setGenerationStatuses((current) => ({
+        ...current,
+        [lineItemId]: error instanceof Error ? error.message : "Custom-order design generation failed."
+      }));
+    } finally {
+      setGenerationBusyLineId("");
+    }
+  }
+
+  async function requestCustomOrderDesign(orderId: string, lineItemId: string) {
+    const response = await fetch("/api/admin/shopify/custom-order-design", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId, lineItemId })
+    });
+    const result = await response.json().catch(() => ({})) as GeneratedDesign & { error?: string };
+    if (!response.ok || !result.id) throw new Error(result.error || "Custom-order design generation failed.");
+    return result;
+  }
+
+  function recordGeneratedDesign(order: ShopifyOrder, lineItemId: string, result: GeneratedDesign) {
+    setGeneratedDesigns((current) => ({ ...current, [lineItemId]: result }));
+    setOrders((current) => current.map((candidate) => candidate.id === order.id ? {
+      ...candidate,
+      designIds: candidate.designIds.includes(result.id) ? candidate.designIds : [...candidate.designIds, result.id],
+      lineItems: candidate.lineItems.map((item) => item.id === lineItemId ? {
+        ...item,
+        generatedDesign: result
+      } : item)
+    } : candidate));
   }
 
   useEffect(() => {
@@ -558,6 +645,90 @@ export function ShopifyOrdersClient() {
                           {normalizeShopifyAttributes(item.customAttributes || []).length ? (
                             <>
                               <CustomOrderCoverage attributes={item.customAttributes || []} />
+                              {isCustomOrderLine(item.customAttributes || []) ? (() => {
+                                const generated = generatedDesigns[item.id] || item.generatedDesign || null;
+                                const downloadUrl = generated?.sourceSvgDownloadUrl
+                                  || (generated?.id ? `/api/admin/design-svg?id=${encodeURIComponent(generated.id)}&download=1` : "");
+                                return (
+                                  <div className="mt-3 border-y bg-emerald-50/40 py-4">
+                                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                      <div>
+                                        <p className="text-xs font-black uppercase text-emerald-800">Production design</p>
+                                        <p className="mt-1 text-sm font-semibold text-slate-700">
+                                          Create an editable Design ID from this item&apos;s saved team, staff, player, logo, and photo fields.
+                                        </p>
+                                      </div>
+                                      <Button
+                                        type="button"
+                                        size="sm"
+                                        disabled={generationBusyLineId === item.id}
+                                        onClick={() => void generateCustomOrderDesign(order, item.id)}
+                                      >
+                                        <WandSparkles className="h-4 w-4" />
+                                        {generationBusyLineId === item.id
+                                          ? "Generating..."
+                                          : generated ? "Load Design ID" : "Generate Design ID"}
+                                      </Button>
+                                    </div>
+                                    {generationStatuses[item.id] ? (
+                                      <p className="mt-2 text-sm font-bold text-slate-700">{generationStatuses[item.id]}</p>
+                                    ) : null}
+                                    {generated ? (
+                                      <div className="mt-3 grid gap-3 lg:grid-cols-[180px_minmax(0,1fr)]">
+                                        {generated.sourceSvgUrl ? (
+                                          <a
+                                            className="relative block aspect-[5/3] overflow-hidden rounded-md border bg-white"
+                                            href={generated.sourceSvgUrl}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            <NextImage
+                                              src={generated.sourceSvgUrl}
+                                              alt={`Generated design ${generated.id}`}
+                                              fill
+                                              sizes="180px"
+                                              className="object-contain"
+                                              unoptimized
+                                            />
+                                          </a>
+                                        ) : null}
+                                        <div className="min-w-0">
+                                          <p className="break-all text-sm font-black text-slate-950">{generated.id}</p>
+                                          <div className="mt-2 flex flex-wrap gap-2">
+                                            <Button asChild variant="outline" size="sm">
+                                              <Link href={`/admin/orders?designId=${encodeURIComponent(generated.id)}`}>
+                                                <FileImage className="h-4 w-4" />
+                                                Preview files
+                                              </Link>
+                                            </Button>
+                                            {generated.designerUrl ? (
+                                              <Button asChild variant="outline" size="sm">
+                                                <a href={generated.designerUrl} target="_blank" rel="noreferrer">
+                                                  <FilePenLine className="h-4 w-4" />
+                                                  Edit layers
+                                                </a>
+                                              </Button>
+                                            ) : null}
+                                            {downloadUrl ? (
+                                              <Button asChild variant="outline" size="sm">
+                                                <a href={downloadUrl} download={`${generated.id}.svg`}>
+                                                  <Download className="h-4 w-4" />
+                                                  Download SVG
+                                                </a>
+                                              </Button>
+                                            ) : null}
+                                          </div>
+                                          {generated.warnings?.length ? (
+                                            <p className="mt-2 text-xs font-bold text-amber-800">
+                                              {generated.warnings.length} uploaded image{generated.warnings.length === 1 ? "" : "s"} could not be embedded. Open the order fields before printing.
+                                            </p>
+                                          ) : null}
+                                        </div>
+                                      </div>
+                                    ) : null}
+                                  </div>
+                                );
+                              })() : null}
                               <dl className="mt-3">
                               {normalizeShopifyAttributes(item.customAttributes || []).map((attribute, index) => (
                                 <CustomField key={`${attribute.key}-${index}`} attribute={attribute} />

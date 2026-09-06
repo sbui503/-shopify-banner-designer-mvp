@@ -14,6 +14,14 @@ type RecentDesign = {
   savedAt?: string;
   productTitle?: string;
   orderNumber?: string;
+  sourceSvgUrl?: string;
+  sourceSvgDownloadUrl?: string;
+  designerUrl?: string;
+  lookupUrl?: string;
+  generatedFrom?: string;
+  shopifyOrderId?: string;
+  shopifyLineItemId?: string;
+  warnings?: string[];
 };
 
 const ORDER_FRAGMENT = `fragment TSBannerOrderFields on Order {
@@ -36,6 +44,7 @@ const ORDER_FRAGMENT = `fragment TSBannerOrderFields on Order {
         sku
         variantTitle
         customAttributes { key value }
+        product { handle title }
       }
     }
   }
@@ -221,6 +230,7 @@ export async function GET(request: NextRequest) {
               sku?: string;
               variantTitle?: string;
               customAttributes?: ShopifyCustomAttribute[];
+              product?: { handle?: string; title?: string } | null;
             };
           }>;
         };
@@ -270,7 +280,15 @@ export async function GET(request: NextRequest) {
           quantity: line.quantity,
           sku: line.sku || "",
           variantTitle: line.variantTitle || "",
-          customAttributes: line.customAttributes || []
+          productHandle: line.product?.handle || "",
+          productTitle: line.product?.title || "",
+          customAttributes: line.customAttributes || [],
+          generatedDesign: recentDesigns.find((design) => (
+            design.generatedFrom === "shopify-custom-order"
+            && design.shopifyOrderId === node.id
+            && design.shopifyLineItemId === line.id
+            && safeDesignId(design.id)
+          )) || null
         }))
       };
     });

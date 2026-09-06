@@ -105,6 +105,15 @@ export function prepareIllustratorSvg(rawSvg: string, layers: DesignLayer[]) {
 
   root.setAttributeNS(XMLNS_NAMESPACE, "xmlns:inkscape", INKSCAPE_NAMESPACE);
   root.setAttribute("data-team-banner-format", "illustrator-layered-svg-v1");
+  const drawableNames = new Set([
+    "g", "path", "rect", "circle", "ellipse", "polygon", "polyline", "line", "text", "image"
+  ]);
+  Array.from(root.children).forEach((element) => {
+    if (element.namespaceURI !== SVG_NAMESPACE || !drawableNames.has(element.localName) || element.localName === "g") return;
+    const group = documentNode.createElementNS(SVG_NAMESPACE, "g");
+    root.insertBefore(group, element);
+    group.appendChild(element);
+  });
   const groups = Array.from(root.children).filter((element) => (
     element.namespaceURI === SVG_NAMESPACE && element.localName === "g"
   ));

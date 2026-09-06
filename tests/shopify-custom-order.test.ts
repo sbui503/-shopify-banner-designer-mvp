@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { customOrderSummary, normalizeShopifyAttributes } from "../lib/shopify-custom-order";
+import { customOrderDesignInput, customOrderSummary, normalizeShopifyAttributes } from "../lib/shopify-custom-order";
 
 const serializedForm = JSON.stringify({
   "Team / logo name": "TSB QA United",
@@ -61,4 +61,25 @@ test("summarizes fulfillment coverage for team, players, logo, and photos", () =
   assert.equal(summary.sport, "Soccer");
   assert.equal(summary.bannerType, "Hem & Grommet");
   assert.equal(summary.svgLayout, "Photo Frame Template");
+});
+
+test("builds ordered player and staff fields for design generation", () => {
+  const input = customOrderDesignInput([
+    { key: "_TSB Custom Form JSON", value: serializedForm },
+    { key: "Coach", value: "Coach Si" },
+    { key: "Team Mom/Dad", value: "Doan" },
+    { key: "Player 02 Photo", value: "https://cdn.shopify.com/uploads/jordan.png" }
+  ]);
+
+  assert.equal(input.teamName, "TSB QA United");
+  assert.equal(input.coach, "Coach Si");
+  assert.equal(input.teamMomDad, "Doan");
+  assert.equal(input.players.length, 2);
+  assert.deepEqual(input.players[0], { index: 1, name: "Alex One", number: "#10", photo: "alex.jpg" });
+  assert.deepEqual(input.players[1], {
+    index: 2,
+    name: "Jordan Two",
+    number: "#22",
+    photo: "https://cdn.shopify.com/uploads/jordan.png"
+  });
 });

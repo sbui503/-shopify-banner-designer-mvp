@@ -114,3 +114,69 @@ export function customOrderSummary(attributes: ShopifyCustomAttribute[] = []) {
     playerPhotoCount: playerPhotos.length
   };
 }
+
+export type CustomOrderPlayer = {
+  index: number;
+  name: string;
+  number: string;
+  photo: string;
+};
+
+export type CustomOrderDesignInput = {
+  attributes: ShopifyCustomAttribute[];
+  teamName: string;
+  teamLogo: string;
+  sport: string;
+  bannerType: string;
+  svgLayout: string;
+  manager: string;
+  assistantManager: string;
+  coach: string;
+  assistantCoach: string;
+  teamMomDad: string;
+  sponsors: string;
+  designNotes: string;
+  expectedPlayers: number;
+  players: CustomOrderPlayer[];
+};
+
+export function customOrderDesignInput(attributes: ShopifyCustomAttribute[] = []): CustomOrderDesignInput {
+  const normalized = normalizeShopifyAttributes(attributes);
+  const playerFields = new Map<number, CustomOrderPlayer>();
+
+  normalized.forEach((attribute) => {
+    const match = canonicalKey(attribute.key).match(/^player(\d+)(name|number|photo)$/);
+    if (!match) return;
+    const index = Number.parseInt(match[1], 10);
+    if (!Number.isFinite(index) || index < 1 || index > 50) return;
+    const player = playerFields.get(index) || { index, name: "", number: "", photo: "" };
+    player[match[2] as "name" | "number" | "photo"] = String(attribute.value || "").trim();
+    playerFields.set(index, player);
+  });
+
+  const declaredPlayers = Math.max(0, Math.min(20, Number.parseInt(valueFor(normalized, ["numberofplayers"]), 10) || 0));
+  const highestPlayerIndex = Math.max(0, ...playerFields.keys());
+  const playerCount = Math.max(declaredPlayers, highestPlayerIndex);
+  const players = Array.from({ length: playerCount }, (_, offset) => {
+    const index = offset + 1;
+    return playerFields.get(index) || { index, name: "", number: "", photo: "" };
+  });
+
+  return {
+    attributes: normalized,
+    teamName: valueFor(normalized, ["teamlogoname", "teamname"]),
+    teamLogo: valueFor(normalized, ["teamlogo"]),
+    sport: valueFor(normalized, ["sport"]),
+    bannerType: valueFor(normalized, ["bannertype"]),
+    svgLayout: valueFor(normalized, ["svglayout"]),
+    manager: valueFor(normalized, ["teammanagers", "teammanager", "manager"]),
+    assistantManager: valueFor(normalized, ["asstmanagers", "asstmanager", "assistantmanagers", "assistantmanager"]),
+    coach: valueFor(normalized, ["coach", "coachname"]),
+    assistantCoach: valueFor(normalized, ["asstcoach", "assistantcoach"]),
+    teamMomDad: valueFor(normalized, ["teammomdad", "teammom", "teamdad"]),
+    sponsors: valueFor(normalized, ["teamsponsors", "teamsponsor", "sponsors", "sponsor"]),
+    designNotes: valueFor(normalized, ["designnotes", "designinstructions", "specialinstructions", "notes"]),
+    expectedPlayers: playerCount,
+    players
+  };
+}
