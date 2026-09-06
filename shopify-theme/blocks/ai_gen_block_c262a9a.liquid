@@ -1,0 +1,336 @@
+{% doc %}
+  @prompt
+    Add a “Customize This Design” button to every product page.
+
+    When clicked, open this design tool URL:
+
+    https://teamsportbanners.vercel.app/
+
+    Pass the current Shopify product data as URL parameters.
+
+    Required parameters:
+    - productHandle = current product handle
+    - productTitle = current product title
+    - productImage = current featured image URL
+    - productId = current product ID
+    - variantId = current selected or first available variant ID
+    - price = current product price
+    - autoLoadProduct=1
+    - autoLayer=png
+
+    Use the product handle as the main identifier. Do not rely only on product title or image URL.
+
+    The final button URL should look like:
+
+    https://teamsportbanners.vercel.app/?productHandle={{ product.handle }}&productTitle={{ product.title | url_encode }}&productImage={{ product.featured_image | image_url: width: 2000 | url_encode }}&productId={{ product.id }}&variantId={{ product.selected_or_first_available_variant.id }}&price={{ product.price | money_without_currency | url_encode }}&autoLoadProduct=1&autoLayer=png
+
+    Button text:
+    Customize This Design
+
+    Button style:
+    green border, light green background, rounded corners, icon on the left, bold text.
+
+    Place the button below the product title or near the Add to Cart button.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-customize-button-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+  }
+
+  .ai-customize-button-link-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: {{ block.settings.button_padding }}px {{ block.settings.button_padding | times: 1.5 }}px;
+    background-color: {{ block.settings.button_bg_color }};
+    border: {{ block.settings.border_width }}px solid {{ block.settings.border_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    color: {{ block.settings.text_color }};
+    text-decoration: none;
+    font-weight: {{ block.settings.font_weight }};
+    font-size: {{ block.settings.font_size }}px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  .ai-customize-button-link-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg_color }};
+    border-color: {{ block.settings.border_hover_color }};
+    color: {{ block.settings.text_hover_color }};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-customize-button-icon-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    flex-shrink: 0;
+  }
+
+  .ai-customize-button-text-{{ ai_gen_id }} {
+    line-height: 1.2;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-customize-button-{{ ai_gen_id }} {
+      width: 100%;
+    }
+
+    .ai-customize-button-link-{{ ai_gen_id }} {
+      font-size: {{ block.settings.font_size | times: 0.9 }}px;
+      padding: {{ block.settings.button_padding | times: 0.9 }}px {{ block.settings.button_padding | times: 1.3 }}px;
+    }
+
+    .ai-customize-button-icon-{{ ai_gen_id }} {
+      width: {{ block.settings.icon_size | times: 0.9 }}px;
+      height: {{ block.settings.icon_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+{% liquid
+  assign tsb_hide_customize_button = false
+  assign tsb_product_handle = product.handle | default: '' | strip
+
+  if product.type == 'easify_addon_product' or product.featured_image == blank
+    assign tsb_hide_customize_button = true
+  endif
+
+  case tsb_product_handle
+    when 'banner-carrying-bag'
+      assign tsb_hide_customize_button = true
+    when 'banner-carrying-bag-and-pole-kit'
+      assign tsb_hide_customize_button = true
+    when 'custom-home-plate'
+      assign tsb_hide_customize_button = true
+    when 'custom-triangle'
+      assign tsb_hide_customize_button = true
+    when 'custom-design-banner'
+      assign tsb_hide_customize_button = true
+    when 'number-of-players-1741408171741'
+      assign tsb_hide_customize_button = true
+    when 'player-2-1741407683673'
+      assign tsb_hide_customize_button = true
+    when 'player-1-1741407618603'
+      assign tsb_hide_customize_button = true
+    when 'product-list-1741406995716'
+      assign tsb_hide_customize_button = true
+    when 'product-list-1741406984186'
+      assign tsb_hide_customize_button = true
+    when 'player-2-1741406674927'
+      assign tsb_hide_customize_button = true
+    when 'player-2-1741406663261'
+      assign tsb_hide_customize_button = true
+    when 'player-2-1741406471775'
+      assign tsb_hide_customize_button = true
+    when 'dropdown-1741406128408'
+      assign tsb_hide_customize_button = true
+    when 'number-of-players-1741317315035'
+      assign tsb_hide_customize_button = true
+  endcase
+%}
+
+{% unless tsb_hide_customize_button %}
+  <div class="ai-customize-button-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+    {% liquid
+      assign base_url = 'https://teamsportbanners.vercel.app/'
+      assign product_handle = product.handle
+      assign product_title = product.title | url_encode
+      assign product_image = product.featured_image | image_url: width: 2000 | url_encode
+      assign product_id = product.id
+      assign variant_id = product.selected_or_first_available_variant.id
+      assign price = product.price | money_without_currency | url_encode
+
+      assign design_tool_url = base_url | append: '?productHandle=' | append: product_handle | append: '&productTitle=' | append: product_title | append: '&productImage=' | append: product_image | append: '&productId=' | append: product_id | append: '&variantId=' | append: variant_id | append: '&price=' | append: price | append: '&autoLoadProduct=1&autoLayer=png'
+    %}
+
+    <a
+      href="{{ design_tool_url }}"
+      class="ai-customize-button-link-{{ ai_gen_id }}"
+      {% if block.settings.open_in_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}
+    >
+      {% if block.settings.show_icon %}
+        <svg
+          class="ai-customize-button-icon-{{ ai_gen_id }}"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+      {% endif %}
+      <span class="ai-customize-button-text-{{ ai_gen_id }}">{{ block.settings.button_text }}</span>
+    </a>
+  </div>
+{% endunless %}
+
+{% schema %}
+{
+  "name": "Customize design button",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Customize This Design"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icon",
+      "label": "Show icon",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "Open in new tab",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background color",
+      "default": "#e1ffe5"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#c6f5cc"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#559b60"
+    },
+    {
+      "type": "color",
+      "id": "border_hover_color",
+      "label": "Hover border color",
+      "default": "#3d7a46"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Border width",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_hover_color",
+      "label": "Hover text color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "Font weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "button_padding",
+      "label": "Padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    }
+  ],
+  "presets": [
+    {
+      "name": "Customize design button"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

@@ -45,7 +45,7 @@
     },
     {
       id: "bag-pole-kit",
-      title: "Bag & Pole Kit",
+      title: "Banner Carrying Bag and Pole Kit",
       priceCents: 6999,
       image: "/accessories/tsb-banner-pole-kit.jpg",
       allowedShapes: ["polepocket"]

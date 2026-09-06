@@ -1,0 +1,87 @@
+{% liquid
+  assign tsb_hide_customize_button = false
+  assign tsb_product_handle = product.handle | default: '' | strip
+
+  if product.type == 'easify_addon_product' or product.featured_image == blank
+    assign tsb_hide_customize_button = true
+  endif
+
+  case tsb_product_handle
+    when 'banner-carrying-bag'
+      assign tsb_hide_customize_button = true
+    when 'banner-carrying-bag-and-pole-kit'
+      assign tsb_hide_customize_button = true
+    when 'custom-home-plate'
+      assign tsb_hide_customize_button = true
+    when 'custom-triangle'
+      assign tsb_hide_customize_button = true
+    when 'custom-design-banner'
+      assign tsb_hide_customize_button = true
+    when 'number-of-players-1741408171741'
+      assign tsb_hide_customize_button = true
+    when 'player-2-1741407683673'
+      assign tsb_hide_customize_button = true
+    when 'player-1-1741407618603'
+      assign tsb_hide_customize_button = true
+    when 'product-list-1741406995716'
+      assign tsb_hide_customize_button = true
+    when 'product-list-1741406984186'
+      assign tsb_hide_customize_button = true
+    when 'player-2-1741406674927'
+      assign tsb_hide_customize_button = true
+    when 'player-2-1741406663261'
+      assign tsb_hide_customize_button = true
+    when 'player-2-1741406471775'
+      assign tsb_hide_customize_button = true
+    when 'dropdown-1741406128408'
+      assign tsb_hide_customize_button = true
+    when 'number-of-players-1741317315035'
+      assign tsb_hide_customize_button = true
+  endcase
+%}
+
+{% unless tsb_hide_customize_button %}
+  {% liquid
+    assign tsb_product_image = product.featured_image | image_url: width: 2000 | url_encode
+    assign tsb_product_title = product.title | url_encode
+    assign tsb_variant_id = product.selected_or_first_available_variant.id
+    assign tsb_price = product.price | money_without_currency | url_encode
+    assign tsb_design_url = 'https://teamsportbanners.vercel.app/?productHandle=' | append: product.handle | append: '&productTitle=' | append: tsb_product_title | append: '&productImage=' | append: tsb_product_image | append: '&productId=' | append: product.id | append: '&variantId=' | append: tsb_variant_id | append: '&price=' | append: tsb_price | append: '&autoLoadProduct=1&autoLayer=png'
+  %}
+
+  <style>
+    .tsb-safe-customize-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin: 12px 0;
+      padding: 14px 18px;
+      border: 2px solid #559b60;
+      border-radius: 8px;
+      background: #e1ffe5;
+      color: #000;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.2;
+      text-align: center;
+      text-decoration: none;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .tsb-safe-customize-button:hover {
+      border-color: #3d7a46;
+      background: #c6f5cc;
+      color: #000;
+    }
+  </style>
+
+  <a
+    class="tsb-safe-customize-button"
+    href="{{ tsb_design_url }}"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Customize This Design
+  </a>
+{% endunless %}

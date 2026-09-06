@@ -1,0 +1,628 @@
+{% doc %}
+  @prompt
+    CREATE A CUSTOM PRODUCT GRID THAT SHOW ALL THE PRODUCT IN COLLECTION UP TO 500 AND ADD IN ABILITY TO HAVE INFINITE SCROLL , COLUM OPTION GRID LAYOUT AND FULL IMAG, Add a “Customize This Design” button to every product on the grid.
+
+    When clicked, open this design tool URL:
+
+    https://teamsportbanners.vercel.app/
+
+    Pass the current Shopify product data as URL parameters.
+
+    Required parameters:
+    - productHandle = current product handle
+    - productTitle = current product title
+    - productImage = current featured image URL
+    - productId = current product ID
+    - variantId = current selected or first available variant ID
+    - price = current product price
+    - autoLoadProduct=1
+    - autoLayer=png
+
+    Use the product handle as the main identifier. Do not rely only on product title or image URL.
+
+    The final button URL should look like:
+
+    https://teamsportbanners.vercel.app/?productHandle=all-star-baseball-banner&productTitle=All-Star%20-%20Baseball%20Banner&productImage=...&autoLoadProduct=1&autoLayer=png
+
+
+    Button text:
+    Customize This Design
+
+    Button style:
+    green border, light green background, rounded corners, icon on the left, bold text.
+
+    Place the button below the product title or near the Add to Cart button.
+
+
+    Use this stronger Liquid code. It includes both `productHandle/productTitle/productImage` and the old `image/product_title/product_id/variant_id` params.
+
+    ```liquid
+    {% assign tbd_variant = product.selected_or_first_available_variant %}
+    {% assign tbd_image = product.featured_image | image_url: width: 2000 %}
+
+    {% capture tbd_design_url %}
+    https://teamsportbanners.vercel.app/?productHandle={{ product.handle | url_encode }}&productTitle={{ product.title | url_encode }}&productImage={{ tbd_image | url_encode }}&productId={{ product.id }}&variantId={{ tbd_variant.id }}&price={{ tbd_variant.price | money_without_currency | url_encode }}&image={{ tbd_image | url_encode }}&product_title={{ product.title | url_encode }}&product_id={{ product.id }}&variant_id={{ tbd_variant.id }}&autoLoadProduct=1&autoLayer=png
+    {% endcapture %}
+
+    <a
+      href="{{ tbd_design_url | strip }}"
+      class="tsb-customize-button"
+    >
+      <span class="tsb-customize-button__icon">🎨</span>
+      <span>Customize This Design</span>
+    </a>
+
+    <style>
+      .tsb-customize-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 14px 0;
+        padding: 12px 18px;
+        border: 1px solid #22a05a;
+        border-radius: 10px;
+        background: #f0fff5;
+        color: #146c37;
+        font-size: 18px;
+        font-weight: 800;
+        line-height: 1.2;
+        text-decoration: none;
+      }
+
+      .tsb-customize-button:hover {
+        background: #dcfce7;
+        color: #0f5a2e;
+      }
+    </style>
+    ```
+
+    Important: after adding it, inspect the button link. It must include this part:
+
+    ```text
+    autoLoadProduct=1&autoLayer=png
+    ```
+
+    And for best matching it must include:
+
+    ```text
+    productHandle=your-product-handle
+    ```
+
+    Example correct URL shape:
+
+    ```text
+    https://teamsportbanners.vercel.app/?productHandle=all-star-baseball-banner&productTitle=All-Star%20-%20Baseball%20Banner&productImage=...&autoLoadProduct=1&autoLayer=png
+    ```
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-product-grid-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px 0;
+  }
+
+  .ai-product-grid__container-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.columns_desktop }}, 1fr);
+    gap: {{ block.settings.grid_gap }}px;
+    margin-bottom: 40px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-product-grid__container-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+    }
+  }
+
+  .ai-product-card-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    background: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .ai-product-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-product-card__image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    overflow: hidden;
+    background: #f4f4f4;
+  }
+
+  .ai-product-card__image-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: {{ block.settings.image_fit }};
+  }
+
+  .ai-product-card__content-{{ ai_gen_id }} {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ai-product-card__title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    font-weight: 600;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .ai-product-card__title-link-{{ ai_gen_id }} {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .ai-product-card__title-link-{{ ai_gen_id }}:hover {
+    text-decoration: underline;
+  }
+
+  .ai-product-card__price-{{ ai_gen_id }} {
+    font-size: {{ block.settings.price_size }}px;
+    font-weight: 700;
+    color: {{ block.settings.price_color }};
+  }
+
+  .ai-product-card__actions-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    width: 100%;
+  }
+
+  .ai-customize-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 18px;
+    border: 1px solid #22a05a;
+    border-radius: 10px;
+    background: #f0fff5;
+    color: #146c37;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .ai-customize-button-{{ ai_gen_id }}:hover {
+    background: #dcfce7;
+    color: #0f5a2e;
+  }
+
+  .ai-customize-button__icon-{{ ai_gen_id }} {
+    font-size: 18px;
+  }
+
+  .ai-order-form-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 18px;
+    border: 1px solid #111111;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #111111;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .ai-order-form-button-{{ ai_gen_id }}:hover {
+    background: #111111;
+    color: #ffffff;
+  }
+
+  .ai-product-grid__loading-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 16px;
+    color: #666;
+  }
+
+  .ai-product-grid__end-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 16px;
+    color: #999;
+    font-style: italic;
+  }
+
+  .ai-product-grid__spinner-{{ ai_gen_id }} {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid {{ block.settings.price_color }};
+    border-radius: 50%;
+    animation: ai-spin-{{ ai_gen_id }} 1s linear infinite;
+  }
+
+  @keyframes ai-spin-{{ ai_gen_id }} {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+{% endstyle %}
+
+<product-grid-{{ ai_gen_id }}
+  class="ai-product-grid-{{ ai_gen_id }}"
+  data-collection-handle="{{ collection.handle }}"
+  data-products-per-page="{{ block.settings.products_per_page }}"
+  data-infinite-scroll="{{ block.settings.enable_infinite_scroll }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-product-grid__container-{{ ai_gen_id }}" data-grid-container></div>
+
+  {% if block.settings.enable_infinite_scroll %}
+    <div class="ai-product-grid__loading-{{ ai_gen_id }}" data-loading style="display: none;">
+      <div class="ai-product-grid__spinner-{{ ai_gen_id }}"></div>
+    </div>
+    <div class="ai-product-grid__end-{{ ai_gen_id }}" data-end-message style="display: none;">
+      All products loaded
+    </div>
+  {% endif %}
+</product-grid-{{ ai_gen_id }}>
+
+<script>
+(function() {
+  class ProductGrid{{ ai_gen_id }} extends HTMLElement {
+    constructor() {
+      super();
+      this.currentPage = 1;
+      this.isLoading = false;
+      this.hasMoreProducts = true;
+      this.collectionHandle = this.dataset.collectionHandle;
+      this.productsPerPage = parseInt(this.dataset.productsPerPage);
+      this.infiniteScrollEnabled = this.dataset.infiniteScroll === 'true';
+      this.gridContainer = this.querySelector('[data-grid-container]');
+      this.loadingIndicator = this.querySelector('[data-loading]');
+      this.endMessage = this.querySelector('[data-end-message]');
+    }
+
+    connectedCallback() {
+      this.loadProducts();
+
+      if (this.infiniteScrollEnabled) {
+        this.setupInfiniteScroll();
+      }
+    }
+
+    setupInfiniteScroll() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !this.isLoading && this.hasMoreProducts) {
+            this.loadProducts();
+          }
+        });
+      }, {
+        rootMargin: '200px'
+      });
+
+      if (this.loadingIndicator) {
+        observer.observe(this.loadingIndicator);
+      }
+    }
+
+    async loadProducts() {
+      if (this.isLoading || !this.hasMoreProducts) return;
+
+      this.isLoading = true;
+      if (this.loadingIndicator) {
+        this.loadingIndicator.style.display = 'block';
+      }
+
+      try {
+        const url = `/collections/${this.collectionHandle}/products.json?page=${this.currentPage}&limit=${this.productsPerPage}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.products && data.products.length > 0) {
+          this.renderProducts(data.products);
+
+          if (data.products.length < this.productsPerPage) {
+            this.hasMoreProducts = false;
+            if (this.endMessage) {
+              this.endMessage.style.display = 'block';
+            }
+          }
+
+          this.currentPage++;
+        } else {
+          this.hasMoreProducts = false;
+          if (this.endMessage) {
+            this.endMessage.style.display = 'block';
+          }
+        }
+      } catch (error) {
+        console.error('Error loading products:', error);
+        this.hasMoreProducts = false;
+      } finally {
+        this.isLoading = false;
+        if (this.loadingIndicator) {
+          this.loadingIndicator.style.display = 'none';
+        }
+      }
+    }
+
+    renderProducts(products) {
+      products.forEach(product => {
+        const productCard = this.createProductCard(product);
+        this.gridContainer.insertAdjacentHTML('beforeend', productCard);
+      });
+    }
+
+    createProductCard(product) {
+      const variant = product.variants && product.variants.length > 0 ? product.variants[0] : null;
+      const imageUrl = product.featured_image || (product.images && product.images.length > 0 ? product.images[0] : '');
+      const fullImageUrl = imageUrl ? imageUrl.replace(/\.(jpg|jpeg|png|gif|webp)/, '_2000x.$1') : '';
+
+      const price = variant ? variant.price : (product.price || 0);
+      const priceFormatted = (price / 100).toFixed(2);
+
+      const designUrl = this.canShowCustomize(product, fullImageUrl)
+        ? this.buildDesignUrl(product, variant, fullImageUrl, priceFormatted)
+        : '';
+
+      return `
+        <div class="ai-product-card-{{ ai_gen_id }}">
+          <div class="ai-product-card__image-wrapper-{{ ai_gen_id }}">
+            ${imageUrl ? `
+              <img
+                src="${imageUrl}"
+                alt="${this.escapeHtml(product.title)}"
+                class="ai-product-card__image-{{ ai_gen_id }}"
+                loading="lazy"
+              >
+            ` : `
+              <div class="ai-product-card__image-{{ ai_gen_id }}" style="background: #f4f4f4;"></div>
+            `}
+          </div>
+          <div class="ai-product-card__content-{{ ai_gen_id }}">
+            <h3 class="ai-product-card__title-{{ ai_gen_id }}">
+              <a href="/products/${product.handle}" class="ai-product-card__title-link-{{ ai_gen_id }}">
+                ${this.escapeHtml(product.title)}
+              </a>
+            </h3>
+            <div class="ai-product-card__price-{{ ai_gen_id }}">
+              $${priceFormatted}
+            </div>
+            <div class="ai-product-card__actions-{{ ai_gen_id }} tsb-product-card-actions">
+              ${designUrl ? `
+                <a
+                  href="${designUrl}"
+                  class="ai-customize-button-{{ ai_gen_id }}"
+                >
+                  <span class="ai-customize-button__icon-{{ ai_gen_id }}">🎨</span>
+                  <span>Customize This Design</span>
+                </a>
+              ` : ''}
+              <a
+                href="/products/${encodeURIComponent(product.handle)}"
+                class="ai-order-form-button-{{ ai_gen_id }} tsb-order-form-button"
+              >
+                Order Form
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    canShowCustomize(product, imageUrl) {
+      const unsafeHandles = new Set([
+        'banner-carrying-bag',
+        'banner-carrying-bag-and-pole-kit',
+        'custom-home-plate',
+        'custom-triangle',
+        'custom-design-banner',
+        'number-of-players-1741408171741',
+        'player-2-1741407683673',
+        'player-1-1741407618603',
+        'product-list-1741406995716',
+        'product-list-1741406984186',
+        'player-2-1741406674927',
+        'player-2-1741406663261',
+        'player-2-1741406471775',
+        'dropdown-1741406128408',
+        'number-of-players-1741317315035'
+      ]);
+      const type = String(product.product_type || product.type || '').toLowerCase();
+      return Boolean(imageUrl)
+        && type !== 'easify_addon_product'
+        && !unsafeHandles.has(product.handle);
+    }
+
+    buildDesignUrl(product, variant, imageUrl, price) {
+      const params = new URLSearchParams({
+        productHandle: product.handle,
+        productTitle: product.title,
+        productImage: imageUrl,
+        productId: product.id,
+        variantId: variant ? variant.id : product.id,
+        price: price,
+        image: imageUrl,
+        product_title: product.title,
+        product_id: product.id,
+        variant_id: variant ? variant.id : product.id,
+        autoLoadProduct: '1',
+        autoLayer: 'png'
+      });
+
+      return `https://teamsportbanners.vercel.app/?${params.toString()}`;
+    }
+
+    escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  }
+
+  customElements.define('product-grid-{{ ai_gen_id }}', ProductGrid{{ ai_gen_id }});
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Product grid infinite",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Grid gap",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_infinite_scroll",
+      "label": "Enable infinite scroll",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 12,
+      "max": 100,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "options": [
+        { "value": "cover", "label": "Cover (fill)" },
+        { "value": "contain", "label": "Contain (fit)" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "label": "Price size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#146c37"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product grid infinite"
+    }
+  ]
+}
+{% endschema %}

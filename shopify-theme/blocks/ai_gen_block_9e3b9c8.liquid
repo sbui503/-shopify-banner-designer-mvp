@@ -1,0 +1,538 @@
+{% doc %}
+  @prompt
+    Create a product grid product with infinite scroll and full product image size and column section and Add a “Customize This Design” button to every product on the grid.
+
+    When clicked, open this design tool URL:
+
+    https://teamsportbanners.vercel.app/
+
+    Pass the current Shopify product data as URL parameters.
+
+    Required parameters:
+    - productHandle = current product handle
+    - productTitle = current product title
+    - productImage = current featured image URL
+    - productId = current product ID
+    - variantId = current selected or first available variant ID
+    - price = current product price
+    - autoLoadProduct=1
+    - autoLayer=png
+
+    Use the product handle as the main identifier. Do not rely only on product title or image URL.
+
+    The final button URL should look like:
+
+    https://teamsportbanners.vercel.app/?productHandle={{ product.handle }}&productTitle={{ product.title | url_encode }}&productImage={{ product.featured_image | image_url: width: 2000 | url_encode }}&productId={{ product.id }}&variantId={{ product.selected_or_first_available_variant.id }}&price={{ product.price | money_without_currency | url_encode }}&autoLoadProduct=1&autoLayer=png
+
+    Button text:
+    Customize This Design
+
+    Button style:
+    green border, light green background, rounded corners, icon on the left, bold text.
+
+    Place the button below the product title or near the Add to Cart button.
+    ```
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-product-grid-{{ ai_gen_id }} {
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    display: block;
+  }
+
+  .ai-product-grid__container-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.columns_desktop }}, 1fr);
+    gap: {{ block.settings.grid_gap }}px;
+    margin-bottom: 40px;
+  }
+
+  .ai-product-grid__item-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ai-product-grid__image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: {{ block.settings.image_border_radius }}px;
+  }
+
+  .ai-product-grid__image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  .ai-product-grid__image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 1;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-product-grid__image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-product-grid__info-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ai-product-grid__title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    font-weight: 600;
+    margin: 0;
+    color: {{ block.settings.title_color }};
+  }
+
+  .ai-product-grid__title-link-{{ ai_gen_id }} {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .ai-product-grid__title-link-{{ ai_gen_id }}:hover {
+    text-decoration: underline;
+  }
+
+  .ai-product-grid__price-{{ ai_gen_id }} {
+    font-size: {{ block.settings.price_size }}px;
+    color: {{ block.settings.price_color }};
+    font-weight: 500;
+  }
+
+  .ai-product-grid__customize-btn-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background-color: {{ block.settings.button_bg_color }};
+    border: 2px solid {{ block.settings.button_border_color }};
+    border-radius: {{ block.settings.button_border_radius }}px;
+    color: {{ block.settings.button_text_color }};
+    font-weight: 700;
+    font-size: {{ block.settings.button_text_size }}px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+  }
+
+  .ai-product-grid__customize-btn-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg_color }};
+    border-color: {{ block.settings.button_hover_border_color }};
+    color: {{ block.settings.button_hover_text_color }};
+  }
+
+  .ai-product-grid__customize-icon-{{ ai_gen_id }} {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .ai-product-grid__loading-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 16px;
+    color: #666;
+  }
+
+  .ai-product-grid__no-more-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 16px;
+    color: #999;
+  }
+
+  .ai-product-grid__spinner-{{ ai_gen_id }} {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid {{ block.settings.button_border_color }};
+    border-radius: 50%;
+    animation: ai-product-grid-spin-{{ ai_gen_id }} 1s linear infinite;
+  }
+
+  @keyframes ai-product-grid-spin-{{ ai_gen_id }} {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-product-grid__container-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+      gap: {{ block.settings.grid_gap_mobile }}px;
+    }
+
+    .ai-product-grid__title-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.title_size }}px * 0.9);
+    }
+
+    .ai-product-grid__price-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.price_size }}px * 0.9);
+    }
+  }
+{% endstyle %}
+
+<infinite-product-grid-{{ ai_gen_id }}
+  class="ai-product-grid-{{ ai_gen_id }}"
+  data-collection-url="{{ collection.url }}"
+  data-products-per-page="{{ block.settings.products_per_page }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-product-grid__container-{{ ai_gen_id }}" data-product-container>
+    {% for product in collection.products limit: block.settings.products_per_page %}
+      <div class="ai-product-grid__item-{{ ai_gen_id }}">
+        <div class="ai-product-grid__image-wrapper-{{ ai_gen_id }}">
+          <a href="{{ product.url }}">
+            {% if product.featured_image %}
+              <img
+                src="{{ product.featured_image | image_url: width: 2000 }}"
+                alt="{{ product.featured_image.alt | escape }}"
+                loading="lazy"
+                width="{{ product.featured_image.width }}"
+                height="{{ product.featured_image.height }}"
+                class="ai-product-grid__image-{{ ai_gen_id }}"
+              >
+            {% else %}
+              <div class="ai-product-grid__image-placeholder-{{ ai_gen_id }}">
+                {{ 'product-1' | placeholder_svg_tag }}
+              </div>
+            {% endif %}
+          </a>
+        </div>
+
+        <div class="ai-product-grid__info-{{ ai_gen_id }}">
+          <h3 class="ai-product-grid__title-{{ ai_gen_id }}">
+            <a href="{{ product.url }}" class="ai-product-grid__title-link-{{ ai_gen_id }}">
+              {{ product.title }}
+            </a>
+          </h3>
+
+          <div class="ai-product-grid__price-{{ ai_gen_id }}">
+            {{ product.price | money }}
+          </div>
+
+          {% assign tsb_unsafe_customize_handles = '|banner-carrying-bag|banner-carrying-bag-and-pole-kit|custom-home-plate|custom-triangle|custom-design-banner|number-of-players-1741408171741|player-2-1741407683673|player-1-1741407618603|product-list-1741406995716|product-list-1741406984186|player-2-1741406674927|player-2-1741406663261|player-2-1741406471775|dropdown-1741406128408|number-of-players-1741317315035|' %}
+          {% assign tsb_product_handle_token = '|' | append: product.handle | append: '|' %}
+          {% unless product.type == 'easify_addon_product' or product.featured_image == blank or tsb_unsafe_customize_handles contains tsb_product_handle_token %}
+            <a
+              href="https://teamsportbanners.vercel.app/?productHandle={{ product.handle }}&productTitle={{ product.title | url_encode }}&productImage={{ product.featured_image | image_url: width: 2000 | url_encode }}&productId={{ product.id }}&variantId={{ product.selected_or_first_available_variant.id }}&price={{ product.price | money_without_currency | url_encode }}&autoLoadProduct=1&autoLayer=png"
+              class="ai-product-grid__customize-btn-{{ ai_gen_id }}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg class="ai-product-grid__customize-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              {{ block.settings.button_text }}
+            </a>
+          {% endunless %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="ai-product-grid__loading-{{ ai_gen_id }}" data-loading style="display: none;">
+    <div class="ai-product-grid__spinner-{{ ai_gen_id }}"></div>
+  </div>
+
+  <div class="ai-product-grid__no-more-{{ ai_gen_id }}" data-no-more style="display: none;">
+    {{ block.settings.no_more_text }}
+  </div>
+</infinite-product-grid-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class InfiniteProductGrid{{ai_gen_id}} extends HTMLElement {
+      constructor() {
+        super();
+        this.currentPage = 1;
+        this.isLoading = false;
+        this.hasMoreProducts = true;
+        this.collectionUrl = this.dataset.collectionUrl;
+        this.productsPerPage = parseInt(this.dataset.productsPerPage);
+        this.productContainer = this.querySelector('[data-product-container]');
+        this.loadingIndicator = this.querySelector('[data-loading]');
+        this.noMoreIndicator = this.querySelector('[data-no-more]');
+      }
+
+      connectedCallback() {
+        this.setupInfiniteScroll();
+      }
+
+      setupInfiniteScroll() {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting && !this.isLoading && this.hasMoreProducts) {
+                this.loadMoreProducts();
+              }
+            });
+          },
+          {
+            rootMargin: '200px'
+          }
+        );
+
+        observer.observe(this.loadingIndicator);
+      }
+
+      async loadMoreProducts() {
+        if (this.isLoading || !this.hasMoreProducts) return;
+
+        this.isLoading = true;
+        this.loadingIndicator.style.display = 'block';
+        this.currentPage++;
+
+        try {
+          const response = await fetch(
+            `${this.collectionUrl}?page=${this.currentPage}&view=ajax`
+          );
+          const html = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const products = doc.querySelectorAll('.ai-product-grid__item-{{ ai_gen_id }}');
+
+          if (products.length === 0) {
+            this.hasMoreProducts = false;
+            this.loadingIndicator.style.display = 'none';
+            this.noMoreIndicator.style.display = 'block';
+          } else {
+            products.forEach((product) => {
+              this.productContainer.appendChild(product.cloneNode(true));
+            });
+            this.loadingIndicator.style.display = 'none';
+          }
+        } catch (error) {
+          console.error('Error loading products:', error);
+          this.loadingIndicator.style.display = 'none';
+        }
+
+        this.isLoading = false;
+      }
+    }
+
+    customElements.define('infinite-product-grid-{{ ai_gen_id }}', InfiniteProductGrid{{ai_gen_id}});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product grid",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Grid layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Grid gap desktop",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_mobile",
+      "label": "Grid gap mobile",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Product image"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Image border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Product title"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Product price"
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "label": "Price size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Customize button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Customize This Design"
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "label": "Button text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background color",
+      "default": "#e8f5e9"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Border color",
+      "default": "#4caf50"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#2e7d32"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#c8e6c9"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_border_color",
+      "label": "Hover border color",
+      "default": "#388e3c"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Hover text color",
+      "default": "#1b5e20"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Loading messages"
+    },
+    {
+      "type": "text",
+      "id": "no_more_text",
+      "label": "No more products text",
+      "default": "No more products to load"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product grid"
+    }
+  ]
+}
+{% endschema %}

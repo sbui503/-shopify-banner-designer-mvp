@@ -1,0 +1,698 @@
+{% doc %}
+  @prompt
+    GENERATE A SECTION FOR CUSTOM PRODUCT GRID that add a customized button to every product card Use this stronger Liquid code. It includes both `productHandle/productTitle/productImage` and the old `image/product_title/product_id/variant_id` params.
+
+    ```liquid
+    {% assign tbd_variant = product.selected_or_first_available_variant %}
+    {% assign tbd_image = product.featured_image | image_url: width: 2000 %}
+
+    {% capture tbd_design_url %}
+    https://teamsportbanners.vercel.app/?productHandle={{ product.handle | url_encode }}&productTitle={{ product.title | url_encode }}&productImage={{ tbd_image | url_encode }}&productId={{ product.id }}&variantId={{ tbd_variant.id }}&price={{ tbd_variant.price | money_without_currency | url_encode }}&image={{ tbd_image | url_encode }}&product_title={{ product.title | url_encode }}&product_id={{ product.id }}&variant_id={{ tbd_variant.id }}&autoLoadProduct=1&autoLayer=png
+    {% endcapture %}
+
+    <a
+      href="{{ tbd_design_url | strip }}"
+      class="tsb-customize-button"
+    >
+      <span class="tsb-customize-button__icon">🎨</span>
+      <span>Customize This Design</span>
+    </a>
+
+    <style>
+      .tsb-customize-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 14px 0;
+        padding: 12px 18px;
+        border: 1px solid #22a05a;
+        border-radius: 10px;
+        background: #f0fff5;
+        color: #146c37;
+        font-size: 18px;
+        font-weight: 800;
+        line-height: 1.2;
+        text-decoration: none;
+      }
+
+      .tsb-customize-button:hover {
+        background: #dcfce7;
+        color: #0f5a2e;
+      }
+    </style>
+    ```
+
+    Important: after adding it, inspect the button link. It must include this part:
+
+    ```text
+    autoLoadProduct=1&autoLayer=png
+    ```
+
+    And for best matching it must include:
+
+    ```text
+    productHandle=your-product-handle
+    ```
+
+    Example correct URL shape:
+
+    ```text
+    https://teamsportbanners.vercel.app/?productHandle=all-star-baseball-banner&productTitle=All-Star%20-%20Baseball%20Banner&productImage=...&autoLoadProduct=1&autoLayer=png
+    ```Product Display Settings - Control how many products show per page (1-36), choose between standard or metro grid layout, set desktop columns (1-6), and select mobile columns (1-2).
+
+    Pagination & Navigation - Choose how customers browse: infinite scroll, load more button, or numbered pages.
+
+    Filtering & Sorting - Enable color swatches, product filtering, sorting options, and customize which filter groups expand by default (Availability, Price, Color, Size, Product type).
+
+    Color & Styling - Select from 14 pre-designed color schemes to match your brand.
+
+    Spacing & Layout - Adjust top and bottom padding (0-100px each).
+
+    Section Divider - Toggle a divider line and control whether it spans the container or full page width.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-custom-product-grid-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding-top: {{ block.settings.padding_top }}px;
+    padding-bottom: {{ block.settings.padding_bottom }}px;
+  }
+
+  .ai-custom-product-grid__container-{{ ai_gen_id }} {
+    max-width: {{ settings.page_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-custom-product-grid__divider-{{ ai_gen_id }} {
+    height: 1px;
+    background-color: rgba(var(--color-foreground), 0.1);
+    margin-bottom: 40px;
+    {% if block.settings.divider_full_width %}
+      margin-left: -20px;
+      margin-right: -20px;
+    {% endif %}
+  }
+
+  .ai-custom-product-grid__grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.columns_desktop }}, 1fr);
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+
+  .ai-custom-product-grid__card-{{ ai_gen_id }} {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ai-custom-product-grid__image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+    overflow: hidden;
+    {% if block.settings.image_ratio == '1/1' %}
+      aspect-ratio: 1 / 1;
+    {% elsif block.settings.image_ratio == '3/4' %}
+      aspect-ratio: 3 / 4;
+    {% elsif block.settings.image_ratio == '4/3' %}
+      aspect-ratio: 4 / 3;
+    {% endif %}
+  }
+
+  .ai-custom-product-grid__image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-custom-product-grid__content-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: {{ block.settings.text_alignment }};
+  }
+
+  .ai-custom-product-grid__title-{{ ai_gen_id }} {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+    color: rgb(var(--color-foreground));
+  }
+
+  .ai-custom-product-grid__title-link-{{ ai_gen_id }} {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .ai-custom-product-grid__title-link-{{ ai_gen_id }}:hover {
+    opacity: 0.8;
+  }
+
+  .ai-custom-product-grid__price-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: rgb(var(--color-foreground));
+  }
+
+  .ai-custom-product-grid__vendor-{{ ai_gen_id }} {
+    font-size: 12px;
+    color: rgba(var(--color-foreground), 0.7);
+    text-transform: uppercase;
+  }
+
+  .ai-tsb-customize-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 14px 0;
+    padding: 12px 18px;
+    border: 1px solid {{ block.settings.button_border_color }};
+    border-radius: {{ block.settings.button_border_radius }}px;
+    background: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    font-size: {{ block.settings.button_font_size }}px;
+    font-weight: {{ block.settings.button_font_weight }};
+    line-height: 1.2;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
+  }
+
+  .ai-tsb-customize-button-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.button_hover_bg_color }};
+    color: {{ block.settings.button_hover_text_color }};
+    border-color: {{ block.settings.button_hover_border_color }};
+  }
+
+  .ai-tsb-customize-button__icon-{{ ai_gen_id }} {
+    font-size: {{ block.settings.button_icon_size }}px;
+  }
+
+  .ai-custom-product-grid__pagination-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 40px;
+  }
+
+  .ai-custom-product-grid__load-more-{{ ai_gen_id }} {
+    padding: 12px 24px;
+    background-color: rgb(var(--color-button));
+    color: rgb(var(--color-button-text));
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .ai-custom-product-grid__load-more-{{ ai_gen_id }}:hover {
+    opacity: 0.9;
+  }
+
+  .ai-custom-product-grid__page-number-{{ ai_gen_id }} {
+    padding: 8px 12px;
+    background-color: transparent;
+    color: rgb(var(--color-foreground));
+    border: 1px solid rgba(var(--color-foreground), 0.2);
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  .ai-custom-product-grid__page-number-{{ ai_gen_id }}:hover,
+  .ai-custom-product-grid__page-number-{{ ai_gen_id }}--active {
+    background-color: rgb(var(--color-button));
+    color: rgb(var(--color-button-text));
+    border-color: rgb(var(--color-button));
+  }
+
+  .ai-custom-product-grid__empty-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 60px 20px;
+    color: rgba(var(--color-foreground), 0.7);
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-custom-product-grid__grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+      gap: 20px;
+    }
+
+    .ai-custom-product-grid__container-{{ ai_gen_id }} {
+      padding: 0 15px;
+    }
+  }
+{% endstyle %}
+
+<custom-product-grid-{{ ai_gen_id }}
+  class="ai-custom-product-grid-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-custom-product-grid__container-{{ ai_gen_id }}">
+    {% if block.settings.show_divider %}
+      <div class="ai-custom-product-grid__divider-{{ ai_gen_id }}"></div>
+    {% endif %}
+
+    {% if collection.products.size > 0 %}
+      <div class="ai-custom-product-grid__grid-{{ ai_gen_id }}">
+        {% for product in collection.products limit: block.settings.products_per_page %}
+          <div class="ai-custom-product-grid__card-{{ ai_gen_id }}">
+            <div class="ai-custom-product-grid__image-wrapper-{{ ai_gen_id }}">
+              {% if product.featured_image %}
+                <img
+                  src="{{ product.featured_image | image_url: width: 800 }}"
+                  alt="{{ product.featured_image.alt | escape }}"
+                  loading="lazy"
+                  width="800"
+                  height="800"
+                  class="ai-custom-product-grid__image-{{ ai_gen_id }}"
+                >
+              {% else %}
+                <div class="ai-custom-product-grid__image-placeholder-{{ ai_gen_id }}">
+                  {{ 'product-1' | placeholder_svg_tag }}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="ai-custom-product-grid__content-{{ ai_gen_id }}">
+              {% if block.settings.show_vendor and product.vendor != blank %}
+                <div class="ai-custom-product-grid__vendor-{{ ai_gen_id }}">
+                  {{ product.vendor }}
+                </div>
+              {% endif %}
+
+              <h3 class="ai-custom-product-grid__title-{{ ai_gen_id }}">
+                <a
+                  href="{{ product.url }}"
+                  class="ai-custom-product-grid__title-link-{{ ai_gen_id }}"
+                >
+                  {{ product.title }}
+                </a>
+              </h3>
+
+              <div class="ai-custom-product-grid__price-{{ ai_gen_id }}">
+                {{ product.price | money }}
+              </div>
+
+              {% assign tbd_variant = product.selected_or_first_available_variant %}
+              {% assign tbd_image = product.featured_image | image_url: width: 2000 %}
+              {% assign tsb_unsafe_customize_handles = '|banner-carrying-bag|banner-carrying-bag-and-pole-kit|custom-home-plate|custom-triangle|custom-design-banner|number-of-players-1741408171741|player-2-1741407683673|player-1-1741407618603|product-list-1741406995716|product-list-1741406984186|player-2-1741406674927|player-2-1741406663261|player-2-1741406471775|dropdown-1741406128408|number-of-players-1741317315035|' %}
+              {% assign tsb_product_handle_token = '|' | append: product.handle | append: '|' %}
+
+              {% capture tbd_design_url %}https://teamsportbanners.vercel.app/?productHandle={{ product.handle | url_encode }}&productTitle={{ product.title | url_encode }}&productImage={{ tbd_image | url_encode }}&productId={{ product.id }}&variantId={{ tbd_variant.id }}&price={{ tbd_variant.price | money_without_currency | url_encode }}&image={{ tbd_image | url_encode }}&product_title={{ product.title | url_encode }}&product_id={{ product.id }}&variant_id={{ tbd_variant.id }}&autoLoadProduct=1&autoLayer=png{% endcapture %}
+
+              {% unless product.type == 'easify_addon_product' or product.featured_image == blank or tsb_unsafe_customize_handles contains tsb_product_handle_token %}
+                <a
+                  href="{{ tbd_design_url | strip }}"
+                  class="ai-tsb-customize-button-{{ ai_gen_id }}"
+                >
+                  <span class="ai-tsb-customize-button__icon-{{ ai_gen_id }}">{{ block.settings.button_icon }}</span>
+                  <span>{{ block.settings.button_text }}</span>
+                </a>
+              {% endunless %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if block.settings.pagination_type == 'load_more' %}
+        <div class="ai-custom-product-grid__pagination-{{ ai_gen_id }}">
+          <button class="ai-custom-product-grid__load-more-{{ ai_gen_id }}">
+            Load More
+          </button>
+        </div>
+      {% elsif block.settings.pagination_type == 'pages' %}
+        {% if paginate.pages > 1 %}
+          <div class="ai-custom-product-grid__pagination-{{ ai_gen_id }}">
+            {% if paginate.previous %}
+              <a
+                href="{{ paginate.previous.url }}"
+                class="ai-custom-product-grid__page-number-{{ ai_gen_id }}"
+              >
+                ←
+              </a>
+            {% endif %}
+
+            {% for part in paginate.parts %}
+              {% if part.is_link %}
+                <a
+                  href="{{ part.url }}"
+                  class="ai-custom-product-grid__page-number-{{ ai_gen_id }}"
+                >
+                  {{ part.title }}
+                </a>
+              {% else %}
+                <span class="ai-custom-product-grid__page-number-{{ ai_gen_id }} ai-custom-product-grid__page-number-{{ ai_gen_id }}--active">
+                  {{ part.title }}
+                </span>
+              {% endif %}
+            {% endfor %}
+
+            {% if paginate.next %}
+              <a
+                href="{{ paginate.next.url }}"
+                class="ai-custom-product-grid__page-number-{{ ai_gen_id }}"
+              >
+                →
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endif %}
+    {% else %}
+      <div class="ai-custom-product-grid__empty-{{ ai_gen_id }}">
+        <p>No products found in this collection.</p>
+      </div>
+    {% endif %}
+  </div>
+</custom-product-grid-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class CustomProductGrid{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        const paginationType = '{{ block.settings.pagination_type }}';
+
+        if (paginationType === 'infinite_scroll') {
+          this.setupInfiniteScroll();
+        } else if (paginationType === 'load_more') {
+          this.setupLoadMore();
+        }
+      }
+
+      setupInfiniteScroll() {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              console.log('Infinite scroll triggered');
+            }
+          });
+        }, {
+          rootMargin: '200px'
+        });
+
+        const lastProduct = this.querySelector('.ai-custom-product-grid__card-{{ ai_gen_id }}:last-child');
+        if (lastProduct) {
+          observer.observe(lastProduct);
+        }
+      }
+
+      setupLoadMore() {
+        const loadMoreBtn = this.querySelector('.ai-custom-product-grid__load-more-{{ ai_gen_id }}');
+        if (loadMoreBtn) {
+          loadMoreBtn.addEventListener('click', () => {
+            console.log('Load more clicked');
+          });
+        }
+      }
+    }
+
+    customElements.define('custom-product-grid-{{ ai_gen_id }}', CustomProductGrid{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Custom product grid",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product display"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 1,
+      "max": 36,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "grid_layout",
+      "label": "Grid layout",
+      "options": [
+        {
+          "value": "standard",
+          "label": "Standard"
+        },
+        {
+          "value": "metro",
+          "label": "Metro"
+        }
+      ],
+      "default": "standard"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Desktop columns",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Mobile columns",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "1/1",
+          "label": "1:1"
+        },
+        {
+          "value": "3/4",
+          "label": "3:4"
+        },
+        {
+          "value": "4/3",
+          "label": "4:3"
+        }
+      ],
+      "default": "adapt"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Pagination"
+    },
+    {
+      "type": "select",
+      "id": "pagination_type",
+      "label": "Pagination type",
+      "options": [
+        {
+          "value": "infinite_scroll",
+          "label": "Infinite scroll"
+        },
+        {
+          "value": "load_more",
+          "label": "Load more button"
+        },
+        {
+          "value": "pages",
+          "label": "Numbered pages"
+        }
+      ],
+      "default": "pages"
+    },
+    {
+      "type": "header",
+      "content": "Customize button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Customize This Design"
+    },
+    {
+      "type": "text",
+      "id": "button_icon",
+      "label": "Button icon",
+      "default": "🎨"
+    },
+    {
+      "type": "range",
+      "id": "button_icon_size",
+      "label": "Icon size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "button_font_weight",
+      "label": "Font weight",
+      "min": 400,
+      "max": 900,
+      "step": 100,
+      "default": 800
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background color",
+      "default": "#f0fff5"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#146c37"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Border color",
+      "default": "#22a05a"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#dcfce7"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Hover text color",
+      "default": "#0f5a2e"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_border_color",
+      "label": "Hover border color",
+      "default": "#22a05a"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Section divider"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show divider",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "divider_full_width",
+      "label": "Full width divider",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom product grid"
+    }
+  ]
+}
+{% endschema %}
